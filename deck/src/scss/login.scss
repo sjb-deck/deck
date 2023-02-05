@@ -1,0 +1,31 @@
+@use 'variables' as v;
+
+body {
+    @extend .flex-center;
+    background-color: v.$background-color;
+    height: 75vh;
+}
+
+.login-div, form {
+    @extend .flex-center;
+    color: white;
+    flex-direction: column;
+}
+
+img {
+    max-height: 250px;
+    margin-bottom: 5%;
+}
+
+.form-control {
+    margin-bottom: 10%;
+    min-width: 250px;
+}
+
+button {
+    margin-top: 5%;
+}
+
+.error-message {
+    color: v.$error-color;
+}

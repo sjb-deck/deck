@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{% block title %}Deck{% endblock %}</title>
+    <meta name="theme-color" content="#88D3CE">
+    <meta name="google-site-verification" content="4lTLZVdHg5WQr3BM2RAQErwsrOHbJvxybn6Wn6wMD7M" />
+    <meta name="robots" content="all">
+    <meta name="Description" CONTENT="Deck: NHHS SJB">
+    <link rel="shortcut icon" type="image/png" href="/static/inventory/img/logo.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main_index.css' %}">
+</head>
+
+<body>
+    <!-- PC version-->
+    <div id="slideshow-container" class="slideshow-container">
+        <div
+            style="margin-bottom: 20%;display: flex;align-items: center;justify-content: space-evenly;padding: 10px;
+            box-shadow: 0 6px 12px rgb(0 0 0 / 23%), 0 10px 40px rgb(0 0 0 / 19%);position: absolute;right: 10px;top:10px;border-radius: 15px;min-width: 300px;background: #00000026;">
+            {%if request.user.extras.first.profilepic%}
+            <img src='/uploaded/{{request.user.extras.first.profilepic}}'
+                style="width: 100px;height:100px;border-radius: 50%;object-fit:cover;margin-right: 5%;">
+            {%else%}
+            <img src='/static/inventory/img/blank_profile.webp'
+                style="width: 100px;height:100px;border-radius: 50%;object-fit:cover;margin-right: 5%;">
+            {%endif%}
+            <div style="display:flex;flex-direction:column;justify-content: center;text-align: left;">
+                <h3 style="margin: 0px;font-family: Arial, Helvetica, sans-serif;">
+                    <strong>{{request.user.first_name}}</strong>
+                </h3>
+                <a href="{%url 'logout_view'%}" style="z-index: 500;">
+                    <button type="button" class="btn btn-danger btn-sm">Sign Out</button>
+                </a>
+            </div>
+        </div>
+        <div class="slides-styler-wrapper">
+            <div id="slides-container" class="slides-container">
+
+                <div class="slide">
+                    <div style="position:fixed;width:1000px;height:600px;background-color:white;background-color: transparent;z-index: 500;"
+                        onclick="inventory()"></div>
+                    <div class="image-container layer1">
+                        <div class="image image1"
+                            style="background-image: url(/static/inventory/img/smallkit.png);"></div>
+                    </div>
+                    <span class="text layer2">IMS</span>
+                    <div class="image-container layer3">
+                        <div class="image image2" style="background-image: url(/static/inventory/img/bigkit.png);">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide">
+                    <div style="position:fixed;width:1000px;height:600px;background-color:white;background-color: transparent;z-index: 500;"
+                        onclick="portal()"></div>
+                    <span class="text layer1">Portal</span>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div id="previous-arrow" class="previous-arrow"></div>
+        <div id="next-arrow" class="next-arrow"></div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/main_index.js' %}"></script>
+
+</body>
+
+</html>
