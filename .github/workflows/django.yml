@@ -1,4 +1,4 @@
-name: Django CI
+name: deck CI/CD
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.8]
 
     steps:
     - uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: Deploying to server
         uses: appleboy/ssh-action@master 
-        with: # We set all our secrets here for the action, these won't be shown in the action logs
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
