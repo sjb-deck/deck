@@ -32,3 +32,24 @@ jobs:
         DEBUG: ${{ secrets.DEBUG }}
       run: |
         python manage.py test
+        
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploying to server
+        uses: appleboy/ssh-action@master 
+        with: # We set all our secrets here for the action, these won't be shown in the action logs
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd deck/deck
+            git pull
+            pip install -r requirements.txt
+            npm prune
+            npm install
+            python manage.py makemigrations
+            python manage.py migrate
+            echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload   
