@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-@login_required(login_url="r'^login/$'")
+@login_required(login_url="/r'^login/$'")
 def main_index(request):
     return render(request, "main_index.html")
 
