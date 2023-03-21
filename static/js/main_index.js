@@ -33,13 +33,14 @@ jQuery(document).ready(function initiator($) {
     )
       check = true;
   })(navigator.userAgent || navigator.vendor || window.opera);
+  /** 
   if (check) {
     document.getElementById("slideshow-container").style.display = "none";
     document.getElementById("slideshow-container").innerHTML = "";
     document.getElementById("mobile").style.display = "block";
     document.getElementById("user_list_mobile").style.display = "flex";
     document.getElementById("user_list").style.display = "none";
-  }
+  }*/
 });
 var slideshow_container = document.getElementById("slideshow-container"),
   slides_container = document.getElementById("slides-container"),

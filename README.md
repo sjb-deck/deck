@@ -42,3 +42,5 @@
 # Useful Links
 
 [IMS Overview](https://www.notion.so/IMS-Overview-d7f998a410c74220863d4e35464c7517)
+
+[Server Health](https://jonasgwt.github.io/servers/)
