@@ -40,7 +40,6 @@ develop-eggs/
 dist/
 downloads/
 eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -97,3 +96,6 @@ db.sqlite3
 
 ### Prettier ###
 .prettierrc
+
+### User profile pics ###
+uploaded/user_dp/*
