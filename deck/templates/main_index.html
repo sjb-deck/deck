@@ -62,7 +62,9 @@
           border-radius: 15px;
           min-width: 300px;
           background: #00000026;
+          z-index: 1000;
         "
+        onclick="window.location = '/accounts/edit';"
       >
         {%if request.user.extras.first.profilepic%}
         <img

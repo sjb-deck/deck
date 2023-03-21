@@ -136,3 +136,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
      'http://localhost:8000'
 ]
+
+MEDIA_URL = 'uploaded/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
