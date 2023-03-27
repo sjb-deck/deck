@@ -41,6 +41,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd deck/deck
+            git stash
+            git stash drop
             git pull
             pip install -r requirements.txt
             npm prune
