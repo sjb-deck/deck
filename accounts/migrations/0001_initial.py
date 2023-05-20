@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,12 +14,30 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='UserExtras',
+            name="UserExtras",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('profilepic', models.ImageField(blank=True, null=True, upload_to='user_dp')),
-                ('role', models.CharField(default='User', max_length=50)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='extras', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "profilepic",
+                    models.ImageField(blank=True, null=True, upload_to="user_dp"),
+                ),
+                ("role", models.CharField(default="User", max_length=50)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="extras",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

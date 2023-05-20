@@ -15,9 +15,7 @@ from django.core.handlers.wsgi import WSGIHandler
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'deck.settings'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'deck.settings')
+os.environ["DJANGO_SETTINGS_MODULE"] = "deck.settings"
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "deck.settings")
 
 application = get_wsgi_application()
-
-

@@ -6,9 +6,12 @@ from django import forms
 from .models import UserExtras
 import os
 
+
 class ImageUploadForm(forms.Form):
     """Image upload form."""
+
     image = forms.ImageField()
+
 
 # Create your views here.
 @login_required(login_url="/r'^login/$'")
@@ -17,18 +20,19 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('main_index'))
-        else: 
-            return render(request, 'register.html', {'form': form})
+            return redirect(reverse("main_index"))
+        else:
+            return render(request, "register.html", {"form": form})
     else:
         form = CustomUserCreationForm()
-        return render(request, "register.html", {'form': form})
-    
+        return render(request, "register.html", {"form": form})
+
+
 @login_required(login_url="/r'^login/$'")
 def edit(request):
     if request.method == "POST":
-        new_username = request.POST.get('username', "")
-        f = request.FILES.get('image', None)
+        new_username = request.POST.get("username", "")
+        f = request.FILES.get("image", None)
         request.user.username = new_username
         if f != None:
             form = ImageUploadForm(request.POST, request.FILES)
@@ -38,10 +42,8 @@ def edit(request):
                     image_path = m.profilepic.path
                     if os.path.exists(image_path):
                         os.remove(image_path)
-                m.profilepic = form.cleaned_data['image']
+                m.profilepic = form.cleaned_data["image"]
                 m.save()
-        return redirect(reverse('main_index'))
+        return redirect(reverse("main_index"))
     else:
-        return render(request, "user_info.html",{
-            "user" : request.user
-        })
+        return render(request, "user_info.html", {"user": request.user})

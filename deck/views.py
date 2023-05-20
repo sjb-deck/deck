@@ -5,9 +5,11 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+
 @login_required(login_url="/r'^login/$'")
 def main_index(request):
     return render(request, "main_index.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -18,14 +20,18 @@ def login_view(request):
 
         if user != None:
             login(request, user)
-            return JsonResponse(data={"success":True, "to_redirect": to_redirect}, status = 200)
+            return JsonResponse(
+                data={"success": True, "to_redirect": to_redirect}, status=200
+            )
         else:
-            return JsonResponse(data={"success":False, "responseText":"Invalid Credentials"}, status = 401)
+            return JsonResponse(
+                data={"success": False, "responseText": "Invalid Credentials"},
+                status=401,
+            )
     else:
-        to_redirect = request.GET.get('next')
-        return render(request, "login.html", {
-            "to_redirect": to_redirect
-        })
+        to_redirect = request.GET.get("next")
+        return render(request, "login.html", {"to_redirect": to_redirect})
+
 
 def logout_view(request):
     logout(request)

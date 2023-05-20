@@ -19,11 +19,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("r'^login/$'", views.login_view, name="login_view"),
-    path("", views.main_index, name="main_index"),
-    path("inventory/", include("inventory.urls")),
-    path("accounts/", include("accounts.urls")),
-    path("logout", views.logout_view, name="logout_view"),
-]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("r'^login/$'", views.login_view, name="login_view"),
+        path("", views.main_index, name="main_index"),
+        path("inventory/", include("inventory.urls")),
+        path("accounts/", include("accounts.urls")),
+        path("logout", views.logout_view, name="logout_view"),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
