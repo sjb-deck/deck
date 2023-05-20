@@ -23,6 +23,7 @@ jobs:
       - name: Run Style Check
         run: |
           black . --check
+          npx eslint .
       - name: Run Tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
