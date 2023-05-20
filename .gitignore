@@ -94,8 +94,5 @@ local_settings.py
 db.sqlite3
 
 
-### Prettier ###
-.prettierrc
-
 ### User profile pics ###
 uploaded/user_dp/*
