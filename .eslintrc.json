@@ -9,8 +9,6 @@
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
-	"plugins": ["react"],
-	"rules": {
-		"plugins": ["only-warn"]
-	}
+	"plugins": ["react", "only-warn"],
+	"rules": {}
 }
