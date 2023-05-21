@@ -1,5 +1,8 @@
-{% extends "base.html" %}
-{% load static %} 
-{% block title %}FA Items{% endblock %}
-{% block content %} 
+{% extends "inventory_base.html" %} {% load static %} {% block title %}FA
+Items{% endblock %} {% block content %}
+<script>
+  const allItems = "{{allItems}}";
+</script>
+<script type="text/babel" src="{% static 'js/itemIndex.js' %}"></script>
+<div id="root"></div>
 {%endblock%}

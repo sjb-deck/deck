@@ -6,6 +6,9 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
+    inventoryBase: ['./inventory/src/scss/inventoryBase.scss'],
+    itemIndex: ['./inventory/src/js/itemIndex.js',
+      './inventory/src/scss/itemIndex.scss'],
   },
   output: {
     path: path.resolve(__dirname, './static/js'),
