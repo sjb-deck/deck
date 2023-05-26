@@ -1,22 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import Paper from '@mui/material/Paper';
 
 /**
- * A React component that returns the item container
+ * A React component that is used to show each individual item card
  * @returns Item container
  */
 
-const ItemContainer = ({ key, item }) => {
+const ItemContainer = ({ index, item }) => {
 	return (
-		<section id={key}>
-			<h1>{item.fields.name}</h1>
-		</section>
+		<Paper key={index} elevation={3}>
+			{item.fields.name}
+		</Paper>
 	);
-};
-
-ItemContainer.propTypes = {
-	key: PropTypes.object.isRequired,
-	item: PropTypes.object.isRequired,
 };
 
 export default ItemContainer;

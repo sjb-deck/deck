@@ -11,6 +11,7 @@
 	},
 	"plugins": ["react"],
 	"rules": {
+		"no-unused-vars": "error",
 		"plugins": ["only-warn"]
 	}
 }
