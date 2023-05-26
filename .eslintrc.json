@@ -3,7 +3,11 @@
 		"browser": true,
 		"es2021": true
 	},
-	"extends": ["plugin:react/recommended", "google", "prettier"],
+	"extends": [
+		"plugin:react/recommended",
+		"google",
+		"plugin:prettier/recommended"
+	],
 	"overrides": [],
 	"parserOptions": {
 		"ecmaVersion": "latest",
@@ -11,7 +15,7 @@
 	},
 	"plugins": ["react"],
 	"rules": {
-		"no-unused-vars": "error",
-		"plugins": ["only-warn"]
+		"react/prop-types": 1,
+		"no-unused-vars": 1
 	}
 }
