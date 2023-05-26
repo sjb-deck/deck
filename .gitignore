@@ -96,3 +96,6 @@ db.sqlite3
 
 ### User profile pics ###
 uploaded/user_dp/*
+
+# logs
+logs
