@@ -20,8 +20,7 @@ const App = () => {
 				csrfmiddlewaretoken: CSRF_TOKEN,
 			},
 			success: function (data) {
-				window.location.href =
-					data.toRedirect == undefined ? "/" : data.toRedirect;
+				window.location.href = toRedirect == undefined ? "/" : toRedirect;
 			},
 			error: function (xhr, status, error) {
 				console.log("Login failed:", error);
