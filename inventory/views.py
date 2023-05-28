@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Item
 from django.core import serializers
-from django.http import JsonResponse
+from django.contrib.auth.models import User
+from accounts.models import UserExtras
 
 
 # Create your views here.
@@ -14,5 +15,8 @@ def inventory_index(request):
 @login_required(login_url="/r'^login/$'")
 def items(request):
     all_items = Item.objects.all()
-    serialized_data = serializers.serialize("json", all_items)
-    return render(request, "items.html", {"allItems": serialized_data})
+    items_data = serializers.serialize("json", all_items)
+    user_data = serializers.serialize("json", [request.user.extras.first()])
+    return render(
+        request, "items.html", {"allItems": items_data, "userData": user_data}
+    )

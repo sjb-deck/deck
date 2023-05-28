@@ -1,7 +1,8 @@
 {% extends "inventory_base.html" %} {% load static %} {% block title %}FA
 Items{% endblock %} {% block content %}
 <script>
-	const allItems = '{{allItems}}';
+	const allItems = "{{allItems}}";
+	const userInfo = "{{userData}}";
 </script>
 <script type="text/babel" src="{% static 'js/itemIndex.js' %}"></script>
 <div id="root" style="height: fit-content; width: 100vw"></div>
