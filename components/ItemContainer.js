@@ -22,7 +22,6 @@ const ItemContainer = ({ index, item }) => {
   const handleExpiryChange = (itemExpiry) => {
     setSelectedExpiry(itemExpiry == 'All' ? itemExpiry : itemExpiry.id);
   };
-  console.log(item);
   return (
     <Paper
       key={index}
