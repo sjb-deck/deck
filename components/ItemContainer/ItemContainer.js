@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Avatar, Box, Chip } from '@mui/material';
-import { MEDIA_ROOT } from '../globals';
+import { MEDIA_ROOT } from '../../globals';
 
 /**
  * A React component that is used to show each individual item card

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import ItemContainer from '/components/ItemContainer';
+import ItemContainer from '/components/ItemContainer/ItemContainer';
 import Theme from '/components/Themes';
 import NavBar from '/components/NavBar/NavBar';
 import Footer from '/components/Footer';
