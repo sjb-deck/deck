@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * A React component that is renders the footer
  * ie. the container at the very bottom of the page
