@@ -1,12 +1,13 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 
 <body>
-	<script>
-		const CSRF_TOKEN = "{{csrf_token}}";
-		const toRedirect = "{{to_redirect}}";
-	</script>
-	<script type="text/babel" src="{% static 'js/login.js' %}"></script>
-	<div id="root"></div>
+  <script>
+    const CSRF_TOKEN = '{{csrf_token}}';
+    const toRedirect = '{{to_redirect}}';
+  </script>
+
+  <div id="root"></div>
+  <script src="{% static 'js/login.js' %}"></script>
 </body>
 
 {% endblock %}

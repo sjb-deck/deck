@@ -1,9 +1,10 @@
 {% extends "inventory_base.html" %} {% load static %} {% block title %}FA
 Items{% endblock %} {% block content %}
 <script>
-	const allItems = "{{allItems}}";
-	const userInfo = "{{userData}}";
+  const allItems = '{{allItems|escapejs}}';
+  const userInfo = '{{userData|escapejs}}';
 </script>
-<script type="text/babel" src="{% static 'js/itemIndex.js' %}"></script>
-<div id="root" style="height: fit-content; width: 100vw"></div>
+
+<div id="root" style="width: 100vw"></div>
+<script src="{% static 'js/itemIndex.js' %}"></script>
 {%endblock%}
