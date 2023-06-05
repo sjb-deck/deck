@@ -80,12 +80,25 @@ WSGI_APPLICATION = "deck.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# staging shared DB
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "deck_staging",
+        "HOST": "deckland.nhhs-sjb.org",
+        "PORT": "3306",
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PW"),
     }
 }
+
+# uncomment this to use local db
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
