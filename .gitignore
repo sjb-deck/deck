@@ -95,7 +95,10 @@ db.sqlite3
 
 
 ### User profile pics ###
-uploaded/user_dp/*
+uploaded/*
 
 # logs
 logs
+
+# budle analysis
+stats.json

@@ -8,8 +8,9 @@ cleanup() {
 
 trap cleanup EXIT
 
-echo -e "\033[34mRunning npm install...\033[0m" 
+echo -e "\033[34mInstalling required dependecies...\033[0m" 
 npm install
+pip install -r requirements.txt
 
 echo -e "\033[34mMaking migrations...\033[0m"
 python manage.py makemigrations 

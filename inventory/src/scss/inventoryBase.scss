@@ -1,0 +1,7 @@
+@use "variables" as v;
+
+body {
+  @extend .flex-center;
+  background-color: v.$background-color;
+  color: white;
+}

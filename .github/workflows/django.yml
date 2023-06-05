@@ -32,6 +32,7 @@ jobs:
           DEBUG: ${{ secrets.DEBUG }}
         run: |
           python manage.py test
+          npm test
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,4 +55,5 @@ jobs:
             npm install
             python manage.py makemigrations
             python manage.py migrate
+            npm build
             echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload

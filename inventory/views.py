@@ -1,5 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .models import Item, ItemExpiry
+from django.core import serializers
+from django.contrib.auth.models import User
+from accounts.models import UserExtras
+from django.forms.models import model_to_dict
+import json
 
 
 # Create your views here.
@@ -10,4 +16,18 @@ def inventory_index(request):
 
 @login_required(login_url="/r'^login/$'")
 def items(request):
-    return render(request, "items.html")
+    all_items = Item.objects.prefetch_related("expirydates").all()
+    items_data = []
+
+    for item in all_items:
+        item_dict = model_to_dict(item)
+        item_dict["expirydates"] = [
+            model_to_dict(expiry) for expiry in item.expirydates.all()
+        ]
+        items_data.append(item_dict)
+
+    items_data = json.dumps(items_data, default=str)
+    user_data = serializers.serialize("json", [request.user.extras.first()])
+    return render(
+        request, "items.html", {"allItems": items_data, "userData": user_data}
+    )
