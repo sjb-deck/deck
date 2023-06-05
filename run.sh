@@ -9,6 +9,9 @@ cleanup() {
 trap cleanup EXIT
 
 echo -e "\033[34mInstalling required dependecies...\033[0m" 
+source ~/.nvm/nvm.sh
+nvm install
+nvm use
 npm install
 pip install -r requirements.txt
 

@@ -44,3 +44,6 @@ class Item(models.Model):
     total_quantityunopened = models.IntegerField(null=False, blank=False, default=0)
     min_quantityopen = models.IntegerField(null=True, blank=True, default=0)
     min_quantityunopened = models.IntegerField(null=True, blank=True, default=0)
+
+    def __str__(self) -> str:
+        return f"{self.name}"

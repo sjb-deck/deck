@@ -2,42 +2,48 @@
 
 1. Clone the repo
 
-    ```bash
-    git clone https://github.com/jonasgwt/deckland.git
-    ```
+   ```bash
+   git clone https://github.com/jonasgwt/deckland.git
+   ```
 
 2. Move into the directory
 
-    ```bash
-    cd deckland
-    ```
+   ```bash
+   cd deckland
+   ```
 
-3. Install the required modules and libraries
+3. Set node version
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   nvm use
+   ```
 
-    ```bash
-    npm i
-    ```
+4. Install the required modules and libraries
 
-4. Copy over the `.env` file into the current directory
-5. Start the JSX compiler
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm i
+   ```
 
-6. Open a new window, do the migrations and start the server
+5. Copy over the `.env` file into the current directory
+6. Start the JSX compiler
 
-    ```bash
-    python manage.py migrate
-    ```
+   ```bash
+   npm run dev
+   ```
 
-    ```bash
-    python manage.py runserver
-    ```
+7. Open a new window, do the migrations and start the server
+
+   ```bash
+   python manage.py migrate
+   ```
+
+   ```bash
+   python manage.py runserver
+   ```
 
 # Useful Links
 
