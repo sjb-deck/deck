@@ -46,14 +46,17 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd deck/deck
+            cd deck
+            source deck-env/env/bin/activate 
+            cd deck
             git stash
             git stash drop
             git pull
             pip install -r requirements.txt
+            nvm use
             npm prune
             npm install
             python manage.py makemigrations
             python manage.py migrate
-            npm build
+            npm run build
             echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload
