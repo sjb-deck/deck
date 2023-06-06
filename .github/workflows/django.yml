@@ -56,5 +56,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd deck/deck
+            chmod o+x update.sh
             ./update.sh
             echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload
