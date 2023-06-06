@@ -17,7 +17,13 @@ import { UserAvatar } from '../UserAvatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { NavDrawer } from './NavDrawer';
-import { URL_INV_INDEX, URL_LOGOUT, URL_PROFILE } from '../../globals';
+import { PropTypes } from 'prop-types';
+import {
+  URL_INV_CART,
+  URL_INV_INDEX,
+  URL_LOGOUT,
+  URL_PROFILE,
+} from '../../globals';
 
 /**
  * A React component that renders the NavBar
@@ -27,13 +33,20 @@ import { URL_INV_INDEX, URL_LOGOUT, URL_PROFILE } from '../../globals';
  */
 
 const drawerWidth = 240;
-export const navItems = ['Alerts', 'Cart'];
-export const navIcons = [
-  <NotificationsIcon key={1} style={{ marginRight: 5 }} />,
-  <ShoppingCartIcon key={1} style={{ marginRight: 5 }} />,
+export const navItems = [
+  {
+    title: 'Alerts',
+    icon: <NotificationsIcon key={1} style={{ marginRight: 5 }} />,
+    link: '#',
+  },
+  {
+    title: 'Cart',
+    icon: <ShoppingCartIcon key={2} style={{ marginRight: 5 }} />,
+    link: URL_INV_CART,
+  },
 ];
 
-const NavBar = () => {
+const NavBar = ({ user }) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -91,12 +104,13 @@ const NavBar = () => {
             {navItems.map((item, index) => (
               <Button
                 color='inherit'
-                aria-label={item}
-                key={item}
+                aria-label={item.name}
+                key={index}
                 variant='text'
+                onClick={() => (location.href = item.link)}
               >
-                {navIcons[index]}
-                {item}
+                {item.icon}
+                {item.title}
               </Button>
             ))}
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
@@ -107,7 +121,7 @@ const NavBar = () => {
               )}
             </IconButton>
             <IconButton onClick={handleClick} color='inherit'>
-              <UserAvatar style={{ marginLeft: 10 }} />
+              <UserAvatar user={user} style={{ marginLeft: 10 }} />
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -141,7 +155,7 @@ const NavBar = () => {
             },
           }}
         >
-          <NavDrawer onClick={handleClose} />
+          <NavDrawer user={user} onClick={handleClose} />
         </Drawer>
       </Box>
     </Box>
@@ -149,3 +163,17 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
+NavBar.propTypes = {
+  user: PropTypes.shape({
+    fields: PropTypes.shape({
+      name: PropTypes.string,
+      profilepic: PropTypes.string,
+      role: PropTypes.string,
+      user: PropTypes.number,
+    }),
+    model: PropTypes.string,
+    pk: PropTypes.number,
+  }),
+  size: PropTypes.number,
+};

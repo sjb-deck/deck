@@ -1,5 +1,4 @@
 import React from 'react';
-import { user } from '/inventory/src/js/itemIndex.js';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import List from '@mui/material/List';
@@ -14,8 +13,8 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { ColorModeContext } from '../Themes';
 import { useTheme } from '@mui/material/styles';
 import { navItems } from './NavBar';
-import { navIcons } from './NavBar';
 import { URL_LOGOUT, URL_PROFILE } from '../../globals';
+import { PropTypes } from 'prop-types';
 
 /**
  * A React component that renders the NavDrawer
@@ -24,7 +23,7 @@ import { URL_LOGOUT, URL_PROFILE } from '../../globals';
  * @returns NavDrawer
  */
 
-export const NavDrawer = () => {
+export const NavDrawer = ({ user }) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
@@ -39,7 +38,7 @@ export const NavDrawer = () => {
           flexDirection: 'column',
         }}
       >
-        <UserAvatar size={100} />
+        <UserAvatar user={user} size={100} />
         <Typography variant='h6' sx={{ mt: 2 }}>
           Hello, {user.fields.name}
         </Typography>
@@ -77,13 +76,14 @@ export const NavDrawer = () => {
       <Divider />
       <List>
         {navItems.map((item, index) => (
-          <ListItem key={item} disablePadding>
+          <ListItem key={index} disablePadding>
             <Button
               fullWidth
               sx={{ justifyContent: 'center', textTransform: 'none' }}
-              startIcon={navIcons[index]}
+              startIcon={item.icon}
+              onClick={() => (location.href = item.link)}
             >
-              {item}
+              {item.title}
             </Button>
           </ListItem>
         ))}
@@ -103,4 +103,17 @@ export const NavDrawer = () => {
       </List>
     </Box>
   );
+};
+
+NavDrawer.propTypes = {
+  user: PropTypes.shape({
+    fields: PropTypes.shape({
+      name: PropTypes.string,
+      profilepic: PropTypes.string,
+      role: PropTypes.string,
+      user: PropTypes.number,
+    }),
+    model: PropTypes.string,
+    pk: PropTypes.number,
+  }),
 };

@@ -1,11 +1,10 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import { user } from '/inventory/src/js/itemIndex.js';
 import { MEDIA_ROOT } from '../globals';
 import PropTypes from 'prop-types';
 
-export const UserAvatar = ({ size }) => {
+export const UserAvatar = ({ user, size }) => {
   return (
     <Tooltip title={`${user.fields.name}`}>
       <Avatar
@@ -18,5 +17,15 @@ export const UserAvatar = ({ size }) => {
 };
 
 UserAvatar.propTypes = {
+  user: PropTypes.shape({
+    fields: PropTypes.shape({
+      name: PropTypes.string,
+      profilepic: PropTypes.string,
+      role: PropTypes.string,
+      user: PropTypes.number,
+    }),
+    model: PropTypes.string,
+    pk: PropTypes.number,
+  }),
   size: PropTypes.number,
 };

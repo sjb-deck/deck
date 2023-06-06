@@ -25,7 +25,7 @@ const ItemIndex = () => {
   };
   return (
     <Theme>
-      <NavBar />
+      <NavBar user={user} />
       <Stack
         direction='column'
         justifyContent='center'
