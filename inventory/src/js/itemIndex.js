@@ -6,6 +6,7 @@ import NavBar from '/components/NavBar/NavBar';
 import Footer from '/components/Footer';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
+import SearchBar from "../../../components/SearchBar";
 
 export const user = JSON.parse(htmlDecode(userInfo))[0];
 export const items = JSON.parse(htmlDecode(allItems));
@@ -26,12 +27,15 @@ const ItemIndex = () => {
   return (
     <Theme>
       <NavBar user={user} />
-      <Stack
+        <div style={{paddingLeft: "15%", paddingRight: "15%", marginTop: 5}}>
+            <SearchBar items={items}/>
+        </div>
+        <Stack
         direction='column'
         justifyContent='center'
         alignItems='center'
         spacing={5}
-        sx={{ marginTop: 10 }}
+        sx={{ marginTop: 3 }}
       >
         {itemsToDisplay.map((item, index) => {
           return <ItemContainer key={index} index={index} item={item} />;
