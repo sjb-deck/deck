@@ -2,75 +2,97 @@
  * A React component that is renders the search bar
  * @returns SearchBar
  */
-import React, {useEffect, useState} from 'react';
-import {TextField, Typography, ListItemText, Avatar, Grid, Autocomplete} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  TextField,
+  Typography,
+  ListItemText,
+  Avatar,
+  Grid,
+  Autocomplete,
+} from '@mui/material';
+import PropTypes from 'prop-types';
 
-const PLACEHOLDER_IMAGE = 'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg'
+const PLACEHOLDER_IMAGE =
+  'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
+const ITEMS_ON_SEARCH_LIST = 5;
 
-const SearchResultItem = ({item}) => (
-    <Grid container spacing={1} alignItems="center">
-        <Grid item>
-            <Avatar src={item.imgpic} alt={item.name} />
-        </Grid>
-        <Grid item xs={3}>
-            <ListItemText
-                primary={item.name}
-                secondary={item.type}
-            />
-        </Grid>
-        <Grid item xs={3}>
-            <ListItemText
-                primary={item.total_quantityopen}
-                secondary={item.total_quantityunopened}
-            />
-        </Grid>
+const SearchResultItem = ({ item }) => (
+  <Grid container spacing={1} alignItems='center'>
+    <Grid item>
+      <Avatar src={item.imgpic} alt={item.name} />
     </Grid>
+    <Grid item xs={6}>
+      <ListItemText primary={item.name} secondary={item.type} />
+    </Grid>
+    <Grid item xs={3}>
+      <ListItemText
+        primary={item.total_quantityopen}
+        secondary={item.total_quantityunopened}
+      />
+    </Grid>
+  </Grid>
 );
 
-const SearchBar = ({items}) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [data, setData] = useState([]);
+const SearchBar = ({ items, selectedFilter }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [data, setData] = useState([]);
 
-    useEffect(() => {
-        console.log(items)
-        const parsedData = items.map(item => ({
-            id: item.id,
-            name: item.name,
-            type: item.type,
-            imgpic: item.imgpic === '' ? PLACEHOLDER_IMAGE : item.imgpic,
-            total_quantityopen: item.total_quantityopen,
-            total_quantityunopened: item.total_quantityunopened
-        }))
+  useEffect(() => {
+    const parsedData = items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      imgpic: item.imgpic === '' ? PLACEHOLDER_IMAGE : item.imgpic,
+      total_quantityopen: item.total_quantityopen,
+      total_quantityunopened: item.total_quantityunopened,
+    }));
 
-        setData(parsedData);
-    },[]);
+    setData(parsedData);
+  }, []);
 
-    const filteredResults = data.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredResults = (data, searchTerm) => {
+    return data.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedFilter.includes('All') || selectedFilter.includes(item.type)),
     );
+  };
 
-    return (
-        <div>
-            <Autocomplete
-                options={filteredResults.slice(0, 5)}
-                getOptionLabel={(item) => item.name}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Search"
-                        value={searchTerm}
-                        onChange={(event) => setSearchTerm(event.target.value)}
-                    />
-                )}
-                renderOption={(props, item) => (
-                    <li {...props}>
-                        <SearchResultItem item={item} />
-                    </li>
-                )}
-                noOptionsText={<Typography>No results found.</Typography>}
-            />
-        </div>
-    )
+  return (
+    <div>
+      <Autocomplete
+        options={filteredResults(data, searchTerm).slice(
+          0,
+          ITEMS_ON_SEARCH_LIST,
+        )}
+        getOptionLabel={(item) => item.name}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label='Search'
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+        )}
+        renderOption={(props, item) => (
+          <li {...props}>
+            <SearchResultItem item={item} />
+          </li>
+        )}
+        noOptionsText={<Typography>No results found.</Typography>}
+      />
+    </div>
+  );
+};
+
+SearchResultItem.propTypes = {
+  item: PropTypes.object.isRequired,
+};
+
+SearchBar.propTypes = {
+  items: PropTypes.array.isRequired,
+  selectedFilter: PropTypes.array.isRequired,
 };
 
 export default SearchBar;
