@@ -35,7 +35,13 @@
    npm run dev
    ```
 
-7. Open a new window, do the migrations and start the server
+7. Open a new window, start the live reload server 
+
+   ```bash
+   python manage.py livereload
+   ```
+
+8. Open a new window, do the migrations and start the server
 
    ```bash
    python manage.py migrate
