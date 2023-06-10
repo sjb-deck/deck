@@ -24,6 +24,9 @@ python manage.py migrate
 echo -e "\033[34mSetting up logs files...\033[0m"
 mkdir -p logs
 
+echo -e "\033[34mStarting Django live reload server...\033[0m" 
+python manage.py livereload > logs/reload_logs.out 2>&1 &
+
 echo -e "\033[34mStarting Django development server...\033[0m" 
 python manage.py runserver 0.0.0.0:8000 > logs/dev_logs.out 2>&1 &
 
