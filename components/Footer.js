@@ -26,6 +26,10 @@ const SectionHeader = ({ text }) => {
   );
 };
 
+SectionHeader.propTypes = {
+  text: PropTypes.string.isRequired,
+};
+
 const CustomLink = ({ text, link }) => {
   return (
     <Typography>
@@ -41,10 +45,15 @@ const CustomLink = ({ text, link }) => {
   );
 };
 
+CustomLink.propTypes = {
+  text: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+};
+
 /**
  * A React component that is renders the footer
  * ie. the container at the very bottom of the page
- * @returns Footer
+ * @return {React.ReactElement} Footer
  */
 const Footer = () => {
   return (
