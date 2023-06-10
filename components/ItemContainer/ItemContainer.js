@@ -83,6 +83,7 @@ const ItemContainer = ({ index, item }) => {
           direction='row'
           divider={<Divider orientation='vertical' flexItem />}
           justifyContent='space-around'
+          alignItems='center'
           spacing={{ xs: 1, sm: 2, md: 4 }}
         >
           {item.imgpic ? (
@@ -95,7 +96,7 @@ const ItemContainer = ({ index, item }) => {
             <img src='/static/inventory/img/logo.png' width={90} height={90} />
           )}
 
-          <Stack justifyContent='center'>
+          <Stack justifyContent='center' width={150}>
             <Typography variant='h5' fontWeight='bold'>
               {item.name}
             </Typography>
