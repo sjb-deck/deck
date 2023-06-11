@@ -28,10 +28,13 @@ const ItemIndex = () => {
       <NavBar user={user} />
       <Stack
         direction='column'
-        justifyContent='center'
         alignItems='center'
         spacing={5}
-        sx={{ marginTop: 10 }}
+        marginTop={'100px'}
+        paddingTop={5}
+        sx={{
+          height: '100vh',
+        }}
       >
         {itemsToDisplay.map((item, index) => {
           return <ItemContainer key={index} index={index} item={item} />;
