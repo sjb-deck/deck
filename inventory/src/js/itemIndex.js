@@ -29,12 +29,9 @@ const ItemIndex = () => {
       <Stack
         direction='column'
         alignItems='center'
+        justifyContent='center'
         spacing={5}
         marginTop={'100px'}
-        paddingTop={5}
-        sx={{
-          height: '100vh',
-        }}
       >
         {itemsToDisplay.map((item, index) => {
           return <ItemContainer key={index} index={index} item={item} />;
