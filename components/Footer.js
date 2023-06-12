@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Link, Paper, Divider } from '@mui/material';
-
+import { PropTypes } from 'prop-types';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
