@@ -107,7 +107,7 @@ const Footer = () => {
             backgroundColor: (theme) =>
               theme.palette.mode === 'light'
                 ? theme.palette.grey[400]
-                : theme.palette.grey[600],
+                : theme.palette,
           }}
         />
         <Box mt={sectionPadding}>
