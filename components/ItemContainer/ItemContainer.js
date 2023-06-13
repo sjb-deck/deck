@@ -28,7 +28,7 @@ const ItemContainer = ({ index, item }) => {
       elevation={3}
       sx={{
         minWidth: '20vw',
-        width: { xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '30%' },
+        width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
         padding: 2,
         display: 'flex',
         flexDirection: 'column',

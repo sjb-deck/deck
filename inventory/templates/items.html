@@ -5,6 +5,6 @@ Items{% endblock %} {% block content %}
   const userInfo = '{{userData|escapejs}}';
 </script>
 
-<div id="root" style="width: 100vw"></div>
-<script src="{% static 'js/itemIndex.js' %}"></script>
+<div id="root" style="width: 100vw; height: 100vh;"></div>
+<script src="{% static 'webpack/itemIndex.js' %}"></script>
 {%endblock%}

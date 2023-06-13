@@ -102,3 +102,6 @@ logs
 
 # budle analysis
 stats.json
+
+# Compiled js by webpack
+static/webpack/*
