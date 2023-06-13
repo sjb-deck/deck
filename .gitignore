@@ -104,4 +104,4 @@ logs
 stats.json
 
 # Compiled js by webpack
-static/js/*
+static/webpack/*
