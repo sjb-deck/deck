@@ -14,7 +14,7 @@ module.exports = {
     ],
   },
   output: {
-    path: path.resolve(__dirname, './static/js'),
+    path: path.resolve(__dirname, './static/webpack'),
     filename: '[name].js',
   },
   module: {
@@ -30,9 +30,13 @@ module.exports = {
         },
       },
       {
-        test: /\.s?css$/,
-        exclude: /node_modules/,
+        test: /\.(scss|css)$/i,
+        // exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
+        type: 'asset/inline',
       },
     ],
   },
