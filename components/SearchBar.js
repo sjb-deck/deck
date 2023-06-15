@@ -18,7 +18,7 @@ const PLACEHOLDER_IMAGE =
 const ITEMS_ON_SEARCH_LIST = 5;
 
 const SearchResultItem = ({ item }) => (
-  <Grid container spacing={1} alignItems='center'>
+  <Grid container spacing={2} alignItems='center' justifyContent='left' paddingLeft={2}>
     <Grid item>
       <Avatar src={item.imgpic} alt={item.name} />
     </Grid>
@@ -60,8 +60,11 @@ const SearchBar = ({ items, selectedFilter }) => {
   };
 
   return (
-    <div>
       <Autocomplete
+        sx={{
+            minWidth: '20vw',
+            width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
+        }}
         options={filteredResults(data, searchTerm).slice(
           0,
           ITEMS_ON_SEARCH_LIST,
@@ -82,7 +85,6 @@ const SearchBar = ({ items, selectedFilter }) => {
         )}
         noOptionsText={<Typography>No results found.</Typography>}
       />
-    </div>
   );
 };
 

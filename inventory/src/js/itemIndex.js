@@ -39,19 +39,21 @@ const ItemIndex = () => {
   return (
     <Theme>
       <NavBar user={user} />
-      <div style={{ paddingLeft: '5%', paddingRight: '5%', marginTop: 150 }}>
-        <SearchBar items={items} selectedFilter={selectedFilter} />
-      </div>
 
-      <div style={{ marginTop: 10 }}>
+        <div style={{ display: "flex", justifyContent: 'center', marginTop: 80 }}>
+            <SearchBar items={items} selectedFilter={selectedFilter}/>
+        </div>
+
+      <div style={{ display: "flex", justifyContent: 'center', marginTop: 10 }}>
         <SearchFilter onFilterChange={handleFilterChange} />
       </div>
+
       <Stack
         direction='column'
         justifyContent='center'
         alignItems='center'
-        spacing={5}
-        sx={{ marginTop: 2 }}
+        spacing={3}
+        sx={{ marginTop: 1 }}
       >
         {itemsToDisplay.map((item, index) => {
           return <ItemContainer key={index} index={index} item={item} />;

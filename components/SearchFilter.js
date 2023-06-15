@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { ButtonGroup, Button, useMediaQuery } from '@mui/material';
 
 const types = [
   'General',
   'Bandages',
   'Solution',
   'Dressing',
-  'Universal Precaution',
+  'Universal Precautions',
 ];
 
 const SearchFilter = ({ onFilterChange }) => {
   const [selectedFilter, setSelectedFilter] = useState(['All']);
+  const isSmallScreen = useMediaQuery('(max-width: 1000px)');
   const handleTypeSelection = (type) => {
     if (
       type === 'All' &&
@@ -44,48 +46,37 @@ const SearchFilter = ({ onFilterChange }) => {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          overflowX: 'auto',
-          whiteSpace: 'nowrap',
-          display: 'flex',
-          marginBottom: '10px',
-        }}
+    <ButtonGroup
+      variant='text'
+      aria-label='text button group'
+      size={isSmallScreen ? 'small' : 'medium'}
+      sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        width: { xs: '90%', sm: '70%', md: '70%', lg: '45%', xl: '35%' },
+      }}
+    >
+      <Button
+        color={selectedFilter.includes('All') ? 'success' : 'primary'}
+        variant={'outlined'}
+        onClick={() => handleTypeSelection('All')}
+        sx={{ borderRadius: 0, marginBottom: 1 }}
       >
-        <button
-          style={{
-            padding: '5px 10px',
-            marginRight: '5px',
-            background: selectedFilter.includes('All')
-              ? 'dimgrey'
-              : 'transparent',
-            borderRadius: '10px',
-            color: 'white',
-          }}
-          onClick={() => handleTypeSelection('All')}
+        All
+      </Button>
+      {types.map((type) => (
+        <Button
+          key={type}
+          color={selectedFilter.includes(type) ? 'success' : 'primary'}
+          variant={'outlined'}
+          onClick={() => handleTypeSelection(type)}
+          sx={{ borderRadius: 0, marginBottom: 1 }}
         >
-          All
-        </button>
-        {types.map((type) => (
-          <button
-            key={type}
-            style={{
-              padding: '5px 10px',
-              marginRight: '5px',
-              background: selectedFilter.includes(type)
-                ? 'dimgrey'
-                : 'transparent',
-              borderRadius: '15px',
-              color: 'white',
-            }}
-            onClick={() => handleTypeSelection(type)}
-          >
-            {type}
-          </button>
-        ))}
-      </div>
-    </div>
+          {type}
+        </Button>
+      ))}
+    </ButtonGroup>
   );
 };
 
