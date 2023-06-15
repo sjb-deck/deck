@@ -1,0 +1,15 @@
+{% extends "inventory_base.html" %} <!-- this just means we are making use of inventory/templates/inventory_base.html -->
+{% load static %} <!-- Loads files in static so we can use it here -->
+{% block title %}Item List{% endblock %} <!-- used to define out site's title -->
+{% block content %} <!-- where we put our content -->
+<script>
+// Django JINJA engine will substitute the value of allItems here with what we have defined in views.py
+// escapejs is a Django tag that is used to escape special characters (e.g. ', ", \, etc.) (not necessary to know)
+// we are saving our variables here so we can use it in our React code later
+  const allItems = '{{allItems|escapejs}}'; 
+  const userInfo = '{{userData|escapejs}}';
+</script>
+
+<div id="root" style="width: 100vw; height: 100vh;"></div> <!-- this is where we inject our react app-->
+<script src="{% static 'webpack/fillThisInLater.js' %}"></script> <!-- this is where we import our react code into the site compiled by webpack -->
+{%endblock%}

@@ -12,6 +12,9 @@ module.exports = {
       './inventory/src/js/itemIndex.js',
       './inventory/src/scss/itemIndex.scss',
     ],
+    // create an entry point for webpack to compile ur react code
+    // remember to restart webpack after adding new entry points
+    itemList: ['./inventory/src/js/itemList.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
