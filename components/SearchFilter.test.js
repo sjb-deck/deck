@@ -59,19 +59,21 @@ describe('SearchFilter', () => {
     fireEvent.click(dressingButton);
     fireEvent.click(universalPrecautionButton);
 
-    expect(generalButton).toHaveStyle('background: dimgrey');
-    expect(bandagesButton).toHaveStyle('background: dimgrey');
-    expect(solutionButton).toHaveStyle('background: dimgrey');
-    expect(dressingButton).toHaveStyle('background: dimgrey');
-    expect(universalPrecautionButton).toHaveStyle('background: dimgrey');
+    expect(generalButton).toHaveStyle('color: rgb(46, 125, 50)');
+    expect(bandagesButton).toHaveStyle('color: rgb(46, 125, 50)');
+    expect(solutionButton).toHaveStyle('color: rgb(46, 125, 50)');
+    expect(dressingButton).toHaveStyle('color: rgb(46, 125, 50)');
+    expect(universalPrecautionButton).toHaveStyle('color: rgb(46, 125, 50)');
 
     fireEvent.click(screen.getByText('All'));
 
     expect(onFilterChange).toHaveBeenCalledWith(['All']);
-    expect(generalButton).not.toHaveStyle('background: dimgrey');
-    expect(bandagesButton).not.toHaveStyle('background: dimgrey');
-    expect(solutionButton).not.toHaveStyle('background: dimgrey');
-    expect(dressingButton).not.toHaveStyle('background: dimgrey');
-    expect(universalPrecautionButton).not.toHaveStyle('background: dimgrey');
+    expect(generalButton).not.toHaveStyle('color: rgb(46, 125, 50)');
+    expect(bandagesButton).not.toHaveStyle('color: rgb(46, 125, 50)');
+    expect(solutionButton).not.toHaveStyle('color: rgb(46, 125, 50)');
+    expect(dressingButton).not.toHaveStyle('color: rgb(46, 125, 50)');
+    expect(universalPrecautionButton).not.toHaveStyle(
+      'color: rgb(46, 125, 50)',
+    );
   });
 });

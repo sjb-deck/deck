@@ -7,7 +7,7 @@ const types = [
   'Bandages',
   'Solution',
   'Dressing',
-  'Universal Precautions',
+  'Universal Precaution',
 ];
 
 const SearchFilter = ({ onFilterChange }) => {
