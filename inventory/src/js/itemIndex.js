@@ -40,11 +40,11 @@ const ItemIndex = () => {
     <Theme>
       <NavBar user={user} />
 
-        <div style={{ display: "flex", justifyContent: 'center', marginTop: 80 }}>
-            <SearchBar items={items} selectedFilter={selectedFilter}/>
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}>
+        <SearchBar items={items} selectedFilter={selectedFilter} />
+      </div>
 
-      <div style={{ display: "flex", justifyContent: 'center', marginTop: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
         <SearchFilter onFilterChange={handleFilterChange} />
       </div>
 

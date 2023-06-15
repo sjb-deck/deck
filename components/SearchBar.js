@@ -18,7 +18,13 @@ const PLACEHOLDER_IMAGE =
 const ITEMS_ON_SEARCH_LIST = 5;
 
 const SearchResultItem = ({ item }) => (
-  <Grid container spacing={2} alignItems='center' justifyContent='left' paddingLeft={2}>
+  <Grid
+    container
+    spacing={2}
+    alignItems='center'
+    justifyContent='left'
+    paddingLeft={2}
+  >
     <Grid item>
       <Avatar src={item.imgpic} alt={item.name} />
     </Grid>
@@ -60,31 +66,28 @@ const SearchBar = ({ items, selectedFilter }) => {
   };
 
   return (
-      <Autocomplete
-        sx={{
-            minWidth: '20vw',
-            width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
-        }}
-        options={filteredResults(data, searchTerm).slice(
-          0,
-          ITEMS_ON_SEARCH_LIST,
-        )}
-        getOptionLabel={(item) => item.name}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label='Search'
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-          />
-        )}
-        renderOption={(props, item) => (
-          <li {...props}>
-            <SearchResultItem item={item} />
-          </li>
-        )}
-        noOptionsText={<Typography>No results found.</Typography>}
-      />
+    <Autocomplete
+      sx={{
+        minWidth: '20vw',
+        width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
+      }}
+      options={filteredResults(data, searchTerm).slice(0, ITEMS_ON_SEARCH_LIST)}
+      getOptionLabel={(item) => item.name}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label='Search'
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
+      )}
+      renderOption={(props, item) => (
+        <li {...props}>
+          <SearchResultItem item={item} />
+        </li>
+      )}
+      noOptionsText={<Typography>No results found.</Typography>}
+    />
   );
 };
 
