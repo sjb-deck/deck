@@ -59,7 +59,7 @@ const SearchFilter = ({ onFilterChange }) => {
     >
       <Button
         color={selectedFilter.includes('All') ? 'success' : 'primary'}
-        variant={'outlined'}
+        variant={selectedFilter.includes('All') ? 'contained' : 'outlined'}
         onClick={() => handleTypeSelection('All')}
         sx={{ borderRadius: 0, marginBottom: 1 }}
       >
@@ -69,7 +69,7 @@ const SearchFilter = ({ onFilterChange }) => {
         <Button
           key={type}
           color={selectedFilter.includes(type) ? 'success' : 'primary'}
-          variant={'outlined'}
+          variant={selectedFilter.includes(type) ? 'contained' : 'outlined'}
           onClick={() => handleTypeSelection(type)}
           sx={{ borderRadius: 0, marginBottom: 1 }}
         >
