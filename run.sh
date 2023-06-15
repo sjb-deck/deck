@@ -16,10 +16,10 @@ npm install
 pip install -r requirements.txt
 
 echo -e "\033[34mMaking migrations...\033[0m"
-python manage.py makemigrations 
+python3 manage.py makemigrations
 
 echo -e "\033[34mMigrating...\033[0m"
-python manage.py migrate 
+python3 manage.py migrate
 
 echo -e "\033[34mSetting up logs files...\033[0m"
 mkdir -p logs
@@ -28,7 +28,7 @@ echo -e "\033[34mStarting Django live reload server...\033[0m"
 python manage.py livereload > logs/reload_logs.out 2>&1 &
 
 echo -e "\033[34mStarting Django development server...\033[0m" 
-python manage.py runserver 0.0.0.0:8000 > logs/dev_logs.out 2>&1 &
+python3 manage.py runserver 0.0.0.0:8000 > logs/dev_logs.out 2>&1 &
 
 echo -e "\033[34mStarting Webpack...\033[0m" 
 npm run dev > logs/webpack_logs.out 2>&1 &
