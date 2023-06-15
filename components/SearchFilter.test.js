@@ -72,8 +72,6 @@ describe('SearchFilter', () => {
     expect(bandagesButton).toHaveStyle('color: rgb(25, 118, 210)');
     expect(solutionButton).toHaveStyle('color: rgb(25, 118, 210)');
     expect(dressingButton).toHaveStyle('color: rgb(25, 118, 210)');
-    expect(universalPrecautionButton).toHaveStyle(
-      'color: rgb(25, 118, 210)'
-    );
+    expect(universalPrecautionButton).toHaveStyle('color: rgb(25, 118, 210)');
   });
 });
