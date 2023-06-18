@@ -7,6 +7,7 @@ urlpatterns = (
     [
         path("", views.inventory_index, name="inventory_index"),
         path("items", views.items, name="items"),
+        path("add-item", views.add_item, name="add_item"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

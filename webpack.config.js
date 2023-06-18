@@ -12,6 +12,10 @@ module.exports = {
       './inventory/src/js/itemIndex.js',
       './inventory/src/scss/itemIndex.scss',
     ],
+    addItem: [
+      './inventory/src/js/addItem.js',
+      './inventory/src/scss/addItem.scss',
+    ],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
