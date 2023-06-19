@@ -7,32 +7,36 @@ import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { checkItemFormData } from '../../../utils/submitForm';
+import { processItemSubmission } from '../../../utils/submitForm';
 import Theme from '../../../components/Themes';
 import NavBar from '../../../components/NavBar/NavBar';
+import SuccessDialog from '../../../components/AddItems/SuccessDialog';
 import AddItemForm from '../../../components/AddItems/AddItemForm';
 import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
 import TypeSelection from '../../../components/AddItems/TypeSelection';
+import AddItemReview from '../../../components/AddItems/AddItemReview';
 
 export const user = JSON.parse(htmlDecode(userInfo))[0];
 export const items = JSON.parse(htmlDecode(allItems));
-
-const PLACEHOLDER_IMAGE =
-  'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
 
 const AddItem = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [addType, setAddType] = useState(''); // 'item' or 'expiry'
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
+
   const [itemFormData, setItemFormData] = useState({
     name: '',
     type: 'General',
     unit: '',
-    image: PLACEHOLDER_IMAGE,
+    image: '',
     total_quantityopen: 0,
     total_quantityunopened: 0,
     min_quantityopen: 0,
     min_quantityunopened: 0,
   });
+
   const [expiryFormData, setExpiryFormData] = useState({
     name: '',
     email: '',
@@ -40,7 +44,37 @@ const AddItem = () => {
   });
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    switch (activeStep) {
+      case 0:
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        return;
+      case 1:
+        if (addType === 'item') {
+          checkItemFormData(itemFormData, setActiveStep);
+        } else if (addType === 'expiry') {
+          console.log(expiryFormData);
+        }
+        return;
+      case 2:
+        if (addType === 'item') {
+          processItemSubmission(
+            itemFormData,
+            setActiveStep,
+            setItemFormData,
+            setAddType,
+            setSuccessDialogOpen,
+          );
+        } else if (addType === 'expiry') {
+          console.log(expiryFormData);
+        }
+        return;
+      default:
+        return;
+    }
+  };
+
+  const handleSuccessDialogClose = () => {
+    setSuccessDialogOpen(false);
   };
 
   const handleBack = () => {
@@ -108,35 +142,17 @@ const AddItem = () => {
           );
         }
       case 2:
-        return (
-          <div>
-            <Typography>Confirm Form Details:</Typography>
-            <Typography>Add Type: {addType}</Typography>
-            {addType === 'item' && (
-              <div>
-                <Typography>Name: {itemFormData.name}</Typography>
-                <Typography>Name: {itemFormData.type}</Typography>
-                <Typography>Name: {itemFormData.unit}</Typography>
-                <Typography>Name: {itemFormData.image}</Typography>
-                <Typography>Name: {itemFormData.total_quantityopen}</Typography>
-                <Typography>
-                  Name: {itemFormData.total_quantityunopened}
-                </Typography>
-                <Typography>Name: {itemFormData.min_quantityopen}</Typography>
-                <Typography>
-                  Name: {itemFormData.min_quantityunopened}
-                </Typography>
-              </div>
-            )}
-            {addType === 'expiry' && (
-              <div>
-                <Typography>
-                  Expiry Date: {expiryFormData.expirydate}
-                </Typography>
-              </div>
-            )}
-          </div>
-        );
+        if (addType === 'item') {
+          return <AddItemReview itemFormData={itemFormData} />;
+        } else if (addType === 'expiry') {
+          return <AddItemReview itemFormData={itemFormData} />;
+        } else {
+          return (
+            <Typography>
+              Please go back to step 1 and choose an add type.
+            </Typography>
+          );
+        }
       default:
         return null;
     }
@@ -170,6 +186,15 @@ const AddItem = () => {
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </div>
+                <SuccessDialog
+                  open={isSuccessDialogOpen}
+                  onClose={handleSuccessDialogClose}
+                  message={
+                    addType === 'item'
+                      ? 'Item added successfully!'
+                      : 'Expiry added successfully!'
+                  }
+                />
               </StepContent>
             </Step>
           ))}

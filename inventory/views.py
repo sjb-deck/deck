@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Item, ItemExpiry
+from .models.ItemModels import Item
 from django.core import serializers
 from django.contrib.auth.models import User
 from accounts.models import UserExtras
 from django.forms.models import model_to_dict
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import ItemSerializer
 import json
 
 
@@ -50,3 +53,18 @@ def add_item(request):
     return render(
         request, "add_item.html", {"allItems": items_data, "userData": user_data}
     )
+
+
+@api_view(['POST'])
+@login_required(login_url="/r'^login/$'")
+def add_item_post(request):
+    if request.method == 'POST':
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            new_item = serializer.save()
+            return Response({'message': 'Form data added successfully'})
+        else:
+            return Response({'errors': serializer.errors}, status=400)
+    else:
+        return Response({'error': 'Invalid request method'}, status=405)
+

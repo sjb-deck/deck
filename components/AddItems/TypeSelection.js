@@ -2,11 +2,14 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import PropTypes from 'prop-types';
 
 const TypeSelection = ({ addType, handleAddTypeSelection }) => {
   return (
     <div>
-      <Typography style={{ fontSize: '14px' }}>
+      <Typography
+        sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
+      >
         Select Type of Addition
       </Typography>
       <Box sx={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
@@ -50,7 +53,7 @@ const TypeSelection = ({ addType, handleAddTypeSelection }) => {
 };
 
 TypeSelection.propTypes = {
-  addType: PropTypes.oneOf(['item', 'expiry']).isRequired,
+  addType: PropTypes.string.isRequired,
   handleAddTypeSelection: PropTypes.func.isRequired,
 };
 

@@ -8,6 +8,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
 const types = [
   'General',
@@ -22,7 +23,11 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
 
   return (
     <form>
-      <Typography>Add New Item:</Typography>
+      <Typography
+        sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
+      >
+        Add New Item:
+      </Typography>
       <Box
         sx={{
           display: 'flex',
