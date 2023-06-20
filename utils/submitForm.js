@@ -1,46 +1,116 @@
 import axios from 'axios';
+import findPotentialMatch from './levenshteinDistance';
 
 const PLACEHOLDER_IMAGE =
   'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
+
+// Normalised Levenshtein distance threshold
+const LEVENSHTEIN_THRESHOLD = 0.2;
 
 const isValidInt = (value) => {
   return Number.isInteger(value) && value >= 0;
 };
 
-const checkItemFormData = (itemFormData, setActiveStep) => {
+const checkItemFormData = (
+  itemFormData,
+  setActiveStep,
+  items,
+  setItemFormError,
+  setItemPotentialMatch,
+  setItemPotentialMatchDialogOpen,
+) => {
+  const tempItemFormError = {
+    name: false,
+    type: false,
+    unit: false,
+    image: false,
+    total_quantityopen: false,
+    total_quantityunopened: false,
+    min_quantityopen: false,
+    min_quantityunopened: false,
+  };
+
   try {
     itemFormData.total_quantityopen = parseInt(itemFormData.total_quantityopen);
+  } catch {
+    tempItemFormError.total_quantityopen = true;
+  }
+
+  try {
     itemFormData.total_quantityunopened = parseInt(
       itemFormData.total_quantityunopened,
     );
+  } catch {
+    tempItemFormError.total_quantityunopened = true;
+  }
+
+  try {
     itemFormData.min_quantityopen = parseInt(itemFormData.min_quantityopen);
+  } catch {
+    tempItemFormError.min_quantityopen = true;
+  }
+
+  try {
     itemFormData.min_quantityunopened = parseInt(
       itemFormData.min_quantityunopened,
     );
   } catch {
-    alert('Please enter a valid number for all quantity fields!');
-    return;
+    tempItemFormError.min_quantityunopened = true;
   }
 
   if (itemFormData.name === '') {
-    alert('Item Name must not be empty!');
-  } else if (itemFormData.unit === '') {
-    alert('Item Unit must not be empty!');
-  } else if (
-    !(
-      isValidInt(itemFormData.total_quantityopen) &&
-      isValidInt(itemFormData.total_quantityunopened) &&
-      isValidInt(itemFormData.min_quantityopen) &&
-      isValidInt(itemFormData.min_quantityunopened)
-    )
-  ) {
-    alert('Quantities must be integers!');
-  } else {
-    if (itemFormData.image === '') {
-      itemFormData.image = PLACEHOLDER_IMAGE;
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    tempItemFormError.name = true;
   }
+
+  if (itemFormData.unit === '') {
+    tempItemFormError.unit = true;
+  }
+
+  if (
+    !tempItemFormError.total_quantityopen &&
+    !tempItemFormError.total_quantityunopened &&
+    !tempItemFormError.min_quantityopen &&
+    !tempItemFormError.min_quantityunopened
+  ) {
+    if (!isValidInt(itemFormData.total_quantityopen)) {
+      tempItemFormError.total_quantityopen = true;
+    }
+    if (!isValidInt(itemFormData.total_quantityunopened)) {
+      tempItemFormError.total_quantityunopened = true;
+    }
+    if (!isValidInt(itemFormData.min_quantityopen)) {
+      tempItemFormError.min_quantityopen = true;
+    }
+    if (!isValidInt(itemFormData.min_quantityunopened)) {
+      tempItemFormError.min_quantityunopened = true;
+    }
+    if (
+      itemFormData.total_quantityopen <= 0 &&
+      itemFormData.total_quantityunopened <= 0
+    ) {
+      tempItemFormError.total_quantityopen = true;
+      tempItemFormError.total_quantityunopened = true;
+    }
+  }
+
+  if (Object.values(tempItemFormError).some((value) => value === true)) {
+    setItemFormError(tempItemFormError);
+    return;
+  }
+
+  const potentialMatch = findPotentialMatch(
+    itemFormData.name,
+    items,
+    LEVENSHTEIN_THRESHOLD,
+  );
+  if (potentialMatch !== null) {
+    setItemPotentialMatch(potentialMatch);
+    setItemPotentialMatchDialogOpen(true);
+  }
+  if (itemFormData.image === '') {
+    itemFormData.image = PLACEHOLDER_IMAGE;
+  }
+  setActiveStep((prevActiveStep) => prevActiveStep + 1);
 };
 
 /**
@@ -77,9 +147,13 @@ const processItemSubmission = (
   setItemFormData,
   setAddType,
   setSuccessDialogOpen,
+  setSuccessMessage,
 ) => {
   postWithCSRF('/inventory/add_item_post', itemFormData)
     .then((response) => {
+      setSuccessMessage(
+        `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
+      );
       setActiveStep(0);
       setAddType('');
       setItemFormData({

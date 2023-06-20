@@ -55,16 +55,15 @@ def add_item(request):
     )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @login_required(login_url="/r'^login/$'")
 def add_item_post(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             new_item = serializer.save()
-            return Response({'message': 'Form data added successfully'})
+            return Response({"message": "Form data added successfully"})
         else:
-            return Response({'errors': serializer.errors}, status=400)
+            return Response({"errors": serializer.errors}, status=400)
     else:
-        return Response({'error': 'Invalid request method'}, status=405)
-
+        return Response({"error": "Invalid request method"}, status=405)

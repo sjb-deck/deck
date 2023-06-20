@@ -12,6 +12,7 @@ import { processItemSubmission } from '../../../utils/submitForm';
 import Theme from '../../../components/Themes';
 import NavBar from '../../../components/NavBar/NavBar';
 import SuccessDialog from '../../../components/AddItems/SuccessDialog';
+import ItemPotentialMatchDialog from '../../../components/AddItems/ItemPotentialMatchDialog';
 import AddItemForm from '../../../components/AddItems/AddItemForm';
 import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
 import TypeSelection from '../../../components/AddItems/TypeSelection';
@@ -24,7 +25,11 @@ const AddItem = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [addType, setAddType] = useState(''); // 'item' or 'expiry'
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [itemPotentialMatch, setItemPotentialMatch] = useState('');
+  const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
+    useState(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
@@ -35,6 +40,17 @@ const AddItem = () => {
     total_quantityunopened: 0,
     min_quantityopen: 0,
     min_quantityunopened: 0,
+  });
+
+  const [itemFormError, setItemFormError] = useState({
+    name: false,
+    type: false,
+    unit: false,
+    image: false,
+    total_quantityopen: false,
+    total_quantityunopened: false,
+    min_quantityopen: false,
+    min_quantityunopened: false,
   });
 
   const [expiryFormData, setExpiryFormData] = useState({
@@ -50,7 +66,14 @@ const AddItem = () => {
         return;
       case 1:
         if (addType === 'item') {
-          checkItemFormData(itemFormData, setActiveStep);
+          checkItemFormData(
+            itemFormData,
+            setActiveStep,
+            items,
+            setItemFormError,
+            setItemPotentialMatch,
+            setItemPotentialMatchDialogOpen,
+          );
         } else if (addType === 'expiry') {
           console.log(expiryFormData);
         }
@@ -63,6 +86,7 @@ const AddItem = () => {
             setItemFormData,
             setAddType,
             setSuccessDialogOpen,
+            setSuccessMessage,
           );
         } else if (addType === 'expiry') {
           console.log(expiryFormData);
@@ -75,6 +99,12 @@ const AddItem = () => {
 
   const handleSuccessDialogClose = () => {
     setSuccessDialogOpen(false);
+    setSuccessMessage('');
+  };
+
+  const handleItemPotentialMatchDialogClose = () => {
+    setItemPotentialMatchDialogOpen(false);
+    setItemPotentialMatch('');
   };
 
   const handleBack = () => {
@@ -92,6 +122,10 @@ const AddItem = () => {
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+    setItemFormError((prevFormError) => ({
+      ...prevFormError,
+      [name]: false,
     }));
   };
 
@@ -125,6 +159,7 @@ const AddItem = () => {
             <AddItemForm
               itemFormData={itemFormData}
               handleFormChange={handleItemFormChange}
+              itemFormError={itemFormError}
             />
           );
         } else if (addType === 'expiry') {
@@ -189,11 +224,13 @@ const AddItem = () => {
                 <SuccessDialog
                   open={isSuccessDialogOpen}
                   onClose={handleSuccessDialogClose}
-                  message={
-                    addType === 'item'
-                      ? 'Item added successfully!'
-                      : 'Expiry added successfully!'
-                  }
+                  message={successMessage}
+                />
+                <ItemPotentialMatchDialog
+                  open={isItemPotentialMatchDialogOpen}
+                  onClose={handleItemPotentialMatchDialogClose}
+                  match={itemPotentialMatch}
+                  setActiveStep={setActiveStep}
                 />
               </StepContent>
             </Step>

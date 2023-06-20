@@ -10,7 +10,11 @@ import PropTypes from 'prop-types';
 const SuccessDialog = ({ open, onClose, message }) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Success!</DialogTitle>
+      <DialogTitle
+        sx={{ color: 'lightgreen', fontSize: '18px', fontWeight: 'bold' }}
+      >
+        Success!
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>

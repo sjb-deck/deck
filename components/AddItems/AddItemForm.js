@@ -18,7 +18,7 @@ const types = [
   'Universal Precaution',
 ];
 
-const AddItemForm = ({ itemFormData, handleFormChange }) => {
+const AddItemForm = ({ itemFormData, handleFormChange, itemFormError }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
 
   return (
@@ -43,11 +43,21 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
           value={itemFormData.name}
           onChange={handleFormChange}
           required
-          helperText='Name of the item'
+          helperText={
+            itemFormError.name
+              ? 'Name of new item'
+              : 'Item name must be filled!'
+          }
           variant='standard'
           sx={{
-            '& .MuiInputLabel-root': { fontSize: '14px' },
-            '& .MuiFormHelperText-root': { color: 'gray', fontSize: '12px' },
+            '& .MuiInputLabel-root': {
+              fontSize: '14px',
+              color: itemFormError.name ? 'red' : 'white',
+            },
+            '& .MuiFormHelperText-root': {
+              color: itemFormError.name ? 'red' : 'gray',
+              fontSize: '12px',
+            },
           }}
         />
 
@@ -83,11 +93,21 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
           value={itemFormData.unit}
           onChange={handleFormChange}
           required
-          helperText='Metric to measure quantity'
+          helperText={
+            itemFormError.unit
+              ? 'Units must be filled!'
+              : 'Metric to measure quantity'
+          }
           variant='standard'
           sx={{
-            '& .MuiInputLabel-root': { fontSize: '14px' },
-            '& .MuiFormHelperText-root': { color: 'gray', fontSize: '12px' },
+            '& .MuiInputLabel-root': {
+              fontSize: '14px',
+              color: itemFormError.unit ? 'red' : 'white',
+            },
+            '& .MuiFormHelperText-root': {
+              color: itemFormError.unit ? 'red' : 'gray',
+              fontSize: '12px',
+            },
           }}
         />
 
@@ -113,12 +133,19 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
               onChange={handleFormChange}
               type='number'
               required
-              helperText='Quantity of opened item for all expiries'
+              helperText={
+                itemFormError.total_quantityopen
+                  ? 'Quantity must be a non-negative number!'
+                  : 'Quantity of opened item for all expiries'
+              }
               variant='standard'
               sx={{
-                '& .MuiInputLabel-root': { fontSize: '14px' },
+                '& .MuiInputLabel-root': {
+                  fontSize: '14px',
+                  color: itemFormError.total_quantityopen ? 'red' : 'white',
+                },
                 '& .MuiFormHelperText-root': {
-                  color: 'gray',
+                  color: itemFormError.total_quantityopen ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
@@ -132,12 +159,19 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
               onChange={handleFormChange}
               type='number'
               required
-              helperText='Quantity of unopened item for all expiries'
+              helperText={
+                itemFormError.total_quantityunopened
+                  ? 'Quantity must be a non-negative number!'
+                  : 'Quantity of unopened item for all expiries'
+              }
               variant='standard'
               sx={{
-                '& .MuiInputLabel-root': { fontSize: '14px' },
+                '& .MuiInputLabel-root': {
+                  fontSize: '14px',
+                  color: itemFormError.total_quantityunopened ? 'red' : 'white',
+                },
                 '& .MuiFormHelperText-root': {
-                  color: 'gray',
+                  color: itemFormError.total_quantityunopened ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
@@ -150,12 +184,19 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
               value={itemFormData.min_quantityopen}
               onChange={handleFormChange}
               type='number'
-              helperText='Minimum quantity for opened item before warning'
+              helperText={
+                itemFormError.min_quantityopen
+                  ? 'Quantity must be a non-negative number!'
+                  : 'Minimum quantity for opened item before warning'
+              }
               variant='standard'
               sx={{
-                '& .MuiInputLabel-root': { fontSize: '14px' },
+                '& .MuiInputLabel-root': {
+                  fontSize: '14px',
+                  color: itemFormError.min_quantityopen ? 'red' : 'white',
+                },
                 '& .MuiFormHelperText-root': {
-                  color: 'gray',
+                  color: itemFormError.min_quantityopen ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
@@ -168,12 +209,19 @@ const AddItemForm = ({ itemFormData, handleFormChange }) => {
               value={itemFormData.min_quantityunopened}
               onChange={handleFormChange}
               type='number'
-              helperText='Minimum quantity for unopened item before warning'
+              helperText={
+                itemFormError.min_quantityopen
+                  ? 'Quantity must be a non-negative number!'
+                  : 'Minimum quantity for unopened item before warning'
+              }
               variant='standard'
               sx={{
-                '& .MuiInputLabel-root': { fontSize: '14px' },
+                '& .MuiInputLabel-root': {
+                  fontSize: '14px',
+                  color: itemFormError.min_quantityunopened ? 'red' : 'white',
+                },
                 '& .MuiFormHelperText-root': {
-                  color: 'gray',
+                  color: itemFormError.min_quantityunopened ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
@@ -197,6 +245,16 @@ AddItemForm.propTypes = {
     min_quantityunopened: PropTypes.number.isRequired,
   }).isRequired,
   handleFormChange: PropTypes.func.isRequired,
+  itemFormError: PropTypes.shape({
+    name: PropTypes.bool.isRequired,
+    type: PropTypes.bool.isRequired,
+    unit: PropTypes.bool.isRequired,
+    image: PropTypes.bool.isRequired,
+    total_quantityopen: PropTypes.bool.isRequired,
+    total_quantityunopened: PropTypes.bool.isRequired,
+    min_quantityopen: PropTypes.bool.isRequired,
+    min_quantityunopened: PropTypes.bool.isRequired,
+  }).isRequired,
 };
 
 export default AddItemForm;
