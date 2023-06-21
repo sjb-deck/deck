@@ -59,7 +59,7 @@ const ItemIndex = () => {
         })}
         <Pagination
           page={currentPage}
-          count={Math.ceil(items.length / ITEMS_PER_PAGE)}
+          count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
           onChange={handlePageChange}
         />
       </Stack>
