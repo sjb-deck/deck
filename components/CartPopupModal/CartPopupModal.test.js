@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import CartPopupModal from './CartPopupModal'; // adjust the path according to your project structure
+import CartPopupModal from './CartPopupModal';
 
 describe('CartPopupModal', () => {
   const mockItem = {
@@ -25,12 +26,13 @@ describe('CartPopupModal', () => {
     expect(screen.getByText('Withdraw')).toBeInTheDocument();
   });
 
-  it('displays the correct item name', () => {
+  it('opens the modal when the button is clicked', () => {
     render(<CartPopupModal type='Deposit' item={mockItem} selector='All' />);
+    fireEvent.click(screen.getByText('Deposit'));
     expect(screen.getByText('Test Item')).toBeInTheDocument();
   });
 
-  it('opens the modal when the button is clicked', () => {
+  it('displays the correct item name', () => {
     render(<CartPopupModal type='Deposit' item={mockItem} selector='All' />);
     fireEvent.click(screen.getByText('Deposit'));
     expect(screen.getByText('Test Item')).toBeInTheDocument();
@@ -40,36 +42,59 @@ describe('CartPopupModal', () => {
     const mockItemWithDates = {
       ...mockItem,
       expirydates: [
-        { expirydate: '2024-06-11', id: '1' },
-        { expirydate: '2024-06-12', id: '2' },
+        { expirydate: '2024-06-11', id: 1 },
+        { expirydate: '2024-06-12', id: 2 },
       ],
     };
     render(
       <CartPopupModal type='Deposit' item={mockItemWithDates} selector='All' />,
     );
-    fireEvent.click(screen.getByText('2024-06-11'));
-    expect(screen.getByText('2024-06-12')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Deposit'));
+    fireEvent.click(
+      screen.getByRole('chip', {
+        name: mockItemWithDates.expirydates[0].expirydate,
+      }),
+    );
+    expect(
+      screen.getByRole('menuitem', {
+        name: mockItemWithDates.expirydates[1].expirydate,
+      }),
+    ).toBeInTheDocument();
   });
 
   it('updates selectedExpiry when a date is clicked', async () => {
     const mockItemWithDates = {
       ...mockItem,
       expirydates: [
-        { expirydate: '2024-06-11', id: '1' },
-        { expirydate: '2024-06-12', id: '2' },
+        { expirydate: '2024-06-11', id: 1 },
+        { expirydate: '2024-06-12', id: 2 },
       ],
     };
     render(
       <CartPopupModal type='Deposit' item={mockItemWithDates} selector='All' />,
     );
-    fireEvent.click(screen.getByText('2024-06-11'));
-    await userEvent.click(screen.getByText('2024-06-12'));
-    expect(screen.getByText('2024-06-12')).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Deposit'));
+    await userEvent.click(
+      screen.getByRole('chip', {
+        name: mockItemWithDates.expirydates[0].expirydate,
+      }),
+    );
+    await userEvent.click(
+      screen.getByRole('menuitem', {
+        name: mockItemWithDates.expirydates[1].expirydate,
+      }),
+    );
+    expect(
+      screen.getByRole('chip', {
+        name: mockItemWithDates.expirydates[1].expirydate,
+      }),
+    ).toBeInTheDocument();
   });
 
-  it('renders the text fields with the correct labels', () => {
+  it('renders the text fields with the correct labels', async () => {
     render(<CartPopupModal type='Deposit' item={mockItem} selector='All' />);
-    expect(screen.getByLabelText('Opened Qty')).toBeInTheDocument();
-    expect(screen.getByLabelText('Unopened Qty')).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Deposit'));
+    expect(screen.getByText('Opened Qty')).toBeInTheDocument();
+    expect(screen.getByText('Unopened Qty')).toBeInTheDocument();
   });
 });

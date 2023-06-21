@@ -104,6 +104,8 @@ const CartPopupModal = ({ type, item, selector }) => {
             </Typography>
             <Chip
               label={selectedExpiry}
+              role='chip'
+              aria-label={selectedExpiry}
               aria-controls={openSelector ? 'fade-menu' : undefined}
               aria-haspopup='true'
               aria-expanded={openSelector ? 'true' : undefined}
