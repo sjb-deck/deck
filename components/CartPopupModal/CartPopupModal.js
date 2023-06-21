@@ -142,6 +142,7 @@ const CartPopupModal = ({ type, item, selector }) => {
 
             <TextField
               id='filled-basic'
+              type='number'
               label='Opened Qty'
               variant='filled'
               InputProps={{
@@ -152,6 +153,7 @@ const CartPopupModal = ({ type, item, selector }) => {
             />
             <TextField
               id='filled-basic'
+              type='number'
               label='Unopened Qty'
               variant='filled'
               InputProps={{
