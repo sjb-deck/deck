@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
-import { ItemPropType } from '../../globals';
+import { ItemPropType, MEDIA_ROOT } from '../../globals';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { ArrowDropDownCircleOutlined } from '@mui/icons-material';
