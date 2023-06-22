@@ -31,3 +31,9 @@ def items(request):
     return render(
         request, "items.html", {"allItems": items_data, "userData": user_data}
     )
+
+
+@login_required(login_url="/r'^login/$'")
+def cart(request):
+    user_data = serializers.serialize("json", [request.user.extras.first()])
+    return render(request, "cart.html", {"userData": user_data})

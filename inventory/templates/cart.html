@@ -1,0 +1,8 @@
+{% extends "inventory_base.html" %} {% load static %} {% block title %} Cart {% endblock %} {% block content %}
+<script>
+  const userInfo = '{{userData|escapejs}}';
+</script>
+
+<div id="root" style="width: 100vw"></div>
+<script src="{% static 'js/cartIndex.js' %}"></script>
+{%endblock%}

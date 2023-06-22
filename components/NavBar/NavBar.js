@@ -23,6 +23,7 @@ import {
   URL_INV_INDEX,
   URL_LOGOUT,
   URL_PROFILE,
+  UserPropType,
 } from '../../globals';
 
 /**
@@ -104,7 +105,7 @@ const NavBar = ({ user }) => {
             {navItems.map((item, index) => (
               <Button
                 color='inherit'
-                aria-label={item.name}
+                aria-label={item.title}
                 key={index}
                 variant='text'
                 onClick={() => (location.href = item.link)}
@@ -165,15 +166,6 @@ const NavBar = ({ user }) => {
 export default NavBar;
 
 NavBar.propTypes = {
-  user: PropTypes.shape({
-    fields: PropTypes.shape({
-      name: PropTypes.string,
-      profilepic: PropTypes.string,
-      role: PropTypes.string,
-      user: PropTypes.number,
-    }),
-    model: PropTypes.string,
-    pk: PropTypes.number,
-  }),
+  user: UserPropType.isRequired,
   size: PropTypes.number,
 };

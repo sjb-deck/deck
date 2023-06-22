@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 /**
  * A React component that sets the theme of the page
  * ie. light or dark mode
- * @returns NavBar
+ * @returns Theme
  */
 
 export const ColorModeContext = React.createContext({
@@ -37,10 +37,6 @@ const Theme = ({ children }) => {
           mode: mode,
         },
       }),
-      {
-        disableAlign: true,
-        factor: 99999,
-      },
     );
   }, [mode]);
 

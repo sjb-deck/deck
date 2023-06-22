@@ -8,11 +8,10 @@ import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
 import SearchBar from '../../../components/SearchBar';
 import SearchFilter from '../../../components/SearchFilter';
+import { ITEMS_PER_PAGE } from '../../../globals';
 
 export const user = JSON.parse(htmlDecode(userInfo))[0];
 export const items = JSON.parse(htmlDecode(allItems));
-
-const ITEMS_PER_PAGE = 5;
 
 const ItemIndex = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +27,7 @@ const ItemIndex = () => {
     )
     .slice(startIndex, endIndex);
 
-  const handlePageChange = (event, value) => {
+  const handlePageChange = (_, value) => {
     setCurrentPage(value);
   };
 
