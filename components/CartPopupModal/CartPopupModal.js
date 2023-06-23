@@ -15,10 +15,17 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
+import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
+import * as yup from 'yup';
 
-import { ItemPropType } from '../../globals';
+import {
+  CART_ITEM_TYPE_DEPOSIT,
+  CART_ITEM_TYPE_WITHDRAW,
+  ItemPropType,
+  LOCAL_STORAGE_CART_KEY,
+} from '../../globals';
 
 const CartPopupModal = ({ type, item, selector }) => {
   const [open, setOpen] = React.useState(false);
@@ -26,12 +33,49 @@ const CartPopupModal = ({ type, item, selector }) => {
   const handleClose = () => setOpen(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openSelector = Boolean(anchorEl);
+
+  const validationSchema = yup.object({
+    openedQty: yup
+      .number('Enter a number for opened quantity')
+      .min(0, 'Number cannot be negative')
+      .required('This field is required'),
+    unopenedQty: yup
+      .number('Enter a number for unopened quantity')
+      .min(0, 'Number cannot be negative')
+      .required('This field is required'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      openedQty: 0,
+      unopenedQty: 0,
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      if (values.openedQty == 0 && values.unopenedQty == 0) {
+        handleClose();
+        return;
+      }
+      const isDeposit = type == 'Deposit';
+      const cartItem = {
+        ...item,
+        type: isDeposit ? CART_ITEM_TYPE_DEPOSIT : CART_ITEM_TYPE_WITHDRAW,
+        cartOpenedQuantity: formik.values.openedQty,
+        cartUnopenedQuantity: formik.values.unopenedQty,
+      };
+      localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cartItem));
+      handleClose();
+    },
+  });
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleCloseSelector = () => {
     setAnchorEl(null);
   };
+
   const hasExpiry = item.expirydates.length > 0;
   const showDropdown = hasExpiry && item.expirydates.length > 1;
   const preselectedExpiry = !hasExpiry
@@ -148,28 +192,45 @@ const CartPopupModal = ({ type, item, selector }) => {
               type='number'
               label='Opened Qty'
               variant='filled'
+              name='openedQty'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>{item.unit}</InputAdornment>
                 ),
               }}
+              value={formik.values.openedQty}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.openedQty && Boolean(formik.errors.openedQty)
+              }
+              helperText={formik.touched.openedQty && formik.errors.openedQty}
             />
             <TextField
               id='filled-basic'
               type='number'
               label='Unopened Qty'
               variant='filled'
+              name='unopenedQty'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>{item.unit}</InputAdornment>
                 ),
               }}
+              value={formik.values.unopenedQty}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.unopenedQty && Boolean(formik.errors.unopenedQty)
+              }
+              helperText={
+                formik.touched.unopenedQty && formik.errors.unopenedQty
+              }
             />
             {type == 'Deposit' ? (
               <Button
                 variant='contained'
                 color='success'
                 endIcon={<AddCircleIcon />}
+                onClick={formik.handleSubmit}
               >
                 Deposit
               </Button>
@@ -178,6 +239,7 @@ const CartPopupModal = ({ type, item, selector }) => {
                 variant='contained'
                 color='error'
                 endIcon={<RemoveCircleIcon />}
+                onClick={formik.handleSubmit}
               >
                 Withdraw
               </Button>

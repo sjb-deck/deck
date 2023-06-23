@@ -8,6 +8,11 @@ export const URL_INV_CART = '/inventory/cart';
 export const URL_INV_ALERTS = '/inventory/alerts';
 export const ITEMS_PER_PAGE = 5;
 
+// Cart
+export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
+export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
+export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
+
 // PropTypes
 export const ItemPropType = PropTypes.shape({
   id: PropTypes.number,
