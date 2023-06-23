@@ -1,3 +1,6 @@
+import { ArrowDropDownCircleOutlined } from '@mui/icons-material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {
   Button,
   Modal,
@@ -12,12 +15,10 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
-import { ItemPropType, MEDIA_ROOT } from '../../globals';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { ArrowDropDownCircleOutlined } from '@mui/icons-material';
+import React, { useState } from 'react';
+
+import { ItemPropType } from '../../globals';
 
 const CartPopupModal = ({ type, item, selector }) => {
   const [open, setOpen] = React.useState(false);
@@ -89,7 +90,7 @@ const CartPopupModal = ({ type, item, selector }) => {
             {item.imgpic ? (
               <Avatar
                 alt={`${item.name}`}
-                src={`${MEDIA_ROOT}${item.imgpic}`}
+                src={`${item.imgpic}`}
                 sx={{ width: 90, height: 90 }}
               />
             ) : (

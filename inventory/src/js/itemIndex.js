@@ -1,31 +1,43 @@
-import React, { useState } from 'react';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+
 import ItemContainer from '/components/ItemContainer/ItemContainer';
 import Theme from '/components/Themes';
 import NavBar from '/components/NavBar/NavBar';
 import Footer from '/components/Footer';
-import Stack from '@mui/material/Stack';
-import Pagination from '@mui/material/Pagination';
+
+import { LoadingSpinner } from '../../../components/LoadingSpinner';
 import SearchBar from '../../../components/SearchBar';
 import SearchFilter from '../../../components/SearchFilter';
-import { ITEMS_PER_PAGE } from '../../../globals';
-
-export const user = JSON.parse(htmlDecode(userInfo))[0];
-export const items = JSON.parse(htmlDecode(allItems));
+import {
+  INV_API_ITEMS_URL,
+  INV_API_USER_URL,
+  ITEMS_PER_PAGE,
+} from '../../../globals';
+import useFetch from '../hooks/use-fetch';
 
 const ItemIndex = () => {
+  const {
+    data: items,
+    loading: dataLoading,
+    error: dataError,
+  } = useFetch(INV_API_ITEMS_URL);
+  const {
+    data: user,
+    loading: userLoading,
+    error: userError,
+  } = useFetch(INV_API_USER_URL);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
+  const [itemsToDisplay, setItemsToDisplay] = useState(items);
+  const [userData, setUserData] = useState(user);
+  const [isReady, setIsReady] = useState(false);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-
-  const itemsToDisplay = items
-    .filter(
-      (item) =>
-        selectedFilter.includes('All') || selectedFilter.includes(item.type),
-    )
-    .slice(startIndex, endIndex);
 
   const handlePageChange = (_, value) => {
     setCurrentPage(value);
@@ -35,9 +47,33 @@ const ItemIndex = () => {
     setSelectedFilter(filter);
   };
 
-  return (
+  useEffect(() => {
+    if (!dataLoading && !userLoading && !dataError && !userError) {
+      setItemsToDisplay(
+        items.filter(
+          (item) =>
+            selectedFilter.includes('All') ||
+            selectedFilter.includes(item.type),
+        ),
+      );
+      setUserData(user);
+      setIsReady(true);
+    }
+  }, [dataLoading, userLoading, dataError, userError]);
+
+  useEffect(() => {
+    if (!isReady) return;
+    setItemsToDisplay(
+      items.filter(
+        (item) =>
+          selectedFilter.includes('All') || selectedFilter.includes(item.type),
+      ),
+    );
+  }, [selectedFilter]);
+
+  return isReady ? (
     <Theme>
-      <NavBar user={user} />
+      <NavBar user={userData} />
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}>
         <SearchBar items={items} selectedFilter={selectedFilter} />
@@ -54,7 +90,7 @@ const ItemIndex = () => {
         spacing={3}
         sx={{ marginTop: 1 }}
       >
-        {itemsToDisplay.map((item, index) => {
+        {itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
           return <ItemContainer key={index} index={index} item={item} />;
         })}
         <Pagination
@@ -63,8 +99,11 @@ const ItemIndex = () => {
           onChange={handlePageChange}
         />
       </Stack>
+
       <Footer />
     </Theme>
+  ) : (
+    <LoadingSpinner />
   );
 };
 

@@ -1,23 +1,21 @@
-import React from 'react';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Drawer from '@mui/material/Drawer';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { ColorModeContext } from '../Themes';
-import { useTheme } from '@mui/material/styles';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { UserAvatar } from '../UserAvatar';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { NavDrawer } from './NavDrawer';
+import { useTheme } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import { PropTypes } from 'prop-types';
+import React from 'react';
+
 import {
   URL_INV_CART,
   URL_INV_INDEX,
@@ -25,6 +23,10 @@ import {
   URL_PROFILE,
   UserPropType,
 } from '../../globals';
+import { ColorModeContext } from '../Themes';
+import { UserAvatar } from '../UserAvatar';
+
+import { NavDrawer } from './NavDrawer';
 
 /**
  * A React component that renders the NavBar

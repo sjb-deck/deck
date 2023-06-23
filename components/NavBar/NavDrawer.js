@@ -1,20 +1,21 @@
-import React from 'react';
-import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { UserAvatar } from '../UserAvatar';
-import Button from '@mui/material/Button';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { ColorModeContext } from '../Themes';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import React from 'react';
+
+import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals';
+import { ColorModeContext } from '../Themes';
+import { UserAvatar } from '../UserAvatar';
+
 import { navItems } from './NavBar';
-import { URL_LOGOUT, URL_PROFILE } from '../../globals';
-import { PropTypes } from 'prop-types';
 
 /**
  * A React component that renders the NavDrawer
@@ -40,9 +41,9 @@ export const NavDrawer = ({ user }) => {
       >
         <UserAvatar user={user} size={100} />
         <Typography variant='h6' sx={{ mt: 2 }}>
-          Hello, {user.fields.name}
+          Hello, {user.name}
         </Typography>
-        <Typography variant='caption'>{user.fields.role}</Typography>
+        <Typography variant='caption'>{user.role}</Typography>
       </Box>
       <Divider />
       <List>
@@ -106,14 +107,5 @@ export const NavDrawer = ({ user }) => {
 };
 
 NavDrawer.propTypes = {
-  user: PropTypes.shape({
-    fields: PropTypes.shape({
-      name: PropTypes.string,
-      profilepic: PropTypes.string,
-      role: PropTypes.string,
-      user: PropTypes.number,
-    }),
-    model: PropTypes.string,
-    pk: PropTypes.number,
-  }),
+  user: UserPropType.isRequired,
 };

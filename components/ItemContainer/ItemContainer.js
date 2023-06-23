@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import Paper from '@mui/material/Paper';
-import PropTypes from 'prop-types';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { Avatar, Box, Chip } from '@mui/material';
-import { MEDIA_ROOT, ItemPropType } from '../../globals';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import { ItemPropType } from '../../globals';
 import CartPopupModal from '../CartPopupModal/CartPopupModal';
 
 /**
@@ -89,7 +90,7 @@ const ItemContainer = ({ index, item }) => {
           {item.imgpic ? (
             <Avatar
               alt={`${item.name}`}
-              src={`${MEDIA_ROOT}${item.imgpic}`}
+              src={`${item.imgpic}`}
               sx={{ width: 90, height: 90 }}
             />
           ) : (

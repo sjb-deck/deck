@@ -1,7 +1,6 @@
 import { PropTypes } from 'prop-types';
 
 // Globals
-export const MEDIA_ROOT = '/uploaded/';
 export const URL_INV_INDEX = '/inventory';
 export const URL_LOGOUT = '/logout';
 export const URL_PROFILE = '/accounts/edit';
@@ -33,12 +32,14 @@ export const ItemPropType = PropTypes.shape({
 });
 
 export const UserPropType = PropTypes.shape({
-  fields: PropTypes.shape({
-    name: PropTypes.string,
-    profilepic: PropTypes.string,
-    role: PropTypes.string,
-    user: PropTypes.number,
-  }),
-  model: PropTypes.string,
-  pk: PropTypes.number,
+  id: PropTypes.number,
+  name: PropTypes.string,
+  profilepic: PropTypes.string,
+  role: PropTypes.string,
+  user: PropTypes.number,
 });
+
+// API Endpoints
+export const INV_API_BASE_URL = '/inventory/api';
+export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
+export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;

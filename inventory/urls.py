@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 
 urlpatterns = (
     [
+        path("api/", include("inventory.api_urls")),
         path("", views.inventory_index, name="inventory_index"),
         path("items", views.items, name="items"),
         path("cart", views.cart, name="cart"),

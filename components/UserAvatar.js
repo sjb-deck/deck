@@ -1,15 +1,16 @@
-import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import { MEDIA_ROOT } from '../globals';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { UserPropType } from '../globals';
 
 export const UserAvatar = ({ user, size }) => {
   return (
-    <Tooltip title={`${user.fields.name}`}>
+    <Tooltip title={`${user.name}`}>
       <Avatar
-        alt={`${user.fields.name}`}
-        src={`${MEDIA_ROOT}${user.fields.profilepic}`}
+        alt={`${user.name}`}
+        src={`${user.profilepic}`}
         sx={{ width: size, height: size }}
       />
     </Tooltip>
@@ -17,15 +18,6 @@ export const UserAvatar = ({ user, size }) => {
 };
 
 UserAvatar.propTypes = {
-  user: PropTypes.shape({
-    fields: PropTypes.shape({
-      name: PropTypes.string,
-      profilepic: PropTypes.string,
-      role: PropTypes.string,
-      user: PropTypes.number,
-    }),
-    model: PropTypes.string,
-    pk: PropTypes.number,
-  }),
+  user: UserPropType.isRequired,
   size: PropTypes.number,
 };
