@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import dayjs from 'dayjs';
 import ReactDOM from 'react-dom/client';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -7,7 +8,11 @@ import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { checkItemFormData } from '../../../utils/submitForm';
+import {
+  checkExpiryFormData,
+  checkItemFormData,
+  processExpirySubmission,
+} from '../../../utils/submitForm';
 import { processItemSubmission } from '../../../utils/submitForm';
 import Theme from '../../../components/Themes';
 import NavBar from '../../../components/NavBar/NavBar';
@@ -17,6 +22,7 @@ import AddItemForm from '../../../components/AddItems/AddItemForm';
 import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
 import TypeSelection from '../../../components/AddItems/TypeSelection';
 import AddItemReview from '../../../components/AddItems/AddItemReview';
+import AddExpiryReview from '../../../components/AddItems/AddExpiryReview';
 
 export const user = JSON.parse(htmlDecode(userInfo))[0];
 export const items = JSON.parse(htmlDecode(allItems));
@@ -42,6 +48,22 @@ const AddItem = () => {
     min_quantityunopened: 0,
   });
 
+  const [expiryFormData, setExpiryFormData] = useState({
+    name: '',
+    type: 'General',
+    unit: '',
+    image: '',
+    expiry: [
+      {
+        date: dayjs(new Date()).format('YYYY-MM-DD'),
+        total_quantityopen: 0,
+        total_quantityunopened: 0,
+      },
+    ],
+    min_quantityopen: 0,
+    min_quantityunopened: 0,
+  });
+
   const [itemFormError, setItemFormError] = useState({
     name: false,
     type: false,
@@ -53,10 +75,20 @@ const AddItem = () => {
     min_quantityunopened: false,
   });
 
-  const [expiryFormData, setExpiryFormData] = useState({
-    name: '',
-    email: '',
-    expiry: '',
+  const [expiryFormError, setExpiryFormError] = useState({
+    name: false,
+    type: false,
+    unit: false,
+    image: false,
+    expiry: [
+      {
+        date: false,
+        total_quantityopen: false,
+        total_quantityunopened: false,
+      },
+    ],
+    min_quantityopen: false,
+    min_quantityunopened: false,
   });
 
   const handleNext = () => {
@@ -75,7 +107,14 @@ const AddItem = () => {
             setItemPotentialMatchDialogOpen,
           );
         } else if (addType === 'expiry') {
-          console.log(expiryFormData);
+          checkExpiryFormData(
+            expiryFormData,
+            setActiveStep,
+            items,
+            setExpiryFormError,
+            setItemPotentialMatch,
+            setItemPotentialMatchDialogOpen,
+          );
         }
         return;
       case 2:
@@ -89,7 +128,15 @@ const AddItem = () => {
             setSuccessMessage,
           );
         } else if (addType === 'expiry') {
-          console.log(expiryFormData);
+          processExpirySubmission(
+            expiryFormData,
+            setActiveStep,
+            setExpiryFormData,
+            setExpiryFormError,
+            setAddType,
+            setSuccessDialogOpen,
+            setSuccessMessage,
+          );
         }
         return;
       default:
@@ -111,18 +158,21 @@ const AddItem = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // const handleSubmitForm = (event) => {
-  //   event.preventDefault();
-  //   // Handle form submission logic here
-  //   console.log(itemFormData);
-  // };
-
   const handleItemFormChange = (event) => {
     const { name, value } = event.target;
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
+
+    if (name === 'total_quantityopen' || name === 'total_quantityunopened') {
+      setItemFormError((prevFormError) => ({
+        ...prevFormError,
+        total_quantityopen: false,
+        total_quantityunopened: false,
+      }));
+    }
+
     setItemFormError((prevFormError) => ({
       ...prevFormError,
       [name]: false,
@@ -134,6 +184,11 @@ const AddItem = () => {
     setExpiryFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+
+    setExpiryFormError((prevFormError) => ({
+      ...prevFormError,
+      [name]: false,
     }));
   };
 
@@ -167,6 +222,9 @@ const AddItem = () => {
             <AddExpiryForm
               expiryFormData={expiryFormData}
               handleFormChange={handleExpiryFormChange}
+              expiryFormError={expiryFormError}
+              setExpiryFormData={setExpiryFormData}
+              setExpiryFormError={setExpiryFormError}
             />
           );
         } else {
@@ -180,7 +238,7 @@ const AddItem = () => {
         if (addType === 'item') {
           return <AddItemReview itemFormData={itemFormData} />;
         } else if (addType === 'expiry') {
-          return <AddItemReview itemFormData={itemFormData} />;
+          return <AddExpiryReview expiryFormData={expiryFormData} />;
         } else {
           return (
             <Typography>

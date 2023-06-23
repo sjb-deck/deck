@@ -10,7 +10,7 @@ const TypeSelection = ({ addType, handleAddTypeSelection }) => {
       <Typography
         sx={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
       >
-        Select Type of Addition
+        Does this item have an expiry date?
       </Typography>
       <Box sx={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
         <Button
@@ -28,7 +28,7 @@ const TypeSelection = ({ addType, handleAddTypeSelection }) => {
             },
           }}
         >
-          New Item
+          No Expiry
         </Button>
         <Button
           variant={addType === 'expiry' ? 'contained' : 'outlined'}
@@ -45,7 +45,7 @@ const TypeSelection = ({ addType, handleAddTypeSelection }) => {
             },
           }}
         >
-          New Expiry
+          Has Expiry
         </Button>
       </Box>
     </div>

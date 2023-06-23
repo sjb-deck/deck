@@ -7,7 +7,7 @@ from accounts.models import UserExtras
 from django.forms.models import model_to_dict
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ItemSerializer
+from .serializers import ItemSerializer, ExpiryItemSerializer
 import json
 
 
@@ -62,8 +62,22 @@ def add_item_post(request):
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             new_item = serializer.save()
-            return Response({"message": "Form data added successfully"})
+            return Response({"message": "Form data added successfully"}, status=201)
         else:
             return Response({"errors": serializer.errors}, status=400)
+    else:
+        return Response({"error": "Invalid request method"}, status=405)
+
+
+@api_view(["POST"])
+@login_required(login_url="/r'^login/$'")
+def add_expiry_post(request):
+    if request.method == "POST":
+        expiry_serializer = ExpiryItemSerializer(data=request.data)
+        if expiry_serializer.is_valid():
+            expiry_serializer.save()
+            return Response({"message": "Form data added successfully yay"}, status=201)
+        else:
+            return Response({"errors": "serialise fail"}, status=400)
     else:
         return Response({"error": "Invalid request method"}, status=405)
