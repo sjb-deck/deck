@@ -20,27 +20,12 @@ def inventory_index(request):
 
 @login_required(login_url="/r'^login/$'")
 def items(request):
-    all_items = Item.objects.prefetch_related("expirydates").all()
-    items_data = []
-
-    for item in all_items:
-        item_dict = model_to_dict(item)
-        item_dict["expirydates"] = [
-            model_to_dict(expiry) for expiry in item.expirydates.all()
-        ]
-        items_data.append(item_dict)
-
-    items_data = json.dumps(items_data, default=str)
-    user_data = serializers.serialize("json", [request.user.extras.first()])
-    return render(
-        request, "items.html", {"allItems": items_data, "userData": user_data}
-    )
+    return render(request, "items.html")
 
 
 @login_required(login_url="/r'^login/$'")
 def cart(request):
-    user_data = serializers.serialize("json", [request.user.extras.first()])
-    return render(request, "cart.html", {"userData": user_data})
+    return render(request, "cart.html")
 
 
 # APIs
