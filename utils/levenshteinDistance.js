@@ -1,3 +1,5 @@
+const LENGTH_THRESHOLD = 3;
+
 /**
  * Finds the best potential match for the user input from the given items array.
  * Uses the Levenshtein distance algorithm with pruning.
@@ -16,15 +18,13 @@ function findPotentialMatch(userInput, items, threshold) {
     const distance = levenshteinDistanceWithPruning(
       userInput,
       string,
-      threshold,
+      LENGTH_THRESHOLD,
     );
 
     if (distance <= threshold && distance < bestDistance) {
       bestMatch = string;
       bestDistance = distance;
     }
-    console.log(string);
-    console.log(distance);
   }
 
   return bestMatch;

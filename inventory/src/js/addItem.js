@@ -8,6 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import LinearProgress from '@mui/material/LinearProgress';
 import {
   checkExpiryFormData,
   checkItemFormData,
@@ -36,6 +37,7 @@ const AddItem = () => {
     useState(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
@@ -126,6 +128,7 @@ const AddItem = () => {
             setAddType,
             setSuccessDialogOpen,
             setSuccessMessage,
+            setLoading,
           );
         } else if (addType === 'expiry') {
           processExpirySubmission(
@@ -136,6 +139,7 @@ const AddItem = () => {
             setAddType,
             setSuccessDialogOpen,
             setSuccessMessage,
+            setLoading,
           );
         }
         return;
@@ -254,7 +258,7 @@ const AddItem = () => {
   return (
     <Theme>
       <NavBar user={user} />
-      <Box sx={{ maxWidth: 400, marginTop: 10 }}>
+      <Box sx={{ maxWidth: 400, marginTop: 12, marginLeft: 4, marginRight: 4 }}>
         <Stepper activeStep={activeStep} orientation='vertical'>
           {steps.map((label, index) => (
             <Step key={label}>
@@ -273,11 +277,14 @@ const AddItem = () => {
                     variant='contained'
                     color='primary'
                     onClick={handleNext}
-                    disabled={isNextDisabled}
+                    disabled={isNextDisabled || loading}
                     size='small'
                   >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
                   </Button>
+                  <div style={{ marginTop: '10px' }}>
+                    {loading ? <LinearProgress /> : null}
+                  </div>
                 </div>
                 <SuccessDialog
                   open={isSuccessDialogOpen}

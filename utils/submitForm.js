@@ -316,7 +316,9 @@ const processItemSubmission = (
   setAddType,
   setSuccessDialogOpen,
   setSuccessMessage,
+  setLoading,
 ) => {
+  setLoading(true);
   postWithCSRF('/inventory/add_item_post', itemFormData)
     .then((response) => {
       setSuccessMessage(
@@ -334,6 +336,7 @@ const processItemSubmission = (
         min_quantityopen: 0,
         min_quantityunopened: 0,
       });
+      setLoading(false);
       setSuccessDialogOpen(true);
       console.log(response.data);
     })
@@ -350,7 +353,9 @@ const processExpirySubmission = (
   setAddType,
   setSuccessDialogOpen,
   setSuccessMessage,
+  setLoading,
 ) => {
+  setLoading(true);
   const modifiedExpiry = expiryFormData.expiry.map((item) => ({
     expirydate: item.date,
     quantityopen: item.total_quantityopen,
@@ -418,7 +423,7 @@ const processExpirySubmission = (
         min_quantityopen: false,
         min_quantityunopened: false,
       });
-
+      setLoading(false);
       setSuccessDialogOpen(true);
       console.log(response.data);
     })

@@ -6,6 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Button, Grid, TextField, useMediaQuery } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
 const DateAndQuantity = ({
   expiryFormData,
@@ -104,7 +105,7 @@ const DateAndQuantity = ({
                 }}
               >
                 {expiryFormError.expiry[index].date
-                  ? 'Expires today or is a duplicate!'
+                  ? 'Item expires today or is a duplicate!'
                   : 'Expiry date of item'}
               </Typography>
             </LocalizationProvider>
@@ -197,13 +198,29 @@ DateAndQuantity.propTypes = {
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
         date: PropTypes.string.isRequired,
-        total_quantityopen: PropTypes.number.isRequired,
-        total_quantityunopened: PropTypes.number.isRequired,
+        total_quantityopen: PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]).isRequired,
+        total_quantityunopened: PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]).isRequired,
       }),
     ).isRequired,
+    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    min_quantityunopened: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]).isRequired,
   }).isRequired,
   setExpiryFormData: PropTypes.func.isRequired,
   expiryFormError: PropTypes.shape({
+    name: PropTypes.bool.isRequired,
+    type: PropTypes.bool.isRequired,
+    unit: PropTypes.bool.isRequired,
+    image: PropTypes.bool.isRequired,
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
         date: PropTypes.bool.isRequired,
@@ -211,6 +228,8 @@ DateAndQuantity.propTypes = {
         total_quantityunopened: PropTypes.bool.isRequired,
       }),
     ).isRequired,
+    min_quantityopen: PropTypes.bool.isRequired,
+    min_quantityunopened: PropTypes.bool.isRequired,
   }).isRequired,
   setExpiryFormError: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,

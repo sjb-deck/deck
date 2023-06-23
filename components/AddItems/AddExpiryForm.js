@@ -254,12 +254,22 @@ AddExpiryForm.propTypes = {
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
         date: PropTypes.string.isRequired,
-        total_quantityopen: PropTypes.number.isRequired,
-        total_quantityunopened: PropTypes.number.isRequired,
+        total_quantityopen: PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]).isRequired,
+        total_quantityunopened: PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]).isRequired,
       }),
     ).isRequired,
-    min_quantityopen: PropTypes.number.isRequired,
-    min_quantityunopened: PropTypes.number.isRequired,
+    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    min_quantityunopened: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]).isRequired,
   }).isRequired,
   handleFormChange: PropTypes.func.isRequired,
   expiryFormError: PropTypes.shape({
