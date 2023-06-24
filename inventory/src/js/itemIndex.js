@@ -1,4 +1,4 @@
-import { Avatar, Skeleton, Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
