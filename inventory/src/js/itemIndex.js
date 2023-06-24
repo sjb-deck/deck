@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { Avatar, Skeleton, Typography } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
@@ -105,6 +105,17 @@ const ItemIndex = () => {
         spacing={3}
         sx={{ marginTop: 1 }}
       >
+        {itemsToDisplay && itemsToDisplay.length === 0 && (
+          <Typography
+            variant='body1'
+            sx={{
+              marginTop: '16px',
+              fontStyle: 'italic',
+            }}
+          >
+            No results found.
+          </Typography>
+        )}
         {itemsToDisplay
           ? itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
               return <ItemContainer key={index} index={index} item={item} />;
