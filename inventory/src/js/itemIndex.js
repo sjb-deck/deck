@@ -3,14 +3,14 @@ import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import ItemContainer from '/components/ItemContainer/ItemContainer';
-import Theme from '/components/Themes';
-import NavBar from '/components/NavBar/NavBar';
-import Footer from '/components/Footer';
-
+import { CartProvider } from '../../../components/CartContext';
+import Footer from '../../../components/Footer';
+import ItemContainer from '../../../components/ItemContainer/ItemContainer';
 import { LoadingSpinner } from '../../../components/LoadingSpinner';
+import NavBar from '../../../components/NavBar/NavBar';
 import SearchBar from '../../../components/SearchBar';
 import SearchFilter from '../../../components/SearchFilter';
+import Theme from '../../../components/Themes';
 import {
   INV_API_ITEMS_URL,
   INV_API_USER_URL,
@@ -73,34 +73,40 @@ const ItemIndex = () => {
 
   return isReady ? (
     <Theme>
-      <NavBar user={userData} />
+      <CartProvider>
+        <NavBar user={userData} />
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}>
-        <SearchBar items={items} selectedFilter={selectedFilter} />
-      </div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}
+        >
+          <SearchBar items={items} selectedFilter={selectedFilter} />
+        </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
-        <SearchFilter onFilterChange={handleFilterChange} />
-      </div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}
+        >
+          <SearchFilter onFilterChange={handleFilterChange} />
+        </div>
 
-      <Stack
-        direction='column'
-        justifyContent='center'
-        alignItems='center'
-        spacing={3}
-        sx={{ marginTop: 1 }}
-      >
-        {itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
-          return <ItemContainer key={index} index={index} item={item} />;
-        })}
-        <Pagination
-          page={currentPage}
-          count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
-          onChange={handlePageChange}
-        />
-      </Stack>
+        <Stack
+          direction='column'
+          justifyContent='center'
+          alignItems='center'
+          spacing={3}
+          sx={{ marginTop: 1 }}
+        >
+          {itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
+            return <ItemContainer key={index} index={index} item={item} />;
+          })}
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
+            onChange={handlePageChange}
+          />
+        </Stack>
 
-      <Footer />
+        <Footer />
+      </CartProvider>
     </Theme>
   ) : (
     <LoadingSpinner />

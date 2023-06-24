@@ -26,13 +26,60 @@ import {
   ItemPropType,
   LOCAL_STORAGE_CART_KEY,
 } from '../../globals';
+import { getCartState } from '../../inventory/src/helpers/getCartState';
 
-const CartPopupModal = ({ type, item, selector }) => {
+const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openSelector = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseSelector = () => {
+    setAnchorEl(null);
+  };
+
+  const getCurrentLocalStorageCart = () => {
+    const currentLocalStorageCart = localStorage.getItem(
+      LOCAL_STORAGE_CART_KEY,
+    );
+    return currentLocalStorageCart ? JSON.parse(currentLocalStorageCart) : [];
+  };
+
+  const appendToLocalStorageCart = (currentLocalStorageCart, cartItem) => {
+    // find and merge duplicate items
+    let hasDuplicates = false;
+    const newLocalStorageCart = currentLocalStorageCart.map((item) => {
+      if (item.id === cartItem.id && item.expiryId === cartItem.expiryId) {
+        hasDuplicates = true;
+        return {
+          ...item,
+          cartOpenedQuantity:
+            item.cartOpenedQuantity + cartItem.cartOpenedQuantity,
+          cartUnopenedQuantity:
+            item.cartUnopenedQuantity + cartItem.cartUnopenedQuantity,
+        };
+      }
+      return item;
+    });
+    // if no duplicates, append to cart
+    if (!hasDuplicates) {
+      newLocalStorageCart.push(cartItem);
+    }
+    return newLocalStorageCart;
+  };
+
+  const getSelectedExpiryId = () => {
+    return selectedExpiry !== 'No Expiry'
+      ? item.expirydates.find(
+          (itemExpiry) => itemExpiry.expirydate === selectedExpiry,
+        ).id
+      : null;
+  };
 
   const validationSchema = yup.object({
     openedQty: yup
@@ -51,30 +98,38 @@ const CartPopupModal = ({ type, item, selector }) => {
       unopenedQty: 0,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       if (values.openedQty == 0 && values.unopenedQty == 0) {
         handleClose();
+        resetForm();
         return;
       }
-      const isDeposit = type == 'Deposit';
+      if (getCartState() !== '') {
+        alert("You can't deposit and withdraw at the same time!");
+        return;
+      }
+      const isDeposit = type == CART_ITEM_TYPE_DEPOSIT;
+
+      setCartState(type);
       const cartItem = {
         ...item,
+        expiryId: getSelectedExpiryId(),
         type: isDeposit ? CART_ITEM_TYPE_DEPOSIT : CART_ITEM_TYPE_WITHDRAW,
         cartOpenedQuantity: formik.values.openedQty,
         cartUnopenedQuantity: formik.values.unopenedQty,
       };
-      localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cartItem));
+      const localStorageCartState = appendToLocalStorageCart(
+        getCurrentLocalStorageCart(),
+        cartItem,
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_CART_KEY,
+        JSON.stringify(localStorageCartState),
+      );
       handleClose();
+      resetForm();
     },
   });
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseSelector = () => {
-    setAnchorEl(null);
-  };
 
   const hasExpiry = item.expirydates.length > 0;
   const showDropdown = hasExpiry && item.expirydates.length > 1;
@@ -91,8 +146,9 @@ const CartPopupModal = ({ type, item, selector }) => {
       <Button
         size='small'
         variant='contained'
-        color={type == 'Deposit' ? 'success' : 'error'}
+        color={type == CART_ITEM_TYPE_DEPOSIT ? 'success' : 'error'}
         onClick={handleOpen}
+        disabled={disabled}
       >
         {type}
       </Button>
@@ -225,9 +281,10 @@ const CartPopupModal = ({ type, item, selector }) => {
                 formik.touched.unopenedQty && formik.errors.unopenedQty
               }
             />
-            {type == 'Deposit' ? (
+            {type == CART_ITEM_TYPE_DEPOSIT ? (
               <Button
                 variant='contained'
+                role='submit-button'
                 color='success'
                 endIcon={<AddCircleIcon />}
                 onClick={formik.handleSubmit}
@@ -237,6 +294,7 @@ const CartPopupModal = ({ type, item, selector }) => {
             ) : (
               <Button
                 variant='contained'
+                role='submit-button'
                 color='error'
                 endIcon={<RemoveCircleIcon />}
                 onClick={formik.handleSubmit}
@@ -258,6 +316,8 @@ CartPopupModal.propTypes = {
     PropTypes.number.isRequired,
     PropTypes.string.isRequired,
   ]),
+  setCartState: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default CartPopupModal;

@@ -5,9 +5,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
-import { ItemPropType } from '../../globals';
+import {
+  CART_ITEM_TYPE_DEPOSIT,
+  CART_ITEM_TYPE_WITHDRAW,
+  ItemPropType,
+} from '../../globals';
+import { CartContext } from '../CartContext';
 import CartPopupModal from '../CartPopupModal/CartPopupModal';
 
 /**
@@ -18,11 +23,14 @@ import CartPopupModal from '../CartPopupModal/CartPopupModal';
 const ItemContainer = ({ index, item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
+  const { cartState, setCartState } = useContext(CartContext);
+
   const getTotalQty = ({ quantityopen, quantityunopened }) =>
     quantityopen + quantityunopened;
   const handleExpiryChange = (itemExpiry) => {
     setSelectedExpiry(itemExpiry == 'All' ? itemExpiry : itemExpiry.id);
   };
+
   return (
     <Paper
       key={index}
@@ -136,14 +144,19 @@ const ItemContainer = ({ index, item }) => {
           justifyContent='space-evenly'
         >
           <CartPopupModal
-            type='Deposit'
+            type={CART_ITEM_TYPE_DEPOSIT}
             item={item}
             selector={selectedExpiry}
+            setCartState={setCartState}
+            disabled={cartState === CART_ITEM_TYPE_WITHDRAW}
           />
+
           <CartPopupModal
-            type='Withdraw'
+            type={CART_ITEM_TYPE_WITHDRAW}
             item={item}
             selector={selectedExpiry}
+            setCartState={setCartState}
+            disabled={cartState === CART_ITEM_TYPE_DEPOSIT}
           />
         </Stack>
       </Stack>
