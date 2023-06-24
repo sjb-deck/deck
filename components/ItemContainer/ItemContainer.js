@@ -152,7 +152,7 @@ const ItemContainer = ({ index, item }) => {
 };
 
 ItemContainer.propTypes = {
-  index: PropTypes.number.isRequired,
+  index: PropTypes.number,
   item: ItemPropType.isRequired,
 };
 

@@ -2,6 +2,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Skeleton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -39,11 +40,21 @@ export const NavDrawer = ({ user }) => {
           flexDirection: 'column',
         }}
       >
-        <UserAvatar user={user} size={100} />
+        {user ? (
+          <UserAvatar user={user} size={100} />
+        ) : (
+          <Skeleton variant='circular'>
+            <UserAvatar size={100} />
+          </Skeleton>
+        )}
+
         <Typography variant='h6' sx={{ mt: 2 }}>
-          Hello, {user.name}
+          {user ? `Hello ${user.name}` : <Skeleton />}
         </Typography>
-        <Typography variant='caption'>{user.role}</Typography>
+
+        <Typography variant='caption'>
+          {user ? user.role : <Skeleton />}
+        </Typography>
       </Box>
       <Divider />
       <List>
@@ -107,5 +118,5 @@ export const NavDrawer = ({ user }) => {
 };
 
 NavDrawer.propTypes = {
-  user: UserPropType.isRequired,
+  user: UserPropType,
 };

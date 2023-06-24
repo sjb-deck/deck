@@ -168,6 +168,6 @@ const NavBar = ({ user }) => {
 export default NavBar;
 
 NavBar.propTypes = {
-  user: UserPropType.isRequired,
+  user: UserPropType,
   size: PropTypes.number,
 };
