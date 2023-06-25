@@ -2,7 +2,6 @@
  * A React component that is renders the search bar
  * @returns SearchBar
  */
-import React, { useEffect, useState } from 'react';
 import {
   TextField,
   Typography,
@@ -12,6 +11,7 @@ import {
   Autocomplete,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
 const PLACEHOLDER_IMAGE =
   'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';

@@ -1,12 +1,12 @@
-import React from 'react';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import CssBaseline from '@mui/material/CssBaseline';
 import {
   createTheme,
   ThemeProvider,
   responsiveFontSizes,
 } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * A React component that sets the theme of the page

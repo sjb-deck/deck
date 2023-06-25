@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { ButtonGroup, Button, useMediaQuery } from '@mui/material';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 const types = [
   'General',
