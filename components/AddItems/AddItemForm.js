@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   TextField,
   Box,
@@ -9,6 +8,7 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 const types = [
   'General',

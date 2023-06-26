@@ -1,7 +1,7 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Component for reviewing and confirming the new item details.

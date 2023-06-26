@@ -5,9 +5,10 @@ from django.core import serializers
 from django.contrib.auth.models import User
 from accounts.models import UserExtras
 from django.forms.models import model_to_dict
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ItemSerializer, ExpiryItemSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ItemSerializer, UserExtrasSerializer, ExpiryItemSerializer
 import json
 
 
@@ -19,25 +20,22 @@ def inventory_index(request):
 
 @login_required(login_url="/r'^login/$'")
 def items(request):
-    all_items = Item.objects.prefetch_related("expirydates").all()
-    items_data = []
+    return render(request, "items.html")
 
-    for item in all_items:
-        item_dict = model_to_dict(item)
-        item_dict["expirydates"] = [
-            model_to_dict(expiry) for expiry in item.expirydates.all()
-        ]
-        items_data.append(item_dict)
 
-    items_data = json.dumps(items_data, default=str)
-    user_data = serializers.serialize("json", [request.user.extras.first()])
-    return render(
-        request, "items.html", {"allItems": items_data, "userData": user_data}
-    )
+@login_required(login_url="/r'^login/$'")
+def cart(request):
+    return render(request, "cart.html")
 
 
 @login_required(login_url="/r'^login/$'")
 def add_item(request):
+    return render(request, "add_item.html")
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_items(request):
     all_items = Item.objects.prefetch_related("expirydates").all()
     items_data = []
 
@@ -48,11 +46,16 @@ def add_item(request):
         ]
         items_data.append(item_dict)
 
-    items_data = json.dumps(items_data, default=str)
-    user_data = serializers.serialize("json", [request.user.extras.first()])
-    return render(
-        request, "add_item.html", {"allItems": items_data, "userData": user_data}
-    )
+    items_data = ItemSerializer(all_items, many=True).data
+    return Response(items_data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_user(request):
+    user_data = UserExtrasSerializer(request.user.extras.first()).data
+    print(user_data)
+    return Response(user_data)
 
 
 @api_view(["POST"])

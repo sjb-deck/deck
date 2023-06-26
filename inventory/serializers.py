@@ -2,10 +2,19 @@ from rest_framework import serializers
 from .models.ItemModels import Item
 from .models.ItemExpiryModels import ItemExpiry
 from datetime import datetime
+from accounts.models import UserExtras, User
 from rest_framework.relations import PrimaryKeyRelatedField
 
 
+class ItemExpiryDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemExpiry
+        fields = "__all__"
+
+
 class ItemSerializer(serializers.ModelSerializer):
+    expirydates = ItemExpiryDateSerializer(many=True, read_only=True)
+
     class Meta:
         model = Item
         fields = "__all__"
@@ -37,3 +46,17 @@ class ExpiryItemSerializer(serializers.Serializer):
             instance = serializer.save()
 
         return item_instance  # Return the item object only, not the expiry objects since all not required anyway
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+class UserExtrasSerializer(serializers.ModelSerializer):
+    user: UserSerializer(read_only=True)
+
+    class Meta:
+        model = UserExtras
+        fields = "__all__"

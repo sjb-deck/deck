@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import Paper from '@mui/material/Paper';
-import PropTypes from 'prop-types';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { Avatar, Box, Chip } from '@mui/material';
-import { MEDIA_ROOT } from '../../globals';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import { ItemPropType } from '../../globals';
+import CartPopupModal from '../CartPopupModal/CartPopupModal';
 
 /**
  * A React component that is used to show each individual item card
@@ -89,7 +90,7 @@ const ItemContainer = ({ index, item }) => {
           {item.imgpic ? (
             <Avatar
               alt={`${item.name}`}
-              src={`${MEDIA_ROOT}${item.imgpic}`}
+              src={`${item.imgpic}`}
               sx={{ width: 90, height: 90 }}
             />
           ) : (
@@ -134,13 +135,16 @@ const ItemContainer = ({ index, item }) => {
           spacing={{ xs: 0, sm: 1, md: 2 }}
           justifyContent='space-evenly'
         >
-          <Button size='small' variant='contained' color='success'>
-            Deposit
-          </Button>
-
-          <Button size='small' variant='contained' color='error'>
-            Withdraw
-          </Button>
+          <CartPopupModal
+            type='Deposit'
+            item={item}
+            selector={selectedExpiry}
+          />
+          <CartPopupModal
+            type='Withdraw'
+            item={item}
+            selector={selectedExpiry}
+          />
         </Stack>
       </Stack>
     </Paper>
@@ -148,8 +152,8 @@ const ItemContainer = ({ index, item }) => {
 };
 
 ItemContainer.propTypes = {
-  index: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired,
+  index: PropTypes.number,
+  item: ItemPropType.isRequired,
 };
 
 export default ItemContainer;

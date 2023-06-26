@@ -18,3 +18,4 @@ six==1.16.0
 soupsieve==2.4.1
 sqlparse==0.4.3
 tornado==6.3.2
+djangorestframework==3.14.0

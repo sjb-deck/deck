@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   TextField,
   Box,
@@ -9,9 +8,11 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import PropTypes from 'prop-types';
-import DateAndQuantity from './DateAndQuantity';
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import DateAndQuantity from './DateAndQuantity';
 
 const types = [
   'General',

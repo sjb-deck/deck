@@ -1,35 +1,49 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import ReactDOM from 'react-dom/client';
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import Step from '@mui/material/Step';
+import StepContent from '@mui/material/StepContent';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+
+import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
+import AddExpiryReview from '../../../components/AddItems/AddExpiryReview';
+import AddItemForm from '../../../components/AddItems/AddItemForm';
+import AddItemReview from '../../../components/AddItems/AddItemReview';
+import ErrorDialog from '../../../components/AddItems/ErrorDialog';
+import ItemPotentialMatchDialog from '../../../components/AddItems/ItemPotentialMatchDialog';
+import SuccessDialog from '../../../components/AddItems/SuccessDialog';
+import TypeSelection from '../../../components/AddItems/TypeSelection';
+import NavBar from '../../../components/NavBar/NavBar';
+import { SnackBarAlerts } from '../../../components/SnackBarAlerts';
+import Theme from '../../../components/Themes';
+import { INV_API_ITEMS_URL, INV_API_USER_URL } from '../../../globals';
 import {
   checkExpiryFormData,
   checkItemFormData,
   processExpirySubmission,
 } from '../../../utils/submitForm';
 import { processItemSubmission } from '../../../utils/submitForm';
-import Theme from '../../../components/Themes';
-import NavBar from '../../../components/NavBar/NavBar';
-import SuccessDialog from '../../../components/AddItems/SuccessDialog';
-import ItemPotentialMatchDialog from '../../../components/AddItems/ItemPotentialMatchDialog';
-import AddItemForm from '../../../components/AddItems/AddItemForm';
-import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
-import TypeSelection from '../../../components/AddItems/TypeSelection';
-import AddItemReview from '../../../components/AddItems/AddItemReview';
-import AddExpiryReview from '../../../components/AddItems/AddExpiryReview';
-import ErrorDialog from '../../../components/AddItems/ErrorDialog';
-
-export const user = JSON.parse(htmlDecode(userInfo))[0];
-export const items = JSON.parse(htmlDecode(allItems));
+import useFetch from '../hooks/use-fetch';
 
 const AddItem = () => {
+  const {
+    data: items,
+    loading: dataLoading,
+    error: dataError,
+  } = useFetch(INV_API_ITEMS_URL);
+  const {
+    data: user,
+    loading: userLoading,
+    error: userError,
+  } = useFetch(INV_API_USER_URL);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [itemsData, setItems] = useState(items);
+  const [userData, setUser] = useState(user);
   const [activeStep, setActiveStep] = useState(0);
   const [addType, setAddType] = useState(''); // 'item' or 'expiry'
   const [isNextDisabled, setIsNextDisabled] = useState(true);
@@ -95,6 +109,18 @@ const AddItem = () => {
     min_quantityunopened: false,
   });
 
+  useEffect(() => {
+    if (dataError || userError) {
+      setSnackbarOpen(true);
+    }
+    if (!dataLoading && !dataError) {
+      setItems(items);
+    }
+    if (!userLoading && !userError) {
+      setUser(user);
+    }
+  }, [dataLoading, userLoading, dataError, userError, items, user]);
+
   const handleNext = () => {
     switch (activeStep) {
       case 0:
@@ -105,7 +131,7 @@ const AddItem = () => {
           checkItemFormData(
             itemFormData,
             setActiveStep,
-            items,
+            itemsData,
             setItemFormError,
             setItemPotentialMatch,
             setItemPotentialMatchDialogOpen,
@@ -114,7 +140,7 @@ const AddItem = () => {
           checkExpiryFormData(
             expiryFormData,
             setActiveStep,
-            items,
+            itemsData,
             setExpiryFormError,
             setItemPotentialMatch,
             setItemPotentialMatchDialogOpen,
@@ -265,7 +291,11 @@ const AddItem = () => {
 
   return (
     <Theme>
-      <NavBar user={user} />
+      <SnackBarAlerts
+        open={snackbarOpen}
+        message={dataError?.message || userError?.message}
+      />
+      <NavBar user={userData} />
       <Box sx={{ maxWidth: 400, marginTop: 12, marginLeft: 4, marginRight: 4 }}>
         <Stepper activeStep={activeStep} orientation='vertical'>
           {steps.map((label, index) => (
@@ -290,7 +320,7 @@ const AddItem = () => {
                   >
                     {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
                   </Button>
-                  <div style={{ marginTop: '10px' }}>
+                  <div style={{ marginTop: '10px', marginRight: '30px' }}>
                     {loading ? <LinearProgress /> : null}
                   </div>
                 </div>

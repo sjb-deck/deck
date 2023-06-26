@@ -1,6 +1,7 @@
 import axios from 'axios';
-import findPotentialMatch from './levenshteinDistance';
 import dayjs from 'dayjs';
+
+import findPotentialMatch from './levenshteinDistance';
 
 const PLACEHOLDER_IMAGE =
   'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
@@ -306,7 +307,7 @@ function postWithCSRF(url, data) {
     },
   });
 
-  return api.post(url, data);
+  return api.get(url, data);
 }
 
 const processItemSubmission = (
