@@ -24,6 +24,7 @@ import AddExpiryForm from '../../../components/AddItems/AddExpiryForm';
 import TypeSelection from '../../../components/AddItems/TypeSelection';
 import AddItemReview from '../../../components/AddItems/AddItemReview';
 import AddExpiryReview from '../../../components/AddItems/AddExpiryReview';
+import ErrorDialog from '../../../components/AddItems/ErrorDialog';
 
 export const user = JSON.parse(htmlDecode(userInfo))[0];
 export const items = JSON.parse(htmlDecode(allItems));
@@ -36,6 +37,7 @@ const AddItem = () => {
   const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
     useState(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -128,6 +130,7 @@ const AddItem = () => {
             setAddType,
             setSuccessDialogOpen,
             setSuccessMessage,
+            setErrorDialogOpen,
             setLoading,
           );
         } else if (addType === 'expiry') {
@@ -139,6 +142,7 @@ const AddItem = () => {
             setAddType,
             setSuccessDialogOpen,
             setSuccessMessage,
+            setErrorDialogOpen,
             setLoading,
           );
         }
@@ -151,6 +155,10 @@ const AddItem = () => {
   const handleSuccessDialogClose = () => {
     setSuccessDialogOpen(false);
     setSuccessMessage('');
+  };
+
+  const handleErrorDialogClose = () => {
+    setErrorDialogOpen(false);
   };
 
   const handleItemPotentialMatchDialogClose = () => {
@@ -290,6 +298,10 @@ const AddItem = () => {
                   open={isSuccessDialogOpen}
                   onClose={handleSuccessDialogClose}
                   message={successMessage}
+                />
+                <ErrorDialog
+                  open={isErrorDialogOpen}
+                  onClose={handleErrorDialogClose}
                 />
                 <ItemPotentialMatchDialog
                   open={isItemPotentialMatchDialogOpen}

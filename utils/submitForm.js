@@ -316,6 +316,7 @@ const processItemSubmission = (
   setAddType,
   setSuccessDialogOpen,
   setSuccessMessage,
+  setErrorDialogOpen,
   setLoading,
 ) => {
   setLoading(true);
@@ -341,6 +342,20 @@ const processItemSubmission = (
       console.log(response.data);
     })
     .catch((error) => {
+      setActiveStep(0);
+      setAddType('');
+      setItemFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        image: '',
+        total_quantityopen: 0,
+        total_quantityunopened: 0,
+        min_quantityopen: 0,
+        min_quantityunopened: 0,
+      });
+      setLoading(false);
+      setErrorDialogOpen(true);
       console.error(error);
     });
 };
@@ -353,6 +368,7 @@ const processExpirySubmission = (
   setAddType,
   setSuccessDialogOpen,
   setSuccessMessage,
+  setErrorDialogOpen,
   setLoading,
 ) => {
   setLoading(true);
@@ -428,6 +444,42 @@ const processExpirySubmission = (
       console.log(response.data);
     })
     .catch((error) => {
+      setActiveStep(0);
+      setAddType('');
+      setExpiryFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        image: '',
+        expiry: [
+          {
+            item: 0,
+            date: dayjs(new Date()).format('YYYY-MM-DD'),
+            total_quantityopen: 0,
+            total_quantityunopened: 0,
+          },
+        ],
+        min_quantityopen: 0,
+        min_quantityunopened: 0,
+      });
+
+      setExpiryFormError({
+        name: false,
+        type: false,
+        unit: false,
+        image: false,
+        expiry: [
+          {
+            date: false,
+            total_quantityopen: false,
+            total_quantityunopened: false,
+          },
+        ],
+        min_quantityopen: false,
+        min_quantityunopened: false,
+      });
+      setLoading(false);
+      setErrorDialogOpen(true);
       console.error(error);
     });
 };
