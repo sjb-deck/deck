@@ -1,9 +1,10 @@
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { CartProvider } from '../../../components/CartContext';
 import Footer from '../../../components/Footer';
 import ItemContainer from '../../../components/ItemContainer/ItemContainer';
 import NavBar from '../../../components/NavBar/NavBar';
@@ -78,21 +79,27 @@ const ItemIndex = () => {
 
   return (
     <Theme>
-      <NavBar user={userData} />
-      <SnackBarAlerts
-        open={snackbarOpen}
-        message={dataError?.message || userError?.message}
-      />
+      <CartProvider>
+        <NavBar user={userData} />
+        <SnackBarAlerts
+          open={snackbarOpen}
+          message={dataError?.message || userError?.message}
+        />
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}>
-        {items ? (
-          <SearchBar items={items} selectedFilter={selectedFilter} />
-        ) : (
-          <Skeleton>
-            <SearchBar items={[exampleItem]} selectedFilter={selectedFilter} />
-          </Skeleton>
-        )}
-      </div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}
+        >
+          {items ? (
+            <SearchBar items={items} selectedFilter={selectedFilter} />
+          ) : (
+            <Skeleton>
+              <SearchBar
+                items={[exampleItem]}
+                selectedFilter={selectedFilter}
+              />
+            </Skeleton>
+          )}
+        </div>
 
         <div
           style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}
@@ -100,47 +107,37 @@ const ItemIndex = () => {
           <SearchFilter onFilterChange={handleFilterChange} />
         </div>
 
-      <Stack
-        direction='column'
-        justifyContent='center'
-        alignItems='center'
-        spacing={3}
-        sx={{ marginTop: 1 }}
-      >
-        {itemsToDisplay && itemsToDisplay.length === 0 && (
-          <Typography
-            variant='body1'
-            sx={{
-              marginTop: '16px',
-              fontStyle: 'italic',
-            }}
-          >
-            No results found.
-          </Typography>
-        )}
-        {itemsToDisplay
-          ? itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
-              return <ItemContainer key={index} index={index} item={item} />;
-            })
-          : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
-              <Skeleton key={index} variant='rectangular'>
-                <ItemContainer item={exampleItem} />
-              </Skeleton>
-            ))}
-        {itemsToDisplay ? (
-          <Pagination
-            page={currentPage}
-            count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
-            onChange={handlePageChange}
-          />
-        ) : (
-          <Skeleton>
-            <Pagination />
-          </Skeleton>
-        )}
-      </Stack>
+        <Stack
+          direction='column'
+          justifyContent='center'
+          alignItems='center'
+          spacing={3}
+          sx={{ marginTop: 1 }}
+        >
+          {itemsToDisplay
+            ? itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
+                return <ItemContainer key={index} index={index} item={item} />;
+              })
+            : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
+                <Skeleton key={index} variant='rectangular'>
+                  <ItemContainer item={exampleItem} />
+                </Skeleton>
+              ))}
+          {itemsToDisplay ? (
+            <Pagination
+              page={currentPage}
+              count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
+              onChange={handlePageChange}
+            />
+          ) : (
+            <Skeleton>
+              <Pagination />
+            </Skeleton>
+          )}
+        </Stack>
 
-      <Footer />
+        <Footer />
+      </CartProvider>
     </Theme>
   );
 };
