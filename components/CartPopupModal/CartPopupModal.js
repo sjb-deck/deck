@@ -19,6 +19,10 @@ import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import * as yup from 'yup';
+import { PropTypes } from 'prop-types';
+import React, { useState } from 'react';
+
+import { ItemPropType } from '../../globals';
 
 import {
   CART_ITEM_TYPE_DEPOSIT,
