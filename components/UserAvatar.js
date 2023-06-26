@@ -1,3 +1,4 @@
+import { Skeleton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
