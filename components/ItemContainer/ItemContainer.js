@@ -1,6 +1,5 @@
 import { Avatar, Box, Chip } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -14,6 +13,7 @@ import {
 } from '../../globals';
 import { CartContext } from '../CartContext';
 import CartPopupModal from '../CartPopupModal/CartPopupModal';
+import { Paper } from '../styled';
 
 /**
  * A React component that is used to show each individual item card
@@ -32,18 +32,7 @@ const ItemContainer = ({ index, item }) => {
   };
 
   return (
-    <Paper
-      key={index}
-      elevation={3}
-      sx={{
-        minWidth: '20vw',
-        width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
-        padding: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
+    <Paper key={index} elevation={3}>
       {!item.expirydates.length || (
         <>
           <Box sx={{ overflow: 'auto' }}>

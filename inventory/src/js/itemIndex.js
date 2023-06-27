@@ -65,7 +65,15 @@ const ItemIndex = () => {
     if (!userLoading && !userError) {
       setUserData(user);
     }
-  }, [dataLoading, userLoading, dataError, userError]);
+  }, [
+    dataLoading,
+    userLoading,
+    dataError,
+    userError,
+    items,
+    selectedFilter,
+    user,
+  ]);
 
   useEffect(() => {
     if (!items) return;
@@ -75,7 +83,7 @@ const ItemIndex = () => {
           selectedFilter.includes('All') || selectedFilter.includes(item.type),
       ),
     );
-  }, [selectedFilter]);
+  }, [items, selectedFilter]);
 
   return (
     <Theme>
