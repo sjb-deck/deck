@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import CartPopupModal from './CartPopupModal';
+import CartPopupModal from '../../../components/CartPopupModal/CartPopupModal';
 
 describe('CartPopupModal', () => {
   const mockItem = {

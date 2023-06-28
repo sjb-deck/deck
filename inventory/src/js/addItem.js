@@ -296,54 +296,58 @@ const AddItem = () => {
         message={dataError?.message || userError?.message}
       />
       <NavBar user={userData} />
-      <Box sx={{ maxWidth: 400, marginTop: 12, marginLeft: 4, marginRight: 4 }}>
-        <Stepper activeStep={activeStep} orientation='vertical'>
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-              <StepContent>
-                {getStepContent(index)}
-                <div style={{ marginTop: 10 }}>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    size='small'
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleNext}
-                    disabled={isNextDisabled || loading}
-                    size='small'
-                  >
-                    {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
-                  </Button>
-                  <div style={{ marginTop: '10px', marginRight: '30px' }}>
-                    {loading ? <LinearProgress /> : null}
+      <div style={{ overflowY: 'auto', maxHeight: '90vh' }}>
+        <Box
+          sx={{ maxWidth: 400, marginTop: 12, marginLeft: 4, marginRight: 4 }}
+        >
+          <Stepper activeStep={activeStep} orientation='vertical'>
+            {steps.map((label, index) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                  <div>{getStepContent(index)}</div>
+                  <div style={{ marginTop: 10 }}>
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      size='small'
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleNext}
+                      disabled={isNextDisabled || loading}
+                      size='small'
+                    >
+                      {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
+                    </Button>
+                    <div style={{ marginTop: '10px', marginRight: '30px' }}>
+                      {loading ? <LinearProgress /> : null}
+                    </div>
                   </div>
-                </div>
-                <SuccessDialog
-                  open={isSuccessDialogOpen}
-                  onClose={handleSuccessDialogClose}
-                  message={successMessage}
-                />
-                <ErrorDialog
-                  open={isErrorDialogOpen}
-                  onClose={handleErrorDialogClose}
-                />
-                <ItemPotentialMatchDialog
-                  open={isItemPotentialMatchDialogOpen}
-                  onClose={handleItemPotentialMatchDialogClose}
-                  match={itemPotentialMatch}
-                  setActiveStep={setActiveStep}
-                />
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
+                  <SuccessDialog
+                    open={isSuccessDialogOpen}
+                    onClose={handleSuccessDialogClose}
+                    message={successMessage}
+                  />
+                  <ErrorDialog
+                    open={isErrorDialogOpen}
+                    onClose={handleErrorDialogClose}
+                  />
+                  <ItemPotentialMatchDialog
+                    open={isItemPotentialMatchDialogOpen}
+                    onClose={handleItemPotentialMatchDialogClose}
+                    match={itemPotentialMatch}
+                    setActiveStep={setActiveStep}
+                  />
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+      </div>
     </Theme>
   );
 };

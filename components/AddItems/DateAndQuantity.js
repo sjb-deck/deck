@@ -87,7 +87,12 @@ const DateAndQuantity = ({
         >
           {index + 1}
         </Typography>
-        <Grid container spacing={3} alignItems='flex-end'>
+        <Grid
+          container
+          spacing={3}
+          alignItems='flex-end'
+          sx={{ paddingTop: '10px' }}
+        >
           <Grid item xs={isSmallScreen ? 12 : 8} sm={8}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -95,6 +100,7 @@ const DateAndQuantity = ({
                 onChange={(date) => handleDateChange(date)}
                 sx={{ paddingTop: '10px', paddingLeft: '15px' }}
                 minDate={dayjs()}
+                label='Expiry Date'
               />
               <Typography
                 sx={{

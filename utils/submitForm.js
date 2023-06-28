@@ -176,7 +176,6 @@ const checkExpiryFormData = (
   if (expiryFormData.image === '') {
     expiryFormData.image = PLACEHOLDER_IMAGE;
   }
-  console.log(tempExpiryFormError);
   setActiveStep((prevActiveStep) => prevActiveStep + 1);
 };
 
@@ -307,7 +306,7 @@ function postWithCSRF(url, data) {
     },
   });
 
-  return api.get(url, data);
+  return api.post(url, data);
 }
 
 const processItemSubmission = (

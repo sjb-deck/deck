@@ -110,6 +110,7 @@ const AddExpiryForm = ({
               marginRight: { xs: '0', sm: '15px' },
               minWidth: '120px',
             }}
+            data-testid='type-select'
           >
             {types.map((type) => (
               <MenuItem key={type} value={type}>

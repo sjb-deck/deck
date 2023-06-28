@@ -166,12 +166,12 @@ function AddItemReview({ itemFormData }) {
               fontWeight: 'bold',
             }}
           >
-            Min Quantity (Unopened):
+            Min Quantity (Open):
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {itemFormData.min_quantityunopened}
+            {itemFormData.min_quantityopen}
           </Typography>
         </div>
         <div

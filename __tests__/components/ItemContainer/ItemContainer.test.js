@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import ItemContainer from './ItemContainer';
+import ItemContainer from '../../../components/ItemContainer/ItemContainer';
 
 const mockItem = {
   id: 1,
