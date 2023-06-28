@@ -1,7 +1,7 @@
 /** @format */
 
 // src/index.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 const App = () => {
@@ -28,6 +28,20 @@ const App = () => {
       },
     });
   };
+
+  useEffect(() => {
+    const handleKeyDownEvent = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        return submitForm();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDownEvent);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDownEvent);
+    };
+  }, []);
   return (
     <div className='login-div'>
       <img src='/static/inventory/img/StJohn SG logo.png'></img>
@@ -43,7 +57,7 @@ const App = () => {
         placeholder='Password'
         onChange={(e) => setPassword(e.target.value)}
       ></input>
-      <button className='btn btn-primary' type='submit' onClick={submitForm}>
+      <button className='btn btn-primary' type='form' onClick={submitForm}>
         Login
       </button>
     </div>
