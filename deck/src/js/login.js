@@ -33,7 +33,8 @@ const App = () => {
     const handleKeyDownEvent = (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        return submitForm();
+        const btn = document.getElementById('loginBtn');
+        btn.click();
       }
     };
     document.addEventListener('keydown', handleKeyDownEvent);
@@ -41,7 +42,13 @@ const App = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDownEvent);
     };
+  });
+
+  useEffect(() => {
+    setUsername('');
+    setPassword('');
   }, []);
+
   return (
     <div className='login-div'>
       <img src='/static/inventory/img/StJohn SG logo.png'></img>
@@ -49,6 +56,7 @@ const App = () => {
       <input
         className='form-control'
         placeholder='Username'
+        value={username}
         onChange={(e) => setUsername(e.target.value)}
       ></input>
       <input
@@ -57,7 +65,12 @@ const App = () => {
         placeholder='Password'
         onChange={(e) => setPassword(e.target.value)}
       ></input>
-      <button className='btn btn-primary' type='form' onClick={submitForm}>
+      <button
+        className='btn btn-primary'
+        type='form'
+        id='loginBtn'
+        onClick={submitForm}
+      >
         Login
       </button>
     </div>
