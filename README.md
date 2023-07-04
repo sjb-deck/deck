@@ -1,55 +1,57 @@
 # Getting Started
 
 1. Clone the repo
-
-   ```bash
-   git clone https://github.com/jonasgwt/deckland.git
-   ```
-
+    
+    ```bash
+    git clone https://github.com/jonasgwt/deckland.git
+    ```
+    
 2. Move into the directory
+    
+    ```bash
+    cd deckland
+    ```
+    
+3. Install the required modules and libraries
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+    ```bash
+    npm i
+    ```
+    
+4. Copy over the `.env` file into the current directory
+5. Start the JSX compiler
+    
+    ```bash
+    npm run dev
+    ```
+    
+6. Open a new window, do the migrations and start the server
+    
+    ```bash
+    python manage.py migrate
+    ```
+    
+    ```bash
+    python manage.py runserver
+    ```
+    
+## Alternative
 
-   ```bash
-   cd deckland
-   ```
+Run `./run.sh`, which will run the above commands for you.
 
-3. Set node version
+🚨 Note: Some errors will not be shown when running the shell file, look into the logs folder for any errors
 
-   ```bash
-   nvm use
-   ```
 
-4. Install the required modules and libraries
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Must Have VSCode Extensions
 
-   ```bash
-   npm i
-   ```
-
-5. Copy over the `.env` file into the current directory
-6. Start the JSX compiler
-
-   ```bash
-   npm run dev
-   ```
-
-7. Open a new window, start the live reload server 
-
-   ```bash
-   python manage.py livereload
-   ```
-
-8. Open a new window, do the migrations and start the server
-
-   ```bash
-   python manage.py migrate
-   ```
-
-   ```bash
-   python manage.py runserver
-   ```
+- [Black Python Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 # Useful Links
 
