@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { ExpiryFormDataPropType } from '../../globals';
+
 import DateAndQuantity from './DateAndQuantity';
 
 const types = [
@@ -248,31 +250,7 @@ const AddExpiryForm = ({
 };
 
 AddExpiryForm.propTypes = {
-  expiryFormData: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    unit: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    expiry: PropTypes.arrayOf(
-      PropTypes.shape({
-        date: PropTypes.string.isRequired,
-        total_quantityopen: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
-        total_quantityunopened: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
-      }),
-    ).isRequired,
-    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    min_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-  }).isRequired,
+  expiryFormData: ExpiryFormDataPropType.isRequired,
   handleFormChange: PropTypes.func.isRequired,
   expiryFormError: PropTypes.shape({
     name: PropTypes.bool.isRequired,

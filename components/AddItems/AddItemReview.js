@@ -1,7 +1,8 @@
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import PropTypes from 'prop-types';
 import React from 'react';
+
+import { ItemFormDataPropType } from '../../globals';
 
 /**
  * Component for reviewing and confirming the new item details.
@@ -203,26 +204,7 @@ function AddItemReview({ itemFormData }) {
 }
 
 AddItemReview.propTypes = {
-  itemFormData: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    unit: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    total_quantityopen: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-    total_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    min_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-  }).isRequired,
+  itemFormData: ItemFormDataPropType.isRequired,
 };
 
 export default AddItemReview;

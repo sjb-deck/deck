@@ -1,6 +1,8 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { INV_API_ITEM_POST_URL, INV_API_EXPIRY_POST_URL } from '../globals';
+
 import findPotentialMatch from './levenshteinDistance';
 
 const PLACEHOLDER_IMAGE =
@@ -320,7 +322,7 @@ const processItemSubmission = (
   setLoading,
 ) => {
   setLoading(true);
-  postWithCSRF('/inventory/add_item_post', itemFormData)
+  postWithCSRF(INV_API_ITEM_POST_URL, itemFormData)
     .then((response) => {
       setSuccessMessage(
         `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
@@ -400,7 +402,7 @@ const processExpirySubmission = (
     },
     expiry: modifiedExpiry,
   };
-  postWithCSRF('/inventory/add_expiry_post', formData)
+  postWithCSRF(INV_API_EXPIRY_POST_URL, formData)
     .then((response) => {
       setSuccessMessage(
         `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,

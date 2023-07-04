@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { ItemFormDataPropType } from '../../globals';
+
 const types = [
   'General',
   'Bandages',
@@ -234,26 +236,7 @@ const AddItemForm = ({ itemFormData, handleFormChange, itemFormError }) => {
 };
 
 AddItemForm.propTypes = {
-  itemFormData: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    unit: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    total_quantityopen: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-    total_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    min_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-  }).isRequired,
+  itemFormData: ItemFormDataPropType.isRequired,
   handleFormChange: PropTypes.func.isRequired,
   itemFormError: PropTypes.shape({
     name: PropTypes.bool.isRequired,

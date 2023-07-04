@@ -59,7 +59,7 @@ def api_user(request):
 
 
 @api_view(["POST"])
-@login_required(login_url="/r'^login/$'")
+@permission_classes([IsAuthenticated])
 def add_item_post(request):
     if request.method == "POST":
         serializer = ItemSerializer(data=request.data)
@@ -73,7 +73,7 @@ def add_item_post(request):
 
 
 @api_view(["POST"])
-@login_required(login_url="/r'^login/$'")
+@permission_classes([IsAuthenticated])
 def add_expiry_post(request):
     if request.method == "POST":
         expiry_serializer = ExpiryItemSerializer(data=request.data)

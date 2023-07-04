@@ -1,8 +1,9 @@
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import PropTypes from 'prop-types';
 import React from 'react';
+
+import { ExpiryFormDataPropType } from '../../globals';
 
 /**
  * Component for reviewing and confirming the new item details.
@@ -254,31 +255,7 @@ function AddExpiryReview({ expiryFormData }) {
 }
 
 AddExpiryReview.propTypes = {
-  expiryFormData: PropTypes.shape({
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    unit: PropTypes.string.isRequired,
-    expiry: PropTypes.arrayOf(
-      PropTypes.shape({
-        date: PropTypes.string.isRequired,
-        total_quantityopen: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
-        total_quantityunopened: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
-      }),
-    ).isRequired,
-    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    min_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
-  }).isRequired,
+  expiryFormData: ExpiryFormDataPropType.isRequired,
 };
 
 export default AddExpiryReview;
