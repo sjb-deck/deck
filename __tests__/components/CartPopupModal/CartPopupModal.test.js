@@ -3,14 +3,13 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
+import CartPopupModal from '../../../components/CartPopupModal/CartPopupModal';
 import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
   LOCAL_STORAGE_CART_KEY,
-} from '../../globals';
-import { exampleItem } from '../../inventory/src/mocks/items';
-
-import CartPopupModal from './CartPopupModal';
+} from '../../../globals';
+import { exampleItem } from '../../../inventory/src/mocks/items';
 
 describe('CartPopupModal', () => {
   const mockItem = {

@@ -3,11 +3,13 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import { CART_ITEM_TYPE_DEPOSIT, CART_ITEM_TYPE_WITHDRAW } from '../../globals';
-import { exampleItem } from '../../inventory/src/mocks/items';
-import { CartProvider } from '../CartContext';
-
-import ItemContainer from './ItemContainer';
+import { CartProvider } from '../../../components/CartContext';
+import ItemContainer from '../../../components/ItemContainer/ItemContainer';
+import {
+  CART_ITEM_TYPE_DEPOSIT,
+  CART_ITEM_TYPE_WITHDRAW,
+} from '../../../globals';
+import { exampleItem } from '../../../inventory/src/mocks/items';
 
 describe('ItemContainer', () => {
   it('renders the component correctly', () => {
