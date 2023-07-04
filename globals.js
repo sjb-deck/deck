@@ -39,7 +39,54 @@ export const UserPropType = PropTypes.shape({
   user: PropTypes.number,
 });
 
+export const ItemFormDataPropType = PropTypes.shape({
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  unit: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  total_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  total_quantityunopened: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  min_quantityunopened: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+});
+
+export const ExpiryFormDataPropType = PropTypes.shape({
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  unit: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  expiry: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string.isRequired,
+      total_quantityopen: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+      ]).isRequired,
+      total_quantityunopened: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+      ]).isRequired,
+    }),
+  ).isRequired,
+  min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  min_quantityunopened: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+});
+
 // API Endpoints
 export const INV_API_BASE_URL = '/inventory/api';
 export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
 export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
+export const INV_API_ITEM_POST_URL = `${INV_API_BASE_URL}/add_item_post`;
+export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;

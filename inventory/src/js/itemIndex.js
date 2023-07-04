@@ -64,17 +64,15 @@ const ItemIndex = () => {
     if (!userLoading && !userError) {
       setUserData(user);
     }
-  }, [dataLoading, userLoading, dataError, userError]);
-
-  useEffect(() => {
-    if (!items) return;
-    setItemsToDisplay(
-      items.filter(
-        (item) =>
-          selectedFilter.includes('All') || selectedFilter.includes(item.type),
-      ),
-    );
-  }, [selectedFilter]);
+  }, [
+    dataLoading,
+    userLoading,
+    dataError,
+    userError,
+    items,
+    user,
+    selectedFilter,
+  ]);
 
   return (
     <Theme>
