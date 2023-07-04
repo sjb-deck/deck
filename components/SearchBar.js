@@ -83,7 +83,7 @@ const SearchBar = ({ items, selectedFilter }) => {
     }));
 
     setData(parsedData);
-  }, []);
+  }, [items]);
 
   const filteredResults = (data, searchTerm) => {
     return data.filter(

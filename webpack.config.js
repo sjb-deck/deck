@@ -13,6 +13,7 @@ module.exports = {
       './inventory/src/scss/itemIndex.scss',
     ],
     cartIndex: ['./inventory/src/js/cartIndex.js'],
+    addItem: ['./inventory/src/js/addItem.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
