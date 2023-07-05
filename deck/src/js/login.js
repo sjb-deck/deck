@@ -1,7 +1,7 @@
 /** @format */
 
 // src/index.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 const App = () => {
@@ -20,7 +20,8 @@ const App = () => {
         csrfmiddlewaretoken: CSRF_TOKEN,
       },
       success: function (data) {
-        window.location.href = toRedirect == undefined ? '/' : toRedirect;
+        window.location.href =
+          toRedirect == undefined || toRedirect == 'None' ? '/' : toRedirect;
       },
       error: function (xhr, status, error) {
         console.log('Login failed:', error);
@@ -28,6 +29,27 @@ const App = () => {
       },
     });
   };
+
+  useEffect(() => {
+    const handleKeyDownEvent = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        btn.click();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDownEvent);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDownEvent);
+    };
+  });
+
+  useEffect(() => {
+    setUsername('');
+    setPassword('');
+  }, []);
+
   return (
     <div className='login-div'>
       <img src='/static/inventory/img/StJohn SG logo.png'></img>
@@ -35,6 +57,7 @@ const App = () => {
       <input
         className='form-control'
         placeholder='Username'
+        value={username}
         onChange={(e) => setUsername(e.target.value)}
       ></input>
       <input
@@ -43,7 +66,12 @@ const App = () => {
         placeholder='Password'
         onChange={(e) => setPassword(e.target.value)}
       ></input>
-      <button className='btn btn-primary' type='submit' onClick={submitForm}>
+      <button
+        className='btn btn-primary'
+        type='form'
+        id='loginBtn'
+        onClick={submitForm}
+      >
         Login
       </button>
     </div>
