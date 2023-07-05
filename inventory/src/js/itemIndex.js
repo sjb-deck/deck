@@ -98,10 +98,13 @@ const ItemIndex = () => {
 
       <Stack
         direction='column'
-        justifyContent='center'
+        justifyContent='space-between'
         alignItems='center'
         spacing={3}
-        sx={{ marginTop: 1 }}
+        sx={{
+          marginTop: 1,
+          minHeight: 0.8
+        }}
       >
         {itemsToDisplay && itemsToDisplay.length === 0 && (
           <Typography
@@ -116,13 +119,13 @@ const ItemIndex = () => {
         )}
         {itemsToDisplay
           ? itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
-              return <ItemContainer key={index} index={index} item={item} />;
-            })
+            return <ItemContainer key={index} index={index} item={item} />;
+          })
           : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
-              <Skeleton key={index} variant='rectangular'>
-                <ItemContainer item={exampleItem} />
-              </Skeleton>
-            ))}
+            <Skeleton key={index} variant='rectangular'>
+              <ItemContainer item={exampleItem} />
+            </Skeleton>
+          ))}
         {itemsToDisplay ? (
           <Pagination
             page={currentPage}
