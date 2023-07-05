@@ -9,7 +9,7 @@
 2. Move into the directory
     
     ```bash
-    cd deckland
+    cd deck
     ```
     
 3. Install the required modules and libraries
