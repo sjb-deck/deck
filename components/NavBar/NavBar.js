@@ -73,12 +73,13 @@ const NavBar = ({ user }) => {
         <Toolbar>
           <img
             height={35}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 10, cursor: 'pointer' }}
             src='/static/inventory/img/logo.png'
             alt='logo'
             onClick={() => (window.location.href = URL_INV_INDEX)}
           />
           <Typography
+            style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
