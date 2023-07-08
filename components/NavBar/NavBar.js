@@ -1,8 +1,12 @@
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuIcon from '@mui/icons-material/Menu';
+import TextSnippet from '@mui/icons-material/TextSnippet';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import AddIcon from '@mui/icons-material/Add';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import IosShareIcon from '@mui/icons-material/IosShare';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,8 +21,12 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import {
+  URL_INV_ADD_ITEM,
   URL_INV_CART,
   URL_INV_INDEX,
+  URL_INV_VIEW_ITEM,
+  URL_INV_VIEW_LOANS,
+  URL_INV_VIEW_ORDERS,
   URL_LOGOUT,
   URL_PROFILE,
   UserPropType,
@@ -48,12 +56,35 @@ export const navItems = [
     link: URL_INV_CART,
   },
 ];
+export const actionItems = [
+  {
+    title: 'Add new item',
+    icon: <AddIcon key={3} style={{ marginRight: 5 }} />,
+    link: URL_INV_ADD_ITEM,
+  },
+  {
+    title: 'View Item Data',
+    icon: <TextSnippet key={4} style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ITEM,
+  },
+  {
+    title: 'View orders',
+    icon: <LocalMallIcon key={5} style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ORDERS,
+  },
+  {
+    title: 'View loans',
+    icon: <IosShareIcon key={6} style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_LOANS,
+  },
+];
 
 const NavBar = ({ user }) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [actionMenu, setActionMenu] = React.useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -116,6 +147,9 @@ const NavBar = ({ user }) => {
                 {item.title}
               </Button>
             ))}
+            <IconButton onClick={(e) => setActionMenu(e.currentTarget)}>
+              <MenuIcon />
+            </IconButton>
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
               {theme.palette.mode === 'dark' ? (
                 <Brightness7Icon />
@@ -126,6 +160,24 @@ const NavBar = ({ user }) => {
             <IconButton onClick={handleClick} color='inherit'>
               <UserAvatar user={user} style={{ marginLeft: 10 }} />
             </IconButton>
+            <Menu
+              anchorEl={actionMenu}
+              open={Boolean(actionMenu)}
+              onClose={() => setActionMenu(null)}
+            >
+              {actionItems.map((item) => {
+                return (
+                  <MenuItem
+                    key={item.link}
+                    sx={{ paddingY: 1, paddingX: 1 }}
+                    onClick={() => (window.location.href = item.link)}
+                  >
+                    {item.icon}
+                    {item.title}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}

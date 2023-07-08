@@ -6,6 +6,10 @@ export const URL_LOGOUT = '/logout';
 export const URL_PROFILE = '/accounts/edit';
 export const URL_INV_CART = '/inventory/cart';
 export const URL_INV_ALERTS = '/inventory/alerts';
+export const URL_INV_ADD_ITEM = '/inventory/add_item';
+export const URL_INV_VIEW_ITEM = '/inventory/view_item';
+export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
+export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const ITEMS_PER_PAGE = 5;
 
 // PropTypes

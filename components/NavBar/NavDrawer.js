@@ -16,7 +16,7 @@ import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals';
 import { ColorModeContext } from '../Themes';
 import { UserAvatar } from '../UserAvatar';
 
-import { navItems } from './NavBar';
+import { actionItems, navItems } from './NavBar';
 
 /**
  * A React component that renders the NavDrawer
@@ -99,6 +99,23 @@ export const NavDrawer = ({ user }) => {
             </Button>
           </ListItem>
         ))}
+      </List>
+      <Divider />
+      <List>
+        {actionItems.map((item) => {
+          return (
+            <ListItem key={item.link} disablePadding>
+              <Button
+                fullWidth
+                sx={{ justifyContent: 'center', textTransform: 'none' }}
+                startIcon={item.icon}
+                onClick={() => (location.href = item.link)}
+              >
+                {item.title}
+              </Button>
+            </ListItem>
+          );
+        })}
       </List>
       <Divider />
       <List>
