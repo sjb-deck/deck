@@ -109,3 +109,4 @@ static/webpack/*
 
 # coverage reports
 coverage/*
+.coverage
