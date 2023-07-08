@@ -3,13 +3,13 @@
 1. Clone the repo
     
     ```bash
-    git clone https://github.com/jonasgwt/deckland.git
+    git clone https://github.com/sjb-deck/deck.git
     ```
     
 2. Move into the directory
     
     ```bash
-    cd deckland
+    cd deck
     ```
     
 3. Install the required modules and libraries
