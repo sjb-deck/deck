@@ -32,17 +32,7 @@ jobs:
         run: |
           black . --check
           npx eslint .
-      - name: Run Tests
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          DEBUG: ${{ secrets.DEBUG }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PW: ${{ secrets.DB_PW }}
-        run: |
-          python manage.py test
-          npm test
-      - name: Run Code Coverage
+      - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
@@ -52,7 +42,7 @@ jobs:
         run: |
           coverage run manage.py test
           coverage xml -o coverage.xml
-          npm test:coverage
+          npm run test:coverage
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
