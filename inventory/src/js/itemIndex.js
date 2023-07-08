@@ -17,8 +17,8 @@ import {
   INV_API_USER_URL,
   ITEMS_PER_PAGE,
 } from '../../../globals';
-import useFetch from '../hooks/use-fetch';
-import { exampleItem } from '../mocks/items';
+import useFetch from '../../../hooks/use-fetch';
+import { exampleItem } from '../../../mocks/items';
 
 const ItemIndex = () => {
   const {

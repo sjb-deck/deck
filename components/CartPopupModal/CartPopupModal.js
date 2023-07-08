@@ -26,7 +26,7 @@ import {
   CART_ITEM_TYPE_WITHDRAW,
   LOCAL_STORAGE_CART_KEY,
 } from '../../globals';
-import { getCartState } from '../../inventory/src/helpers/getCartState';
+import { getCartState } from '../../utils/getCartState';
 
 const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const [open, setOpen] = React.useState(false);

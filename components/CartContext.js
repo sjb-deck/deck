@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { getCartState } from '../inventory/src/helpers/getCartState';
+import { getCartState } from '../utils/getCartState';
 
 export const CartContext = React.createContext();
 
