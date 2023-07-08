@@ -9,7 +9,7 @@ import {
   CART_ITEM_TYPE_WITHDRAW,
   LOCAL_STORAGE_CART_KEY,
 } from '../../../globals';
-import { exampleItem } from '../../../inventory/src/mocks/items';
+import { exampleItem } from '../../../mocks/items';
 
 describe('CartPopupModal', () => {
   const mockItem = {

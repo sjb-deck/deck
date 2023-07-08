@@ -9,7 +9,7 @@ import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
 } from '../../../globals';
-import { exampleItem } from '../../../inventory/src/mocks/items';
+import { exampleItem } from '../../../mocks/items';
 
 describe('ItemContainer', () => {
   it('renders the component correctly', () => {

@@ -9,8 +9,10 @@
     "build": "webpack --mode production",
     "bundle:analyse": "webpack --json stats.json",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "start": "./run.sh"
+    "start": "./run.sh", 
+    "checkStyle": "black . --check && npx eslint ."
   },
   "author": "",
   "license": "ISC",
