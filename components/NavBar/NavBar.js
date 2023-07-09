@@ -47,34 +47,34 @@ const drawerWidth = 240;
 export const navItems = [
   {
     title: 'Alerts',
-    icon: <NotificationsIcon key={1} style={{ marginRight: 5 }} />,
+    icon: <NotificationsIcon style={{ marginRight: 5 }} />,
     link: '#',
   },
   {
     title: 'Cart',
-    icon: <ShoppingCartIcon key={2} style={{ marginRight: 5 }} />,
+    icon: <ShoppingCartIcon style={{ marginRight: 5 }} />,
     link: URL_INV_CART,
   },
 ];
 export const actionItems = [
   {
     title: 'Add new item',
-    icon: <AddIcon key={3} style={{ marginRight: 5 }} />,
+    icon: <AddIcon style={{ marginRight: 5 }} />,
     link: URL_INV_ADD_ITEM,
   },
   {
     title: 'View Item Data',
-    icon: <TextSnippet key={4} style={{ marginRight: 5 }} />,
+    icon: <TextSnippet style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ITEM,
   },
   {
     title: 'View orders',
-    icon: <LocalMallIcon key={5} style={{ marginRight: 5 }} />,
+    icon: <LocalMallIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS,
   },
   {
     title: 'View loans',
-    icon: <IosShareIcon key={6} style={{ marginRight: 5 }} />,
+    icon: <IosShareIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_LOANS,
   },
 ];
