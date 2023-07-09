@@ -147,7 +147,10 @@ const NavBar = ({ user }) => {
                 {item.title}
               </Button>
             ))}
-            <IconButton onClick={(e) => setActionMenu(e.currentTarget)} color='inherit'>
+            <IconButton
+              onClick={(e) => setActionMenu(e.currentTarget)}
+              color='inherit'
+            >
               <MenuIcon />
             </IconButton>
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
