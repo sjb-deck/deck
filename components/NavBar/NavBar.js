@@ -1,8 +1,12 @@
+import AddIcon from '@mui/icons-material/Add';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import TextSnippet from '@mui/icons-material/TextSnippet';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,8 +21,12 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import {
+  URL_INV_ADD_ITEM,
   URL_INV_CART,
   URL_INV_INDEX,
+  URL_INV_VIEW_ITEM,
+  URL_INV_VIEW_LOANS,
+  URL_INV_VIEW_ORDERS,
   URL_LOGOUT,
   URL_PROFILE,
   UserPropType,
@@ -39,13 +47,35 @@ const drawerWidth = 240;
 export const navItems = [
   {
     title: 'Alerts',
-    icon: <NotificationsIcon key={1} style={{ marginRight: 5 }} />,
+    icon: <NotificationsIcon style={{ marginRight: 5 }} />,
     link: '#',
   },
   {
     title: 'Cart',
-    icon: <ShoppingCartIcon key={2} style={{ marginRight: 5 }} />,
+    icon: <ShoppingCartIcon style={{ marginRight: 5 }} />,
     link: URL_INV_CART,
+  },
+];
+export const actionItems = [
+  {
+    title: 'Add new item',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_ADD_ITEM,
+  },
+  {
+    title: 'View Item Data',
+    icon: <TextSnippet style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ITEM,
+  },
+  {
+    title: 'View orders',
+    icon: <LocalMallIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ORDERS,
+  },
+  {
+    title: 'View loans',
+    icon: <IosShareIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_LOANS,
   },
 ];
 
@@ -54,6 +84,7 @@ const NavBar = ({ user }) => {
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [actionMenu, setActionMenu] = React.useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -73,12 +104,13 @@ const NavBar = ({ user }) => {
         <Toolbar>
           <img
             height={35}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 10, cursor: 'pointer' }}
             src='/static/inventory/img/logo.png'
             alt='logo'
             onClick={() => (window.location.href = URL_INV_INDEX)}
           />
           <Typography
+            style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
@@ -116,6 +148,12 @@ const NavBar = ({ user }) => {
                 {item.title}
               </Button>
             ))}
+            <IconButton
+              onClick={(e) => setActionMenu(e.currentTarget)}
+              color='inherit'
+            >
+              <MenuIcon />
+            </IconButton>
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
               {theme.palette.mode === 'dark' ? (
                 <Brightness7Icon />
@@ -126,6 +164,24 @@ const NavBar = ({ user }) => {
             <IconButton onClick={handleClick} color='inherit'>
               <UserAvatar user={user} style={{ marginLeft: 10 }} />
             </IconButton>
+            <Menu
+              anchorEl={actionMenu}
+              open={Boolean(actionMenu)}
+              onClose={() => setActionMenu(null)}
+            >
+              {actionItems.map((item) => {
+                return (
+                  <MenuItem
+                    key={item.link}
+                    sx={{ paddingY: 1, paddingX: 1 }}
+                    onClick={() => (window.location.href = item.link)}
+                  >
+                    {item.icon}
+                    {item.title}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}

@@ -100,10 +100,13 @@ const ItemIndex = () => {
 
         <Stack
           direction='column'
-          justifyContent='center'
+          justifyContent='space-between'
           alignItems='center'
           spacing={3}
-          sx={{ marginTop: 1 }}
+          sx={{
+            marginTop: 1,
+            minHeight: 0.8,
+          }}
         >
           {itemsToDisplay && itemsToDisplay.length === 0 && (
             <Typography
