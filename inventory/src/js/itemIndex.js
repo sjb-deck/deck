@@ -1,7 +1,7 @@
 import { Skeleton, Typography } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { CartProvider } from '../../../components/CartContext';
@@ -19,6 +19,7 @@ import {
 } from '../../../globals';
 import useFetch from '../../../hooks/use-fetch';
 import { exampleItem } from '../../../mocks/items';
+import '../scss/inventoryBase.scss';
 
 const ItemIndex = () => {
   const {
@@ -34,7 +35,6 @@ const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
-  const [itemsToDisplay, setItemsToDisplay] = useState(items);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [userData, setUserData] = useState(user);
 
@@ -47,43 +47,25 @@ const ItemIndex = () => {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
+    setCurrentPage(1);
   };
+
+  const itemsToDisplay = useMemo(() => {
+    if (!items) return;
+    return items.filter(
+      (item) =>
+        selectedFilter.includes('All') || selectedFilter.includes(item.type),
+    );
+  }, [items, selectedFilter]);
 
   useEffect(() => {
     if (dataError || userError) {
       setSnackbarOpen(true);
     }
-    if (!dataLoading && !dataError) {
-      setItemsToDisplay(
-        items.filter(
-          (item) =>
-            selectedFilter.includes('All') ||
-            selectedFilter.includes(item.type),
-        ),
-      );
-    }
     if (!userLoading && !userError) {
       setUserData(user);
     }
-  }, [
-    dataLoading,
-    userLoading,
-    dataError,
-    userError,
-    items,
-    selectedFilter,
-    user,
-  ]);
-
-  useEffect(() => {
-    if (!items) return;
-    setItemsToDisplay(
-      items.filter(
-        (item) =>
-          selectedFilter.includes('All') || selectedFilter.includes(item.type),
-      ),
-    );
-  }, [items, selectedFilter]);
+  }, [dataLoading, userLoading, dataError, userError, user]);
 
   return (
     <Theme>
@@ -95,7 +77,8 @@ const ItemIndex = () => {
         />
 
         <div
-          style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}
+          className='nav-margin-compensate'
+          style={{ display: 'flex', justifyContent: 'center' }}
         >
           {items ? (
             <SearchBar items={items} selectedFilter={selectedFilter} />
@@ -134,8 +117,8 @@ const ItemIndex = () => {
             </Typography>
           )}
           {itemsToDisplay
-            ? itemsToDisplay.slice(startIndex, endIndex).map((item, index) => {
-                return <ItemContainer key={index} index={index} item={item} />;
+            ? itemsToDisplay.slice(startIndex, endIndex).map((item) => {
+                return <ItemContainer key={item.id} item={item} />;
               })
             : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
                 <Skeleton key={index} variant='rectangular'>

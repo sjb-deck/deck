@@ -17,23 +17,43 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 
 import { ItemPropType } from '../../globals';
-import {
-  CART_ITEM_TYPE_DEPOSIT,
-  CART_ITEM_TYPE_WITHDRAW,
-  LOCAL_STORAGE_CART_KEY,
-} from '../../globals';
-import { getCartState } from '../../utils/getCartState';
+import { CART_ITEM_TYPE_DEPOSIT, CART_ITEM_TYPE_WITHDRAW } from '../../globals';
+import { addToCart } from '../../utils/cart-utils/addToCart';
+import { getCartState } from '../../utils/cart-utils/getCartState';
+import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty';
+import { SnackBarAlerts } from '../SnackBarAlerts';
 
 const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const openSelector = Boolean(anchorEl);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const hasExpiry = item.expirydates.length > 0;
+  const showDropdown = hasExpiry && item.expirydates.length > 1;
+  const preselectedExpiry = !hasExpiry
+    ? 'No Expiry'
+    : selector == 'All'
+    ? item.expirydates[0].expirydate
+    : item.expirydates.find((itemExpiry) => itemExpiry.id == selector)
+        .expirydate;
+  const [selectedExpiry, setSelectedExpiry] = useState(preselectedExpiry);
+
+  useEffect(() => {
+    const preselectedExpiry = !hasExpiry
+      ? 'No Expiry'
+      : selector == 'All'
+      ? item.expirydates[0].expirydate
+      : item.expirydates.find((itemExpiry) => itemExpiry.id == selector)
+          .expirydate;
+
+    setSelectedExpiry(preselectedExpiry);
+  }, [item, hasExpiry, selector]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,37 +63,21 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     setAnchorEl(null);
   };
 
-  const getCurrentLocalStorageCart = () => {
-    const currentLocalStorageCart = localStorage.getItem(
-      LOCAL_STORAGE_CART_KEY,
-    );
-    return currentLocalStorageCart ? JSON.parse(currentLocalStorageCart) : [];
-  };
-
-  const appendToLocalStorageCart = (currentLocalStorageCart, cartItem) => {
-    // find and merge duplicate items
-    let hasDuplicates = false;
-    const newLocalStorageCart = currentLocalStorageCart.map((item) => {
-      if (item.id === cartItem.id && item.expiryId === cartItem.expiryId) {
-        hasDuplicates = true;
-        return {
-          ...item,
-          cartOpenedQuantity:
-            item.cartOpenedQuantity + cartItem.cartOpenedQuantity,
-          cartUnopenedQuantity:
-            item.cartUnopenedQuantity + cartItem.cartUnopenedQuantity,
-        };
-      }
-      return item;
-    });
-    // if no duplicates, append to cart
-    if (!hasDuplicates) {
-      newLocalStorageCart.push(cartItem);
-    }
-    return newLocalStorageCart;
-  };
-
   const getSelectedExpiryId = () => {
+    if (selectedExpiry === 'No Expiry' || preselectedExpiry === 'No Expiry')
+      return;
+
+    // TODO: fix this
+    if (
+      item.expirydates.find(
+        (itemExpiry) => itemExpiry.expirydate === selectedExpiry,
+      ) === undefined
+    ) {
+      return item.expirydates.find(
+        (itemExpiry) => itemExpiry.expirydate === preselectedExpiry,
+      ).id;
+    }
+
     return selectedExpiry !== 'No Expiry'
       ? item.expirydates.find(
           (itemExpiry) => itemExpiry.expirydate === selectedExpiry,
@@ -81,30 +85,47 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       : null;
   };
 
+  const getMaxQtys = (expiryId) => {
+    return getMaxWithdrawalQty(expiryId, item);
+  };
+
+  const [maxOpenedQty, setMaxOpenedQty] = useState(
+    getMaxQtys(getSelectedExpiryId()).maxOpenedQty,
+  );
+  const [maxUnopenedQty, setMaxUnopenedQty] = useState(
+    getMaxQtys(getSelectedExpiryId()).maxUnopenedQty,
+  );
+
   const validationSchema = yup.object({
     openedQty: yup
       .number('Enter a number for opened quantity')
       .min(0, 'Number cannot be negative')
-      .required('This field is required'),
+      .max(maxOpenedQty, 'Number cannot be more than that'),
     unopenedQty: yup
       .number('Enter a number for unopened quantity')
       .min(0, 'Number cannot be negative')
-      .required('This field is required'),
+      .max(maxUnopenedQty, 'Number cannot be more than that'),
   });
 
   const formik = useFormik({
     initialValues: {
-      openedQty: 0,
-      unopenedQty: 0,
+      openedQty: '',
+      unopenedQty: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
+      if (values.openedQty == '') {
+        values.openedQty = 0;
+      }
+      if (values.unopenedQty == '') {
+        values.unopenedQty = 0;
+      }
       if (values.openedQty == 0 && values.unopenedQty == 0) {
         handleClose();
         resetForm();
         return;
       }
-      if (getCartState() !== '') {
+      if (getCartState() !== '' && getCartState() !== type) {
         alert("You can't deposit and withdraw at the same time!");
         return;
       }
@@ -118,31 +139,35 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         cartOpenedQuantity: formik.values.openedQty,
         cartUnopenedQuantity: formik.values.unopenedQty,
       };
-      const localStorageCartState = appendToLocalStorageCart(
-        getCurrentLocalStorageCart(),
-        cartItem,
-      );
-      localStorage.setItem(
-        LOCAL_STORAGE_CART_KEY,
-        JSON.stringify(localStorageCartState),
-      );
+
+      addToCart(cartItem);
+      setSnackbarOpen(true);
+
       handleClose();
       resetForm();
     },
   });
 
-  const hasExpiry = item.expirydates.length > 0;
-  const showDropdown = hasExpiry && item.expirydates.length > 1;
-  const preselectedExpiry = !hasExpiry
-    ? 'No Expiry'
-    : selector == 'All'
-    ? item.expirydates[0].expirydate
-    : item.expirydates.find((itemExpiry) => itemExpiry.id == selector)
-        .expirydate;
-  const [selectedExpiry, setSelectedExpiry] = useState(preselectedExpiry);
+  const setMaxQtys = useCallback(
+    (expiryId) => {
+      const {
+        maxOpenedQty: calculatedMaxOpenedQty,
+        maxUnopenedQty: calculatedMaxUnopenedQty,
+      } = getMaxWithdrawalQty(expiryId, item);
+      setMaxOpenedQty(calculatedMaxOpenedQty);
+      setMaxUnopenedQty(calculatedMaxUnopenedQty);
+    },
+    [item],
+  );
 
   return (
     <>
+      <SnackBarAlerts
+        severity='success'
+        open={snackbarOpen}
+        message='Added to cart'
+        onClose={() => setSnackbarOpen(false)}
+      />
       <Button
         size='small'
         variant='contained'
@@ -233,6 +258,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                       key={itemExpiry.expirydate}
                       onClick={() => {
                         setSelectedExpiry(itemExpiry.expirydate);
+                        setMaxQtys(itemExpiry.id);
                         handleCloseSelector();
                       }}
                     >

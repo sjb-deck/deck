@@ -3,8 +3,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   CART_ITEM_TYPE_DEPOSIT,
@@ -20,7 +19,7 @@ import { Paper } from '../styled';
  * @returns Item container
  */
 
-const ItemContainer = ({ index, item }) => {
+const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
   const { cartState, setCartState } = useContext(CartContext);
@@ -31,8 +30,12 @@ const ItemContainer = ({ index, item }) => {
     setSelectedExpiry(itemExpiry == 'All' ? itemExpiry : itemExpiry.id);
   };
 
+  useEffect(() => {
+    setSelectedExpiry('All');
+  }, [item]);
+
   return (
-    <Paper key={index} elevation={3}>
+    <Paper elevation={3}>
       {!item.expirydates.length || (
         <>
           <Box sx={{ overflow: 'auto' }}>
@@ -43,10 +46,10 @@ const ItemContainer = ({ index, item }) => {
                 variant={selectedExpiry === 'All' ? 'filled' : 'outlined'}
                 onClick={() => handleExpiryChange('All')}
               />
-              {item.expirydates.map((itemExpiry, index) => {
+              {item.expirydates.map((itemExpiry) => {
                 return (
                   <Chip
-                    key={index}
+                    key={itemExpiry.id}
                     label={itemExpiry.expirydate}
                     color='primary'
                     variant={
@@ -154,7 +157,6 @@ const ItemContainer = ({ index, item }) => {
 };
 
 ItemContainer.propTypes = {
-  index: PropTypes.number,
   item: ItemPropType.isRequired,
 };
 

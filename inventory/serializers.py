@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from .models.ItemModels import Item
-from .models.ItemExpiryModels import ItemExpiry
+from .models.Item.ItemModels import Item
+from .models.Item.ItemExpiryModels import ItemExpiry
+from .models.Order.OrderModels import Order
+from .models.Order.OrderItemModels import OrderItem
+from .models.Order.LoanOrderModels import LoanOrder
 from datetime import datetime
 from accounts.models import UserExtras, User
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -59,4 +62,35 @@ class UserExtrasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserExtras
+        fields = "__all__"
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ["item_expiry", "opened_quantity", "unopened_quantity"]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ["action", "reason", "date", "user", "other_info", "order_items"]
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop("order_items")
+
+        validated_data["user"] = self.context["request"].user
+        order = Order.objects.create(**validated_data)
+
+        for order_item_data in order_items_data:
+            OrderItem.objects.create(order=order, **order_item_data)
+
+        return order
+
+
+class LoanOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoanOrder
         fields = "__all__"
