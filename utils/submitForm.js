@@ -322,7 +322,15 @@ const processItemSubmission = (
   setLoading,
 ) => {
   setLoading(true);
-  postWithCSRF(INV_API_ITEM_POST_URL, itemFormData)
+  const noExpiryItem = {
+    expiryDate: '',
+    quantityOpen: itemFormData.total_quantityopen,
+    quantityUnopened: itemFormData.total_quantityunopened,
+  };
+  postWithCSRF(INV_API_EXPIRY_POST_URL, {
+    item_fields: itemFormData,
+    expiry: [noExpiryItem],
+  })
     .then((response) => {
       setSuccessMessage(
         `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,

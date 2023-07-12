@@ -34,25 +34,21 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const openSelector = Boolean(anchorEl);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const hasExpiry = item.expirydates.length > 0;
+  const hasExpiry = !!item.expirydates[0].expirydate;
   const showDropdown = hasExpiry && item.expirydates.length > 1;
-  const preselectedExpiry = !hasExpiry
-    ? 'No Expiry'
-    : selector == 'All'
-    ? item.expirydates[0].expirydate
-    : item.expirydates.find((itemExpiry) => itemExpiry.id == selector)
-        .expirydate;
-  const [selectedExpiry, setSelectedExpiry] = useState(preselectedExpiry);
+  const preselectedExpiryId =
+    selector == 'All'
+      ? item.expirydates[0].id
+      : item.expirydates.find((itemExpiry) => itemExpiry.id == selector).id;
+  const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
 
   useEffect(() => {
-    const preselectedExpiry = !hasExpiry
-      ? 'No Expiry'
-      : selector == 'All'
-      ? item.expirydates[0].expirydate
-      : item.expirydates.find((itemExpiry) => itemExpiry.id == selector)
-          .expirydate;
+    const preselectedExpiryId =
+      selector == 'All'
+        ? item.expirydates[0].id
+        : item.expirydates.find((itemExpiry) => itemExpiry.id == selector).id;
 
-    setSelectedExpiry(preselectedExpiry);
+    setSelectedExpiryId(preselectedExpiryId);
   }, [item, hasExpiry, selector]);
 
   const handleClick = (event) => {
@@ -63,38 +59,15 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     setAnchorEl(null);
   };
 
-  const getSelectedExpiryId = () => {
-    if (selectedExpiry === 'No Expiry' || preselectedExpiry === 'No Expiry')
-      return;
-
-    // TODO: fix this
-    if (
-      item.expirydates.find(
-        (itemExpiry) => itemExpiry.expirydate === selectedExpiry,
-      ) === undefined
-    ) {
-      return item.expirydates.find(
-        (itemExpiry) => itemExpiry.expirydate === preselectedExpiry,
-      ).id;
-    }
-
-    return selectedExpiry !== 'No Expiry'
-      ? item.expirydates.find(
-          (itemExpiry) => itemExpiry.expirydate === selectedExpiry,
-        ).id
-      : null;
+  const getExpiryFromId = (expiryId) => {
+    return (
+      item.expirydates.find((itemExpiry) => itemExpiry.id == expiryId)
+        .expirydate || 'No Expiry'
+    );
   };
 
-  const getMaxQtys = (expiryId) => {
-    return getMaxWithdrawalQty(expiryId, item);
-  };
-
-  const [maxOpenedQty, setMaxOpenedQty] = useState(
-    getMaxQtys(getSelectedExpiryId()).maxOpenedQty,
-  );
-  const [maxUnopenedQty, setMaxUnopenedQty] = useState(
-    getMaxQtys(getSelectedExpiryId()).maxUnopenedQty,
-  );
+  const [maxOpenedQty, setMaxOpenedQty] = useState(Infinity);
+  const [maxUnopenedQty, setMaxUnopenedQty] = useState(Infinity);
 
   const validationSchema = yup.object({
     openedQty: yup
@@ -134,7 +107,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       setCartState(type);
       const cartItem = {
         ...item,
-        expiryId: getSelectedExpiryId(),
+        expiryId: selectedExpiryId,
         type: isDeposit ? CART_ITEM_TYPE_DEPOSIT : CART_ITEM_TYPE_WITHDRAW,
         cartOpenedQuantity: formik.values.openedQty,
         cartUnopenedQuantity: formik.values.unopenedQty,
@@ -229,9 +202,9 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
               {item.name}
             </Typography>
             <Chip
-              label={selectedExpiry}
+              label={getExpiryFromId(selectedExpiryId)}
               role='chip'
-              aria-label={selectedExpiry}
+              aria-label={getExpiryFromId(selectedExpiryId)}
               aria-controls={openSelector ? 'fade-menu' : undefined}
               aria-haspopup='true'
               aria-expanded={openSelector ? 'true' : undefined}
@@ -257,7 +230,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                     <MenuItem
                       key={itemExpiry.expirydate}
                       onClick={() => {
-                        setSelectedExpiry(itemExpiry.expirydate);
+                        setSelectedExpiryId(itemExpiry.id);
                         setMaxQtys(itemExpiry.id);
                         handleCloseSelector();
                       }}
