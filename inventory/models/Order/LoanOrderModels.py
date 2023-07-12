@@ -12,6 +12,8 @@ from .OrderModels import Order
         The name of the loanee
     -> return_date : DateField
         The date that the loanee is expected to return the item
+    -> loan_active : BooleanField
+        Whether the loan is active or not
 
 """
 
@@ -20,6 +22,7 @@ class LoanOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     loanee_name = models.CharField(max_length=50)
     return_date = models.DateField(null=True, blank=True)
+    loan_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f"{self.order}, {self.loanee_name}"
