@@ -1,7 +1,7 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-import { INV_API_ITEM_POST_URL, INV_API_EXPIRY_POST_URL } from '../globals';
+import { INV_API_EXPIRY_POST_URL } from '../globals';
 
 import findPotentialMatch from './levenshteinDistance';
 

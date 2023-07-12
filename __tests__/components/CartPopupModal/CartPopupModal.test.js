@@ -12,18 +12,11 @@ import {
 import { exampleItem } from '../../../mocks/items';
 
 describe('CartPopupModal', () => {
-  const mockItem = {
-    name: 'Test Item',
-    expirydates: [],
-    imgpic: '',
-    unit: 'pieces',
-  };
-
   it('renders without crashing', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
@@ -34,7 +27,7 @@ describe('CartPopupModal', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
@@ -46,7 +39,7 @@ describe('CartPopupModal', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_WITHDRAW}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
@@ -58,31 +51,31 @@ describe('CartPopupModal', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
-    expect(screen.getByText('Test Item')).toBeInTheDocument();
+    expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
   });
 
   it('displays the correct item name', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
-    expect(screen.getByText('Test Item')).toBeInTheDocument();
+    expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
   });
 
   it('displays the dropdown when there are multiple expiry dates', () => {
     const mockItemWithDates = {
-      ...mockItem,
+      ...exampleItem,
       expirydates: [
         { expirydate: '2024-06-11', id: 1 },
         { expirydate: '2024-06-12', id: 2 },
@@ -111,7 +104,7 @@ describe('CartPopupModal', () => {
 
   it('updates selectedExpiry when a date is clicked', async () => {
     const mockItemWithDates = {
-      ...mockItem,
+      ...exampleItem,
       expirydates: [
         { expirydate: '2024-06-11', id: 1 },
         { expirydate: '2024-06-12', id: 2 },
@@ -147,7 +140,7 @@ describe('CartPopupModal', () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItem}
+        item={exampleItem}
         selector='All'
         setCartState={jest.fn}
       />,
