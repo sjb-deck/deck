@@ -47,35 +47,13 @@ const drawerWidth = 240;
 export const navItems = [
   {
     title: 'Alerts',
-    icon: <NotificationsIcon key={1} style={{ marginRight: 5 }} />,
+    icon: <NotificationsIcon style={{ marginRight: 5 }} />,
     link: '#',
   },
   {
     title: 'Cart',
-    icon: <ShoppingCartIcon key={2} style={{ marginRight: 5 }} />,
+    icon: <ShoppingCartIcon style={{ marginRight: 5 }} />,
     link: URL_INV_CART,
-  },
-];
-export const actionItems = [
-  {
-    title: 'Add new item',
-    icon: <AddIcon key={3} style={{ marginRight: 5 }} />,
-    link: URL_INV_ADD_ITEM,
-  },
-  {
-    title: 'View Item Data',
-    icon: <TextSnippet key={4} style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_ITEM,
-  },
-  {
-    title: 'View orders',
-    icon: <LocalMallIcon key={5} style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_ORDERS,
-  },
-  {
-    title: 'View loans',
-    icon: <IosShareIcon key={6} style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_LOANS,
   },
 ];
 
@@ -104,12 +82,13 @@ const NavBar = ({ user }) => {
         <Toolbar>
           <img
             height={35}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 10, cursor: 'pointer' }}
             src='/static/inventory/img/logo.png'
             alt='logo'
             onClick={() => (window.location.href = URL_INV_INDEX)}
           />
           <Typography
+            style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
@@ -147,9 +126,6 @@ const NavBar = ({ user }) => {
                 {item.title}
               </Button>
             ))}
-            <IconButton onClick={(e) => setActionMenu(e.currentTarget)}>
-              <MenuIcon />
-            </IconButton>
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
               {theme.palette.mode === 'dark' ? (
                 <Brightness7Icon />
