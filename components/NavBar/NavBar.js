@@ -56,6 +56,28 @@ export const navItems = [
     link: URL_INV_CART,
   },
 ];
+export const actionItems = [
+  {
+    title: 'Add new item',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_ADD_ITEM,
+  },
+  {
+    title: 'View Item Data',
+    icon: <TextSnippet style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ITEM,
+  },
+  {
+    title: 'View orders',
+    icon: <LocalMallIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ORDERS,
+  },
+  {
+    title: 'View loans',
+    icon: <IosShareIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_LOANS,
+  },
+];
 
 const NavBar = ({ user }) => {
   const theme = useTheme();
@@ -126,6 +148,12 @@ const NavBar = ({ user }) => {
                 {item.title}
               </Button>
             ))}
+            <IconButton
+              onClick={(e) => setActionMenu(e.currentTarget)}
+              color='inherit'
+            >
+              <MenuIcon />
+            </IconButton>
             <IconButton onClick={colorMode.toggleColorMode} color='inherit'>
               {theme.palette.mode === 'dark' ? (
                 <Brightness7Icon />
