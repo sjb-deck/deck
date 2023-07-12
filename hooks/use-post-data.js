@@ -30,8 +30,10 @@ const usePostData = (url) => {
       });
 
       setResponse(response.data);
+      return { status: 'success', data: response.data };
     } catch (error) {
       setError(error.message);
+      return { status: 'error', error: error.message };
     } finally {
       setIsLoading(false);
     }

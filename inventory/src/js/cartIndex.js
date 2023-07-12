@@ -30,18 +30,17 @@ const CartIndex = () => {
   const cartState = getCartState();
   const isEmpty = cartState === '';
   const [optionState, setOptionState] = useState({ option: '', fields: [] });
-  const {
-    postData,
-    loading: postDataLoading,
-    error: postDataError,
-  } = usePostData(INV_API_SUBMIT_ORDER_URL);
+  const { postData } = usePostData(INV_API_SUBMIT_ORDER_URL);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [postDataLoading, setPostDataLoading] = useState(false);
+  const [postDataError, setPostDataError] = useState(null);
 
   const handleOptionChange = (option) => {
     setOptionState(option);
   };
 
   const handleSubmit = async () => {
+    setPostDataLoading(true);
     const cartItems = getCartItems();
     const data = {
       action: cartState,
@@ -56,14 +55,17 @@ const CartIndex = () => {
         unopened_quantity: item.cartUnopenedQuantity,
       })),
     };
-    await postData(data);
+    const result = await postData(data);
 
-    if (!postDataLoading && !postDataError) {
+    if (result.status === 'success') {
       window.location.href = URL_INV_ITEMS;
       clearCart();
+      setPostDataLoading(false);
+      return;
     }
-
+    setPostDataError(result.error);
     setSnackbarOpen(true);
+    setPostDataLoading(false);
   };
 
   if (isEmpty) {
@@ -86,9 +88,7 @@ const CartIndex = () => {
           severity={postDataError ? 'error' : 'success'}
           open={snackbarOpen}
           message={
-            postDataError
-              ? postDataError.message
-              : 'Order submitted successfully!'
+            postDataError ? postDataError : 'Order submitted successfully!'
           }
           onClose={() => setSnackbarOpen(false)}
         />
