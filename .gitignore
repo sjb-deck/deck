@@ -106,3 +106,7 @@ stats.json
 
 # Compiled js by webpack
 static/webpack/*
+
+# coverage reports
+coverage/*
+.coverage

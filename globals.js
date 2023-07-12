@@ -6,11 +6,17 @@ export const URL_LOGOUT = '/logout';
 export const URL_PROFILE = '/accounts/edit';
 export const URL_INV_CART = '/inventory/cart';
 export const URL_INV_ALERTS = '/inventory/alerts';
+export const URL_INV_ITEMS = '/inventory/items';
 export const URL_INV_ADD_ITEM = '/inventory/add_item';
 export const URL_INV_VIEW_ITEM = '/inventory/view_item';
 export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
 export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const ITEMS_PER_PAGE = 5;
+
+// Cart
+export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
+export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
+export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
 
 // PropTypes
 export const ItemPropType = PropTypes.shape({
@@ -33,6 +39,14 @@ export const ItemPropType = PropTypes.shape({
       archived: PropTypes.bool,
     }),
   ),
+});
+
+export const CartItemPropType = PropTypes.shape({
+  ...ItemPropType,
+  type: PropTypes.string,
+  expiryId: PropTypes.number,
+  cartOpenedQuantity: PropTypes.number,
+  cartUnopenedQuantity: PropTypes.number,
 });
 
 export const UserPropType = PropTypes.shape({
@@ -92,5 +106,6 @@ export const ExpiryFormDataPropType = PropTypes.shape({
 export const INV_API_BASE_URL = '/inventory/api';
 export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
 export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
+export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
 export const INV_API_ITEM_POST_URL = `${INV_API_BASE_URL}/add_item_post`;
 export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
