@@ -10,7 +10,7 @@ export const CartItems = () => {
   const cartItems = getCartItems();
 
   return (
-    <Box overflow='scroll' maxHeight='50vh'>
+    <Box overflow='auto' maxHeight='50vh'>
       <Stack
         justifyContent='center'
         alignItems='center'
