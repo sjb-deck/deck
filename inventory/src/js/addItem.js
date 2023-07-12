@@ -22,13 +22,13 @@ import NavBar from '../../../components/NavBar/NavBar';
 import { SnackBarAlerts } from '../../../components/SnackBarAlerts';
 import Theme from '../../../components/Themes';
 import { INV_API_ITEMS_URL, INV_API_USER_URL } from '../../../globals';
+import useFetch from '../../../hooks/use-fetch';
 import {
   checkExpiryFormData,
   checkItemFormData,
   processExpirySubmission,
 } from '../../../utils/submitForm';
 import { processItemSubmission } from '../../../utils/submitForm';
-import useFetch from '../hooks/use-fetch';
 
 const AddItem = () => {
   const {

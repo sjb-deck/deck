@@ -8,10 +8,7 @@ module.exports = {
   entry: {
     login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
     inventoryBase: ['./inventory/src/scss/inventoryBase.scss'],
-    itemIndex: [
-      './inventory/src/js/itemIndex.js',
-      './inventory/src/scss/itemIndex.scss',
-    ],
+    itemIndex: ['./inventory/src/js/itemIndex.js'],
     cartIndex: ['./inventory/src/js/cartIndex.js'],
     addItem: ['./inventory/src/js/addItem.js'],
   },

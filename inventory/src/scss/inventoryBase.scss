@@ -5,3 +5,36 @@ body {
   background-color: v.$background-color;
   color: white;
 }
+
+.dynamic-width {
+  min-width: 20vw;
+  width: 90%;
+}
+
+.nav-margin-compensate {
+  margin-top: 80px;
+}
+
+@media screen and (min-width: v.$sm) {
+  .dynamic-width {
+    width: 70%;
+  }
+}
+
+@media screen and (min-width: v.$md) {
+  .dynamic-width {
+    width: 55%;
+  }
+}
+
+@media screen and (min-width: v.$lg) {
+  .dynamic-width {
+    width: 45%;
+  }
+}
+
+@media screen and (min-width: v.$xl) {
+  .dynamic-width {
+    width: 35%;
+  }
+}

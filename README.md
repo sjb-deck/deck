@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/sjb-deck/deck/branch/main/graph/badge.svg?token=A6P3NNHZ7R)](https://codecov.io/gh/sjb-deck/deck)
+![Build Status](https://github.com/sjb-deck/deck/actions/workflows/deck.yml/badge.svg)
+
 # Getting Started
 
 1. Clone the repo

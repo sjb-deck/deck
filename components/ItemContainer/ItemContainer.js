@@ -1,41 +1,41 @@
 import { Avatar, Box, Chip } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { ItemPropType } from '../../globals';
+import {
+  CART_ITEM_TYPE_DEPOSIT,
+  CART_ITEM_TYPE_WITHDRAW,
+  ItemPropType,
+} from '../../globals';
+import { CartContext } from '../CartContext';
 import CartPopupModal from '../CartPopupModal/CartPopupModal';
+import { Paper } from '../styled';
 
 /**
  * A React component that is used to show each individual item card
  * @returns Item container
  */
 
-const ItemContainer = ({ index, item }) => {
+const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
+  const { cartState, setCartState } = useContext(CartContext);
+
   const getTotalQty = ({ quantityopen, quantityunopened }) =>
     quantityopen + quantityunopened;
   const handleExpiryChange = (itemExpiry) => {
     setSelectedExpiry(itemExpiry == 'All' ? itemExpiry : itemExpiry.id);
   };
+
+  useEffect(() => {
+    setSelectedExpiry('All');
+  }, [item]);
+
   return (
-    <Paper
-      key={index}
-      elevation={3}
-      sx={{
-        minWidth: '20vw',
-        width: { xs: '90%', sm: '70%', md: '55%', lg: '45%', xl: '35%' },
-        padding: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
+    <Paper elevation={3}>
       {!item.expirydates.length || (
         <>
           <Box sx={{ overflow: 'auto' }}>
@@ -46,10 +46,10 @@ const ItemContainer = ({ index, item }) => {
                 variant={selectedExpiry === 'All' ? 'filled' : 'outlined'}
                 onClick={() => handleExpiryChange('All')}
               />
-              {item.expirydates.map((itemExpiry, index) => {
+              {item.expirydates.map((itemExpiry) => {
                 return (
                   <Chip
-                    key={index}
+                    key={itemExpiry.id}
                     label={itemExpiry.expirydate}
                     color='primary'
                     variant={
@@ -136,14 +136,19 @@ const ItemContainer = ({ index, item }) => {
           justifyContent='space-evenly'
         >
           <CartPopupModal
-            type='Deposit'
+            type={CART_ITEM_TYPE_DEPOSIT}
             item={item}
             selector={selectedExpiry}
+            setCartState={setCartState}
+            disabled={cartState === CART_ITEM_TYPE_WITHDRAW}
           />
+
           <CartPopupModal
-            type='Withdraw'
+            type={CART_ITEM_TYPE_WITHDRAW}
             item={item}
             selector={selectedExpiry}
+            setCartState={setCartState}
+            disabled={cartState === CART_ITEM_TYPE_DEPOSIT}
           />
         </Stack>
       </Stack>
@@ -152,7 +157,6 @@ const ItemContainer = ({ index, item }) => {
 };
 
 ItemContainer.propTypes = {
-  index: PropTypes.number,
   item: ItemPropType.isRequired,
 };
 

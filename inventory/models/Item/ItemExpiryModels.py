@@ -36,5 +36,23 @@ class ItemExpiry(models.Model):
     )
     archived = models.BooleanField(default=False)
 
+    def withdraw(self, quantity_open, quantity_unopened):
+        self.quantityopen -= quantity_open
+        self.quantityunopened -= quantity_unopened
+        self.save()
+
+        self.item.total_quantityopen -= quantity_open
+        self.item.total_quantityunopened -= quantity_unopened
+        self.item.save()
+
+    def deposit(self, quantity_open, quantity_unopened):
+        self.quantityopen += quantity_open
+        self.quantityunopened += quantity_unopened
+        self.save()
+
+        self.item.total_quantityopen += quantity_open
+        self.item.total_quantityunopened += quantity_unopened
+        self.item.save()
+
     def __str__(self) -> str:
         return f"{self.expirydate}, {self.item}"
