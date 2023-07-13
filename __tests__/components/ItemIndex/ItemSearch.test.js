@@ -1,9 +1,11 @@
-import { ItemIndex } from '../../../inventory/src/js/itemIndex';
+import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
-import React from 'react';
+
+import '@testing-library/jest-dom';
+import { ItemIndex } from '../../../inventory/src/js/itemIndex';
+
 const mockProperties = {
   unit: 'Roll',
   imgpic: null,

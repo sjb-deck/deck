@@ -1,7 +1,7 @@
 import { Skeleton, Typography } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { CartProvider } from '../../../components/CartContext';
