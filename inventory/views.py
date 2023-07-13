@@ -1,15 +1,19 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models.ItemModels import Item
-from django.core import serializers
-from django.contrib.auth.models import User
-from accounts.models import UserExtras
+from .models.Item.ItemModels import Item
 from django.forms.models import model_to_dict
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ItemSerializer, UserExtrasSerializer, ExpiryItemSerializer
-import json
+from rest_framework import status
+from .serializers import (
+    ItemSerializer,
+    UserExtrasSerializer,
+    ExpiryItemSerializer,
+    OrderSerializer,
+    LoanOrderSerializer,
+)
+from .models import *
 
 
 # Create your views here.
@@ -54,22 +58,53 @@ def api_items(request):
 @permission_classes([IsAuthenticated])
 def api_user(request):
     user_data = UserExtrasSerializer(request.user.extras.first()).data
-    print(user_data)
     return Response(user_data)
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def add_item_post(request):
-    if request.method == "POST":
-        serializer = ItemSerializer(data=request.data)
-        if serializer.is_valid():
-            new_item = serializer.save()
-            return Response({"message": "Form data added successfully"}, status=201)
-        else:
-            return Response({"errors": serializer.errors}, status=400)
+def submit_order(request):
+    if request.method != "POST":
+        return Response(
+            {"error": "Invalid request method"},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+    data = request.data
+    serializer = OrderSerializer(data=data, context={"request": request})
+    is_valid = serializer.is_valid()
+
+    if is_valid:
+        order = serializer.save()
     else:
-        return Response({"error": "Invalid request method"}, status=405)
+        return Response(
+            {"error": "Invalid order data", "details": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # create additional loan order object if it is a loan order
+    if (data.get("action") == "Withdraw") and (data.get("reason") == "loan"):
+        data["order"] = order.id
+        loan_serializer = LoanOrderSerializer(data=data, context={"order_id": order.id})
+        if loan_serializer.is_valid(raise_exception=True):
+            loan = loan_serializer.save()
+        else:
+            return Response(
+                {"error": "Invalid loan order data", "details": loan_serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    # withdraw and deposit to item expiry
+    for item in data["order_items"]:
+        item_expiry = ItemExpiry.objects.get(id=item["item_expiry"])
+        if data["action"] == "Withdraw":
+            item_expiry.withdraw(item["opened_quantity"], item["unopened_quantity"])
+        elif data["action"] == "Deposit":
+            item_expiry.deposit(item["opened_quantity"], item["unopened_quantity"])
+
+    return Response(
+        {"message": "Order submitted successfully"}, status=status.HTTP_201_CREATED
+    )
 
 
 @api_view(["POST"])

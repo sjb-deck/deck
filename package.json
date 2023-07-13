@@ -9,8 +9,10 @@
     "build": "webpack --mode production",
     "bundle:analyse": "webpack --json stats.json",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "start": "./run.sh"
+    "start": "./run.sh", 
+    "checkStyle": "black . --check && npx eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -50,6 +52,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "formik": "^2.4.2",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
@@ -58,6 +61,7 @@
     "style-loader": "^3.3.3",
     "url-loader": "^4.1.1",
     "webpack": "^5.85.0",
-    "webpack-cli": "^5.1.1"
+    "webpack-cli": "^5.1.1",
+    "yup": "^1.2.0"
   }
 }
