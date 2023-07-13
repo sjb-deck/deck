@@ -64,6 +64,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            set -e
             cd deck/
             source deck-env/env/bin/activate
             cd deck
