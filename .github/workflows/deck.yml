@@ -68,8 +68,7 @@ jobs:
             cd deck/
             source deck-env/env/bin/activate
             cd deck
-            git stash
-            git stash drop
+            git reset --hard
             git pull
             pip install -r requirements.txt
             source ~/.nvm/nvm.sh
