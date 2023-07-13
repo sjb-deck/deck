@@ -35,6 +35,7 @@ export const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
+  const [itemsToDisplay, setItemsToDisplay] = useState(items);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [userData, setUserData] = useState(user);
 
@@ -50,13 +51,24 @@ export const ItemIndex = () => {
     setCurrentPage(1);
   };
 
-  const itemsToDisplay = useMemo(() => {
+  useEffect(() => {
     if (!items) return;
-    return items.filter(
+    const newItems = items.filter(
       (item) =>
         selectedFilter.includes('All') || selectedFilter.includes(item.type),
     );
+    setItemsToDisplay(newItems);
   }, [items, selectedFilter]);
+
+  const searchCallback = (searchTerm) => {
+    const newItems = items.filter(
+      (item) =>
+        (!searchTerm ||
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (selectedFilter.includes('All') || selectedFilter.includes(item.type)),
+    );
+    setItemsToDisplay(newItems);
+  };
 
   useEffect(() => {
     if (dataError || userError) {
@@ -81,7 +93,11 @@ export const ItemIndex = () => {
           style={{ display: 'flex', justifyContent: 'center' }}
         >
           {items ? (
-            <SearchBar items={items} selectedFilter={selectedFilter} />
+            <SearchBar
+              items={items}
+              selectedFilter={selectedFilter}
+              callback={searchCallback}
+            />
           ) : (
             <Skeleton>
               <SearchBar
