@@ -23,6 +23,7 @@ const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
   const { cartState, setCartState } = useContext(CartContext);
+  const hasExpiry = !!item.expirydates[0].expirydate;
 
   const getTotalQty = ({ quantityopen, quantityunopened }) =>
     quantityopen + quantityunopened;
@@ -36,7 +37,7 @@ const ItemContainer = ({ item }) => {
 
   return (
     <Paper elevation={3}>
-      {!item.expirydates.length || (
+      {hasExpiry && (
         <>
           <Box sx={{ overflow: 'auto' }}>
             <Stack direction='row' spacing={1}>

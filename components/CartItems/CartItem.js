@@ -15,10 +15,9 @@ import { CartItemPropType } from '../../globals';
 import { Paper } from '../styled';
 
 export const CartItem = ({ cartItem }) => {
-  const expiryDate = cartItem.expiryId
-    ? cartItem.expirydates.find((expiry) => expiry.id === cartItem.expiryId)
-        .expirydate
-    : 'No Expiry';
+  const expiryDate =
+    cartItem.expirydates.find((expiry) => expiry.id === cartItem.expiryId)
+      .expirydate || 'No Expiry';
 
   return (
     <Paper style={{ width: '100%' }}>
