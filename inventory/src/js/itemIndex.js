@@ -19,7 +19,7 @@ import {
 import useFetch from '../hooks/use-fetch';
 import { exampleItem } from '../mocks/items';
 
-const ItemIndex = () => {
+export const ItemIndex = () => {
   const {
     data: items,
     loading: dataLoading,
@@ -46,6 +46,16 @@ const ItemIndex = () => {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
+  };
+
+  const searchCallback = (searchTerm) => {
+    const newItems = items.filter(
+      (item) =>
+        (!searchTerm ||
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (selectedFilter.includes('All') || selectedFilter.includes(item.type)),
+    );
+    setItemsToDisplay(newItems);
   };
 
   useEffect(() => {
@@ -84,7 +94,11 @@ const ItemIndex = () => {
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: 80 }}>
         {items ? (
-          <SearchBar items={items} selectedFilter={selectedFilter} />
+          <SearchBar
+            items={items}
+            selectedFilter={selectedFilter}
+            callback={searchCallback}
+          />
         ) : (
           <Skeleton>
             <SearchBar items={[exampleItem]} selectedFilter={selectedFilter} />
@@ -144,5 +158,7 @@ const ItemIndex = () => {
   );
 };
 
-const root = ReactDOM.createRoot(document.querySelector('#root'));
-root.render(<ItemIndex />);
+if (process.env.NODE_ENV !== 'test') {
+  const root = ReactDOM.createRoot(document.querySelector('#root'));
+  root.render(<ItemIndex />);
+}

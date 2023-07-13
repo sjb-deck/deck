@@ -68,7 +68,7 @@ const SearchResultItem = ({ item }) => (
   </Grid>
 );
 
-const SearchBar = ({ items, selectedFilter }) => {
+const SearchBar = ({ items, selectedFilter, callback }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
 
@@ -106,7 +106,10 @@ const SearchBar = ({ items, selectedFilter }) => {
           {...params}
           label='Search'
           value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            if (!!callback) callback(event.target.value);
+          }}
         />
       )}
       renderOption={(props, item) => (
