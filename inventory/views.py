@@ -109,20 +109,6 @@ def submit_order(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def add_item_post(request):
-    if request.method == "POST":
-        serializer = ItemSerializer(data=request.data)
-        if serializer.is_valid():
-            new_item = serializer.save()
-            return Response({"message": "Form data added successfully"}, status=201)
-        else:
-            return Response({"errors": serializer.errors}, status=400)
-    else:
-        return Response({"error": "Invalid request method"}, status=405)
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def add_expiry_post(request):
     if request.method == "POST":
         expiry_serializer = ExpiryItemSerializer(data=request.data)
