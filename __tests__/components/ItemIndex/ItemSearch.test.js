@@ -1,7 +1,7 @@
-import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
 
 import '@testing-library/jest-dom';
 import { ItemIndex } from '../../../inventory/src/js/itemIndex';
