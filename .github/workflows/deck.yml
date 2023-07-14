@@ -32,7 +32,7 @@ jobs:
         run: |
           black . --check
           npx eslint .
-      - name: Run Tests
+      - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
@@ -40,8 +40,17 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PW: ${{ secrets.DB_PW }}
         run: |
-          python manage.py test
-          npm test
+          coverage run manage.py test
+          coverage xml -o coverage.xml
+          npm run test:coverage
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        
+        
 
   deploy:
     runs-on: ubuntu-latest
@@ -55,11 +64,11 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            set -e
             cd deck/
             source deck-env/env/bin/activate
             cd deck
-            git stash
-            git stash drop
+            git reset --hard
             git pull
             pip install -r requirements.txt
             source ~/.nvm/nvm.sh

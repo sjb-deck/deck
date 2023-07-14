@@ -1,9 +1,11 @@
-import { ItemIndex } from '../../../inventory/src/js/itemIndex';
 import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
+
+import '@testing-library/jest-dom';
+import ItemIndex from '../../../pages/inventory/itemIndex';
+
 const mockProperties = {
   unit: 'Roll',
   imgpic: null,
@@ -63,22 +65,12 @@ const mockItems = [
 
 jest.mock('axios');
 
-let container;
-
 beforeEach(() => {
-  container = document.createElement('div');
-  container.id = 'root';
-  document.body.appendChild(container);
   axios.get.mockImplementationOnce(() =>
     Promise.resolve({
       data: mockItems,
     }),
   );
-});
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
 });
 
 describe('ItemIndex Search Filtering', () => {

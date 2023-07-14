@@ -129,6 +129,7 @@ SearchResultItem.propTypes = {
 SearchBar.propTypes = {
   items: PropTypes.array.isRequired,
   selectedFilter: PropTypes.array.isRequired,
+  callback: PropTypes.func,
 };
 
 export default SearchBar;

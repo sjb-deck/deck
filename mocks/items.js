@@ -4,7 +4,7 @@ export const exampleItem = {
     {
       id: 1,
       expirydate: '2023-06-30',
-      quantityopen: 0,
+      quantityopen: 1,
       quantityunopened: 1,
       archived: false,
       item: 1,
@@ -13,7 +13,7 @@ export const exampleItem = {
       id: 2,
       expirydate: '2023-06-06',
       quantityopen: 1,
-      quantityunopened: 0,
+      quantityunopened: 1,
       archived: false,
       item: 1,
     },
@@ -22,8 +22,8 @@ export const exampleItem = {
   type: 'General',
   unit: 'pair',
   imgpic: '/uploaded/item_img/example.png',
-  total_quantityopen: 1,
-  total_quantityunopened: 1,
+  total_quantityopen: 2,
+  total_quantityunopened: 2,
   min_quantityopen: 0,
   min_quantityunopened: 0,
 };

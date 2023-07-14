@@ -23,7 +23,6 @@ import React from 'react';
 import {
   URL_INV_ADD_ITEM,
   URL_INV_CART,
-  URL_INV_INDEX,
   URL_INV_VIEW_ITEM,
   URL_INV_VIEW_LOANS,
   URL_INV_VIEW_ORDERS,
@@ -107,14 +106,14 @@ const NavBar = ({ user }) => {
             style={{ marginRight: 10, cursor: 'pointer' }}
             src='/static/inventory/img/logo.png'
             alt='logo'
-            onClick={() => (window.location.href = URL_INV_INDEX)}
+            onClick={() => history.back()}
           />
           <Typography
             style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
-            onClick={() => (window.location.href = URL_INV_INDEX)}
+            onClick={() => history.back()}
           >
             IMS
           </Typography>
