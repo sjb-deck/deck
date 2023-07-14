@@ -7,6 +7,7 @@ from .models.Order.LoanOrderModels import LoanOrder
 from datetime import datetime
 from accounts.models import UserExtras, User
 from rest_framework.relations import PrimaryKeyRelatedField
+from .globals import action_choices
 
 
 class ItemExpiryDateSerializer(serializers.ModelSerializer):
@@ -90,7 +91,35 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 
-class LoanOrderSerializer(serializers.ModelSerializer):
+class LoanOrderSerializer(OrderSerializer):
+    order_items = OrderItemSerializer(many=True)
+
     class Meta:
         model = LoanOrder
-        fields = "__all__"
+        fields = [
+            "action",
+            "reason",
+            "date",
+            "user",
+            "other_info",
+            "order_items",
+            "loanee_name",
+            "return_date",
+            "loan_active",
+        ]
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop("order_items")
+
+        validated_data["user"] = self.context["request"].user
+        order = LoanOrder.objects.create(**validated_data)
+
+        for order_item_data in order_items_data:
+            OrderItem.objects.create(order=order, **order_item_data)
+
+        return order
+
+
+class ActionTypeSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(choices=action_choices)
+    reason = serializers.CharField(required=True, allow_blank=False)
