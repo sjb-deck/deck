@@ -7,6 +7,7 @@ from .models.Order.LoanOrderModels import LoanOrder
 from datetime import datetime
 from accounts.models import UserExtras, User
 from rest_framework.relations import PrimaryKeyRelatedField
+from .globals import action_choices
 
 
 class ItemExpiryDateSerializer(serializers.ModelSerializer):
@@ -120,10 +121,5 @@ class LoanOrderSerializer(OrderSerializer):
 
 
 class ActionTypeSerializer(serializers.Serializer):
-    CHOICES = (
-        ("Withdraw", "Withdraw"),
-        ("Deposit", "Deposit"),
-    )
-
-    action = serializers.ChoiceField(choices=CHOICES)
+    action = serializers.ChoiceField(choices=action_choices)
     reason = serializers.CharField(required=True, allow_blank=False)
