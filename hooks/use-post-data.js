@@ -11,11 +11,10 @@ function getCSRFToken() {
   return csrfCookie ? csrfCookie[1] : '';
 }
 
-const usePostData = (baseUrl) => {
+const usePostData = (url) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
-  const [url, setUrl] = useState(baseUrl);
 
   const postData = async (data) => {
     setIsLoading(true);
@@ -40,7 +39,7 @@ const usePostData = (baseUrl) => {
     }
   };
 
-  return { postData, isLoading, error, response, url, setUrl };
+  return { postData, isLoading, error, response };
 };
 
 export default usePostData;

@@ -95,7 +95,17 @@ class LoanOrderSerializer(OrderSerializer):
 
     class Meta:
         model = LoanOrder
-        fields = ["action", "reason", "date", "user", "other_info", "order_items", "loanee_name", "return_date", "loan_active"]
+        fields = [
+            "action",
+            "reason",
+            "date",
+            "user",
+            "other_info",
+            "order_items",
+            "loanee_name",
+            "return_date",
+            "loan_active",
+        ]
 
     def create(self, validated_data):
         order_items_data = validated_data.pop("order_items")
@@ -107,3 +117,13 @@ class LoanOrderSerializer(OrderSerializer):
             OrderItem.objects.create(order=order, **order_item_data)
 
         return order
+
+
+class ActionTypeSerializer(serializers.Serializer):
+    CHOICES = (
+        ("Withdraw", "Withdraw"),
+        ("Deposit", "Deposit"),
+    )
+
+    action = serializers.ChoiceField(choices=CHOICES)
+    reason = serializers.CharField(required=True, allow_blank=False)

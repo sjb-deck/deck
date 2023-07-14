@@ -22,4 +22,4 @@ class LoanOrder(Order):
     loan_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-        return f"{self.order}, {self.loanee_name}"
+        return f"LoanOrder #{self.pk}"

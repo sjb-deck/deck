@@ -6,13 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .serializers import (
-    ItemSerializer,
-    UserExtrasSerializer,
-    ExpiryItemSerializer,
-    OrderSerializer,
-    LoanOrderSerializer,
-)
+from .serializers import *
 from .models import *
 from .views_utils import manage_items_change
 
@@ -64,7 +58,7 @@ def api_user(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def submit_order(request, action, type):
+def submit_order(request):
     if request.method != "POST":
         return Response(
             {"error": "Invalid request method"},
@@ -72,29 +66,31 @@ def submit_order(request, action, type):
         )
 
     data = request.data
-    data['action'] = action
-    data['reason'] = type
 
-    if action == "Withdraw" and type == "loan":
+    action_type = ActionTypeSerializer(data=data)
+    if action_type.is_valid:
+        action = data["action"]
+        reason = data["reason"]
+
+    if action == "Withdraw" and reason == "loan":
         loan_serializer = LoanOrderSerializer(data=data, context={"request": request})
         if loan_serializer.is_valid(raise_exception=True):
             loan = loan_serializer.save()
-            manage_items_change(data['order_items'], action)
+            manage_items_change(data["order_items"], action)
             return Response(
                 {"message": "Loan order submitted successfully"},
                 status=status.HTTP_201_CREATED,
             )
 
-    # Fall through here if action is not withdraw and type is not loan
+    # Fall through here if action is not withdraw and reason is not loan
     serializer = OrderSerializer(data=data, context={"request": request})
     if serializer.is_valid(raise_exception=True):
         order = serializer.save()
-        manage_items_change(data['order_items'], action)
+        manage_items_change(data["order_items"], action)
         return Response(
             {"message": "Order submitted successfully"},
             status=status.HTTP_201_CREATED,
         )
-
 
 
 @api_view(["POST"])
