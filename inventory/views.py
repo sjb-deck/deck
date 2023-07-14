@@ -37,6 +37,11 @@ def add_item(request):
     return render(request, "add_item.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def loan_return(request):
+    return render(request, "loan_return.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_items(request):
@@ -59,6 +64,22 @@ def api_items(request):
 def api_user(request):
     user_data = UserExtrasSerializer(request.user.extras.first()).data
     return Response(user_data)
+
+
+# @api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+# def api_loans(request):
+#     user = request.user
+#     orders = Order.objects.filter(user=user)
+#
+#     for order in orders:
+#         loans = LoanOrder.objects.get(order=order)
+#         items = OrderItem.objects.filter(order=order)
+#         for item in items:
+#             full_item = ItemExpiry.objects.get(id=item.item_expiry)
+#
+#     loans_data = LoanOrderSerializer(loans, many=True).data
+#     return Response(loans_data)
 
 
 @api_view(["POST"])
