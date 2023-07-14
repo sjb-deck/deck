@@ -30,7 +30,7 @@ const CartIndex = () => {
   const cartState = getCartState();
   const isEmpty = cartState === '';
   const [optionState, setOptionState] = useState({ option: '', fields: [] });
-  const { postData } = usePostData(INV_API_SUBMIT_ORDER_URL);
+  const { postData, isLoading, error, response, url, setUrl } = usePostData(INV_API_SUBMIT_ORDER_URL);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [postDataLoading, setPostDataLoading] = useState(false);
   const [postDataError, setPostDataError] = useState(null);
@@ -40,11 +40,12 @@ const CartIndex = () => {
   };
 
   const handleSubmit = async () => {
+    setUrl(INV_API_SUBMIT_ORDER_URL + '/Withdraw/' + 'loan');
     setPostDataLoading(true);
     const cartItems = getCartItems();
     const data = {
-      action: cartState,
-      reason: optionState.option,
+      // action: cartState,
+      // reason: optionState.option,
       other_info: optionState.reason,
       loanee_name: optionState.loanee,
       return_date: getDjangoFriendlyDate(optionState.returnDate),

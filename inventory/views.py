@@ -14,6 +14,7 @@ from .serializers import (
     LoanOrderSerializer,
 )
 from .models import *
+from .views_utils import manage_items_change
 
 
 # Create your views here.
@@ -63,7 +64,7 @@ def api_user(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def submit_order(request):
+def submit_order(request, action, type):
     if request.method != "POST":
         return Response(
             {"error": "Invalid request method"},
@@ -71,40 +72,29 @@ def submit_order(request):
         )
 
     data = request.data
-    serializer = OrderSerializer(data=data, context={"request": request})
-    is_valid = serializer.is_valid()
+    data['action'] = action
+    data['reason'] = type
 
-    if is_valid:
-        order = serializer.save()
-    else:
-        return Response(
-            {"error": "Invalid order data", "details": serializer.errors},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    # create additional loan order object if it is a loan order
-    if (data.get("action") == "Withdraw") and (data.get("reason") == "loan"):
-        data["order"] = order.id
-        loan_serializer = LoanOrderSerializer(data=data, context={"order_id": order.id})
+    if action == "Withdraw" and type == "loan":
+        loan_serializer = LoanOrderSerializer(data=data, context={"request": request})
         if loan_serializer.is_valid(raise_exception=True):
             loan = loan_serializer.save()
-        else:
+            manage_items_change(data['order_items'], action)
             return Response(
-                {"error": "Invalid loan order data", "details": loan_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
+                {"message": "Loan order submitted successfully"},
+                status=status.HTTP_201_CREATED,
             )
 
-    # withdraw and deposit to item expiry
-    for item in data["order_items"]:
-        item_expiry = ItemExpiry.objects.get(id=item["item_expiry"])
-        if data["action"] == "Withdraw":
-            item_expiry.withdraw(item["opened_quantity"], item["unopened_quantity"])
-        elif data["action"] == "Deposit":
-            item_expiry.deposit(item["opened_quantity"], item["unopened_quantity"])
+    # Fall through here if action is not withdraw and type is not loan
+    serializer = OrderSerializer(data=data, context={"request": request})
+    if serializer.is_valid(raise_exception=True):
+        order = serializer.save()
+        manage_items_change(data['order_items'], action)
+        return Response(
+            {"message": "Order submitted successfully"},
+            status=status.HTTP_201_CREATED,
+        )
 
-    return Response(
-        {"message": "Order submitted successfully"}, status=status.HTTP_201_CREATED
-    )
 
 
 @api_view(["POST"])
