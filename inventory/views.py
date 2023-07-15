@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models.Item.ItemModels import Item
@@ -61,20 +62,48 @@ def api_user(request):
     return Response(user_data)
 
 
-# @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# def api_loans(request):
-#     user = request.user
-#     orders = Order.objects.filter(user=user)
-#
-#     for order in orders:
-#         loans = LoanOrder.objects.get(order=order)
-#         items = OrderItem.objects.filter(order=order)
-#         for item in items:
-#             full_item = ItemExpiry.objects.get(id=item.item_expiry)
-#
-#     loans_data = LoanOrderSerializer(loans, many=True).data
-#     return Response(loans_data)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_loans(request):
+    user = request.user
+    orders = LoanOrder.objects.filter(user=user)
+
+    order_items_json = []
+    for order in orders:
+        order_items = OrderItem.objects.filter(order=order)
+        loan_order = LoanOrder.objects.get(order_ptr=order.id)
+        order_items_data = []
+        for order_item in order_items:
+            item_expiry = order_item.item_expiry
+            item = item_expiry.item
+            item_data = {
+                "name": item.name,
+                "expiry": item_expiry.expirydate.strftime("%Y-%m-%d")
+                if item_expiry and item_expiry.expirydate
+                else None,
+                "type": item.type,
+                "quantity_opened": order_item.opened_quantity,
+                "quantity_unopened": order_item.unopened_quantity,
+                "unit": item.unit,
+                "imgpic": item.imgpic.url if item.imgpic else None,
+            }
+            order_items_data.append(item_data)
+
+        # Include metadata about the order
+        order_data = {
+            "order_id": order.id,
+            "order_date": order.date.strftime("%Y-%m-%d %H:%M:%S"),
+            "order_action": order.action,
+            "order_reason": order.reason,
+            "loanee_name": loan_order.loanee_name,
+            "return_date": loan_order.return_date.strftime("%Y-%m-%d")
+            if loan_order.return_date
+            else None,
+            "order_items": order_items_data,
+        }
+        order_items_json.append(order_data)
+
+    return Response(order_items_json)
 
 
 @api_view(["POST"])
