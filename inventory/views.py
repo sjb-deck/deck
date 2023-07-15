@@ -119,3 +119,9 @@ def add_expiry_post(request):
             return Response({"errors": "serialise fail"}, status=400)
     else:
         return Response({"error": "Invalid request method"}, status=405)
+
+@api_view(["GET"])
+def get_orders(request):
+    data = LoanOrder.objects.all()
+    print(data)
+    return Response({""})

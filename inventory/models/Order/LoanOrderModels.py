@@ -19,7 +19,7 @@ from .OrderModels import Order
 
 
 class LoanOrder(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="loan_order")
     loanee_name = models.CharField(max_length=50)
     return_date = models.DateField(null=True, blank=True)
     loan_active = models.BooleanField(default=True)
