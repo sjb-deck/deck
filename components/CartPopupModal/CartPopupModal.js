@@ -1,4 +1,5 @@
 import { ArrowDropDownCircleOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {
@@ -14,7 +15,19 @@ import {
   Stack,
   Menu,
   MenuItem,
+  useTheme,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -31,11 +44,20 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const handleOpenConfirmation = () => setOpenConfirmation(true);
+  const handleCloseConfirmation = () => setOpenConfirmation(false);
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const handleOpenDatePicker = () => setOpenDatePicker(true);
+  const handleCloseDatePicker = () => setOpenDatePicker(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openSelector = Boolean(anchorEl);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const hasExpiry = !!item.expirydates[0].expirydate;
-  const showDropdown = hasExpiry && item.expirydates.length > 1;
+  const [selectedDate, setSelectedDate] = useState('');
+  // const showDropdown = hasExpiry && item.expirydates.length > 1;
+  const [itemExpiryDates, setItemExpiryDates] = useState([]);
+  const theme = useTheme();
   const preselectedExpiryId =
     selector == 'All'
       ? item.expirydates[0].id
@@ -51,8 +73,27 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     setSelectedExpiryId(preselectedExpiryId);
   }, [item, hasExpiry, selector]);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  useEffect(() => {
+    console.log(selectedDate);
+    if (hasExpiry && type == CART_ITEM_TYPE_DEPOSIT) {
+      if (selectedDate === '') {
+        setItemExpiryDates([...item.expirydates, 'New']);
+      } else {
+        console.log('check' + selectedDate);
+        setItemExpiryDates([
+          ...item.expirydates,
+          { id: -100, expirydate: selectedDate },
+          'New',
+        ]);
+      }
+    } else {
+      setItemExpiryDates(item.expirydates);
+    }
+  }, [selectedDate]);
+
+  const handleClick = () => {
+    const ele = document.getElementById(item);
+    setAnchorEl(ele);
   };
 
   const handleCloseSelector = () => {
@@ -133,6 +174,20 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     [item],
   );
 
+  const MyActionBar = () => {
+    return (
+      <DialogActions>
+        <Button onClick={handleCloseDatePicker}> Cancel </Button>
+        <Button onClick={handleCloseDatePicker}> Ok </Button>
+      </DialogActions>
+    );
+  };
+
+  const updateSelectedDate = (value) => {
+    const date = dayjs(value.$d).format('YYYY-MM-DD');
+    setSelectedDate(date);
+  };
+
   return (
     <>
       <SnackBarAlerts
@@ -150,6 +205,64 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       >
         {type}
       </Button>
+
+      <Dialog
+        open={openConfirmation}
+        onClose={handleCloseConfirmation}
+        aria-labelledby='responsive-dialog-title'
+      >
+        <DialogTitle id='responsive-dialog-title'>
+          {'Proceed to deposit item?'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Once you submit, the deposit will take effect immediately and will
+            hence not be added to your cart. Do you still wish to submit?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCloseConfirmation}>
+            Cancel
+          </Button>
+          <Button onClick={handleCloseConfirmation} autoFocus>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openDatePicker}
+        onClose={handleCloseDatePicker}
+        aria-labelledby='responsive-dialog-title'
+      >
+        <DialogTitle id='responsive-dialog-title'>
+          {'Pick a new expiry date'}
+        </DialogTitle>
+        <DialogContent>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['StaticDatePicker']}>
+              <DemoItem>
+                <StaticDatePicker
+                  minDate={dayjs()}
+                  defaultValue={dayjs()}
+                  onChange={(value) => updateSelectedDate(value)}
+                  slotProps={{
+                    layout: {
+                      sx: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                      },
+                    },
+                  }}
+                  slots={{
+                    actionBar: MyActionBar,
+                  }}
+                />
+              </DemoItem>
+            </DemoContainer>
+          </LocalizationProvider>
+        </DialogContent>
+      </Dialog>
 
       <Modal
         aria-labelledby='transition-modal-title'
@@ -183,6 +296,15 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
               '& > :last-child': {
                 marginTop: 5,
               },
+              boxShadow:
+                theme.palette.mode === 'light'
+                  ? 'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px'
+                  : 'rgb(255 255 255 / 25%) 0px 54px 55px, rgb(237 228 228 / 12%) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgb(221 205 205 / 17%) 0px 12px 13px, rgb(220 201 201 / 9%) 0px -3px 5px',
+              borderRadius: '6px',
+              border:
+                theme.palette.mode === 'light'
+                  ? '1.5px solid #000000c2'
+                  : '1.5px solid #ffffffcf',
             }}
           >
             {item.imgpic ? (
@@ -202,7 +324,11 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
               {item.name}
             </Typography>
             <Chip
+              id={item}
               label={getExpiryFromId(selectedExpiryId)}
+              clickable={
+                getExpiryFromId(selectedExpiryId) === 'No Expiry' ? false : true
+              }
               role='chip'
               aria-label={getExpiryFromId(selectedExpiryId)}
               aria-controls={openSelector ? 'fade-menu' : undefined}
@@ -210,13 +336,21 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
               aria-expanded={openSelector ? 'true' : undefined}
               onClick={handleClick}
               deleteIcon={
-                showDropdown ? <ArrowDropDownCircleOutlined /> : undefined
+                hasExpiry ? <ArrowDropDownCircleOutlined /> : undefined
               }
-              onDelete={showDropdown ? handleClick : undefined}
+              onDelete={hasExpiry ? handleClick : undefined}
             />
-            {showDropdown && (
+            {hasExpiry && (
               <Menu
                 id='fade-menu'
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
                 MenuListProps={{
                   'aria-labelledby': 'fade-button',
                 }}
@@ -225,19 +359,49 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                 onClose={handleCloseSelector}
                 TransitionComponent={Fade}
               >
-                {item.expirydates.map((itemExpiry) => {
-                  return (
-                    <MenuItem
-                      key={itemExpiry.expirydate}
-                      onClick={() => {
-                        setSelectedExpiryId(itemExpiry.id);
-                        setMaxQtys(itemExpiry.id);
-                        handleCloseSelector();
-                      }}
-                    >
-                      {itemExpiry.expirydate}
-                    </MenuItem>
-                  );
+                {itemExpiryDates.map((itemExpiry) => {
+                  if (itemExpiry !== 'New') {
+                    console.log(itemExpiry.expirydate, itemExpiry.id);
+                    return (
+                      <MenuItem
+                        key={itemExpiry.expirydate}
+                        onClick={() => {
+                          console.log(itemExpiry.id);
+                          if (id !== -100) {
+                            setSelectedExpiryId(itemExpiry.id);
+                            setMaxQtys(itemExpiry.id);
+                            handleCloseSelector();
+                          } else {
+                            console.log(selectedDate);
+                          }
+                        }}
+                      >
+                        <Typography variant='h8'>
+                          {itemExpiry.expirydate}
+                        </Typography>
+                      </MenuItem>
+                    );
+                  } else {
+                    return (
+                      <MenuItem
+                        key={itemExpiry}
+                        onClick={() => {
+                          handleOpenDatePicker();
+                        }}
+                      >
+                        <Box
+                          display={'flex'}
+                          alignItems={'center'}
+                          justifyContent={'center'}
+                          paddingRight={'10px'}
+                          width={'100%'}
+                        >
+                          <AddIcon />
+                          <Typography variant='h8'>{itemExpiry}</Typography>
+                        </Box>
+                      </MenuItem>
+                    );
+                  }
                 })}
               </Menu>
             )}
@@ -286,9 +450,10 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                 role='submit-button'
                 color='success'
                 endIcon={<AddCircleIcon />}
-                onClick={formik.handleSubmit}
+                // onClick={formik.handleSubmit}
+                onClick={handleOpenConfirmation}
               >
-                Deposit
+                Submit
               </Button>
             ) : (
               <Button

@@ -11,7 +11,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "start": "./run.sh", 
+    "start": "./run.sh",
     "checkStyle": "black . --check && npx eslint ."
   },
   "author": "",
@@ -26,6 +26,7 @@
     "@mui/lab": "^5.0.0-alpha.134",
     "@mui/material": "^5.13.2",
     "@mui/x-date-pickers": "^6.8.0",
+    "@mui/x-date-pickers-pro": "^6.10.0",
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
     "babel-plugin-import": "^1.13.6",
