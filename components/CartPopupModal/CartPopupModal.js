@@ -77,13 +77,16 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     console.log(selectedDate);
     if (hasExpiry && type == CART_ITEM_TYPE_DEPOSIT) {
       if (selectedDate === '') {
-        setItemExpiryDates([...item.expirydates, 'New']);
+        setItemExpiryDates([
+          ...item.expirydates,
+          { id: -101, expirydate: 'New' },
+        ]);
       } else {
         console.log('check' + selectedDate);
         setItemExpiryDates([
           ...item.expirydates,
           { id: -100, expirydate: selectedDate },
-          'New',
+          { id: -101, expirydate: 'New' },
         ]);
       }
     } else {
@@ -360,14 +363,14 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                 TransitionComponent={Fade}
               >
                 {itemExpiryDates.map((itemExpiry) => {
-                  if (itemExpiry !== 'New') {
+                  if (itemExpiry.expirydate !== 'New') {
                     console.log(itemExpiry.expirydate, itemExpiry.id);
                     return (
                       <MenuItem
                         key={itemExpiry.expirydate}
                         onClick={() => {
-                          console.log(itemExpiry.id);
                           if (id !== -100) {
+                            console.log(itemExpiry.id);
                             setSelectedExpiryId(itemExpiry.id);
                             setMaxQtys(itemExpiry.id);
                             handleCloseSelector();
@@ -384,7 +387,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                   } else {
                     return (
                       <MenuItem
-                        key={itemExpiry}
+                        key={itemExpiry.expirydate}
                         onClick={() => {
                           handleOpenDatePicker();
                         }}
@@ -397,7 +400,9 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                           width={'100%'}
                         >
                           <AddIcon />
-                          <Typography variant='h8'>{itemExpiry}</Typography>
+                          <Typography variant='h8'>
+                            {itemExpiry.expirydate}
+                          </Typography>
                         </Box>
                       </MenuItem>
                     );
