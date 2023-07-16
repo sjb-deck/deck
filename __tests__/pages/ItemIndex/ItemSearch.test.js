@@ -1,77 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import axios from 'axios';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 
 import '@testing-library/jest-dom';
 import ItemIndex from '../../../pages/inventory/itemIndex';
-
-const mockProperties = {
-  unit: 'Roll',
-  imgpic: null,
-  total_quantityopen: 9,
-  total_quantityunopened: 8,
-  min_quantityopen: 0,
-  min_quantityunopened: 0,
-  expirydates: [
-    {
-      id: 44,
-      expirydate: '2023-07-29',
-      quantityopen: 9,
-      quantityunopened: 8,
-      archived: false,
-      item: 70,
-    },
-  ],
-};
-const mockItems = [
-  {
-    id: 70,
-    name: 'Triangular',
-    type: 'Bandages',
-    ...mockProperties,
-  },
-  {
-    id: 71,
-    name: 'Compression',
-    type: 'Bandages',
-    ...mockProperties,
-  },
-  {
-    id: 72,
-    name: 'Scissors',
-    type: 'General',
-    ...mockProperties,
-  },
-  {
-    id: 73,
-    name: 'Gauze',
-    type: 'General',
-    ...mockProperties,
-  },
-  {
-    id: 74,
-    name: 'Saline',
-    type: 'Solution',
-    ...mockProperties,
-  },
-  {
-    id: 75,
-    name: 'Alcohol',
-    type: 'Solution',
-    ...mockProperties,
-  },
-];
-
-jest.mock('axios');
-
-beforeEach(() => {
-  axios.get.mockImplementationOnce(() =>
-    Promise.resolve({
-      data: mockItems,
-    }),
-  );
-});
 
 describe('ItemIndex Search Filtering', () => {
   test('renders the ItemIndex page with all mock items', async () => {
