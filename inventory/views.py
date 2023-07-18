@@ -31,6 +31,10 @@ def cart(request):
 def add_item(request):
     return render(request, "add_item.html")
 
+@login_required(login_url="/r'^login/$'")
+def admin(request):
+    return render(request, "admin.html")
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -105,3 +109,13 @@ def add_expiry_post(request):
             return Response({"errors": "serialise fail"}, status=400)
     else:
         return Response({"error": "Invalid request method"}, status=405)
+
+@api_view(["GET"])
+def get_orders(request):
+    all_loans = LoanOrder.objects.all()
+    all_non_loans = Order.objects.filter(loanorder__isnull=True)
+   
+    loan_orders = LoanOrderSerializer(all_loans, many=True).data
+    non_loan_orders = OrderSerializer(all_non_loans, many=True).data
+
+    return Response({"loan_orders": loan_orders, "non_loan_orders": non_loan_orders}, status=200)
