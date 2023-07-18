@@ -7,5 +7,5 @@ urlpatterns = [
     path("user", views.api_user, name="api_user"),
     path("submit_order", views.submit_order, name="submit_order"),
     path("add_expiry_post", views.add_expiry_post, name="add_expiry_post"),
-    path("create_new_expiry", views.create_new_expiry, name="create_new_expiry")
+    path("create_new_expiry", views.create_new_expiry, name="create_new_expiry"),
 ]
