@@ -6,8 +6,6 @@ from .OrderModels import Order
 
     ** Attributes
     ----------
-    -> order : ForeignKey
-        The order that this item belongs to
     -> loanee_name : CharField
         The name of the loanee
     -> return_date : DateField
@@ -18,11 +16,10 @@ from .OrderModels import Order
 """
 
 
-class LoanOrder(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="loan_order")
+class LoanOrder(Order):
     loanee_name = models.CharField(max_length=50)
     return_date = models.DateField(null=True, blank=True)
     loan_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-        return f"{self.order}, {self.loanee_name}"
+        return f"LoanOrder #{self.pk}"
