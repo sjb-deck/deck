@@ -108,3 +108,4 @@ export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
 export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
 export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
 export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
+export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/get_orders`;
