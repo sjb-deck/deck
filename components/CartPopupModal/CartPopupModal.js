@@ -21,7 +21,6 @@ import {
   DialogActions,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs from 'dayjs';
@@ -63,7 +62,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       );
       if (filteredDate.length === 0) {
         setSelectedDate(tempSelectedDate);
-        setSelectedExpiryId(-100);
+        setSelectedExpiryId('newDate');
         setMaxQtys(null);
       } else {
         setSelectedDate('');
@@ -98,13 +97,13 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       if (selectedDate === '') {
         setItemExpiryDates([
           ...item.expirydates,
-          { id: -101, expirydate: 'New' },
+          { id: 'addNew', expirydate: 'New' },
         ]);
       } else {
         setItemExpiryDates([
           ...item.expirydates,
-          { id: -100, expirydate: selectedDate },
-          { id: -101, expirydate: 'New' },
+          { id: 'newDate', expirydate: selectedDate },
+          { id: 'addNew', expirydate: 'New' },
         ]);
       }
     } else {
@@ -113,7 +112,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   }, [selectedDate]);
 
   const getExpiryFromId = (expiryId) => {
-    if (expiryId === -100) {
+    if (expiryId === 'newDate') {
       return selectedDate;
     }
     return (
@@ -290,26 +289,22 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         </DialogTitle>
         <DialogContent>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['StaticDatePicker']}>
-              <DemoItem>
-                <StaticDatePicker
-                  minDate={dayjs()}
-                  defaultValue={dayjs()}
-                  onChange={(value) => updateTempSelectedDate(value)}
-                  slotProps={{
-                    layout: {
-                      sx: {
-                        display: 'flex',
-                        flexDirection: 'column',
-                      },
-                    },
-                  }}
-                  slots={{
-                    actionBar: MyActionBar,
-                  }}
-                />
-              </DemoItem>
-            </DemoContainer>
+            <StaticDatePicker
+              minDate={dayjs()}
+              defaultValue={dayjs()}
+              onChange={(value) => updateTempSelectedDate(value)}
+              slotProps={{
+                layout: {
+                  sx: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                  },
+                },
+              }}
+              slots={{
+                actionBar: MyActionBar,
+              }}
+            />
           </LocalizationProvider>
         </DialogContent>
       </Dialog>
@@ -401,7 +396,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                       value={itemExpiry.expirydate}
                       onClick={() => {
                         setSelectedExpiryId(itemExpiry.id);
-                        if (itemExpiry.id !== -100) {
+                        if (itemExpiry.id !== 'newDate') {
                           setMaxQtys(itemExpiry.id);
                         } else {
                           setMaxQtys(null);
@@ -486,7 +481,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                 color='success'
                 endIcon={<AddCircleIcon />}
                 onClick={() => {
-                  if (selectedExpiryId === -100) {
+                  if (selectedExpiryId === 'newDate') {
                     handleOpenConfirmation();
                   } else {
                     formik.handleSubmit;
