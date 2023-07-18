@@ -499,4 +499,5 @@ export {
   checkExpiryFormData,
   processItemSubmission,
   processExpirySubmission,
+  postWithCSRF
 };

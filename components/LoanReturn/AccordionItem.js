@@ -18,7 +18,7 @@ const AccordionItem = ({ order_item }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        <Grid item xs={4.5} sx={{ marginLeft: '28px' }}>
+        <Grid item xs={4.5} sx={{ marginLeft: '42px', padding: "10px" }}>
           <Typography variant='body2'>{order_item.name}</Typography>
         </Grid>
         <Grid item xs={2}>
