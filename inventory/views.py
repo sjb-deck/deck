@@ -105,3 +105,25 @@ def add_expiry_post(request):
             return Response({"errors": "serialise fail"}, status=400)
     else:
         return Response({"error": "Invalid request method"}, status=405)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_new_expiry(request):
+    if request.method == "POST":
+        serializer = ItemExpiryDateSerializer(data=request.data)
+        if serializer.is_valid():
+            quantityopen = serializer.validated_data.get("quantityopen")
+            quantityunopened = serializer.validated_data.get("quantityunopened")
+            serializer.validated_data["quantityopen"] = 0
+            serializer.validated_data["quantityunopened"] = 0
+            serializer.save()
+            obj_id = serializer.instance.pk
+            obj = ItemExpiry.objects.filter(id=obj_id)[0]
+            obj.deposit(quantityopen, quantityunopened)
+
+            return Response({"Message": "Created expiryItem successfully"}, status=200)
+        else:
+            return Response({"Error": "Bad Request"}, status=400)
+    else:
+        return Response({"Error": "Invalid request method"}, status=405)
