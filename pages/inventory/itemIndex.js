@@ -4,13 +4,13 @@ import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
 
 import { CartProvider } from '../../components/CartContext';
+import FloatingCart from '../../components/FloatingCart';
 import Footer from '../../components/Footer';
 import ItemContainer from '../../components/ItemContainer/ItemContainer';
 import NavBar from '../../components/NavBar/NavBar';
 import SearchBar from '../../components/SearchBar';
 import SearchFilter from '../../components/SearchFilter';
 import { SnackBarAlerts } from '../../components/SnackBarAlerts';
-import FloatingCart from '../../components/FloatingCart'
 import Theme from '../../components/Themes';
 import {
   INV_API_ITEMS_URL,
