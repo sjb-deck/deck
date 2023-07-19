@@ -10,6 +10,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import SearchBar from '../../components/SearchBar';
 import SearchFilter from '../../components/SearchFilter';
 import { SnackBarAlerts } from '../../components/SnackBarAlerts';
+import FloatingCart from '../../components/FloatingCart'
 import Theme from '../../components/Themes';
 import {
   INV_API_ITEMS_URL,
@@ -155,6 +156,8 @@ const ItemIndex = () => {
             </Skeleton>
           )}
         </Stack>
+
+        <FloatingCart />
 
         <Footer />
       </CartProvider>
