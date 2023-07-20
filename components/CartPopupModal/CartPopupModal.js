@@ -45,7 +45,6 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     setOpen(false);
     setSelectedDate('');
     setTempSelectedDate('');
-    resetField();
   };
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const handleOpenConfirmation = () => setOpenConfirmation(true);
@@ -148,6 +147,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       setOpenDepositResponse(true);
     } else {
       setResponseMsg('Error! Please try again.');
+      setOpenDepositResponse(true);
     }
   };
 
@@ -182,9 +182,13 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         cartOpenedQuantity: formik.values.openedQty,
         cartUnopenedQuantity: formik.values.unopenedQty,
       };
-      addToCart(cartItem);
-      setSnackbarOpen(true);
-      handleClose();
+      if (isDeposit && selectedExpiryId === 'newDate') {
+        addNewExpiry();
+      } else {
+        addToCart(cartItem);
+        setSnackbarOpen(true);
+        handleClose();
+      }
       resetForm();
     },
   });
@@ -200,11 +204,6 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     },
     [item],
   );
-
-  const resetField = () => {
-    formik.values.openedQty = '';
-    formik.values.unopenedQty = '';
-  };
 
   const MyActionBar = () => {
     return (
@@ -268,9 +267,8 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
           </Button>
           <Button
             onClick={() => {
-              addNewExpiry();
+              formik.handleSubmit();
               handleCloseConfirmation();
-              resetField();
             }}
             autoFocus
           >
@@ -484,7 +482,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                   if (selectedExpiryId === 'newDate') {
                     handleOpenConfirmation();
                   } else {
-                    formik.handleSubmit;
+                    formik.handleSubmit();
                   }
                 }}
               >
