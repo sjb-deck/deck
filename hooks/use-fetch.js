@@ -13,22 +13,27 @@ function useFetch(url) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(url);
-        setData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(url);
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
 
+  const refetch = async () => {
+    setLoading(true);
+    await fetchData();
+  };
+
+  useEffect(() => {
     fetchData();
   }, [url]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch };
 }
 
 export default useFetch;
