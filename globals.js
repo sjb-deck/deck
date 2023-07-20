@@ -102,10 +102,48 @@ export const ExpiryFormDataPropType = PropTypes.shape({
   ]).isRequired,
 });
 
+export const LoanOrderPropType = PropTypes.shape({
+  pk: PropTypes.number.isRequired,
+  action: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  return_date: PropTypes.string.isRequired,
+  loan_active: PropTypes.bool.isRequired,
+  loanee_name: PropTypes.string.isRequired,
+  other_info: PropTypes.string,
+  order_items: PropTypes.arrayOf(
+    PropTypes.shape({
+      item_expiry: PropTypes.shape({
+        item: PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
+  ).isRequired,
+}).isRequired;
+
+export const OrderPropType = PropTypes.shape({
+  pk: PropTypes.number.isRequired,
+  action: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  other_info: PropTypes.string,
+  order_items: PropTypes.arrayOf(
+    PropTypes.shape({
+      item_expiry: PropTypes.shape({
+        item: PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
+  ).isRequired,
+}).isRequired;
+
 // API Endpoints
 export const INV_API_BASE_URL = '/inventory/api';
 export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
 export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
 export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
 export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
-export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/get_orders`;
+export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders`;
+export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
