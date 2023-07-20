@@ -7,5 +7,6 @@ urlpatterns = [
     path("user", views.api_user, name="api_user"),
     path("submit_order", views.submit_order, name="submit_order"),
     path("add_expiry_post", views.add_expiry_post, name="add_expiry_post"),
-    path("get_orders", views.get_orders, name="get_orders"),
+    path("orders", views.api_orders, name="api_orders"),
+    path("revert_order", views.revert_order, name="revert_order"),
 ]

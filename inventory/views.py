@@ -31,6 +31,7 @@ def cart(request):
 def add_item(request):
     return render(request, "add_item.html")
 
+
 @login_required(login_url="/r'^login/$'")
 def admin(request):
     return render(request, "admin.html")
@@ -58,6 +59,18 @@ def api_items(request):
 def api_user(request):
     user_data = UserExtrasSerializer(request.user.extras.first()).data
     return Response(user_data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_orders(request):
+    all_loans = LoanOrder.objects.all()
+    all_non_loans = Order.objects.filter(loanorder__isnull=True)
+
+    loan_orders = LoanOrderSerializer(all_loans, many=True).data
+    non_loan_orders = OrderSerializer(all_non_loans, many=True).data
+
+    return Response({"loan_orders": loan_orders, "orders": non_loan_orders}, status=200)
 
 
 @api_view(["POST"])
@@ -110,12 +123,19 @@ def add_expiry_post(request):
     else:
         return Response({"error": "Invalid request method"}, status=405)
 
-@api_view(["GET"])
-def get_orders(request):
-    all_loans = LoanOrder.objects.all()
-    all_non_loans = Order.objects.filter(loanorder__isnull=True)
-   
-    loan_orders = LoanOrderSerializer(all_loans, many=True).data
-    non_loan_orders = OrderSerializer(all_non_loans, many=True).data
 
-    return Response({"loan_orders": loan_orders, "non_loan_orders": non_loan_orders}, status=200)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def revert_order(request):
+    try:
+        target_id = request.data.get("id")
+        if target_id is None:
+            return Response({"error": "Invalid request body"}, status=400)
+        try:
+            instance = Order.objects.get(pk=target_id)
+            instance.delete()
+            return Response({"message": "Order successfully deleted"}, status=200)
+        except:
+            return Response({"error": "Order not found"}, status=404)
+    except:
+        return Response({"error": "Something went wrong"}, status=404)
