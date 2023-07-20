@@ -1,5 +1,6 @@
 import { Grid, Paper, Typography, Avatar } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const DrawerContent = ({ item }) => {
@@ -211,6 +212,18 @@ const DrawerContent = ({ item }) => {
       </Paper>
     </div>
   );
+};
+
+DrawerContent.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    expiry: PropTypes.string,
+    type: PropTypes.string,
+    quantity_opened: PropTypes.number.isRequired,
+    quantity_unopened: PropTypes.number.isRequired,
+    unit: PropTypes.string.isRequired,
+    imgpic: PropTypes.string,
+  }).isRequired,
 };
 
 export default DrawerContent;

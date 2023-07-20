@@ -171,15 +171,17 @@ def loan_return_post(request):
             for item in request.data["items"]:
                 print(item)
                 try:
-                    item_expiry = ItemExpiry.objects.get(item__name=item['item_name'], expirydate=item['item_expiry'])
-                except ItemExpiry.DoesNotExist:
-                    return Response(
-                        {"error": "Item expiry does not exist"}, status=400
+                    item_expiry = ItemExpiry.objects.get(
+                        item__name=item["item_name"], expirydate=item["item_expiry"]
                     )
+                except ItemExpiry.DoesNotExist:
+                    return Response({"error": "Item expiry does not exist"}, status=400)
 
             for item in request.data["items"]:
-                item_expiry = ItemExpiry.objects.get(item__name=item['item_name'], expirydate=item['item_expiry'])
-                item_expiry.deposit(item['return_opened'], item['return_unopened'])
+                item_expiry = ItemExpiry.objects.get(
+                    item__name=item["item_name"], expirydate=item["item_expiry"]
+                )
+                item_expiry.deposit(item["return_opened"], item["return_unopened"])
 
             loan_order = LoanOrder.objects.get(id=request.data["order_id"])
             loan_order.loan_active = False
