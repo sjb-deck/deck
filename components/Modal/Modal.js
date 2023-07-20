@@ -7,7 +7,6 @@ const Modal = ({ children, control, isOpen, onClose, maxWidth }) => {
     typeof isOpen === 'boolean' && typeof onClose === 'function';
   const [_opened, setOpened] = useState(false);
   const opened = controlled ? isOpen : _opened;
-  console.log(opened);
 
   const helper = {
     close: () => (controlled ? onClose() : setOpened(false)),

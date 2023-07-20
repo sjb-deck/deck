@@ -27,7 +27,6 @@ const LoanOrderContent = ({
     .toString()
     .padStart(2, '0')}:${loanDate.getMinutes().toString().padStart(2, '0')}`;
   const returnDate = new Date(order.return_date);
-  console.log(order);
   return (
     <Accordion
       key={order.pk}
