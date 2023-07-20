@@ -10,6 +10,7 @@ urlpatterns = (
         path("items", views.items, name="items"),
         path("cart", views.cart, name="cart"),
         path("add_item", views.add_item, name="add_item"),
+        path("loan_return", views.loan_return, name="loan_return"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models.Item.ItemModels import Item
@@ -32,6 +33,11 @@ def add_item(request):
     return render(request, "add_item.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def loan_return(request):
+    return render(request, "loan_return.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_items(request):
@@ -56,6 +62,54 @@ def api_user(request):
     return Response(user_data)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_loans(request):
+    user = request.user
+    orders = LoanOrder.objects.filter(user=user, loan_active=True)
+
+    order_items_json = []
+    for order in orders:
+        order_items = OrderItem.objects.filter(order=order)
+        loan_order = LoanOrder.objects.get(order_ptr=order.id)
+        order_items_data = []
+        for order_item in order_items:
+            item_expiry = order_item.item_expiry
+            item = item_expiry.item
+            item_data = {
+                "name": item.name,
+                "expiry": item_expiry.expirydate.strftime("%Y-%m-%d")
+                if item_expiry and item_expiry.expirydate
+                else None,
+                "type": item.type,
+                "quantity_opened": order_item.opened_quantity,
+                "quantity_unopened": order_item.unopened_quantity,
+                "unit": item.unit,
+                "imgpic": item.imgpic.url if item.imgpic else None,
+            }
+            order_items_data.append(item_data)
+
+        order_items_data.sort(key=lambda x: x["name"])
+
+        # Include metadata about the order
+        order_data = {
+            "order_id": order.id,
+            "order_date": order.date.strftime("%Y-%m-%d %H:%M:%S"),
+            "order_action": order.action,
+            "order_reason": order.reason,
+            "loanee_name": loan_order.loanee_name,
+            "return_date": loan_order.return_date.strftime("%Y-%m-%d")
+            if loan_order.return_date
+            else None,
+            "order_items": order_items_data,
+        }
+        order_items_json.append(order_data)
+
+    order_items_json.sort(key=lambda x: x["return_date"])
+
+    return Response(order_items_json)
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def submit_order(request):
@@ -68,7 +122,7 @@ def submit_order(request):
     data = request.data
 
     action_type = ActionTypeSerializer(data=data)
-    if action_type.is_valid:
+    if action_type.is_valid(raise_exception=True):
         action = data["action"]
         reason = data["reason"]
 
@@ -105,3 +159,32 @@ def add_expiry_post(request):
             return Response({"errors": "serialise fail"}, status=400)
     else:
         return Response({"error": "Invalid request method"}, status=405)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def loan_return_post(request):
+    if request.method == "POST":
+        loan_return_serializer = LoanReturnSerializer(data=request.data)
+        if loan_return_serializer.is_valid(raise_exception=True):
+            # Check if all exists here, do not attempt to save, else have to delete if something is not found later
+            for item in request.data["items"]:
+                print(item)
+                try:
+                    item_expiry = ItemExpiry.objects.get(
+                        item__name=item["item_name"], expirydate=item["item_expiry"]
+                    )
+                except ItemExpiry.DoesNotExist:
+                    return Response({"error": "Item expiry does not exist"}, status=400)
+
+            for item in request.data["items"]:
+                item_expiry = ItemExpiry.objects.get(
+                    item__name=item["item_name"], expirydate=item["item_expiry"]
+                )
+                item_expiry.deposit(item["return_opened"], item["return_unopened"])
+
+            loan_order = LoanOrder.objects.get(id=request.data["order_id"])
+            loan_order.loan_active = False
+            loan_order.save()
+
+            return Response({"message": "Loan returned successfully"}, status=201)
