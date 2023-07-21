@@ -130,3 +130,15 @@ class LoanOrderSerializer(OrderSerializer):
 class ActionTypeSerializer(serializers.Serializer):
     action = serializers.ChoiceField(choices=action_choices)
     reason = serializers.CharField(required=True, allow_blank=False)
+
+
+class LoanItemReturnSerializer(serializers.Serializer):
+    item_name: serializers.CharField(required=True)
+    item_expiry: serializers.CharField(required=True)
+    return_opened: serializers.IntegerField(required=True)
+    return_unopened: serializers.IntegerField(required=True)
+
+
+class LoanReturnSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField(required=True)
+    items = LoanItemReturnSerializer(many=True, required=True)

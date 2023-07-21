@@ -10,6 +10,9 @@ export const URL_INV_ITEMS = '/inventory/items';
 export const URL_INV_ADD_ITEM = '/inventory/add_item';
 export const URL_INV_VIEW_ITEM = '/inventory/view_item';
 export const URL_INV_VIEW_ORDERS_LOANS = '/inventory/admin';
+export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
+export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
+export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
 export const ITEMS_PER_PAGE = 5;
 
 // Cart
@@ -146,3 +149,5 @@ export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
 export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
 export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders`;
 export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
+export const INV_API_LOANS_URL = `${INV_API_BASE_URL}/loans`;
+export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
