@@ -9,4 +9,6 @@ urlpatterns = [
     path("add_expiry_post", views.add_expiry_post, name="add_expiry_post"),
     path("loans", views.api_loans, name="api_loans"),
     path("loan_return_post", views.loan_return_post, name="loan_return_post"),
+    path("orders", views.api_orders, name="api_orders"),
+    path("revert_order", views.revert_order, name="revert_order"),
 ]

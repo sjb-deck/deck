@@ -20,7 +20,9 @@ from ..Item import ItemExpiry
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="order_items"
+    )
     item_expiry = models.ForeignKey(ItemExpiry, on_delete=models.CASCADE)
     opened_quantity = models.IntegerField(null=False, blank=False, default=0)
     unopened_quantity = models.IntegerField(null=False, blank=False, default=0)

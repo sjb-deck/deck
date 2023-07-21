@@ -38,6 +38,11 @@ def loan_return(request):
     return render(request, "loan_return.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def admin(request):
+    return render(request, "admin.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_items(request):
@@ -108,6 +113,18 @@ def api_loans(request):
     order_items_json.sort(key=lambda x: x["return_date"])
 
     return Response(order_items_json)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_orders(request):
+    all_loans = LoanOrder.objects.all()
+    all_non_loans = Order.objects.filter(loanorder__isnull=True)
+
+    loan_orders = LoanOrderSerializer(all_loans, many=True).data
+    non_loan_orders = OrderSerializer(all_non_loans, many=True).data
+
+    return Response({"loan_orders": loan_orders, "orders": non_loan_orders}, status=200)
 
 
 @api_view(["POST"])
@@ -188,3 +205,20 @@ def loan_return_post(request):
             loan_order.save()
 
             return Response({"message": "Loan returned successfully"}, status=201)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def revert_order(request):
+    try:
+        target_id = request.data.get("id")
+        if target_id is None:
+            return Response({"error": "Invalid request body"}, status=400)
+        try:
+            instance = Order.objects.get(pk=target_id)
+            instance.delete()
+            return Response({"message": "Order successfully deleted"}, status=200)
+        except:
+            return Response({"error": "Order not found"}, status=404)
+    except:
+        return Response({"error": "Something went wrong"}, status=404)
