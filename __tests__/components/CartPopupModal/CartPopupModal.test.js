@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import dayjs from 'dayjs';
 import React from 'react';
 
-import '@testing-library/jest-dom';
 import CartPopupModal from '../../../components/CartPopupModal/CartPopupModal';
 import {
   CART_ITEM_TYPE_DEPOSIT,
@@ -73,7 +74,7 @@ describe('CartPopupModal', () => {
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
   });
 
-  it('displays the dropdown when there are multiple expiry dates', () => {
+  it('displays the dropdown when there are multiple expiry dates', async () => {
     const mockItemWithDates = {
       ...exampleItem,
       expirydates: [
@@ -90,14 +91,20 @@ describe('CartPopupModal', () => {
       />,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
-    fireEvent.click(
-      screen.getByRole('chip', {
-        name: mockItemWithDates.expirydates[0].expirydate,
-      }),
-    );
     expect(
-      screen.getByRole('menuitem', {
-        name: mockItemWithDates.expirydates[1].expirydate,
+      screen.getByRole('button', {
+        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
+      }),
+    ).toBeInTheDocument();
+    await userEvent.click(screen.getByLabelText('Expiry Date'));
+    expect(
+      screen.getByDisplayValue(
+        `${mockItemWithDates.expirydates[0].expirydate}`,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', {
+        name: `${mockItemWithDates.expirydates[1].expirydate}`,
       }),
     ).toBeInTheDocument();
   });
@@ -120,18 +127,71 @@ describe('CartPopupModal', () => {
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     await userEvent.click(
-      screen.getByRole('chip', {
-        name: mockItemWithDates.expirydates[0].expirydate,
+      screen.getByRole('button', {
+        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
       }),
     );
-    await userEvent.click(
-      screen.getByRole('menuitem', {
-        name: mockItemWithDates.expirydates[1].expirydate,
-      }),
+    const btnList = screen.queryAllByRole('option', { hidden: true });
+    const button = btnList.find(
+      (btn) =>
+        btn.getAttribute('data-value') ===
+        `${mockItemWithDates.expirydates[1].expirydate}`,
     );
+    await userEvent.click(button, { hidden: true });
     expect(
-      screen.getByRole('chip', {
-        name: mockItemWithDates.expirydates[1].expirydate,
+      screen.getByRole('button', {
+        name: `Expiry Date ${mockItemWithDates.expirydates[1].expirydate}`,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('display calendar when New is clicked and update selected date', async () => {
+    const mockItemWithDates = {
+      ...exampleItem,
+      expirydates: [
+        { expirydate: '2024-06-11', id: 1 },
+        { expirydate: '2024-06-12', id: 2 },
+      ],
+    };
+    render(
+      <CartPopupModal
+        type={CART_ITEM_TYPE_DEPOSIT}
+        item={mockItemWithDates}
+        selector='All'
+        setCartState={jest.fn}
+      />,
+    );
+    await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
+      }),
+    );
+    const btnList = screen.queryAllByRole('option', { hidden: true });
+    const button = btnList.find(
+      (btn) => btn.getAttribute('data-value') === 'New',
+    );
+    await userEvent.click(button, { hidden: true });
+    expect(screen.getByText('Pick a new expiry date')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Ok',
+      }),
+    ).toBeInTheDocument();
+    const dateBtnList = screen.queryAllByText(dayjs().get('date'));
+    const dateButton = dateBtnList.find(
+      (btn) => btn.getAttribute('role') === 'gridcell',
+    );
+    expect(dateButton).toBeInTheDocument();
+    await userEvent.click(dateButton);
+    await userEvent.click(screen.getByText('Ok'));
+    await waitFor(() => {
+      const modal = screen.queryByText('Pick a new expiry date');
+      expect(modal).toBeNull(); // Ensure that the modal content is no longer in the document
+    });
+    expect(
+      screen.getByRole('button', {
+        name: `Expiry Date ${dayjs().format('YYYY-MM-DD')}`,
       }),
     ).toBeInTheDocument();
   });
