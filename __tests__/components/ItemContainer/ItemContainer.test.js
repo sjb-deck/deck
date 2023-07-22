@@ -3,12 +3,10 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import { CartProvider } from '../../../components/CartContext';
+import { CartContext, CartProvider } from '../../../components/CartContext';
 import ItemContainer from '../../../components/ItemContainer/ItemContainer';
-import {
-  CART_ITEM_TYPE_DEPOSIT,
-  CART_ITEM_TYPE_WITHDRAW,
-} from '../../../globals';
+import { CART_ITEM_TYPE_WITHDRAW } from '../../../globals';
+import { mockDepositCart } from '../../../mocks/cart';
 import { exampleItem } from '../../../mocks/items';
 
 describe('ItemContainer', () => {
@@ -72,10 +70,16 @@ describe('ItemContainer', () => {
   });
 
   it('disable the withdraw button when cart is of deposit type', () => {
+    const mockDepositContextValue = {
+      cartState: 'Deposit',
+      setCartState: () => {},
+      cartItems: mockDepositCart,
+      setCartItems: () => {},
+    };
     render(
-      <CartProvider initialState={CART_ITEM_TYPE_DEPOSIT}>
+      <CartContext.Provider value={mockDepositContextValue}>
         <ItemContainer index={0} item={exampleItem} />
-      </CartProvider>,
+      </CartContext.Provider>,
     );
 
     expect(screen.getByText(CART_ITEM_TYPE_WITHDRAW)).toBeDisabled();

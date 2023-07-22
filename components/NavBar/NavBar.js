@@ -189,7 +189,7 @@ const NavBar = ({ user }) => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box component='nav'>
+      <Box>
         <Drawer
           anchor='right'
           variant='temporary'

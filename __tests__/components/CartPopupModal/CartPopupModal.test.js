@@ -4,58 +4,71 @@ import userEvent from '@testing-library/user-event';
 import dayjs from 'dayjs';
 import React from 'react';
 
+import { CartContext } from '../../../components/CartContext';
 import CartPopupModal from '../../../components/CartPopupModal/CartPopupModal';
 import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
   LOCAL_STORAGE_CART_KEY,
 } from '../../../globals';
+import {
+  mockDepositCartContext,
+  mockWithdrawCartContext,
+} from '../../../mocks/context';
 import { exampleItem } from '../../../mocks/items';
 
 describe('CartPopupModal', () => {
   it('renders without crashing', () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
   });
 
   it('displays the Deposit button when type is Deposit', () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     expect(screen.getByText(CART_ITEM_TYPE_DEPOSIT)).toBeInTheDocument();
   });
 
   it('displays the Withdraw button when type is Withdraw', () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_WITHDRAW}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockWithdrawCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_WITHDRAW}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     expect(screen.getByText(CART_ITEM_TYPE_WITHDRAW)).toBeInTheDocument();
   });
 
   it('opens the modal when the button is clicked', () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
@@ -63,12 +76,14 @@ describe('CartPopupModal', () => {
 
   it('displays the correct item name', () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
@@ -83,12 +98,14 @@ describe('CartPopupModal', () => {
       ],
     };
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItemWithDates}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={mockItemWithDates}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(
@@ -118,12 +135,14 @@ describe('CartPopupModal', () => {
       ],
     };
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItemWithDates}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={mockItemWithDates}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     await userEvent.click(
@@ -154,12 +173,14 @@ describe('CartPopupModal', () => {
       ],
     };
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={mockItemWithDates}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={mockItemWithDates}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     await userEvent.click(
@@ -198,12 +219,14 @@ describe('CartPopupModal', () => {
 
   it('renders the text fields with the correct labels', async () => {
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={exampleItem}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={exampleItem}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(screen.getByText('Opened Qty')).toBeInTheDocument();
@@ -213,12 +236,14 @@ describe('CartPopupModal', () => {
   it('displays an error message when the field has negative numbers', async () => {
     const item = exampleItem;
     render(
-      <CartPopupModal
-        type={CART_ITEM_TYPE_DEPOSIT}
-        item={item}
-        selector='All'
-        setCartState={jest.fn}
-      />,
+      <CartContext.Provider value={mockDepositCartContext}>
+        <CartPopupModal
+          type={CART_ITEM_TYPE_DEPOSIT}
+          item={item}
+          selector='All'
+          setCartState={jest.fn}
+        />
+      </CartContext.Provider>,
     );
 
     await userEvent.click(screen.getByText(/Deposit/i));
@@ -255,12 +280,14 @@ describe('CartPopupModal', () => {
       ];
 
       render(
-        <CartPopupModal
-          type={CART_ITEM_TYPE_DEPOSIT}
-          item={item}
-          selector='All'
-          setCartState={jest.fn}
-        />,
+        <CartContext.Provider value={mockDepositCartContext}>
+          <CartPopupModal
+            type={CART_ITEM_TYPE_DEPOSIT}
+            item={item}
+            selector='All'
+            setCartState={jest.fn}
+          />
+        </CartContext.Provider>,
       );
 
       await userEvent.click(screen.getByText(/Deposit/i));
@@ -274,19 +301,21 @@ describe('CartPopupModal', () => {
 
       expect(localStorage.setItem).toHaveBeenCalledWith(
         LOCAL_STORAGE_CART_KEY,
-        JSON.stringify(expectedItem),
+        JSON.stringify([...mockDepositCartContext.cartItems, ...expectedItem]),
       );
     });
 
     it('does not update localstorage when fields are all 0', async () => {
       const item = exampleItem;
       render(
-        <CartPopupModal
-          type={CART_ITEM_TYPE_DEPOSIT}
-          item={item}
-          selector='All'
-          setCartState={jest.fn}
-        />,
+        <CartContext.Provider value={mockDepositCartContext}>
+          <CartPopupModal
+            type={CART_ITEM_TYPE_DEPOSIT}
+            item={item}
+            selector='All'
+            setCartState={jest.fn}
+          />
+        </CartContext.Provider>,
       );
 
       await userEvent.click(screen.getByText(/Deposit/i));
