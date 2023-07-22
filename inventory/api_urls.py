@@ -8,4 +8,8 @@ urlpatterns = [
     path("submit_order", views.submit_order, name="submit_order"),
     path("add_expiry_post", views.add_expiry_post, name="add_expiry_post"),
     path("create_new_expiry", views.create_new_expiry, name="create_new_expiry"),
+    path("loans", views.api_loans, name="api_loans"),
+    path("loan_return_post", views.loan_return_post, name="loan_return_post"),
+    path("orders", views.api_orders, name="api_orders"),
+    path("revert_order", views.revert_order, name="revert_order"),
 ]

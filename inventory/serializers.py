@@ -25,6 +25,8 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class ItemExpirySerializer(serializers.ModelSerializer):
+    item = ItemSerializer()
+
     class Meta:
         model = ItemExpiry
         fields = ["expirydate", "quantityopen", "quantityunopened", "item", "archived"]
@@ -67,6 +69,8 @@ class UserExtrasSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    item_expiry = ItemExpirySerializer()
+
     class Meta:
         model = OrderItem
         fields = ["item_expiry", "opened_quantity", "unopened_quantity"]
@@ -74,10 +78,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
+    pk = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Order
-        fields = ["action", "reason", "date", "user", "other_info", "order_items"]
+        fields = ["pk", "action", "reason", "date", "user", "other_info", "order_items"]
 
     def create(self, validated_data):
         order_items_data = validated_data.pop("order_items")
@@ -93,10 +98,12 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class LoanOrderSerializer(OrderSerializer):
     order_items = OrderItemSerializer(many=True)
+    pk = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = LoanOrder
         fields = [
+            "pk",
             "action",
             "reason",
             "date",
@@ -123,3 +130,15 @@ class LoanOrderSerializer(OrderSerializer):
 class ActionTypeSerializer(serializers.Serializer):
     action = serializers.ChoiceField(choices=action_choices)
     reason = serializers.CharField(required=True, allow_blank=False)
+
+
+class LoanItemReturnSerializer(serializers.Serializer):
+    item_name: serializers.CharField(required=True)
+    item_expiry: serializers.CharField(required=True)
+    return_opened: serializers.IntegerField(required=True)
+    return_unopened: serializers.IntegerField(required=True)
+
+
+class LoanReturnSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField(required=True)
+    items = LoanItemReturnSerializer(many=True, required=True)

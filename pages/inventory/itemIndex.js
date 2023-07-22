@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
 
 import { CartProvider } from '../../components/CartContext';
+import FloatingCart from '../../components/FloatingCart';
 import Footer from '../../components/Footer';
 import ItemContainer from '../../components/ItemContainer/ItemContainer';
 import NavBar from '../../components/NavBar/NavBar';
@@ -155,6 +156,8 @@ const ItemIndex = () => {
             </Skeleton>
           )}
         </Stack>
+
+        <FloatingCart />
 
         <Footer />
       </CartProvider>
