@@ -73,6 +73,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
     order_items = OrderItemSerializer(many=True)
 
     class Meta:
@@ -92,6 +93,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class LoanOrderSerializer(OrderSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
     order_items = OrderItemSerializer(many=True)
 
     class Meta:

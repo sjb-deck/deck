@@ -1,13 +1,13 @@
 import { Stack } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { getCartItems } from '../../utils/cart-utils/getCartItems';
-import { Box } from '../styled';
+import { CartContext } from '../../CartContext';
+import { Box } from '../../styled';
 
 import { CartItem } from './CartItem';
 
 export const CartItems = () => {
-  const cartItems = getCartItems();
+  const { cartItems } = useContext(CartContext);
 
   return (
     <Box overflow='auto' maxHeight='50vh'>

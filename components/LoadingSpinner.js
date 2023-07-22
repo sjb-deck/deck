@@ -7,6 +7,7 @@ export const LoadingSpinner = () => {
   return (
     <Theme>
       <Box
+        data-testid='loading-spinner'
         sx={{
           display: 'flex',
           height: '100vh',

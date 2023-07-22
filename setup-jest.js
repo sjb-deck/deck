@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import { server } from './mocks/server/server.js';
 
 // Establish API mocking before all tests.

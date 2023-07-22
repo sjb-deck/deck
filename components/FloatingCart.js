@@ -7,19 +7,28 @@
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Button, Badge } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { URL_INV_CART } from '../globals';
-import { getCartItems } from '../utils/cart-utils/getCartItems';
+
+import { CartContext } from './CartContext';
 
 const FloatingCart = () => {
-  const cartItems = getCartItems();
+  const { cartItems } = useContext(CartContext);
 
   return (
     <Button
       onClick={() => (window.location.href = URL_INV_CART)}
       variant='contained'
-      style={{ position: 'fixed', right: 20, bottom: 20, borderRadius: 28 }}
+      style={{
+        position: 'fixed',
+        right: 20,
+        bottom: 20,
+        borderRadius: '100%',
+        padding: '6px',
+        height: '60px',
+        width: '60px',
+      }}
     >
       <Badge
         color='secondary'

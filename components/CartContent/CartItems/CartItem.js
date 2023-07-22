@@ -9,15 +9,23 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { CartItemPropType } from '../../globals';
-import { Paper } from '../styled';
+import { CartItemPropType } from '../../../globals';
+import { removeItemFromCart } from '../../../utils/cart-utils/removeItemFromCart';
+import { CartContext } from '../../CartContext';
+import { Paper } from '../../styled';
 
 export const CartItem = ({ cartItem }) => {
   const expiryDate =
     cartItem.expirydates.find((expiry) => expiry.id === cartItem.expiryId)
       .expirydate || 'No Expiry';
+
+  const { cartItems, setCartItems } = useContext(CartContext);
+
+  const handleDeleteCartItem = () => {
+    removeItemFromCart(cartItems, cartItem.expiryId, setCartItems);
+  };
 
   return (
     <Paper style={{ width: '100%' }}>
@@ -68,7 +76,11 @@ export const CartItem = ({ cartItem }) => {
           </Button>
         </Stack>
 
-        <IconButton aria-label='delete' size='medium'>
+        <IconButton
+          aria-label='delete'
+          size='medium'
+          onClick={handleDeleteCartItem}
+        >
           <HighlightOffIcon fontSize='inherit' />
         </IconButton>
       </Stack>

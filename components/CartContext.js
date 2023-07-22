@@ -1,14 +1,30 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { getCartState } from '../utils/cart-utils/getCartState';
+import { LOCAL_STORAGE_CART_KEY } from '../globals';
 
 export const CartContext = React.createContext();
 
-export const CartProvider = ({ children, initialState }) => {
-  const [cartState, setCartState] = useState(initialState || getCartState());
+const getCartStateFromLocalStorage = () => {
+  const cartItems = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
+  if (cartItems && cartItems.length > 0) return cartItems[0].type;
+  else return '';
+};
+
+const getCartItemsFromLocalStorage = () => {
+  const cartItems = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
+  return cartItems ? JSON.parse(cartItems) : [];
+};
+
+export const CartProvider = ({ children }) => {
+  const [cartState, setCartState] = useState(getCartStateFromLocalStorage());
+  const [cartItems, setCartItems] = useState(
+    getCartItemsFromLocalStorage() || [],
+  );
   return (
-    <CartContext.Provider value={{ cartState, setCartState }}>
+    <CartContext.Provider
+      value={{ cartState, setCartState, cartItems, setCartItems }}
+    >
       {children}
     </CartContext.Provider>
   );
@@ -16,5 +32,4 @@ export const CartProvider = ({ children, initialState }) => {
 
 CartProvider.propTypes = {
   children: PropTypes.node,
-  initialState: PropTypes.string,
 };

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 
 import { ItemPropType } from '../../globals';
@@ -25,6 +25,7 @@ import { CART_ITEM_TYPE_DEPOSIT, CART_ITEM_TYPE_WITHDRAW } from '../../globals';
 import { addToCart } from '../../utils/cart-utils/addToCart';
 import { getCartState } from '../../utils/cart-utils/getCartState';
 import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty';
+import { CartContext } from '../CartContext';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 
 const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
@@ -41,6 +42,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       ? item.expirydates[0].id
       : item.expirydates.find((itemExpiry) => itemExpiry.id == selector).id;
   const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
+  const { cartItems, setCartItems } = useContext(CartContext);
 
   useEffect(() => {
     const preselectedExpiryId =
@@ -98,7 +100,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         resetForm();
         return;
       }
-      if (getCartState() !== '' && getCartState() !== type) {
+      if (getCartState(cartItems) !== '' && getCartState(cartItems) !== type) {
         alert("You can't deposit and withdraw at the same time!");
         return;
       }
@@ -113,7 +115,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         cartUnopenedQuantity: formik.values.unopenedQty,
       };
 
-      addToCart(cartItem);
+      addToCart(cartItem, cartItems, setCartItems);
       setSnackbarOpen(true);
 
       handleClose();
@@ -126,11 +128,11 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       const {
         maxOpenedQty: calculatedMaxOpenedQty,
         maxUnopenedQty: calculatedMaxUnopenedQty,
-      } = getMaxWithdrawalQty(expiryId, item);
+      } = getMaxWithdrawalQty(cartItems, expiryId, item);
       setMaxOpenedQty(calculatedMaxOpenedQty);
       setMaxUnopenedQty(calculatedMaxUnopenedQty);
     },
-    [item],
+    [cartItems, item],
   );
 
   return (
