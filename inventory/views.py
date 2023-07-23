@@ -50,7 +50,7 @@ def admin(request):
 def api_items(request):
     try:
         items_data = ItemSerializer(Item.objects.all(), many=True).data
-        return Response({"data": items_data}, status=status.HTTP_200_OK)
+        return Response(items_data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -62,7 +62,7 @@ def api_items(request):
 def api_user(request):
     try:
         user_data = UserSerializer(request.user).data
-        return Response({"data": user_data}, status=status.HTTP_200_OK)
+        return Response(user_data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -84,7 +84,7 @@ def api_orders(request, option="all", order_id=None):
             data = OrderSerializer(Order.objects.get(id=order_id)).data
         else:
             data = OrderSerializer(Order.objects.all(), many=True).data
-        return Response({"data": data}, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -101,7 +101,7 @@ def api_submit_order(request):
             order = serializer.save()
             manage_items_change(order)
             return Response(
-                {"data": OrderSerializer(order).data},
+                OrderSerializer(order).data,
                 status=status.HTTP_201_CREATED,
             )
     except Exception as e:
@@ -117,7 +117,7 @@ def api_add_item(request):
         expiry_serializer = ItemSerializer(data=request.data)
         if expiry_serializer.is_valid(raise_exception=True):
             item = expiry_serializer.save()
-            return Response({"data": ItemSerializer(item).data}, status=201)
+            return Response(ItemSerializer(item).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -136,7 +136,7 @@ def create_new_expiry(request, item_id):
             item.total_quantity += expiry.quantity
             item.save()
             expiry.save()
-            return Response({"data": ItemSerializer(item).data}, status=201)
+            return Response(ItemSerializer(item).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -150,7 +150,7 @@ def loan_return_post(request):
         loan_return_serializer = LoanReturnSerializer(data=request.data)
         if loan_return_serializer.is_valid(raise_exception=True):
             loan_order = loan_return_serializer.save()
-            return Response({"data": OrderSerializer(loan_order).data}, status=201)
+            return Response(OrderSerializer(loan_order).data, status=201)
         else:
             return Response({"message": "Error during serialization"}, status=400)
     except Exception as e:
