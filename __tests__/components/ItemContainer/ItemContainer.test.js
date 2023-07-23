@@ -20,17 +20,7 @@ describe('ItemContainer', () => {
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
     expect(screen.getByText('Unit: ' + exampleItem.unit)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Total Qty: ' +
-          (Number(exampleItem.total_quantityopen) +
-            Number(exampleItem.total_quantityunopened)),
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Unopened Qty: ' + exampleItem.total_quantityunopened),
+      screen.getByText('Quantity: ' + exampleItem.total_quantity),
     ).toBeInTheDocument();
   });
 
@@ -42,30 +32,12 @@ describe('ItemContainer', () => {
     );
     await userEvent.click(screen.getByText('All'));
     expect(
-      screen.getByText(
-        'Total Qty: ' +
-          (Number(exampleItem.total_quantityopen) +
-            Number(exampleItem.total_quantityunopened)),
-      ),
+      screen.getByText('Quantity: ' + exampleItem.total_quantity),
     ).toBeInTheDocument();
+    const expiryItem = exampleItem.expiry_dates[0];
+    await userEvent.click(screen.getByText(expiryItem.expiry_date));
     expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityunopened),
-    ).toBeInTheDocument();
-    const expiryItem = exampleItem.expirydates[0];
-    await userEvent.click(screen.getByText(expiryItem.expirydate));
-    expect(
-      screen.getByText(
-        'Total Qty: ' + (expiryItem.quantityopen + expiryItem.quantityunopened),
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + expiryItem.quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Unopened Qty: ' + expiryItem.quantityunopened),
+      screen.getByText('Quantity: ' + expiryItem.quantity),
     ).toBeInTheDocument();
   });
 

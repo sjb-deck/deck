@@ -6,14 +6,12 @@ export const exampleItem = {
       expiry_date: '2023-06-30',
       quantity: 1,
       archived: false,
-      item: 1,
     },
     {
       id: 2,
       expiry_date: '2023-06-06',
       quantity: 1,
       archived: false,
-      item: 1,
     },
   ],
   name: 'Scissors',
@@ -26,32 +24,33 @@ export const exampleItem = {
 
 export const exampleItemNoExpiry = {
   id: 1,
-  expirydates: [],
+  expiry_dates: [
+    {
+      id: 1,
+      expiry_date: null,
+      quantity: 1,
+      archived: false,
+    },
+  ],
   name: 'No Expiry Object',
   type: 'General',
   unit: 'pair',
   imgpic: '/uploaded/item_img/example.png',
-  total_quantityopen: 2,
-  total_quantityunopened: 2,
-  min_quantityopen: 0,
-  min_quantityunopened: 0,
+  total_quantity: 1,
+  min_quantity: 0,
 };
 
 const mockProperties = {
   unit: 'Roll',
   imgpic: null,
-  total_quantityopen: 9,
-  total_quantityunopened: 8,
-  min_quantityopen: 0,
-  min_quantityunopened: 0,
-  expirydates: [
+  total_quantity: 9,
+  min_quantity: 0,
+  expiry_dates: [
     {
       id: 44,
-      expirydate: '2023-07-29',
-      quantityopen: 9,
-      quantityunopened: 8,
+      expiry_date: '2023-07-29',
+      quantity: 9,
       archived: false,
-      item: 70,
     },
   ],
 };

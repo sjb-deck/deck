@@ -1,27 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import SearchBar from '../components/SearchBar';
 
-const mockItems = [
-  {
-    id: 1,
-    name: 'Item 1',
-    type: 'Type 1',
-    imgpic: 'image1.jpg',
-    total_quantityopen: 10,
-    total_quantityunopened: 5,
-  },
-  {
-    id: 2,
-    name: 'Item 2',
-    type: 'Type 2',
-    imgpic: 'image2.jpg',
-    total_quantityopen: 7,
-    total_quantityunopened: 3,
-  },
-];
+import SearchBar from '../../components/SearchBar';
+import { mockItems } from '../../mocks/items';
 
 describe('SearchBar', () => {
   test('renders the search bar component', () => {
@@ -30,11 +13,13 @@ describe('SearchBar', () => {
     expect(searchInput).toBeInTheDocument();
   });
 
-  test('displays search results based on input', () => {
+  test('displays search results based on input', async () => {
     render(<SearchBar items={mockItems} selectedFilter={['All']} />);
     const searchInput = screen.getByLabelText('Search');
-    fireEvent.change(searchInput, { target: { value: 'Item 1' } });
-    const searchResult = screen.getByText('Item 1');
+    fireEvent.change(searchInput, {
+      target: { value: 'Gauze' },
+    });
+    const searchResult = screen.getByText('Gauze');
     expect(searchResult).toBeInTheDocument();
   });
 
@@ -47,12 +32,12 @@ describe('SearchBar', () => {
   });
 
   test('filters results based on selected filter', () => {
-    render(<SearchBar items={mockItems} selectedFilter={['Type 1']} />);
+    render(<SearchBar items={mockItems} selectedFilter={['Solution']} />);
     const searchInput = screen.getByLabelText('Search');
-    fireEvent.change(searchInput, { target: { value: 'Item' } });
-    const searchResult1 = screen.getByText('Item 1');
+    fireEvent.change(searchInput, { target: { value: 'S' } });
+    const searchResult1 = screen.getByText('Saline');
     expect(searchResult1).toBeInTheDocument();
-    const searchResult2 = screen.queryByText('Item 2');
+    const searchResult2 = screen.queryByText('Scissors');
     expect(searchResult2).not.toBeInTheDocument();
   });
 });

@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import SearchFilter from '../components/SearchFilter';
+import SearchFilter from '../../components/SearchFilter';
 
 describe('SearchFilter', () => {
   test('renders the filter buttons', () => {

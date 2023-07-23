@@ -15,7 +15,7 @@ export const handlers = [
   }),
 
   rest.get(INV_API_ITEMS_URL, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json([...mockItems]));
+    return res(ctx.status(200), ctx.json({ data: mockItems }));
   }),
 
   rest.post(INV_API_SUBMIT_ORDER_URL, (req, res, ctx) => {
