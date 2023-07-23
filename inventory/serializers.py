@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "extras"]
+        fields = ["id", "username", "email", "extras"]
 
 
 class ItemExpirySerializer(serializers.ModelSerializer):
