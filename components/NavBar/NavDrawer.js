@@ -49,11 +49,11 @@ export const NavDrawer = ({ user }) => {
         )}
 
         <Typography variant='h6' sx={{ mt: 2 }}>
-          {user ? `Hello ${user.name}` : <Skeleton />}
+          {user ? `Hello ${user.extras.name}` : <Skeleton />}
         </Typography>
 
         <Typography variant='caption'>
-          {user ? user.role : <Skeleton />}
+          {user ? user.extras.role : <Skeleton />}
         </Typography>
       </Box>
       <Divider />

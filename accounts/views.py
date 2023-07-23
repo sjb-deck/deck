@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-from .forms import CustomUserCreationForm
-from django import forms
-from .models import UserExtras
 import os
+
+from django import forms
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from django.urls import reverse
+
+from .forms import CustomUserCreationForm
+from .models import UserExtras
 
 
 class ImageUploadForm(forms.Form):
@@ -38,11 +40,11 @@ def edit(request):
             form = ImageUploadForm(request.POST, request.FILES)
             if form.is_valid():
                 m = UserExtras.objects.get(user=request.user)
-                if bool(m.profilepic) is not False:
-                    image_path = m.profilepic.path
+                if bool(m.profile_pic) is not False:
+                    image_path = m.profile_pic.path
                     if os.path.exists(image_path):
                         os.remove(image_path)
-                m.profilepic = form.cleaned_data["image"]
+                m.profile_pic = form.cleaned_data["image"]
                 m.save()
         return redirect(reverse("main_index"))
     else:

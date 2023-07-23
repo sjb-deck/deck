@@ -18,8 +18,8 @@ import {
   ITEMS_PER_PAGE,
 } from '../../globals';
 import useFetch from '../../hooks/use-fetch';
-import { exampleItem } from '../../mocks/items';
 import '../../inventory/src/scss/inventoryBase.scss';
+import { exampleItem } from '../../mocks/items';
 
 const ItemIndex = () => {
   const {

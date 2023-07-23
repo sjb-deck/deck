@@ -1,4 +1,4 @@
-import { ButtonGroup, Button, useMediaQuery } from '@mui/material';
+import { Button, ButtonGroup, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
@@ -50,11 +50,11 @@ const SearchFilter = ({ onFilterChange }) => {
       variant='text'
       aria-label='text button group'
       size={isSmallScreen ? 'small' : 'medium'}
+      className='dynamic-width'
       sx={{
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        width: { xs: '90%', sm: '70%', md: '70%', lg: '45%', xl: '35%' },
       }}
     >
       <Button

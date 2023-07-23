@@ -42,10 +42,8 @@ import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty'
 import { CartContext } from '../CartContext';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 
-const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
-  const [open, setOpen] = useState(false);
+const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const { postData } = usePostData(INV_API_CREATE_NEW_EXPIRY_URL);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setSelectedDate('');
@@ -61,8 +59,8 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const handleCloseDatePicker = (action) => {
     setOpenDatePicker(false);
     if (action === 'updateDate') {
-      const filteredDate = item.expirydates.filter(
-        (date) => date.expirydate === tempSelectedDate,
+      const filteredDate = item.expiry_dates.filter(
+        (date) => date.expiry_date === tempSelectedDate,
       );
       if (filteredDate.length === 0) {
         setSelectedDate(tempSelectedDate);
@@ -75,24 +73,24 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     }
   };
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const hasExpiry = !!item.expirydates[0].expirydate;
+  const hasExpiry = !!item.expiry_dates[0].expiry_date;
   const [selectedDate, setSelectedDate] = useState('');
   const [tempSelectedDate, setTempSelectedDate] = useState('');
-  const showDropdown = hasExpiry && item.expirydates.length > 1;
+  const showDropdown = hasExpiry && item.expiry_dates.length > 1;
   const [itemExpiryDates, setItemExpiryDates] = useState([]);
   const theme = useTheme();
   const preselectedExpiryId =
     selector == 'All'
-      ? item.expirydates[0].id
-      : item.expirydates.find((itemExpiry) => itemExpiry.id == selector).id;
+      ? item.expiry_dates[0].id
+      : item.expiry_dates.find((itemExpiry) => itemExpiry.id == selector).id;
   const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
   const { cartItems, setCartItems } = useContext(CartContext);
 
   useEffect(() => {
     const preselectedExpiryId =
       selector == 'All'
-        ? item.expirydates[0].id
-        : item.expirydates.find((itemExpiry) => itemExpiry.id == selector).id;
+        ? item.expiry_dates[0].id
+        : item.expiry_dates.find((itemExpiry) => itemExpiry.id == selector).id;
 
     setSelectedExpiryId(preselectedExpiryId);
   }, [item, hasExpiry, selector]);
@@ -101,18 +99,18 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
     if (hasExpiry && type == CART_ITEM_TYPE_DEPOSIT) {
       if (selectedDate === '') {
         setItemExpiryDates([
-          ...item.expirydates,
-          { id: 'addNew', expirydate: 'New' },
+          ...item.expiry_dates,
+          { id: 'addNew', expiry_date: 'New' },
         ]);
       } else {
         setItemExpiryDates([
-          ...item.expirydates,
-          { id: 'newDate', expirydate: selectedDate },
-          { id: 'addNew', expirydate: 'New' },
+          ...item.expiry_dates,
+          { id: 'newDate', expiry_date: selectedDate },
+          { id: 'addNew', expiry_date: 'New' },
         ]);
       }
     } else {
-      setItemExpiryDates(item.expirydates);
+      setItemExpiryDates(item.expiry_dates);
     }
   }, [selectedDate]);
 
@@ -121,8 +119,8 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
       return selectedDate;
     }
     return (
-      item.expirydates.find((itemExpiry) => itemExpiry.id == expiryId)
-        .expirydate || 'No Expiry'
+      item.expiry_dates.find((itemExpiry) => itemExpiry.id == expiryId)
+        .expiry_date || 'No Expiry'
     );
   };
 
@@ -143,7 +141,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const addNewExpiry = async () => {
     const data = {
       item: item.id,
-      expirydate: getExpiryFromId(selectedExpiryId),
+      expiry_date: getExpiryFromId(selectedExpiryId),
       quantityopen: formik.values.openedQty,
       quantityunopened: formik.values.unopenedQty,
     };
@@ -159,18 +157,14 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
 
   const formik = useFormik({
     initialValues: {
-      openedQty: '',
-      unopenedQty: '',
+      quantity: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      if (values.openedQty == '') {
-        values.openedQty = 0;
+      if (values.quantity == '') {
+        values.quantity = 0;
       }
-      if (values.unopenedQty == '') {
-        values.unopenedQty = 0;
-      }
-      if (values.openedQty == 0 && values.unopenedQty == 0) {
+      if (values.quantity == 0) {
         handleClose();
         resetForm();
         return;
@@ -216,11 +210,8 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
   const MyActionBar = () => {
     return (
       <DialogActions>
-        <Button onClick={() => handleCloseDatePicker('close')}> Cancel </Button>
-        <Button onClick={() => handleCloseDatePicker('updateDate')}>
-          {' '}
-          Ok{' '}
-        </Button>
+        <Button onClick={() => handleCloseDatePicker('close')}>Cancel</Button>
+        <Button onClick={() => handleCloseDatePicker('updateDate')}>Ok</Button>
       </DialogActions>
     );
   };
@@ -244,15 +235,6 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         message={responseMsg}
         onClose={() => setOpenDepositResponse(false)}
       />
-      <Button
-        size='small'
-        variant='contained'
-        color={type == CART_ITEM_TYPE_DEPOSIT ? 'success' : 'error'}
-        onClick={handleOpen}
-        disabled={disabled}
-      >
-        {type}
-      </Button>
 
       <Dialog
         open={openConfirmation}
@@ -291,7 +273,7 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
         aria-labelledby='responsive-dialog-title'
       >
         <DialogTitle id='responsive-dialog-title'>
-          {'Pick a new expiry date'}
+          Pick a new expiry date
         </DialogTitle>
         <DialogContent>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -376,76 +358,64 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
               {item.name}
             </Typography>
             <TextField
-              id='filled-select-expiry-date'
-              select={
-                getExpiryFromId(selectedExpiryId) === 'No Expiry' ||
-                (type != CART_ITEM_TYPE_DEPOSIT && !showDropdown)
-                  ? false
-                  : true
-              }
+              select
               disabled={
                 getExpiryFromId(selectedExpiryId) === 'No Expiry' ||
                 (type != CART_ITEM_TYPE_DEPOSIT && !showDropdown)
-                  ? true
-                  : false
               }
-              label={'Expiry Date'}
+              label='Expiry Date'
               value={getExpiryFromId(selectedExpiryId)}
               variant='filled'
               sx={{ width: '80%' }}
             >
               {itemExpiryDates.map((itemExpiry) => {
-                if (itemExpiry.expirydate !== 'New') {
-                  return (
-                    <MenuItem
-                      key={itemExpiry.expirydate}
-                      value={itemExpiry.expirydate}
-                      onClick={() => {
-                        setSelectedExpiryId(itemExpiry.id);
-                        if (itemExpiry.id !== 'newDate') {
-                          setMaxQtys(itemExpiry.id);
-                        } else {
-                          setMaxQtys(null);
-                        }
-                      }}
+                itemExpiry.expiry_date !== 'New' ? (
+                  <MenuItem
+                    key={itemExpiry.expiry_date}
+                    value={itemExpiry.expiry_date}
+                    onClick={() => {
+                      setSelectedExpiryId(itemExpiry.id);
+                      if (itemExpiry.id !== 'newDate') {
+                        setMaxQtys(itemExpiry.id);
+                      } else {
+                        setMaxQtys(null);
+                      }
+                    }}
+                  >
+                    <Typography variant='h8'>
+                      {itemExpiry.expiry_date}
+                    </Typography>
+                  </MenuItem>
+                ) : (
+                  <MenuItem
+                    key={itemExpiry.expiry_date}
+                    value={itemExpiry.expiry_date}
+                    onClick={() => {
+                      handleOpenDatePicker();
+                    }}
+                  >
+                    <Box
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      paddingRight={'10px'}
+                      width={'100%'}
                     >
+                      <AddIcon />
                       <Typography variant='h8'>
-                        {itemExpiry.expirydate}
+                        {itemExpiry.expiry_date}
                       </Typography>
-                    </MenuItem>
-                  );
-                } else {
-                  return (
-                    <MenuItem
-                      key={itemExpiry.expirydate}
-                      value={itemExpiry.expirydate}
-                      onClick={() => {
-                        handleOpenDatePicker();
-                      }}
-                    >
-                      <Box
-                        display={'flex'}
-                        alignItems={'center'}
-                        justifyContent={'center'}
-                        paddingRight={'10px'}
-                        width={'100%'}
-                      >
-                        <AddIcon />
-                        <Typography variant='h8'>
-                          {itemExpiry.expirydate}
-                        </Typography>
-                      </Box>
-                    </MenuItem>
-                  );
-                }
+                    </Box>
+                  </MenuItem>
+                );
               })}
             </TextField>
             <TextField
               id='filled-basic'
               type='number'
-              label='Opened Qty'
+              label='Quantity'
               variant='filled'
-              name='openedQty'
+              name='quantity'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>{item.unit}</InputAdornment>
@@ -458,27 +428,6 @@ const CartPopupModal = ({ type, item, selector, setCartState, disabled }) => {
                 formik.touched.openedQty && Boolean(formik.errors.openedQty)
               }
               helperText={formik.touched.openedQty && formik.errors.openedQty}
-            />
-            <TextField
-              id='filled-basic'
-              type='number'
-              label='Unopened Qty'
-              variant='filled'
-              name='unopenedQty'
-              sx={{ width: '80%' }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>{item.unit}</InputAdornment>
-                ),
-              }}
-              value={formik.values.unopenedQty}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.unopenedQty && Boolean(formik.errors.unopenedQty)
-              }
-              helperText={
-                formik.touched.unopenedQty && formik.errors.unopenedQty
-              }
             />
             {type == CART_ITEM_TYPE_DEPOSIT ? (
               <Button
@@ -521,8 +470,8 @@ CartPopupModal.propTypes = {
     PropTypes.number.isRequired,
     PropTypes.string.isRequired,
   ]),
-  setCartState: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };
 
 export default CartPopupModal;

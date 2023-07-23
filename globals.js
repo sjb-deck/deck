@@ -27,17 +27,14 @@ export const ItemPropType = PropTypes.shape({
   type: PropTypes.string,
   unit: PropTypes.string,
   imgpic: PropTypes.string,
-  total_quantityopen: PropTypes.number,
-  total_quantityunopened: PropTypes.number,
-  min_quantityopen: PropTypes.number,
-  min_quantityunopened: PropTypes.number,
-  expirydates: PropTypes.arrayOf(
+  total_quantity: PropTypes.number,
+  min_quantity: PropTypes.number,
+  is_opened: PropTypes.bool,
+  expiry_dates: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
-      expirydate: PropTypes.string,
-      quantityopen: PropTypes.number,
-      quantityunopened: PropTypes.number,
-      item: PropTypes.number,
+      expiry_date: PropTypes.string,
+      quantity: PropTypes.number,
       archived: PropTypes.bool,
     }),
   ),
@@ -53,10 +50,13 @@ export const CartItemPropType = PropTypes.shape({
 
 export const UserPropType = PropTypes.shape({
   id: PropTypes.number,
-  name: PropTypes.string,
-  profilepic: PropTypes.string,
-  role: PropTypes.string,
-  user: PropTypes.number,
+  username: PropTypes.string,
+  email: PropTypes.string,
+  extras: PropTypes.shape({
+    profile_pic: PropTypes.string,
+    role: PropTypes.string,
+    name: PropTypes.string,
+  }),
 });
 
 export const ItemFormDataPropType = PropTypes.shape({

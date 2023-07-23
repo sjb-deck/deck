@@ -8,10 +8,10 @@ import { UserPropType } from '../globals';
 
 export const UserAvatar = ({ user, size }) => {
   return user ? (
-    <Tooltip title={`${user.name}`}>
+    <Tooltip title={`${user.extras.name}`}>
       <Avatar
-        alt={`${user.name}`}
-        src={`${user.profilepic}`}
+        alt={`${user.extras.name}`}
+        src={`${user.extras.profile_pic}`}
         sx={{ width: size, height: size }}
       />
     </Tooltip>
