@@ -1,4 +1,5 @@
 from django.db import models
+
 from inventory.globals import typechoices
 
 # Create your models here.
@@ -16,18 +17,14 @@ from inventory.globals import typechoices
         Metric to measure quantity. Defualts to 'units'
     -> image : CharField
         Directory path to image. Can be blank
-    -> total_quantityopen : IntegerField
-        Quantity of opened item for all expirys.
+    -> total_quantity : IntegerField
+        Quantity of item for all expirys.
         Defaults to 0
-    -> total_quantityunopened : IntegerField
-        Quantity of unopened item for all expirys.
+    -> min_quantity : IntegerField
+        Minimum quantity for item for all expirys before warning.
         Defaults to 0
-    -> min_quantityopen : IntegerField
-        Minimum quantity for opened item for all expirys before warning.
-        Defaults to 0
-    -> min_quantityunopened : IntegerField
-        Minimum quantity for unopened item for all expirys before warning.
-        Defaults to 0
+    -> is_opened : BooleanField
+        Whether item is opened or not.
 
     ** Methods
     -------
@@ -40,10 +37,9 @@ class Item(models.Model):
     type = models.CharField(max_length=50, choices=typechoices, default="General")
     unit = models.CharField(max_length=50, default="units")
     imgpic = models.ImageField(null=True, blank=True, upload_to="item_img")
-    total_quantityopen = models.IntegerField(null=False, blank=False, default=0)
-    total_quantityunopened = models.IntegerField(null=False, blank=False, default=0)
-    min_quantityopen = models.IntegerField(null=True, blank=True, default=0)
-    min_quantityunopened = models.IntegerField(null=True, blank=True, default=0)
+    total_quantity = models.IntegerField(null=False, blank=False, default=0)
+    min_quantity = models.IntegerField(null=True, blank=True, default=0)
+    is_opened = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.name}"
