@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_CART_KEY } from '../../globals';
+import { LOCAL_STORAGE_CART_KEY } from '../../globals/globals';
 
 /**
  * Adds the cart item to local storage and updates the cart state in context

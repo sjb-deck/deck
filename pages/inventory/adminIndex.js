@@ -1,28 +1,25 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import LoanOrderList from '../../components/Admin/LoanOrderList';
-import OrderList from '../../components/Admin/OrderList';
-import Footer from '../../components/Footer';
-import NavBar from '../../components/NavBar/NavBar';
-import { SnackBarAlerts } from '../../components/SnackBarAlerts';
-import Theme from '../../components/Themes';
-import { INV_API_ORDERS_URL, INV_API_USER_URL } from '../../globals';
-import useFetch from '../../hooks/use-fetch';
+import {
+  Footer,
+  LoanOrderList,
+  NavBar,
+  OrderList,
+  SnackBarAlerts,
+  Theme,
+} from '../../components';
+import { useItems, useUser } from '../../hooks/queries';
 import '../../inventory/src/scss/inventoryBase.scss';
 
 const AdminIndex = () => {
   const {
     data,
-    loading: dataLoading,
+    isLoading: dataLoading,
     error: dataError,
     refetch,
-  } = useFetch(INV_API_ORDERS_URL);
-  const {
-    data: user,
-    loading: userLoading,
-    error: userError,
-  } = useFetch(INV_API_USER_URL);
+  } = useItems();
+  const { data: user, loading: userLoading, error: userError } = useUser();
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [view, setView] = useState('orders');

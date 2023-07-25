@@ -12,7 +12,7 @@ import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals';
+import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals/globals';
 import { ColorModeContext } from '../Themes';
 import { UserAvatar } from '../UserAvatar';
 

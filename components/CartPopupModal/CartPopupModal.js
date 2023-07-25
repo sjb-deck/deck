@@ -36,13 +36,13 @@ import {
   ItemPropType,
 } from '../../globals';
 import usePostData from '../../hooks/use-post-data';
+import { CartContext } from '../../providers/CartProvider';
 import { addToCart } from '../../utils/cart-utils/addToCart';
 import { getCartState } from '../../utils/cart-utils/getCartState';
 import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty';
-import { CartContext } from '../CartContext';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 
-const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
+export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const { postData } = usePostData(INV_API_CREATE_NEW_EXPIRY_URL);
   const handleClose = () => {
     setOpen(false);
@@ -473,5 +473,3 @@ CartPopupModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
 };
-
-export default CartPopupModal;

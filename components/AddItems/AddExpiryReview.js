@@ -12,7 +12,7 @@ import { ExpiryFormDataPropType } from '../../globals';
  * @param {Object} itemFormData - The form data for the new item.
  * @return {JSX.Element} - The rendered component.
  */
-function AddExpiryReview({ expiryFormData }) {
+export const AddExpiryReview = ({ expiryFormData }) => {
   return (
     <div>
       <Typography
@@ -252,10 +252,8 @@ function AddExpiryReview({ expiryFormData }) {
       </div>
     </div>
   );
-}
+};
 
 AddExpiryReview.propTypes = {
   expiryFormData: ExpiryFormDataPropType.isRequired,
 };
-
-export default AddExpiryReview;

@@ -8,7 +8,7 @@ import usePostData from '../../hooks/use-post-data';
 
 import LoanOrderContent from './LoanOrderContent';
 
-const LoanOrderList = ({ loanOrders, refetch }) => {
+export const LoanOrderList = ({ loanOrders, refetch }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const { postData, isLoading } = usePostData(INV_API_REVERT_ORDER);
 
@@ -74,8 +74,6 @@ const LoanOrderList = ({ loanOrders, refetch }) => {
     </Box>
   );
 };
-
-export default LoanOrderList;
 
 LoanOrderList.propTypes = {
   loanOrders: PropTypes.arrayOf(LoanOrderPropType).isRequired,

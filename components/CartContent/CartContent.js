@@ -8,13 +8,10 @@ import React, { useContext, useMemo, useState } from 'react';
 import {
   CART_ITEM_TYPE_WITHDRAW,
   INV_API_SUBMIT_ORDER_URL,
-  URL_INV_ITEMS,
 } from '../../globals';
 import usePostData from '../../hooks/use-post-data';
-import { clearCart } from '../../utils/cart-utils/clearCart';
-import { getCartState } from '../../utils/cart-utils/getCartState';
-import { getDjangoFriendlyDate } from '../../utils/getDjangoFriendlyDate';
-import { CartContext } from '../CartContext';
+import { CartContext } from '../../providers';
+import { clearCart, getCartState, getDjangoFriendlyDate } from '../../utils';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 import { Paper } from '../styled';
@@ -22,7 +19,7 @@ import { Paper } from '../styled';
 import { CartItems } from './CartItems/CartItems';
 import { emptyCartMessage } from './labels';
 
-const CartContent = () => {
+export const CartContent = () => {
   const { cartItems, setCartItems } = useContext(CartContext);
   const cartState = getCartState(cartItems);
   const isWithdraw = cartState === 'Withdraw';
@@ -245,5 +242,3 @@ const CartContent = () => {
     <LoadingSpinner />
   );
 };
-
-export default CartContent;

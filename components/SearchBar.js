@@ -67,7 +67,7 @@ const SearchResultItem = ({ item }) => (
   </Grid>
 );
 
-const SearchBar = ({ items, selectedFilter, callback }) => {
+export const SearchBar = ({ items, selectedFilter, callback }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredResults = (data, searchTerm) => {
@@ -116,5 +116,3 @@ SearchBar.propTypes = {
   selectedFilter: PropTypes.array.isRequired,
   callback: PropTypes.func,
 };
-
-export default SearchBar;

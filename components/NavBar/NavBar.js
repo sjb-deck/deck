@@ -71,7 +71,7 @@ export const actionItems = [
   },
 ];
 
-const NavBar = ({ user }) => {
+export const NavBar = ({ user }) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -212,8 +212,6 @@ const NavBar = ({ user }) => {
     </Box>
   );
 };
-
-export default NavBar;
 
 NavBar.propTypes = {
   user: UserPropType,

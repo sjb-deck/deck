@@ -3,16 +3,17 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Divider,
   Grid,
   Stack,
-  Box,
 } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import { OrderPropType } from '../../globals';
-const OrderContent = ({ order, isMobile }) => {
+
+export const OrderContent = ({ order, isMobile }) => {
   const date = new Date(order.date);
   const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date
     .getMinutes()
@@ -106,8 +107,6 @@ const OrderContent = ({ order, isMobile }) => {
     </Accordion>
   );
 };
-
-export default OrderContent;
 
 OrderContent.propTypes = {
   order: OrderPropType,

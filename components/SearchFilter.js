@@ -10,7 +10,7 @@ const types = [
   'Universal Precaution',
 ];
 
-const SearchFilter = ({ onFilterChange }) => {
+export const SearchFilter = ({ onFilterChange }) => {
   const [selectedFilter, setSelectedFilter] = useState(['All']);
   const isSmallScreen = useMediaQuery('(max-width: 1000px)');
   const handleTypeSelection = (type) => {
@@ -83,5 +83,3 @@ const SearchFilter = ({ onFilterChange }) => {
 SearchFilter.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
 };
-
-export default SearchFilter;

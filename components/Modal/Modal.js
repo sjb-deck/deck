@@ -1,8 +1,8 @@
-import { Modal as MaterialModal, Box } from '@mui/material';
+import { Box, Modal as MaterialModal } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 
-const Modal = ({ children, control, isOpen, onClose, maxWidth }) => {
+export const Modal = ({ children, control, isOpen, onClose, maxWidth }) => {
   const controlled =
     typeof isOpen === 'boolean' && typeof onClose === 'function';
   const [_opened, setOpened] = useState(false);
@@ -46,8 +46,6 @@ const Modal = ({ children, control, isOpen, onClose, maxWidth }) => {
     </div>
   );
 };
-
-export default Modal;
 
 Modal.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,

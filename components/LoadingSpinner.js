@@ -1,22 +1,18 @@
 import { Box, CircularProgress } from '@mui/material';
 import React from 'react';
 
-import Theme from './Themes';
-
 export const LoadingSpinner = () => {
   return (
-    <Theme>
-      <Box
-        data-testid='loading-spinner'
-        sx={{
-          display: 'flex',
-          height: '100vh',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    </Theme>
+    <Box
+      data-testid='loading-spinner'
+      sx={{
+        display: 'flex',
+        height: '100vh',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <CircularProgress />
+    </Box>
   );
 };

@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import React, { useContext } from 'react';
 
-import { CartContext } from '../../CartContext';
+import { CartContext } from '../../../providers';
 import { Box } from '../../styled';
 
 import { CartItem } from './CartItem';

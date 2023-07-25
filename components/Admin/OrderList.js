@@ -7,7 +7,7 @@ import { OrderPropType } from '../../globals';
 
 import OrderContent from './OrderContent';
 
-const OrderList = ({ orders }) => {
+export const OrderList = ({ orders }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   return (
     <Box
@@ -54,8 +54,6 @@ const OrderList = ({ orders }) => {
     </Box>
   );
 };
-
-export default OrderList;
 
 OrderList.propTypes = {
   orders: PropTypes.arrayOf(OrderPropType).isRequired,

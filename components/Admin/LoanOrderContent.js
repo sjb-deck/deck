@@ -15,7 +15,7 @@ import React from 'react';
 import { LoanOrderPropType } from '../../globals';
 import Modal from '../Modal/Modal';
 
-const LoanOrderContent = ({
+export const LoanOrderContent = ({
   order,
   isMobile,
   isLoading,
@@ -187,8 +187,6 @@ const LoanOrderContent = ({
     </Accordion>
   );
 };
-
-export default LoanOrderContent;
 
 LoanOrderContent.propTypes = {
   order: LoanOrderPropType,

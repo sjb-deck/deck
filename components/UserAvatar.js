@@ -4,7 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { UserPropType } from '../globals';
+import { UserPropType } from '../globals/globals';
 
 export const UserAvatar = ({ user, size }) => {
   return user ? (

@@ -6,14 +6,13 @@
  */
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Button, Badge } from '@mui/material';
+import { Badge, Button } from '@mui/material';
 import React, { useContext } from 'react';
 
 import { URL_INV_CART } from '../globals';
+import { CartContext } from '../providers';
 
-import { CartContext } from './CartContext';
-
-const FloatingCart = () => {
+export const FloatingCart = () => {
   const { cartItems } = useContext(CartContext);
 
   return (
@@ -40,5 +39,3 @@ const FloatingCart = () => {
     </Button>
   );
 };
-
-export default FloatingCart;

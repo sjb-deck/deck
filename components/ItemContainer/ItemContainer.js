@@ -10,9 +10,9 @@ import {
   CART_ITEM_TYPE_WITHDRAW,
   ItemPropType,
 } from '../../globals';
+import { CartContext } from '../../providers';
 import { getCartState } from '../../utils/cart-utils/getCartState';
-import { CartContext } from '../CartContext';
-import CartPopupModal from '../CartPopupModal/CartPopupModal';
+import { CartPopupModal } from '../CartPopupModal';
 import { Paper } from '../styled';
 
 /**
@@ -20,7 +20,7 @@ import { Paper } from '../styled';
  * @returns Item container
  */
 
-const ItemContainer = ({ item }) => {
+export const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
   const { cartItems } = useContext(CartContext);
@@ -161,5 +161,3 @@ const ItemContainer = ({ item }) => {
 ItemContainer.propTypes = {
   item: ItemPropType.isRequired,
 };
-
-export default ItemContainer;

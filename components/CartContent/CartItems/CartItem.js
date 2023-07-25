@@ -12,8 +12,8 @@ import {
 import React, { useContext } from 'react';
 
 import { CartItemPropType } from '../../../globals';
+import { CartContext } from '../../../providers/CartProvider';
 import { removeItemFromCart } from '../../../utils/cart-utils/removeItemFromCart';
-import { CartContext } from '../../CartContext';
 import { Paper } from '../../styled';
 
 export const CartItem = ({ cartItem }) => {
