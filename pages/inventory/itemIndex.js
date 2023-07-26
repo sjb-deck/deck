@@ -10,7 +10,6 @@ import {
   NavBar,
   SearchBar,
   SearchFilter,
-  SnackBarAlerts,
 } from '../../components';
 import { ITEMS_PER_PAGE } from '../../globals';
 import { useItems, useUser } from '../../hooks/queries';
@@ -19,14 +18,12 @@ import { exampleItem } from '../../mocks/items';
 import { CartProvider } from '../../providers';
 
 export const ItemIndex = () => {
-  const { data: items, error: dataError, isLoading: dataLoading } = useItems();
-  const { data: user, isLoading: userLoading, error: userError } = useUser();
+  const { data: items } = useItems();
+  const { data: userData } = useUser();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [userData, setUserData] = useState(user);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -59,23 +56,9 @@ export const ItemIndex = () => {
     setItemsToDisplay(newItems);
   };
 
-  useEffect(() => {
-    if (dataError || userError) {
-      setSnackbarOpen(true);
-    }
-    if (!userLoading && !userError) {
-      setUserData(user);
-    }
-  }, [dataLoading, userLoading, dataError, userError, user]);
-
   return (
     <CartProvider>
       <NavBar user={userData} />
-      <SnackBarAlerts
-        open={snackbarOpen}
-        message={dataError?.message || userError?.message}
-      />
-
       <div
         className='nav-margin-compensate'
         style={{ display: 'flex', justifyContent: 'center' }}

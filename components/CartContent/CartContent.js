@@ -5,15 +5,11 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import React, { useContext, useMemo, useState } from 'react';
 
-import {
-  CART_ITEM_TYPE_WITHDRAW,
-  INV_API_SUBMIT_ORDER_URL,
-} from '../../globals';
-import usePostData from '../../hooks/use-post-data';
+import { CART_ITEM_TYPE_WITHDRAW } from '../../globals';
+import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
 import { clearCart, getCartState, getDjangoFriendlyDate } from '../../utils';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { SnackBarAlerts } from '../SnackBarAlerts';
 import { Paper } from '../styled';
 
 import { CartItems } from './CartItems/CartItems';
@@ -31,26 +27,17 @@ export const CartContent = () => {
   const [loaneeName, setLoaneeName] = useState('');
   const [returnDate, setReturnDate] = useState(dayjs());
   const [reason, setReason] = useState('');
-  const { postData } = usePostData(INV_API_SUBMIT_ORDER_URL);
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [postDataError, setPostDataError] = useState('');
+  const { mutate, isLoading } = useOrders();
 
   const handleSubmit = async () => {
-    setLoading(true);
     const data = buildPayload();
-    const result = await postData(data);
-
-    if (result.status === 'success') {
-      // TODO: Instead of redirecting, show order items
-      clearCart(setCartItems);
-      window.location.href = URL_INV_ITEMS;
-      setLoading(false);
-      return;
-    }
-    setPostDataError(result.error);
-    setSnackbarOpen(true);
-    setLoading(false);
+    mutate(data, {
+      onSuccess: () => {
+        // TODO: Instead of redirecting, show order items
+        clearCart(setCartItems);
+        window.location.href = URL_INV_ITEMS;
+      },
+    });
   };
 
   const buildPayload = () => {
@@ -174,14 +161,8 @@ export const CartContent = () => {
     );
   }
 
-  return !loading ? (
+  return !isLoading ? (
     <>
-      <SnackBarAlerts
-        severity='error'
-        message={postDataError}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-      />
       <Stack
         alignItems='center'
         justifyContent='center'

@@ -6,6 +6,8 @@ import React from 'react';
 
 import { Theme } from '../components';
 
+import { AlertProvider } from './AlertProvider';
+
 const queryClient = new QueryClient();
 
 export const InventoryProvider = ({ children }) => {
@@ -13,7 +15,7 @@ export const InventoryProvider = ({ children }) => {
     <Theme>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <AlertProvider>{children}</AlertProvider>
         </QueryClientProvider>
       </LocalizationProvider>
     </Theme>
