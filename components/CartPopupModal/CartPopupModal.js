@@ -20,8 +20,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
@@ -276,24 +274,22 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
           Pick a new expiry date
         </DialogTitle>
         <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDatePicker
-              minDate={dayjs()}
-              defaultValue={dayjs()}
-              onChange={(value) => updateTempSelectedDate(value)}
-              slotProps={{
-                layout: {
-                  sx: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
+          <StaticDatePicker
+            minDate={dayjs()}
+            defaultValue={dayjs()}
+            onChange={(value) => updateTempSelectedDate(value)}
+            slotProps={{
+              layout: {
+                sx: {
+                  display: 'flex',
+                  flexDirection: 'column',
                 },
-              }}
-              slots={{
-                actionBar: MyActionBar,
-              }}
-            />
-          </LocalizationProvider>
+              },
+            }}
+            slots={{
+              actionBar: MyActionBar,
+            }}
+          />
         </DialogContent>
       </Dialog>
 

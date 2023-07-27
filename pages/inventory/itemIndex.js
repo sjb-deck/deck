@@ -1,6 +1,8 @@
 import { Skeleton, Typography } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -58,74 +60,81 @@ export const ItemIndex = () => {
 
   return (
     <CartProvider>
-      <NavBar user={userData} />
-      <div
-        className='nav-margin-compensate'
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        {items ? (
-          <SearchBar
-            items={items}
-            selectedFilter={selectedFilter}
-            callback={searchCallback}
-          />
-        ) : (
-          <Skeleton>
-            <SearchBar items={[exampleItem]} selectedFilter={selectedFilter} />
-          </Skeleton>
-        )}
-      </div>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <NavBar user={userData} />
+        <div
+          className='nav-margin-compensate'
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          {items ? (
+            <SearchBar
+              items={items}
+              selectedFilter={selectedFilter}
+              callback={searchCallback}
+            />
+          ) : (
+            <Skeleton>
+              <SearchBar
+                items={[exampleItem]}
+                selectedFilter={selectedFilter}
+              />
+            </Skeleton>
+          )}
+        </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
-        <SearchFilter onFilterChange={handleFilterChange} />
-      </div>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}
+        >
+          <SearchFilter onFilterChange={handleFilterChange} />
+        </div>
 
-      <Stack
-        direction='column'
-        justifyContent='flex-start'
-        alignItems='center'
-        spacing={3}
-        sx={{
-          marginTop: 1,
-          minHeight: 0.8,
-        }}
-      >
-        {itemsToDisplay && itemsToDisplay.length === 0 && (
-          <Typography
-            variant='body1'
-            sx={{
-              marginTop: '16px',
-              fontStyle: 'italic',
-            }}
-          >
-            No results found.
-          </Typography>
-        )}
-        {itemsToDisplay
-          ? itemsToDisplay.slice(startIndex, endIndex).map((item) => {
-              return <ItemContainer key={item.id} item={item} />;
-            })
-          : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
-              <Skeleton key={index} variant='rectangular'>
-                <ItemContainer item={exampleItem} />
-              </Skeleton>
-            ))}
-        {itemsToDisplay ? (
-          <Pagination
-            page={currentPage}
-            count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
-            onChange={handlePageChange}
-          />
-        ) : (
-          <Skeleton>
-            <Pagination />
-          </Skeleton>
-        )}
-      </Stack>
+        <Stack
+          direction='column'
+          justifyContent='flex-start'
+          alignItems='center'
+          spacing={3}
+          sx={{
+            marginTop: 1,
+            minHeight: 0.8,
+          }}
+        >
+          {itemsToDisplay && itemsToDisplay.length === 0 && (
+            <Typography
+              variant='body1'
+              sx={{
+                marginTop: '16px',
+                fontStyle: 'italic',
+              }}
+            >
+              No results found.
+            </Typography>
+          )}
+          {itemsToDisplay
+            ? itemsToDisplay.slice(startIndex, endIndex).map((item) => {
+                return <ItemContainer key={item.id} item={item} />;
+              })
+            : [...Array(ITEMS_PER_PAGE).keys()].map((index) => (
+                <Skeleton key={index} variant='rectangular'>
+                  <ItemContainer item={exampleItem} />
+                </Skeleton>
+              ))}
+          {itemsToDisplay ? (
+            <Pagination
+              page={currentPage}
+              count={Math.ceil(itemsToDisplay.length / ITEMS_PER_PAGE)}
+              onChange={handlePageChange}
+            />
+          ) : (
+            <Skeleton>
+              <Pagination />
+            </Skeleton>
+          )}
+        </Stack>
 
-      <FloatingCart />
+        <FloatingCart />
 
-      <Footer />
+        <Footer />
+      </LocalizationProvider>
     </CartProvider>
   );
 };
