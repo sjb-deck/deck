@@ -110,7 +110,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
     } else {
       setItemExpiryDates(item.expiry_dates);
     }
-  }, [selectedDate]);
+  }, [selectedDate, hasExpiry, item.expiry_dates, type]);
 
   const getExpiryFromId = (expiryId) => {
     if (expiryId === 'newDate') {
@@ -240,7 +240,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         aria-labelledby='responsive-dialog-title'
       >
         <DialogTitle id='responsive-dialog-title'>
-          {'Proceed to deposit item?'}
+          Proceed to deposit item?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -354,7 +354,10 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
               {item.name}
             </Typography>
             <TextField
-              select
+              select={
+                getExpiryFromId(selectedExpiryId) !== 'No Expiry' &&
+                (type == CART_ITEM_TYPE_DEPOSIT || showDropdown)
+              }
               disabled={
                 getExpiryFromId(selectedExpiryId) === 'No Expiry' ||
                 (type != CART_ITEM_TYPE_DEPOSIT && !showDropdown)
@@ -418,7 +421,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                 ),
               }}
               sx={{ width: '80%' }}
-              value={formik.values.openedQty}
+              value={formik.values.quantity}
               onChange={formik.handleChange}
               error={
                 formik.touched.openedQty && Boolean(formik.errors.openedQty)
