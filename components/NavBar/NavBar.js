@@ -1,7 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import IosShareIcon from '@mui/icons-material/IosShare';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -24,8 +23,7 @@ import {
   URL_INV_ADD_ITEM,
   URL_INV_CART,
   URL_INV_VIEW_ITEM,
-  URL_INV_VIEW_LOANS,
-  URL_INV_VIEW_ORDERS,
+  URL_INV_VIEW_ORDERS_LOANS,
   URL_LOGOUT,
   URL_PROFILE,
   UserPropType,
@@ -67,18 +65,13 @@ export const actionItems = [
     link: URL_INV_VIEW_ITEM,
   },
   {
-    title: 'View orders',
+    title: 'View orders & loans',
     icon: <LocalMallIcon style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_ORDERS,
-  },
-  {
-    title: 'View loans',
-    icon: <IosShareIcon style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_LOANS,
+    link: URL_INV_VIEW_ORDERS_LOANS,
   },
 ];
 
-const NavBar = ({ user }) => {
+export const NavBar = ({ user }) => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -196,7 +189,7 @@ const NavBar = ({ user }) => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box component='nav'>
+      <Box>
         <Drawer
           anchor='right'
           variant='temporary'
@@ -219,8 +212,6 @@ const NavBar = ({ user }) => {
     </Box>
   );
 };
-
-export default NavBar;
 
 NavBar.propTypes = {
   user: UserPropType,

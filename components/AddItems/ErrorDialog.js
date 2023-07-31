@@ -10,7 +10,7 @@ import React from 'react';
 const ERROR_MESSAGE =
   'An error occurred. Please inform Fabian Sir immediately and do not attempt to add anything else.';
 
-const ErrorDialog = ({ open, onClose }) => {
+export const ErrorDialog = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ color: 'red', fontSize: '18px', fontWeight: 'bold' }}>
@@ -30,5 +30,3 @@ ErrorDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
-
-export default ErrorDialog;

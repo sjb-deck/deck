@@ -1,10 +1,10 @@
 import {
-  TextField,
   Box,
-  Select,
-  MenuItem,
-  Grid,
   Button,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -26,7 +26,7 @@ const types = [
 
 const MAX_NUMBER_OF_EXPIRY = 5;
 
-const AddExpiryForm = ({
+export const AddExpiryForm = ({
   expiryFormData,
   handleFormChange,
   expiryFormError,
@@ -270,5 +270,3 @@ AddExpiryForm.propTypes = {
   setExpiryFormData: PropTypes.func.isRequired,
   setExpiryFormError: PropTypes.func.isRequired,
 };
-
-export default AddExpiryForm;

@@ -10,7 +10,9 @@ module.exports = {
     inventoryBase: ['./inventory/src/scss/inventoryBase.scss'],
     itemIndex: ['./inventory/src/js/itemIndex.js'],
     cartIndex: ['./inventory/src/js/cartIndex.js'],
+    adminIndex: ['./inventory/src/js/adminIndex.js'],
     addItem: ['./inventory/src/js/addItem.js'],
+    loanReturn: ['./inventory/src/js/loanReturn.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

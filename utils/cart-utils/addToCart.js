@@ -1,9 +1,7 @@
-import { LOCAL_STORAGE_CART_KEY } from '../../globals';
-
-import { getCartItems } from './getCartItems';
+import { LOCAL_STORAGE_CART_KEY } from '../../globals/globals';
 
 /**
- * Adds the cart item to local storage
+ * Adds the cart item to local storage and updates the cart state in context
  * @returns void
  */
 
@@ -30,13 +28,11 @@ const appendToLocalStorageCart = (currentLocalStorageCart, cartItem) => {
   return newLocalStorageCart;
 };
 
-export const addToCart = (cartItem) => {
-  const localStorageCartState = appendToLocalStorageCart(
-    getCartItems(),
-    cartItem,
-  );
+export const addToCart = (cartItem, cartItems, setCartState) => {
+  const localStorageCartState = appendToLocalStorageCart(cartItems, cartItem);
   localStorage.setItem(
     LOCAL_STORAGE_CART_KEY,
     JSON.stringify(localStorageCartState),
   );
+  setCartState(localStorageCartState);
 };

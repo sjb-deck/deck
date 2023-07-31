@@ -3,12 +3,10 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import { CartProvider } from '../../../components/CartContext';
+import { CartContext, CartProvider } from '../../../components/CartContext';
 import ItemContainer from '../../../components/ItemContainer/ItemContainer';
-import {
-  CART_ITEM_TYPE_DEPOSIT,
-  CART_ITEM_TYPE_WITHDRAW,
-} from '../../../globals';
+import { CART_ITEM_TYPE_WITHDRAW } from '../../../globals';
+import { mockDepositCart } from '../../../mocks/cart';
 import { exampleItem } from '../../../mocks/items';
 
 describe('ItemContainer', () => {
@@ -22,17 +20,7 @@ describe('ItemContainer', () => {
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
     expect(screen.getByText('Unit: ' + exampleItem.unit)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Total Qty: ' +
-          (Number(exampleItem.total_quantityopen) +
-            Number(exampleItem.total_quantityunopened)),
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Unopened Qty: ' + exampleItem.total_quantityunopened),
+      screen.getByText('Quantity: ' + exampleItem.total_quantity),
     ).toBeInTheDocument();
   });
 
@@ -44,38 +32,26 @@ describe('ItemContainer', () => {
     );
     await userEvent.click(screen.getByText('All'));
     expect(
-      screen.getByText(
-        'Total Qty: ' +
-          (Number(exampleItem.total_quantityopen) +
-            Number(exampleItem.total_quantityunopened)),
-      ),
+      screen.getByText('Quantity: ' + exampleItem.total_quantity),
     ).toBeInTheDocument();
+    const expiryItem = exampleItem.expiry_dates[0];
+    await userEvent.click(screen.getByText(expiryItem.expiry_date));
     expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + exampleItem.total_quantityunopened),
-    ).toBeInTheDocument();
-    const expiryItem = exampleItem.expirydates[0];
-    await userEvent.click(screen.getByText(expiryItem.expirydate));
-    expect(
-      screen.getByText(
-        'Total Qty: ' + (expiryItem.quantityopen + expiryItem.quantityunopened),
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Opened Qty: ' + expiryItem.quantityopen),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Unopened Qty: ' + expiryItem.quantityunopened),
+      screen.getByText('Quantity: ' + expiryItem.quantity),
     ).toBeInTheDocument();
   });
 
   it('disable the withdraw button when cart is of deposit type', () => {
+    const mockDepositContextValue = {
+      cartState: 'Deposit',
+      setCartState: () => {},
+      cartItems: mockDepositCart,
+      setCartItems: () => {},
+    };
     render(
-      <CartProvider initialState={CART_ITEM_TYPE_DEPOSIT}>
+      <CartContext.Provider value={mockDepositContextValue}>
         <ItemContainer index={0} item={exampleItem} />
-      </CartProvider>,
+      </CartContext.Provider>,
     );
 
     expect(screen.getByText(CART_ITEM_TYPE_WITHDRAW)).toBeDisabled();

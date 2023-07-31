@@ -152,9 +152,9 @@
             name="image"
             onchange="loadFile(event)"
           />
-          {%if user.extras.first.profilepic%}
+          {%if user.extras.first.profile_pic%}
           <img
-            src="/uploaded/{{user.extras.first.profilepic}}"
+            src="/uploaded/{{user.extras.first.profile_pic}}"
             id="output"
             width="200"
           />

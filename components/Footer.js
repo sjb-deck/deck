@@ -1,10 +1,10 @@
-import { Box, Typography, Link, Paper, Divider } from '@mui/material';
-import { PropTypes } from 'prop-types';
-import React from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { Box, Divider, Link, Paper, Typography } from '@mui/material';
+import { PropTypes } from 'prop-types';
+import React from 'react';
 
 const footerPadding = 4;
 const sectionPadding = 3;
@@ -55,7 +55,7 @@ CustomLink.propTypes = {
  * ie. the container at the very bottom of the page
  * @return {React.ReactElement} Footer
  */
-const Footer = () => {
+export const Footer = () => {
   return (
     <Box component='footer'>
       <Paper
@@ -124,5 +124,3 @@ const Footer = () => {
     </Box>
   );
 };
-
-export default Footer;

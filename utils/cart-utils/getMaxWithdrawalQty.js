@@ -1,5 +1,3 @@
-import { getCartItems } from './getCartItems';
-
 /**
  * Returns the maximum quantity of the item that can be withdrawn.
  * This takes into account the current cart state.
@@ -9,8 +7,7 @@ import { getCartItems } from './getCartItems';
  * @returns {minQtyOpened: number, minQtyUnopened: number} - The maximum quantity of the item that can be added to cart
  */
 
-const findTargetItemInCart = (selectedExpiryId, item) => {
-  const cartItems = getCartItems();
+const findTargetItemInCart = (cartItems, selectedExpiryId, item) => {
   const targetItem = cartItems.find((cartItem) => {
     if (cartItem.id !== item.id) {
       return false;
@@ -23,7 +20,7 @@ const findTargetItemInCart = (selectedExpiryId, item) => {
   return targetItem;
 };
 
-export const getMaxWithdrawalQty = (selectedExpiryId, item) => {
+export const getMaxWithdrawalQty = (cartItems, selectedExpiryId, item) => {
   const maxQtyOpened = selectedExpiryId
     ? item.expirydates.find((itemExpiry) => itemExpiry.id === selectedExpiryId)
         .quantityopen
@@ -34,7 +31,11 @@ export const getMaxWithdrawalQty = (selectedExpiryId, item) => {
         .quantityunopened
     : item.total_quantityunopened;
 
-  const targetItemInCart = findTargetItemInCart(selectedExpiryId, item);
+  const targetItemInCart = findTargetItemInCart(
+    cartItems,
+    selectedExpiryId,
+    item,
+  );
 
   return {
     maxOpenedQty: targetItemInCart

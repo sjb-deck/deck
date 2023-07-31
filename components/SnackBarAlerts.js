@@ -17,12 +17,13 @@ export const SnackBarAlerts = ({
   message,
   open,
   onClose,
+  autoHide = true,
 }) => {
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={open}
-      autoHideDuration={2000}
+      autoHideDuration={autoHide ? 10000 : null}
       onClose={onClose}
     >
       <Alert severity={severity} sx={{ width: '100%' }}>
@@ -37,4 +38,5 @@ SnackBarAlerts.propTypes = {
   message: PropTypes.string,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
+  autoHide: PropTypes.bool,
 };

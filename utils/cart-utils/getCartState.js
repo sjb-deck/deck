@@ -1,12 +1,11 @@
-import { LOCAL_STORAGE_CART_KEY } from '../../globals';
-
 /**
- * Gets the cart state from local storage and returns it
- * @returns 'Withdraw' or 'Deposit' or ''
+ * From the given cart items, return the cart state, whether it is deposit
+ * or withdraw or '' when empty
+ * @param cartItems
+ * @returns The cart state from the cart items
  */
 
-export const getCartState = () => {
-  const cartData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
-  if (!cartData) return '';
-  return cartData[0].type;
+export const getCartState = (cartItems) => {
+  if (cartItems && cartItems.length > 0) return cartItems[0].type;
+  else return '';
 };
