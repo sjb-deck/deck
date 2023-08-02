@@ -51,54 +51,50 @@ const AddItem = () => {
     name: '',
     type: 'General',
     unit: '',
-    image: '',
-    total_quantityopen: 0,
-    total_quantityunopened: 0,
-    min_quantityopen: 0,
-    min_quantityunopened: 0,
+    imgpic: '',
+    total_quantity: 0,
+    min_quantity: 0,
+    is_opened: false,
   });
 
   const [expiryFormData, setExpiryFormData] = useState({
     name: '',
     type: 'General',
     unit: '',
-    image: '',
+    imgpic: '',
     expiry: [
       {
-        date: dayjs(new Date()).format('YYYY-MM-DD'),
-        total_quantityopen: 0,
-        total_quantityunopened: 0,
+        expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+        quantity: 0,
       },
     ],
-    min_quantityopen: 0,
-    min_quantityunopened: 0,
+    min_quantity: 0,
+    is_opened: false,
   });
 
   const [itemFormError, setItemFormError] = useState({
     name: false,
     type: false,
     unit: false,
-    image: false,
-    total_quantityopen: false,
-    total_quantityunopened: false,
-    min_quantityopen: false,
-    min_quantityunopened: false,
+    imgpic: false,
+    total_quantity: false,
+    min_quantity: false,
+    is_opened: false,
   });
 
   const [expiryFormError, setExpiryFormError] = useState({
     name: false,
     type: false,
     unit: false,
-    image: false,
+    imgpic: false,
     expiry: [
       {
-        date: false,
-        total_quantityopen: false,
-        total_quantityunopened: false,
+        expiry_date: false,
+        quantity: false,
       },
     ],
-    min_quantityopen: false,
-    min_quantityunopened: false,
+    min_quantity: false,
+    is_opened: false,
   });
 
   useEffect(() => {
@@ -189,19 +185,16 @@ const AddItem = () => {
   };
 
   const handleItemFormChange = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    if (name === 'is_opened') {
+      value = !itemFormData.is_opened;
+    }
+
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
-
-    if (name === 'total_quantityopen' || name === 'total_quantityunopened') {
-      setItemFormError((prevFormError) => ({
-        ...prevFormError,
-        total_quantityopen: false,
-        total_quantityunopened: false,
-      }));
-    }
 
     setItemFormError((prevFormError) => ({
       ...prevFormError,
@@ -210,7 +203,12 @@ const AddItem = () => {
   };
 
   const handleExpiryFormChange = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    if (name === 'is_opened') {
+      value = !expiryFormData.is_opened;
+    }
+
     setExpiryFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,

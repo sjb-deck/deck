@@ -1,5 +1,7 @@
 import {
   Box,
+    FormControlLabel,
+    Switch,
   Grid,
   MenuItem,
   Select,
@@ -119,8 +121,8 @@ export const AddItemForm = ({
 
         <TextField
           label='Image'
-          name='image'
-          value={itemFormData.image}
+          name='imgpic'
+          value={itemFormData.imgpic}
           onChange={handleFormChange}
           helperText='Image URL'
           variant='standard'
@@ -133,25 +135,25 @@ export const AddItemForm = ({
         <Grid container spacing={3}>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <TextField
-              label='Total Quantity (Open)'
-              name='total_quantityopen'
-              value={itemFormData.total_quantityopen}
+              label='Total Quantity'
+              name='total_quantity'
+              value={itemFormData.total_quantity}
               onChange={handleFormChange}
               type='number'
               required
               helperText={
-                itemFormError.total_quantityopen
+                itemFormError.total_quantity
                   ? 'Quantity must be a non-negative number!'
-                  : 'Quantity of opened item for all expiries'
+                  : 'Quantity of item for all expiries'
               }
               variant='standard'
               sx={{
                 '& .MuiInputLabel-root': {
                   fontSize: '14px',
-                  color: itemFormError.total_quantityopen ? 'red' : 'white',
+                  color: itemFormError.total_quantity ? 'red' : 'white',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: itemFormError.total_quantityopen ? 'red' : 'gray',
+                  color: itemFormError.total_quantity ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
@@ -159,78 +161,36 @@ export const AddItemForm = ({
           </Grid>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <TextField
-              label='Total Quantity (Unopened)'
-              name='total_quantityunopened'
-              value={itemFormData.total_quantityunopened}
+              label='Min Quantity'
+              name='min_quantity'
+              value={itemFormData.min_quantity}
               onChange={handleFormChange}
               type='number'
-              required
               helperText={
-                itemFormError.total_quantityunopened
+                itemFormError.min_quantity
                   ? 'Quantity must be a non-negative number!'
-                  : 'Quantity of unopened item for all expiries'
+                  : 'Minimum quantity of item before warning'
               }
               variant='standard'
               sx={{
                 '& .MuiInputLabel-root': {
                   fontSize: '14px',
-                  color: itemFormError.total_quantityunopened ? 'red' : 'white',
+                  color: itemFormError.min_quantity ? 'red' : 'white',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: itemFormError.total_quantityunopened ? 'red' : 'gray',
+                  color: itemFormError.min_quantity ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
             />
           </Grid>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
-            <TextField
-              label='Min Quantity (Open)'
-              name='min_quantityopen'
-              value={itemFormData.min_quantityopen}
-              onChange={handleFormChange}
-              type='number'
-              helperText={
-                itemFormError.min_quantityopen
-                  ? 'Quantity must be a non-negative number!'
-                  : 'Minimum quantity for opened item before warning'
-              }
-              variant='standard'
-              sx={{
-                '& .MuiInputLabel-root': {
-                  fontSize: '14px',
-                  color: itemFormError.min_quantityopen ? 'red' : 'white',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: itemFormError.min_quantityopen ? 'red' : 'gray',
-                  fontSize: '12px',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
-            <TextField
-              label='Min Quantity (Unopened)'
-              name='min_quantityunopened'
-              value={itemFormData.min_quantityunopened}
-              onChange={handleFormChange}
-              type='number'
-              helperText={
-                itemFormError.min_quantityopen
-                  ? 'Quantity must be a non-negative number!'
-                  : 'Minimum quantity for unopened item before warning'
-              }
-              variant='standard'
-              sx={{
-                '& .MuiInputLabel-root': {
-                  fontSize: '14px',
-                  color: itemFormError.min_quantityunopened ? 'red' : 'white',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: itemFormError.min_quantityunopened ? 'red' : 'gray',
-                  fontSize: '12px',
-                },
-              }}
+            <FormControlLabel
+                control={<Switch checked={itemFormData.is_opened} />}
+                label={itemFormData.is_opened ? 'Opened' : 'Unopened'}
+                labelPlacement="end"
+                onChange={handleFormChange}
+                name='is_opened'
             />
           </Grid>
         </Grid>
@@ -246,10 +206,9 @@ AddItemForm.propTypes = {
     name: PropTypes.bool.isRequired,
     type: PropTypes.bool.isRequired,
     unit: PropTypes.bool.isRequired,
-    image: PropTypes.bool.isRequired,
-    total_quantityopen: PropTypes.bool.isRequired,
-    total_quantityunopened: PropTypes.bool.isRequired,
-    min_quantityopen: PropTypes.bool.isRequired,
-    min_quantityunopened: PropTypes.bool.isRequired,
+    imgpic: PropTypes.bool.isRequired,
+    total_quantity: PropTypes.bool.isRequired,
+    min_quantity: PropTypes.bool.isRequired,
+    is_opened: PropTypes.bool.isRequired,
   }).isRequired,
 };

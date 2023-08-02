@@ -16,16 +16,14 @@ export const DateAndQuantity = ({
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
   const firstItem = index === 0;
-  const date = expiryFormData.expiry[index].date;
-  const totalQuantityopen = expiryFormData.expiry[index].total_quantityopen;
-  const totalQuantityunopened =
-    expiryFormData.expiry[index].total_quantityunopened;
+  const expiry_date = expiryFormData.expiry[index].expiry_date;
+  const quantity = expiryFormData.expiry[index].quantity;
 
   const handleDateChange = (newDate) => {
     const exp = expiryFormData.expiry;
     const err = expiryFormError.expiry;
-    exp[index].date = dayjs(newDate).format('YYYY-MM-DD');
-    err[index].date = false;
+    exp[index].expiry_date = dayjs(newDate).format('YYYY-MM-DD');
+    err[index].expiry_date = false;
     setExpiryFormData((prev) => ({
       ...prev,
       expiry: exp,
@@ -40,9 +38,8 @@ export const DateAndQuantity = ({
     const { name, value } = event.target;
     const exp = expiryFormData.expiry;
     const err = expiryFormError.expiry;
-    exp[index][name] = value;
-    err[index].total_quantityopen = false;
-    err[index].total_quantityunopened = false;
+    exp[index].quantity = value;
+    err[index].quantity = false;
     setExpiryFormData((prev) => ({
       ...prev,
       expiry: exp,
@@ -95,7 +92,7 @@ export const DateAndQuantity = ({
           <Grid item xs={isSmallScreen ? 12 : 8} sm={8}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                defaultValue={dayjs(date)}
+                defaultValue={dayjs(expiry_date)}
                 onChange={(date) => handleDateChange(date)}
                 sx={{ paddingTop: '10px', paddingLeft: '15px' }}
                 minDate={dayjs()}
@@ -106,10 +103,10 @@ export const DateAndQuantity = ({
                   fontSize: '12px',
                   paddingLeft: '15px',
                   paddingTop: '3px',
-                  color: expiryFormError.expiry[index].date ? 'red' : 'gray',
+                  color: expiryFormError.expiry[index].expiry_date ? 'red' : 'gray',
                 }}
               >
-                {expiryFormError.expiry[index].date
+                {expiryFormError.expiry[index].expiry_date
                   ? 'Item expires today or is a duplicate!'
                   : 'Expiry date of item'}
               </Typography>
@@ -132,13 +129,13 @@ export const DateAndQuantity = ({
         <Grid container spacing={3} sx={{ padding: '10px' }}>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <TextField
-              label='Total Quantity (Open)'
-              name='total_quantityopen'
-              value={totalQuantityopen}
+              label='Quantity'
+              name='quantity'
+              value={quantity}
               onChange={handleFormChange}
               type='number'
               helperText={
-                expiryFormError.expiry[index].total_quantityopen
+                expiryFormError.expiry[index].quantity
                   ? 'Quantity must be a non-negative number!'
                   : firstItem
                   ? 'Quantity of open item for all expiries'
@@ -148,43 +145,12 @@ export const DateAndQuantity = ({
               sx={{
                 '& .MuiInputLabel-root': {
                   fontSize: '14px',
-                  color: expiryFormError.expiry[index].total_quantityopen
+                  color: expiryFormError.expiry[index].quantity
                     ? 'red'
                     : 'white',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: expiryFormError.expiry[index].total_quantityopen
-                    ? 'red'
-                    : 'gray',
-                  fontSize: '12px',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
-            <TextField
-              label='Total Quantity (Unopened)'
-              name='total_quantityunopened'
-              value={totalQuantityunopened}
-              onChange={handleFormChange}
-              type='number'
-              helperText={
-                expiryFormError.expiry[index].total_quantityunopened
-                  ? 'Quantity must be a non-negative number!'
-                  : firstItem
-                  ? 'Quantity of unopened item for all expiries'
-                  : ''
-              }
-              variant='standard'
-              sx={{
-                '& .MuiInputLabel-root': {
-                  fontSize: '14px',
-                  color: expiryFormError.expiry[index].total_quantityunopened
-                    ? 'red'
-                    : 'white',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: expiryFormError.expiry[index].total_quantityunopened
+                  color: expiryFormError.expiry[index].quantity
                     ? 'red'
                     : 'gray',
                   fontSize: '12px',
@@ -202,12 +168,8 @@ DateAndQuantity.propTypes = {
   expiryFormData: PropTypes.shape({
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
-        date: PropTypes.string.isRequired,
-        total_quantityopen: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
-        total_quantityunopened: PropTypes.oneOfType([
+        expiry_date: PropTypes.string.isRequired,
+        total_quantity: PropTypes.oneOfType([
           PropTypes.number,
           PropTypes.string,
         ]).isRequired,
@@ -228,9 +190,8 @@ DateAndQuantity.propTypes = {
     image: PropTypes.bool.isRequired,
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
-        date: PropTypes.bool.isRequired,
-        total_quantityopen: PropTypes.bool.isRequired,
-        total_quantityunopened: PropTypes.bool.isRequired,
+        expiry_date: PropTypes.bool.isRequired,
+        total_quantity: PropTypes.bool.isRequired,
       }),
     ).isRequired,
     min_quantityopen: PropTypes.bool.isRequired,
