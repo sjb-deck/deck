@@ -15,6 +15,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
@@ -34,7 +35,7 @@ import { getCartState } from '../../utils/cart-utils/getCartState';
 import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 
-import { ConfirmationDialog, DatePickerDialog } from './ConfirmationDialog';
+import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
 
 export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const { postData } = usePostData(
@@ -51,14 +52,15 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [openDepositResponse, setOpenDepositResponse] = useState(false);
-  const [responseMsg, setResponseMsg] = useState('');
+  // const [openDepositResponse, setOpenDepositResponse] = useState(false);
+  // const [responseMsg, setResponseMsg] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [tempSelectedDate, setTempSelectedDate] = useState('');
   const [itemExpiryDates, setItemExpiryDates] = useState([]);
   const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
   const [maxTotalQty, setMaxTotalQty] = useState(Number.MAX_SAFE_INTEGER);
+  const { mutate, isError, isSuccess } = useMutation(postData);
 
   const handleOpenConfirmation = () => setOpenConfirmation(true);
   const handleCloseConfirmation = () => setOpenConfirmation(false);
@@ -129,14 +131,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
       expiry_date: getExpiryFromId(selectedExpiryId),
       quantity: formik.values.quantity,
     };
-    const result = await postData(data);
-    if (result.status === 'success') {
-      setResponseMsg('Deposit successfully!');
-      setOpenDepositResponse(true);
-    } else {
-      setResponseMsg('Error! Please try again.');
-      setOpenDepositResponse(true);
-    }
+    mutate(data);
   };
 
   const formik = useFormik({
@@ -210,10 +205,12 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         onClose={() => setSnackbarOpen(false)}
       />
       <SnackBarAlerts
-        severity={responseMsg === 'Deposit successfully!' ? 'success' : 'error'}
-        open={openDepositResponse}
-        message={responseMsg}
-        onClose={() => setOpenDepositResponse(false)}
+        severity={isSuccess ? 'success' : 'error'}
+        open={isSuccess || isError}
+        message={
+          isSuccess ? 'Deposit successfully!' : 'Error! Please try again.'
+        }
+        onClose={null}
       />
 
       <ConfirmationDialog
@@ -303,8 +300,8 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
               variant='filled'
               sx={{ width: '80%' }}
             >
-              {itemExpiryDates.map((itemExp) => {
-                return itemExp.expiry_date !== 'New' ? (
+              {itemExpiryDates.map((itemExp) =>
+                itemExp.expiry_date !== 'New' ? (
                   <MenuItem
                     key={itemExp.id}
                     value={itemExp.expiry_date}
@@ -343,8 +340,8 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                       </Typography>
                     </Box>
                   </MenuItem>
-                );
-              })}
+                ),
+              )}
             </TextField>
             <TextField
               id='filled-basic'
