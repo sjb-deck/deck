@@ -15,7 +15,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
@@ -25,10 +24,9 @@ import * as yup from 'yup';
 import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
-  INV_API_CREATE_NEW_EXPIRY_URL,
   ItemPropType,
 } from '../../globals';
-import usePostData from '../../hooks/use-post-data';
+import { useNewExpiryDate } from '../../hooks/mutations';
 import { CartContext } from '../../providers/CartProvider';
 import { addToCart } from '../../utils/cart-utils/addToCart';
 import { getCartState } from '../../utils/cart-utils/getCartState';
@@ -38,9 +36,6 @@ import { SnackBarAlerts } from '../SnackBarAlerts';
 import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
 
 export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
-  const { postData } = usePostData(
-    `${INV_API_CREATE_NEW_EXPIRY_URL}/${item.id}`,
-  );
   const hasExpiry = !!item.expiry_dates[0].expiry_date;
   const showDropdown = hasExpiry && item.expiry_dates.length > 1;
   const theme = useTheme();
@@ -60,7 +55,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const [itemExpiryDates, setItemExpiryDates] = useState([]);
   const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
   const [maxTotalQty, setMaxTotalQty] = useState(Number.MAX_SAFE_INTEGER);
-  const { mutate, isError, isSuccess } = useMutation(postData);
+  const { mutate } = useNewExpiryDate();
 
   const handleOpenConfirmation = () => setOpenConfirmation(true);
   const handleCloseConfirmation = () => setOpenConfirmation(false);
@@ -203,14 +198,6 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         open={snackbarOpen}
         message='Added to cart'
         onClose={() => setSnackbarOpen(false)}
-      />
-      <SnackBarAlerts
-        severity={isSuccess ? 'success' : 'error'}
-        open={isSuccess || isError}
-        message={
-          isSuccess ? 'Deposit successfully!' : 'Error! Please try again.'
-        }
-        onClose={null}
       />
 
       <ConfirmationDialog
