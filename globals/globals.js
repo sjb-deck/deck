@@ -14,6 +14,7 @@ export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
 export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
 export const ITEMS_PER_PAGE = 5;
+export const ORDERS_PER_PAGE = 10;
 
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
@@ -105,10 +106,10 @@ export const ExpiryFormDataPropType = PropTypes.shape({
 });
 
 export const LoanOrderPropType = PropTypes.shape({
-  pk: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
   action: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  return_date: PropTypes.string.isRequired,
+  return_date: PropTypes.string,
   loan_active: PropTypes.bool.isRequired,
   loanee_name: PropTypes.string.isRequired,
   other_info: PropTypes.string,
@@ -125,7 +126,7 @@ export const LoanOrderPropType = PropTypes.shape({
 }).isRequired;
 
 export const OrderPropType = PropTypes.shape({
-  pk: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
   action: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   other_info: PropTypes.string,
