@@ -15,5 +15,5 @@ urlpatterns = [
     path("add_item", views.api_add_item, name="add_item"),
     path("add_expiry/<int:item_id>", views.create_new_expiry, name="create_new_expiry"),
     path("loan_return_post", views.loan_return_post, name="loan_return_post"),
-    path("revert_order/<int:order_id>", views.revert_order, name="revert_order"),
+    path("revert_order", views.revert_order, name="revert_order"),
 ]

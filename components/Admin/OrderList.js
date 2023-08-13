@@ -1,14 +1,33 @@
-import { Accordion, AccordionSummary, Box, Grid } from '@mui/material';
+import {
+  Accordion,
+  AccordionSummary,
+  Box,
+  Grid,
+  Pagination,
+  Skeleton,
+  Stack,
+} from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { PropTypes } from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { OrderPropType } from '../../globals';
+import { OrderPropType, ORDERS_PER_PAGE } from '../../globals';
+import { useRevertOrder } from '../../hooks/mutations';
 
-import OrderContent from './OrderContent';
+import { OrderContent } from './OrderContent';
 
 export const OrderList = ({ orders }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
+  const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+  const endIndex = startIndex + ORDERS_PER_PAGE;
+  const handlePageChange = (_, value) => {
+    setCurrentPage(value);
+  };
+  const { mutate, isLoading } = useRevertOrder();
+  const handleDeleteOrder = async (id) => {
+    mutate(id);
+  };
   return (
     <Box
       sx={{
@@ -46,11 +65,50 @@ export const OrderList = ({ orders }) => {
           </Grid>
         </AccordionSummary>
       </Accordion>
-      {orders.map((order) => {
-        return (
-          <OrderContent key={order.pk} order={order} isMobile={isMobile} />
-        );
-      })}
+
+      <Stack
+        direction='column'
+        justifyContent='space-between'
+        alignItems='center'
+        spacing={3}
+        sx={{
+          marginTop: 1,
+          minHeight: 0.8,
+          width: 1,
+        }}
+      >
+        <Box
+          sx={{
+            width: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {orders.slice(startIndex, endIndex).map((order) => {
+            return (
+              <OrderContent
+                key={order.id}
+                order={order}
+                isMobile={isMobile}
+                isLoading={isLoading}
+                handleDeleteOrder={handleDeleteOrder}
+              />
+            );
+          })}
+        </Box>
+        {orders ? (
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(orders.length / ORDERS_PER_PAGE)}
+            onChange={handlePageChange}
+          />
+        ) : (
+          <Skeleton>
+            <Pagination />
+          </Skeleton>
+        )}
+      </Stack>
     </Box>
   );
 };

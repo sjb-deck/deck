@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from .models import *
 from .models.Item.ItemModels import Item
 from .serializers import *
-from .views_utils import manage_items_change
+from .views_utils import manage_items_change, revert_order_items
 
 
 # Create your views here.
@@ -161,13 +161,14 @@ def loan_return_post(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def revert_order(request, order_id):
+def revert_order(request):
+    order_id = request.data
     try:
         if order_id is None:
             return Response({"error": "Invalid request body"}, status=400)
         try:
             instance = Order.objects.get(pk=order_id)
-            # TODO: handle delete
+            revert_order_items(instance)
             instance.delete()
             return Response({"message": "Order successfully deleted"}, status=200)
         except:
