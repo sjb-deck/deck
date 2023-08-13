@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from .models import *
 from .models.Item.ItemModels import Item
 from .serializers import *
-from .views_utils import manage_items_change, manage_items_return
+from .views_utils import manage_items_change, revert_order_items
 
 
 # Create your views here.
@@ -168,7 +168,7 @@ def revert_order(request):
             return Response({"error": "Invalid request body"}, status=400)
         try:
             instance = Order.objects.get(pk=order_id)
-            manage_items_return(instance)
+            revert_order_items(instance)
             instance.delete()
             return Response({"message": "Order successfully deleted"}, status=200)
         except:

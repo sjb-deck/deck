@@ -28,14 +28,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "extras"]
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class ItemInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = "__all__"
 
 
 class ItemExpirySerializer(serializers.ModelSerializer):
-    item = OrderItemSerializer()
+    item = ItemInfoSerializer()
 
     class Meta:
         model = ItemExpiry

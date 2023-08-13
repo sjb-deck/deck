@@ -12,7 +12,7 @@ def manage_items_change(order):
         raise e
 
 
-def manage_items_return(order):
+def revert_order_items(order):
     try:
         action = order.action
         for item in order.order_items.all():

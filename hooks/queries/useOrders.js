@@ -22,14 +22,9 @@ export const useOrders = (options) => {
     async () => {
       const response = await axios.get(url);
       const results = {
-        orders: [],
-        loan_orders: [],
+        orders: response.data.filter((order) => order.reason !== 'loan'),
+        loan_orders: response.data.filter((order) => order.reason === 'loan'),
       };
-      response.data.forEach((o) =>
-        o.reason === 'loan'
-          ? results.loan_orders.push(o)
-          : results.orders.push(o),
-      );
       return results;
     },
     {
