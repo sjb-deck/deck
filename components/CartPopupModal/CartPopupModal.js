@@ -6,11 +6,6 @@ import {
   Backdrop,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Fade,
   InputAdornment,
   MenuItem,
@@ -20,9 +15,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
@@ -32,29 +24,41 @@ import * as yup from 'yup';
 import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
-  INV_API_CREATE_NEW_EXPIRY_URL,
   ItemPropType,
 } from '../../globals';
-import usePostData from '../../hooks/use-post-data';
+import { useNewExpiryDate } from '../../hooks/mutations';
 import { CartContext } from '../../providers/CartProvider';
 import { addToCart } from '../../utils/cart-utils/addToCart';
 import { getCartState } from '../../utils/cart-utils/getCartState';
 import { getMaxWithdrawalQty } from '../../utils/cart-utils/getMaxWithdrawalQty';
 import { SnackBarAlerts } from '../SnackBarAlerts';
 
+import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
+
 export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
-  const { postData } = usePostData(INV_API_CREATE_NEW_EXPIRY_URL);
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedDate('');
-    setTempSelectedDate('');
-  };
+  const hasExpiry = !!item.expiry_dates[0].expiry_date;
+  const showDropdown = hasExpiry && item.expiry_dates.length > 1;
+  const theme = useTheme();
+  const preselectedExpiryId =
+    selector == 'All'
+      ? item.expiry_dates[0].id
+      : item.expiry_dates.find((itemExpiry) => itemExpiry.id == selector).id;
+  const { cartItems, setCartItems, setCartState } = useContext(CartContext);
+
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  // const [openDepositResponse, setOpenDepositResponse] = useState(false);
+  // const [responseMsg, setResponseMsg] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [tempSelectedDate, setTempSelectedDate] = useState('');
+  const [itemExpiryDates, setItemExpiryDates] = useState([]);
+  const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
+  const [maxTotalQty, setMaxTotalQty] = useState(Number.MAX_SAFE_INTEGER);
+  const { mutate } = useNewExpiryDate();
+
   const handleOpenConfirmation = () => setOpenConfirmation(true);
   const handleCloseConfirmation = () => setOpenConfirmation(false);
-  const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [openDepositResponse, setOpenDepositResponse] = useState(false);
-  const [responseMsg, setResponseMsg] = useState('');
   const handleOpenDatePicker = () => setOpenDatePicker(true);
   const handleCloseDatePicker = (action) => {
     setOpenDatePicker(false);
@@ -65,27 +69,12 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
       if (filteredDate.length === 0) {
         setSelectedDate(tempSelectedDate);
         setSelectedExpiryId('newDate');
-        setMaxQtys(null);
       } else {
         setSelectedDate('');
         setSelectedExpiryId(filteredDate[0].id);
       }
     }
   };
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const hasExpiry = !!item.expiry_dates[0].expiry_date;
-  const [selectedDate, setSelectedDate] = useState('');
-  const [tempSelectedDate, setTempSelectedDate] = useState('');
-  const showDropdown = hasExpiry && item.expiry_dates.length > 1;
-  const [itemExpiryDates, setItemExpiryDates] = useState([]);
-  const theme = useTheme();
-  const preselectedExpiryId =
-    selector == 'All'
-      ? item.expiry_dates[0].id
-      : item.expiry_dates.find((itemExpiry) => itemExpiry.id == selector).id;
-  const [selectedExpiryId, setSelectedExpiryId] = useState(preselectedExpiryId);
-  const { cartItems, setCartItems } = useContext(CartContext);
-
   useEffect(() => {
     const preselectedExpiryId =
       selector == 'All'
@@ -112,7 +101,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
     } else {
       setItemExpiryDates(item.expiry_dates);
     }
-  }, [selectedDate]);
+  }, [selectedDate, hasExpiry, item.expiry_dates, type]);
 
   const getExpiryFromId = (expiryId) => {
     if (expiryId === 'newDate') {
@@ -124,35 +113,20 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
     );
   };
 
-  const [maxOpenedQty, setMaxOpenedQty] = useState(Infinity);
-  const [maxUnopenedQty, setMaxUnopenedQty] = useState(Infinity);
-
   const validationSchema = yup.object({
-    openedQty: yup
+    quantity: yup
       .number('Enter a number for opened quantity')
       .min(0, 'Number cannot be negative')
-      .max(maxOpenedQty, 'Number cannot be more than that'),
-    unopenedQty: yup
-      .number('Enter a number for unopened quantity')
-      .min(0, 'Number cannot be negative')
-      .max(maxUnopenedQty, 'Number cannot be more than that'),
+      .max(maxTotalQty, 'Number cannot be more than that'),
   });
 
   const addNewExpiry = async () => {
     const data = {
       item: item.id,
       expiry_date: getExpiryFromId(selectedExpiryId),
-      quantityopen: formik.values.openedQty,
-      quantityunopened: formik.values.unopenedQty,
+      quantity: formik.values.quantity,
     };
-    const result = await postData(data);
-    if (result.status === 'success') {
-      setResponseMsg('Deposit successfully!');
-      setOpenDepositResponse(true);
-    } else {
-      setResponseMsg('Error! Please try again.');
-      setOpenDepositResponse(true);
-    }
+    mutate(data);
   };
 
   const formik = useFormik({
@@ -179,8 +153,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         ...item,
         expiryId: selectedExpiryId,
         type: isDeposit ? CART_ITEM_TYPE_DEPOSIT : CART_ITEM_TYPE_WITHDRAW,
-        cartOpenedQuantity: formik.values.openedQty,
-        cartUnopenedQuantity: formik.values.unopenedQty,
+        cartTotalQuantity: formik.values.quantity,
       };
 
       handleClose();
@@ -197,28 +170,25 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
 
   const setMaxQtys = useCallback(
     (expiryId) => {
-      const {
-        maxOpenedQty: calculatedMaxOpenedQty,
-        maxUnopenedQty: calculatedMaxUnopenedQty,
-      } = getMaxWithdrawalQty(cartItems, expiryId, item);
-      setMaxOpenedQty(calculatedMaxOpenedQty);
-      setMaxUnopenedQty(calculatedMaxUnopenedQty);
+      const { maxTotalQty: calculatedMaxTotalQty } = getMaxWithdrawalQty(
+        cartItems,
+        expiryId,
+        item,
+      );
+      setMaxTotalQty(calculatedMaxTotalQty);
     },
     [cartItems, item],
   );
 
-  const MyActionBar = () => {
-    return (
-      <DialogActions>
-        <Button onClick={() => handleCloseDatePicker('close')}>Cancel</Button>
-        <Button onClick={() => handleCloseDatePicker('updateDate')}>Ok</Button>
-      </DialogActions>
-    );
-  };
-
   const updateTempSelectedDate = (value) => {
     const date = dayjs(value.$d).format('YYYY-MM-DD');
     setTempSelectedDate(date);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedDate('');
+    setTempSelectedDate('');
   };
 
   return (
@@ -229,73 +199,18 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         message='Added to cart'
         onClose={() => setSnackbarOpen(false)}
       />
-      <SnackBarAlerts
-        severity={responseMsg === 'Deposit successfully!' ? 'success' : 'error'}
-        open={openDepositResponse}
-        message={responseMsg}
-        onClose={() => setOpenDepositResponse(false)}
+
+      <ConfirmationDialog
+        openConfirmation={openConfirmation}
+        handleCloseConfirmation={handleCloseConfirmation}
+        handleSubmit={formik.handleSubmit}
       />
 
-      <Dialog
-        open={openConfirmation}
-        onClose={handleCloseConfirmation}
-        aria-labelledby='responsive-dialog-title'
-      >
-        <DialogTitle id='responsive-dialog-title'>
-          {'Proceed to deposit item?'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            For new expiry date, the deposit will take effect immediately once
-            you submit and will hence not be added to your cart. Do you still
-            wish to submit?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleCloseConfirmation}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              formik.handleSubmit();
-              handleCloseConfirmation();
-            }}
-            autoFocus
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={openDatePicker}
-        onClose={() => handleCloseDatePicker('close')}
-        aria-labelledby='responsive-dialog-title'
-      >
-        <DialogTitle id='responsive-dialog-title'>
-          Pick a new expiry date
-        </DialogTitle>
-        <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDatePicker
-              minDate={dayjs()}
-              defaultValue={dayjs()}
-              onChange={(value) => updateTempSelectedDate(value)}
-              slotProps={{
-                layout: {
-                  sx: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                },
-              }}
-              slots={{
-                actionBar: MyActionBar,
-              }}
-            />
-          </LocalizationProvider>
-        </DialogContent>
-      </Dialog>
+      <DatePickerDialog
+        openDatePicker={openDatePicker}
+        handleCloseDatePicker={handleCloseDatePicker}
+        updateTempSelectedDate={updateTempSelectedDate}
+      />
 
       <Modal
         aria-labelledby='transition-modal-title'
@@ -358,7 +273,11 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
               {item.name}
             </Typography>
             <TextField
-              select
+              id='filled-select-expiry-date'
+              select={
+                getExpiryFromId(selectedExpiryId) !== 'No Expiry' &&
+                (type == CART_ITEM_TYPE_DEPOSIT || showDropdown)
+              }
               disabled={
                 getExpiryFromId(selectedExpiryId) === 'No Expiry' ||
                 (type != CART_ITEM_TYPE_DEPOSIT && !showDropdown)
@@ -368,28 +287,29 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
               variant='filled'
               sx={{ width: '80%' }}
             >
-              {itemExpiryDates.map((itemExpiry) => {
-                itemExpiry.expiry_date !== 'New' ? (
+              {itemExpiryDates.map((itemExp) =>
+                itemExp.expiry_date !== 'New' ? (
                   <MenuItem
-                    key={itemExpiry.expiry_date}
-                    value={itemExpiry.expiry_date}
+                    key={itemExp.id}
+                    value={itemExp.expiry_date}
                     onClick={() => {
-                      setSelectedExpiryId(itemExpiry.id);
-                      if (itemExpiry.id !== 'newDate') {
-                        setMaxQtys(itemExpiry.id);
+                      setSelectedExpiryId(itemExp.id);
+                      if (
+                        itemExp.id !== 'newDate' &&
+                        type == CART_ITEM_TYPE_WITHDRAW
+                      ) {
+                        setMaxQtys(itemExp.id);
                       } else {
-                        setMaxQtys(null);
+                        setMaxTotalQty(Number.MAX_SAFE_INTEGER);
                       }
                     }}
                   >
-                    <Typography variant='h8'>
-                      {itemExpiry.expiry_date}
-                    </Typography>
+                    <Typography variant='h8'>{itemExp.expiry_date}</Typography>
                   </MenuItem>
                 ) : (
                   <MenuItem
-                    key={itemExpiry.expiry_date}
-                    value={itemExpiry.expiry_date}
+                    key={itemExp.id}
+                    value={itemExp.expiry_date}
                     onClick={() => {
                       handleOpenDatePicker();
                     }}
@@ -403,12 +323,12 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                     >
                       <AddIcon />
                       <Typography variant='h8'>
-                        {itemExpiry.expiry_date}
+                        {itemExp.expiry_date}
                       </Typography>
                     </Box>
                   </MenuItem>
-                );
-              })}
+                ),
+              )}
             </TextField>
             <TextField
               id='filled-basic'
@@ -422,12 +342,10 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                 ),
               }}
               sx={{ width: '80%' }}
-              value={formik.values.openedQty}
+              value={formik.values.quantity}
               onChange={formik.handleChange}
-              error={
-                formik.touched.openedQty && Boolean(formik.errors.openedQty)
-              }
-              helperText={formik.touched.openedQty && formik.errors.openedQty}
+              error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+              helperText={formik.touched.quantity && formik.errors.quantity}
             />
             {type == CART_ITEM_TYPE_DEPOSIT ? (
               <Button
