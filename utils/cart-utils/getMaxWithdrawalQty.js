@@ -4,7 +4,7 @@
  *
  * @param {number} selectedExpiryId - The expiry id of the item
  * @param {ItemType} item - The item to be added to cart
- * @returns {minQtyOpened: number, minQtyUnopened: number} - The maximum quantity of the item that can be added to cart
+ * @returns {minTotalQty: number} - The maximum quantity of the item that can be added to cart
  */
 
 const findTargetItemInCart = (cartItems, selectedExpiryId, item) => {
@@ -21,15 +21,10 @@ const findTargetItemInCart = (cartItems, selectedExpiryId, item) => {
 };
 
 export const getMaxWithdrawalQty = (cartItems, selectedExpiryId, item) => {
-  const maxQtyOpened = selectedExpiryId
-    ? item.expirydates.find((itemExpiry) => itemExpiry.id === selectedExpiryId)
-        .quantityopen
-    : item.total_quantityopen;
-
-  const maxQtyUnopened = selectedExpiryId
-    ? item.expirydates.find((itemExpiry) => itemExpiry.id === selectedExpiryId)
-        .quantityunopened
-    : item.total_quantityunopened;
+  const maxQty = selectedExpiryId
+    ? item.expiry_dates.find((itemExpiry) => itemExpiry.id === selectedExpiryId)
+        .quantity
+    : item.total_quantity;
 
   const targetItemInCart = findTargetItemInCart(
     cartItems,
@@ -38,11 +33,8 @@ export const getMaxWithdrawalQty = (cartItems, selectedExpiryId, item) => {
   );
 
   return {
-    maxOpenedQty: targetItemInCart
-      ? maxQtyOpened - targetItemInCart.cartOpenedQuantity
-      : maxQtyOpened,
-    maxUnopenedQty: targetItemInCart
-      ? maxQtyUnopened - targetItemInCart.cartUnopenedQuantity
-      : maxQtyUnopened,
+    maxTotalQty: targetItemInCart
+      ? maxQty - targetItemInCart.cartTotalQuantity
+      : maxQty,
   };
 };
