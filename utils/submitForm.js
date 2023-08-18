@@ -4,12 +4,16 @@ import dayjs from 'dayjs';
 import { INV_API_EXPIRY_POST_URL } from '../globals';
 
 import findPotentialMatch from './levenshteinDistance';
+import {useAddItem} from "../hooks/mutations";
+import {clearCart} from "./cart-utils";
 
 const PLACEHOLDER_IMAGE =
   'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
 
 // Normalised Levenshtein distance threshold
 const LEVENSHTEIN_THRESHOLD = 0.2;
+
+const { mutate, isLoading } = useAddItem();
 
 const isValidInt = (value) => {
   return Number.isInteger(value) && value >= 0 && value <= 1000;
@@ -252,44 +256,43 @@ const processItemSubmission = (
       },
     ]
   }
-  console.log(payload)
-    // .then((response) => {
-    //   setSuccessMessage(
-    //     `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
-    //   );
-    //   setActiveStep(0);
-    //   setAddType('');
-    //   setItemFormData({
-    //     name: '',
-    //     type: 'General',
-    //     unit: '',
-    //     image: '',
-    //     total_quantityopen: 0,
-    //     total_quantityunopened: 0,
-    //     min_quantityopen: 0,
-    //     min_quantityunopened: 0,
-    //   });
-    //   setLoading(false);
-    //   setSuccessDialogOpen(true);
-    //   console.log(response.data);
-    // })
-    // .catch((error) => {
-    //   setActiveStep(0);
-    //   setAddType('');
-    //   setItemFormData({
-    //     name: '',
-    //     type: 'General',
-    //     unit: '',
-    //     image: '',
-    //     total_quantityopen: 0,
-    //     total_quantityunopened: 0,
-    //     min_quantityopen: 0,
-    //     min_quantityunopened: 0,
-    //   });
-    //   setLoading(false);
-    //   setErrorDialogOpen(true);
-    //   console.error(error);
-    // });
+  mutate(payload, {
+    onSuccess: () => {
+      setSuccessMessage(
+          `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
+      );
+      setActiveStep(0);
+      setAddType('');
+      setItemFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        imgpic: '',
+        total_quantity: 0,
+        min_quantity: 0,
+        is_opened: false,
+      });
+      setLoading(false);
+      setSuccessDialogOpen(true);
+      console.log(response.data);
+    },
+    onError: () => {
+      setActiveStep(0);
+      setAddType('');
+      setItemFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        imgpic: '',
+        total_quantity: 0,
+        min_quantity: 0,
+        is_opened: false,
+      });
+      setLoading(false);
+      setErrorDialogOpen(true);
+      console.error(error);
+    },
+  });
 };
 
 const processExpirySubmission = (
@@ -325,88 +328,81 @@ const processExpirySubmission = (
     is_opened: expiryFormData.is_opened,
     expiry_dates: modifiedExpiry,
   };
-  console.log(payload)
-    // .then((response) => {
-    //   setSuccessMessage(
-    //     `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,
-    //   );
-    //   setActiveStep(0);
-    //   setAddType('');
-    //   setExpiryFormData({
-    //     name: '',
-    //     type: 'General',
-    //     unit: '',
-    //     image: '',
-    //     expiry: [
-    //       {
-    //         item: 0,
-    //         date: dayjs(new Date()).format('YYYY-MM-DD'),
-    //         total_quantityopen: 0,
-    //         total_quantityunopened: 0,
-    //       },
-    //     ],
-    //     min_quantityopen: 0,
-    //     min_quantityunopened: 0,
-    //   });
-    //
-    //   setExpiryFormError({
-    //     name: false,
-    //     type: false,
-    //     unit: false,
-    //     image: false,
-    //     expiry: [
-    //       {
-    //         date: false,
-    //         total_quantityopen: false,
-    //         total_quantityunopened: false,
-    //       },
-    //     ],
-    //     min_quantityopen: false,
-    //     min_quantityunopened: false,
-    //   });
-    //   setLoading(false);
-    //   setSuccessDialogOpen(true);
-    //   console.log(response.data);
-    // })
-    // .catch((error) => {
-    //   setActiveStep(0);
-    //   setAddType('');
-    //   setExpiryFormData({
-    //     name: '',
-    //     type: 'General',
-    //     unit: '',
-    //     image: '',
-    //     expiry: [
-    //       {
-    //         item: 0,
-    //         date: dayjs(new Date()).format('YYYY-MM-DD'),
-    //         total_quantityopen: 0,
-    //         total_quantityunopened: 0,
-    //       },
-    //     ],
-    //     min_quantityopen: 0,
-    //     min_quantityunopened: 0,
-    //   });
-    //
-    //   setExpiryFormError({
-    //     name: false,
-    //     type: false,
-    //     unit: false,
-    //     image: false,
-    //     expiry: [
-    //       {
-    //         date: false,
-    //         total_quantityopen: false,
-    //         total_quantityunopened: false,
-    //       },
-    //     ],
-    //     min_quantityopen: false,
-    //     min_quantityunopened: false,
-    //   });
-    //   setLoading(false);
-    //   setErrorDialogOpen(true);
-    //   console.error(error);
-    // });
+  mutate(payload, {
+    onSuccess: () => {
+      setSuccessMessage(
+          `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,
+      );
+      setActiveStep(0);
+      setAddType('');
+      setExpiryFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        imgpic: '',
+        expiry: [
+          {
+            expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+            quantity: 0,
+          },
+        ],
+        min_quantity: 0,
+        is_opened: false,
+      });
+
+      setExpiryFormError({
+        name: false,
+        type: false,
+        unit: false,
+        imgpic: false,
+        expiry: [
+          {
+            expiry_date: false,
+            quantity: false,
+          },
+        ],
+        min_quantity: false,
+        is_opened: false,
+      });
+      setLoading(false);
+      setSuccessDialogOpen(true);
+    },
+    onError: () => {
+      setActiveStep(0);
+      setAddType('');
+      setExpiryFormData({
+        name: '',
+        type: 'General',
+        unit: '',
+        imgpic: '',
+        expiry: [
+          {
+            expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+            quantity: 0,
+          },
+        ],
+        min_quantity: 0,
+        is_opened: false,
+      });
+
+      setExpiryFormError({
+        name: false,
+        type: false,
+        unit: false,
+        imgpic: false,
+        expiry: [
+          {
+            expiry_date: false,
+            quantity: false,
+          },
+        ],
+        min_quantity: false,
+        is_opened: false,
+      });
+      setLoading(false);
+      setErrorDialogOpen(true);
+    },
+  });
 };
 
 export {
