@@ -45,8 +45,7 @@ export const CartItemPropType = PropTypes.shape({
   ...ItemPropType,
   type: PropTypes.string,
   expiryId: PropTypes.number,
-  cartOpenedQuantity: PropTypes.number,
-  cartUnopenedQuantity: PropTypes.number,
+  cartQuantity: PropTypes.number,
 });
 
 export const UserPropType = PropTypes.shape({

@@ -13,7 +13,7 @@ const appendToLocalStorageCart = (currentLocalStorageCart, cartItem) => {
       hasDuplicates = true;
       return {
         ...item,
-        cartTotalQuantity: item.cartTotalQuantity + cartItem.cartTotalQuantity,
+        cartQuantity: item.cartQuantity + cartItem.cartQuantity,
       };
     }
     return item;

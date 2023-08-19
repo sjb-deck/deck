@@ -9,7 +9,7 @@ import {
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs from 'dayjs';
 import { PropTypes } from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
 export function ConfirmationDialog({
   openConfirmation,
@@ -50,16 +50,16 @@ export function ConfirmationDialog({
   );
 }
 
-export function DatePickerDialog({
-  openDatePicker,
-  handleCloseDatePicker,
-  updateTempSelectedDate,
-}) {
+export function DatePickerDialog({ openDatePicker, handleCloseDatePicker }) {
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format('YYYY-MM-DD'),
+  );
+
   const MyActionBar = () => {
     return (
       <DialogActions>
-        <Button onClick={() => handleCloseDatePicker('close')}>Cancel</Button>
-        <Button onClick={() => handleCloseDatePicker('updateDate')}>Ok</Button>
+        <Button onClick={() => handleCloseDatePicker(null)}>Cancel</Button>
+        <Button onClick={() => handleCloseDatePicker(selectedDate)}>Ok</Button>
       </DialogActions>
     );
   };
@@ -72,11 +72,14 @@ export function DatePickerDialog({
       <DialogTitle id='responsive-dialog-title'>
         Pick a new expiry date
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ padding: '0px' }}>
         <StaticDatePicker
           minDate={dayjs()}
           defaultValue={dayjs()}
-          onChange={(value) => updateTempSelectedDate(value)}
+          value={dayjs(selectedDate)}
+          onChange={(value) =>
+            setSelectedDate(dayjs(value.$d).format('YYYY-MM-DD'))
+          }
           slotProps={{
             layout: {
               sx: {
@@ -103,5 +106,4 @@ ConfirmationDialog.propTypes = {
 DatePickerDialog.propTypes = {
   openDatePicker: PropTypes.bool.isRequired,
   handleCloseDatePicker: PropTypes.func.isRequired,
-  updateTempSelectedDate: PropTypes.func.isRequired,
 };
