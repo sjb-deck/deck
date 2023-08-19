@@ -128,7 +128,7 @@ def api_add_item(request):
 @permission_classes([IsAuthenticated])
 def create_new_expiry(request, item_id):
     try:
-        item = Item.objects.get(id=item_id)  # TODO: to check if the item has an expiry
+        item = Item.objects.get(id=item_id)
         expiry_serializer = AddItemExpirySerializer(data=request.data)
         if expiry_serializer.is_valid(raise_exception=True):
             expiry = expiry_serializer.save()
