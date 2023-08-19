@@ -33,7 +33,6 @@ export const CartContent = () => {
       returnDate: dayjs(),
       reason: '',
       selectedOption: isWithdraw ? 'loan' : 'item_restock',
-      // ... other initialValues
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
