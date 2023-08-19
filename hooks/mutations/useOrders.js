@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useContext } from 'react';
 
 import { Api } from '../../globals';
 import { AlertContext } from '../../providers';
@@ -8,6 +9,7 @@ export const useOrders = (options) => {
   const key = 'submitOrder';
   const url = Api[key];
   const request = getRequest();
+  const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     onSuccess: () => {
@@ -24,7 +26,7 @@ export const useOrders = (options) => {
     async (order) => {
       const response = await request.post(url, order);
 
-      if (response.status != 200) throw new Error(response.statusText);
+      if (response.status != 201) throw new Error(response.statusText);
 
       return response.data;
     },

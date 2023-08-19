@@ -13,18 +13,17 @@ import React, { useContext } from 'react';
 
 import { CartItemPropType } from '../../../globals';
 import { CartContext } from '../../../providers/CartProvider';
-import { removeItemFromCart } from '../../../utils/cart-utils/removeItemFromCart';
 import { Paper } from '../../styled';
 
 export const CartItem = ({ cartItem }) => {
   const expiryDate =
-    cartItem.expirydates.find((expiry) => expiry.id === cartItem.expiryId)
+    cartItem.expiry_dates.find((expiry) => expiry.id === cartItem.expiryId)
       .expirydate || 'No Expiry';
 
-  const { cartItems, setCartItems } = useContext(CartContext);
+  const { removeItemFromCart } = useContext(CartContext);
 
   const handleDeleteCartItem = () => {
-    removeItemFromCart(cartItems, cartItem.expiryId, setCartItems);
+    removeItemFromCart(cartItem.expiryId);
   };
 
   return (
@@ -61,10 +60,7 @@ export const CartItem = ({ cartItem }) => {
             {cartItem.name}
           </Typography>
           <Typography variant='caption'>
-            Opened Qty: {cartItem.cartOpenedQuantity}
-          </Typography>
-          <Typography variant='caption'>
-            Unopened Qty: {cartItem.cartUnopenedQuantity}
+            Quantity: {cartItem.cartQuantity}
           </Typography>
           <Button
             variant='outlined'

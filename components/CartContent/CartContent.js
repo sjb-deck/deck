@@ -5,10 +5,10 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import React, { useContext, useMemo, useState } from 'react';
 
-import { CART_ITEM_TYPE_WITHDRAW } from '../../globals';
+import { CART_ITEM_TYPE_WITHDRAW, URL_INV_ITEMS } from '../../globals';
 import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
-import { clearCart, getCartState, getDjangoFriendlyDate } from '../../utils';
+import { getDjangoFriendlyDate } from '../../utils';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Paper } from '../styled';
 
@@ -16,8 +16,7 @@ import { CartItems } from './CartItems/CartItems';
 import { emptyCartMessage } from './labels';
 
 export const CartContent = () => {
-  const { cartItems, setCartItems } = useContext(CartContext);
-  const cartState = getCartState(cartItems);
+  const { cartItems, clearCart, cartState } = useContext(CartContext);
   const isWithdraw = cartState === 'Withdraw';
   const isEmpty = cartState === '';
   const [selectedOption, setSelectedOption] = useState(
@@ -34,7 +33,7 @@ export const CartContent = () => {
     mutate(data, {
       onSuccess: () => {
         // TODO: Instead of redirecting, show order items
-        clearCart(setCartItems);
+        clearCart();
         window.location.href = URL_INV_ITEMS;
       },
     });
@@ -50,9 +49,8 @@ export const CartContent = () => {
       action: cartState,
       reason: selectedOption,
       order_items: cartItems.map((item) => ({
-        item_expiry: item.expiryId,
-        opened_quantity: item.cartOpenedQuantity,
-        unopened_quantity: item.cartUnopenedQuantity,
+        item_expiry_id: item.expiryId,
+        ordered_quantity: item.cartQuantity,
       })),
     };
   };

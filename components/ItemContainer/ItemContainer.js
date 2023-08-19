@@ -11,7 +11,6 @@ import {
   ItemPropType,
 } from '../../globals';
 import { CartContext } from '../../providers';
-import { getCartState } from '../../utils/cart-utils/getCartState';
 import { CartPopupModal } from '../CartPopupModal';
 import { Paper } from '../styled';
 
@@ -23,8 +22,7 @@ import { Paper } from '../styled';
 export const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
-  const { cartItems } = useContext(CartContext);
-  const cartState = getCartState(cartItems);
+  const { cartState } = useContext(CartContext);
   const hasExpiry = !!item.expiry_dates[0].expiry_date;
   const [openModal, setOpenModal] = useState(false);
   const [orderType, setOrderType] = useState('');
