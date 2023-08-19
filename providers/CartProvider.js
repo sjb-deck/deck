@@ -6,7 +6,7 @@ import { LOCAL_STORAGE_CART_KEY } from '../globals';
 export const CartContext = React.createContext();
 
 const getCartStateFromLocalStorage = () => {
-  const cartItems = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
+  const cartItems = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
   if (cartItems && cartItems.length > 0) return cartItems[0].type;
   else return '';
 };

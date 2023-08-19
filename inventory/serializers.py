@@ -28,6 +28,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "extras"]
 
 
+class AddItemExpirySerializer(serializers.ModelSerializer):
+    item = PrimaryKeyRelatedField(
+        queryset=Item.objects.filter(expiry_dates__expiry_date__isnull=False).distinct()
+    )
+    expiry_date = serializers.DateField()
+    quantity = serializers.IntegerField(min_value=1)
+
+    class Meta:
+        model = ItemExpiry
+        fields = ["item", "expiry_date", "quantity"]
+
+
 class ItemInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item

@@ -22,7 +22,10 @@ export const useOrders = (options) => {
 
   return useMutation(
     async (order) => {
-      const response = request.post(url, order);
+      const response = await request.post(url, order);
+
+      if (response.status != 200) throw new Error(response.statusText);
+
       return response.data;
     },
     { ...defaultOptions, ...options },

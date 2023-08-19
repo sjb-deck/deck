@@ -23,7 +23,7 @@ export const SnackBarAlerts = ({
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={open}
-      autoHideDuration={autoHide ? 10000 : null}
+      autoHideDuration={autoHide ? 5000 : null}
       onClose={onClose}
     >
       <Alert severity={severity} sx={{ width: '100%' }}>
