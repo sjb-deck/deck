@@ -87,8 +87,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     order_items = OrderItemSerializer(many=True)
-    loanee_name = serializers.CharField(source="loanorder.loanee_name")
-    return_date = serializers.DateTimeField(source="loanorder.return_date")
+    loanee_name = serializers.CharField(source="loanorder.loanee_name", required=False)
+    return_date = serializers.DateTimeField(
+        source="loanorder.return_date", required=False
+    )
     loan_active = serializers.BooleanField(
         source="loanorder.loan_active", read_only=True
     )
