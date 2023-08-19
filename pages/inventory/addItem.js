@@ -8,6 +8,7 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
+import {useAddItem} from "../../hooks/mutations";
 
 import {
   AddExpiryForm,
@@ -42,10 +43,9 @@ const AddItem = () => {
   const [itemPotentialMatch, setItemPotentialMatch] = useState('');
   const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
     useState(false);
-  const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
-  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const { mutate, isLoading } = useAddItem();
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
@@ -97,6 +97,162 @@ const AddItem = () => {
     is_opened: false,
   });
 
+  const processItemSubmission = (
+  ) => {
+    // setLoading(true);
+    const payload = {
+      name: itemFormData.name,
+      type: itemFormData.type,
+      unit: itemFormData.unit,
+      imgpic: null,
+      total_quantity: itemFormData.total_quantity,
+      min_quantity: itemFormData.min_quantity,
+      is_opened: itemFormData.is_opened,
+      expiry_dates: [
+        {
+          expiry_date: null,
+          quantity: itemFormData.total_quantity,
+          archived: false
+        },
+      ]
+    }
+    console.log(payload)
+    mutate(payload, {
+      onSuccess: () => {
+        setSuccessMessage(
+            `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
+        );
+        setActiveStep(0);
+        setAddType('');
+        setItemFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          total_quantity: 0,
+          min_quantity: 0,
+          is_opened: false,
+        });
+        setLoading(false);
+        console.log(response.data);
+      },
+      onError: () => {
+        setActiveStep(0);
+        setAddType('');
+        setItemFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          total_quantity: 0,
+          min_quantity: 0,
+          is_opened: false,
+        });
+        setLoading(false);
+        console.error(error);
+      },
+    });
+  };
+
+  const processExpirySubmission = (
+  ) => {
+    // setLoading(true);
+    const modifiedExpiry = expiryFormData.expiry.map((item) => ({
+      expiry_date: item.expiry_date,
+      quantity: item.quantity,
+      archived: false,
+    }));
+
+    const total_quantity = modifiedExpiry.reduce(
+        (total, item) => total + item.quantity,
+        0,
+    );
+
+    const payload = {
+      name: expiryFormData.name,
+      type: expiryFormData.type,
+      unit: expiryFormData.unit,
+      imgpic: null,
+      total_quantity: total_quantity,
+      min_quantity: expiryFormData.min_quantity,
+      is_opened: expiryFormData.is_opened,
+      expiry_dates: modifiedExpiry,
+    };
+    mutate(payload, {
+      onSuccess: () => {
+        setSuccessMessage(
+            `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,
+        );
+        setActiveStep(0);
+        setAddType('');
+        setExpiryFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          expiry: [
+            {
+              expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+              quantity: 0,
+            },
+          ],
+          min_quantity: 0,
+          is_opened: false,
+        });
+
+        setExpiryFormError({
+          name: false,
+          type: false,
+          unit: false,
+          imgpic: false,
+          expiry: [
+            {
+              expiry_date: false,
+              quantity: false,
+            },
+          ],
+          min_quantity: false,
+          is_opened: false,
+        });
+        setLoading(false);
+      },
+      onError: () => {
+        setActiveStep(0);
+        setAddType('');
+        setExpiryFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          expiry: [
+            {
+              expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+              quantity: 0,
+            },
+          ],
+          min_quantity: 0,
+          is_opened: false,
+        });
+
+        setExpiryFormError({
+          name: false,
+          type: false,
+          unit: false,
+          imgpic: false,
+          expiry: [
+            {
+              expiry_date: false,
+              quantity: false,
+            },
+          ],
+          min_quantity: false,
+          is_opened: false,
+        });
+        setLoading(false);
+      },
+    });
+  };
+
   useEffect(() => {
     if (dataError || userError) {
       setSnackbarOpen(true);
@@ -137,28 +293,9 @@ const AddItem = () => {
         return;
       case 2:
         if (addType === 'item') {
-          processItemSubmission(
-            itemFormData,
-            setActiveStep,
-            setItemFormData,
-            setAddType,
-            setSuccessDialogOpen,
-            setSuccessMessage,
-            setErrorDialogOpen,
-            setLoading,
-          );
+          processItemSubmission();
         } else if (addType === 'expiry') {
-          processExpirySubmission(
-            expiryFormData,
-            setActiveStep,
-            setExpiryFormData,
-            setExpiryFormError,
-            setAddType,
-            setSuccessDialogOpen,
-            setSuccessMessage,
-            setErrorDialogOpen,
-            setLoading,
-          );
+          processExpirySubmission();
         }
         return;
       default:
@@ -167,12 +304,10 @@ const AddItem = () => {
   };
 
   const handleSuccessDialogClose = () => {
-    setSuccessDialogOpen(false);
     setSuccessMessage('');
   };
 
   const handleErrorDialogClose = () => {
-    setErrorDialogOpen(false);
   };
 
   const handleItemPotentialMatchDialogClose = () => {
@@ -317,15 +452,6 @@ const AddItem = () => {
                       {loading ? <LinearProgress /> : null}
                     </div>
                   </div>
-                  <SuccessDialog
-                    open={isSuccessDialogOpen}
-                    onClose={handleSuccessDialogClose}
-                    message={successMessage}
-                  />
-                  <ErrorDialog
-                    open={isErrorDialogOpen}
-                    onClose={handleErrorDialogClose}
-                  />
                   <ItemPotentialMatchDialog
                     open={isItemPotentialMatchDialogOpen}
                     onClose={handleItemPotentialMatchDialogClose}

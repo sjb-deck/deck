@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { INV_API_EXPIRY_POST_URL } from '../globals';
 
 import findPotentialMatch from './levenshteinDistance';
-import {useAddItem} from "../hooks/mutations";
 import {clearCart} from "./cart-utils";
 
 const PLACEHOLDER_IMAGE =
@@ -13,7 +12,6 @@ const PLACEHOLDER_IMAGE =
 // Normalised Levenshtein distance threshold
 const LEVENSHTEIN_THRESHOLD = 0.2;
 
-const { mutate, isLoading } = useAddItem();
 
 const isValidInt = (value) => {
   return Number.isInteger(value) && value >= 0 && value <= 1000;
@@ -229,185 +227,8 @@ const checkItemFormData = (
   setActiveStep((prevActiveStep) => prevActiveStep + 1);
 };
 
-const processItemSubmission = (
-  itemFormData,
-  setActiveStep,
-  setItemFormData,
-  setAddType,
-  setSuccessDialogOpen,
-  setSuccessMessage,
-  setErrorDialogOpen,
-  setLoading,
-) => {
-  // setLoading(true);
-  const payload = {
-    name: itemFormData.name,
-    type: itemFormData.type,
-    unit: itemFormData.unit,
-    imgpic: itemFormData.imgpic,
-    total_quantity: itemFormData.total_quantity,
-    min_quantity: itemFormData.min_quantity,
-    is_opened: itemFormData.is_opened,
-    expiry_dates: [
-      {
-        expiry_date: '',
-        quantity: itemFormData.total_quantity,
-        archived: false
-      },
-    ]
-  }
-  mutate(payload, {
-    onSuccess: () => {
-      setSuccessMessage(
-          `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
-      );
-      setActiveStep(0);
-      setAddType('');
-      setItemFormData({
-        name: '',
-        type: 'General',
-        unit: '',
-        imgpic: '',
-        total_quantity: 0,
-        min_quantity: 0,
-        is_opened: false,
-      });
-      setLoading(false);
-      setSuccessDialogOpen(true);
-      console.log(response.data);
-    },
-    onError: () => {
-      setActiveStep(0);
-      setAddType('');
-      setItemFormData({
-        name: '',
-        type: 'General',
-        unit: '',
-        imgpic: '',
-        total_quantity: 0,
-        min_quantity: 0,
-        is_opened: false,
-      });
-      setLoading(false);
-      setErrorDialogOpen(true);
-      console.error(error);
-    },
-  });
-};
-
-const processExpirySubmission = (
-  expiryFormData,
-  setActiveStep,
-  setExpiryFormData,
-  setExpiryFormError,
-  setAddType,
-  setSuccessDialogOpen,
-  setSuccessMessage,
-  setErrorDialogOpen,
-  setLoading,
-) => {
-  // setLoading(true);
-  const modifiedExpiry = expiryFormData.expiry.map((item) => ({
-    expiry_date: item.expiry_date,
-    quantity: item.quantity,
-    archived: false,
-  }));
-
-  const total_quantity = modifiedExpiry.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
-
-  const payload = {
-    name: expiryFormData.name,
-    type: expiryFormData.type,
-    unit: expiryFormData.unit,
-    imgpic: expiryFormData.imgpic,
-    total_quantity: total_quantity,
-    min_quantity: expiryFormData.min_quantity,
-    is_opened: expiryFormData.is_opened,
-    expiry_dates: modifiedExpiry,
-  };
-  mutate(payload, {
-    onSuccess: () => {
-      setSuccessMessage(
-          `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,
-      );
-      setActiveStep(0);
-      setAddType('');
-      setExpiryFormData({
-        name: '',
-        type: 'General',
-        unit: '',
-        imgpic: '',
-        expiry: [
-          {
-            expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
-            quantity: 0,
-          },
-        ],
-        min_quantity: 0,
-        is_opened: false,
-      });
-
-      setExpiryFormError({
-        name: false,
-        type: false,
-        unit: false,
-        imgpic: false,
-        expiry: [
-          {
-            expiry_date: false,
-            quantity: false,
-          },
-        ],
-        min_quantity: false,
-        is_opened: false,
-      });
-      setLoading(false);
-      setSuccessDialogOpen(true);
-    },
-    onError: () => {
-      setActiveStep(0);
-      setAddType('');
-      setExpiryFormData({
-        name: '',
-        type: 'General',
-        unit: '',
-        imgpic: '',
-        expiry: [
-          {
-            expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
-            quantity: 0,
-          },
-        ],
-        min_quantity: 0,
-        is_opened: false,
-      });
-
-      setExpiryFormError({
-        name: false,
-        type: false,
-        unit: false,
-        imgpic: false,
-        expiry: [
-          {
-            expiry_date: false,
-            quantity: false,
-          },
-        ],
-        min_quantity: false,
-        is_opened: false,
-      });
-      setLoading(false);
-      setErrorDialogOpen(true);
-    },
-  });
-};
 
 export {
   checkItemFormData,
   checkExpiryFormData,
-  processItemSubmission,
-  processExpirySubmission,
 };
