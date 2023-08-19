@@ -18,7 +18,7 @@ import { Paper } from '../../styled';
 export const CartItem = ({ cartItem }) => {
   const expiryDate =
     cartItem.expiry_dates.find((expiry) => expiry.id === cartItem.expiryId)
-      .expirydate || 'No Expiry';
+      .expiry_date || 'No Expiry';
 
   const { removeItemFromCart } = useContext(CartContext);
 
