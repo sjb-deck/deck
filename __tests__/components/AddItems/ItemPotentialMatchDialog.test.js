@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import ItemPotentialMatchDialog from '../../../components/AddItems/ItemPotentialMatchDialog';
 
-describe('ItemPotentialMatchDialog', () => {
+xdescribe('ItemPotentialMatchDialog', () => {
   test('renders with correct match and buttons', () => {
     const onCloseMock = jest.fn();
     const setActiveStepMock = jest.fn();

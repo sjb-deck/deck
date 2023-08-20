@@ -85,5 +85,5 @@ export const CartItem = ({ cartItem }) => {
 };
 
 CartItem.propTypes = {
-  cartItem: CartItemPropType.isRequired,
+  cartItem: CartItemPropType,
 };

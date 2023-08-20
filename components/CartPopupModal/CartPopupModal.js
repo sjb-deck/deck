@@ -23,8 +23,7 @@ import {
   ItemPropType,
 } from '../../globals';
 import { useNewExpiryDate } from '../../hooks/mutations';
-import { AlertContext } from '../../providers';
-import { CartContext } from '../../providers/CartProvider';
+import { AlertContext, CartContext } from '../../providers';
 
 import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
 import { getValidationSchema } from './schema';
@@ -264,7 +263,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                   }
                 }}
               >
-                Submit
+                Deposit
               </Button>
             ) : (
               <Button

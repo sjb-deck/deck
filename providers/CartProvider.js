@@ -36,10 +36,15 @@ const appendToLocalStorageCart = (currentLocalStorageCart, cartItem) => {
   return newLocalStorageCart;
 };
 
-export const CartProvider = ({ children }) => {
-  const [cartState, setCartState] = useState(getCartStateFromLocalStorage());
+export const CartProvider = ({ children, value: testValues }) => {
+  const defaultCartState = getCartStateFromLocalStorage();
+  const defaultCartItems = getCartItemsFromLocalStorage() || [];
+
+  const [cartState, setCartState] = useState(
+    testValues?.cartState || defaultCartState,
+  );
   const [cartItems, setCartItems] = useState(
-    getCartItemsFromLocalStorage() || [],
+    testValues?.cartItems || defaultCartItems,
   );
 
   const addToCart = (cartItem) => {
@@ -83,4 +88,8 @@ export const CartProvider = ({ children }) => {
 
 CartProvider.propTypes = {
   children: PropTypes.node,
+  value: PropTypes.shape({
+    cartState: PropTypes.string,
+    cartItems: PropTypes.array,
+  }),
 };

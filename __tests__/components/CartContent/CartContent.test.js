@@ -1,64 +1,41 @@
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import CartContent from '../../../components/CartContent/CartContent';
+import { CartContent } from '../../../components/CartContent/CartContent';
 import { emptyCartMessage } from '../../../components/CartContent/labels';
-import { CartContext } from '../../../components/CartContext';
 import { mockDepositCart, mockWithdrawCart } from '../../../mocks/cart';
-
-const setCartState = jest.fn();
-const setCartItems = jest.fn();
+import { render } from '../../../testSetup';
 
 const mockContextValue = {
   cartState: '',
-  setCartState: setCartState,
   cartItems: [],
-  setCartItems: setCartItems,
 };
 
 describe('<CartContent />', () => {
   describe('renders correctly', () => {
     it('for empty cart', () => {
-      render(
-        <CartContext.Provider value={mockContextValue}>
-          <CartContent />
-        </CartContext.Provider>,
-      );
+      render(<CartContent />, { cartContext: mockContextValue });
 
       expect(screen.getByText(emptyCartMessage)).toBeInTheDocument();
     });
     it('for withdrawal cart', () => {
       const withdrawContextValue = {
-        ...mockContextValue,
         cartState: 'Withdraw',
         cartItems: mockWithdrawCart,
       };
 
-      render(
-        <CartContext.Provider value={withdrawContextValue}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <CartContent />
-          </LocalizationProvider>
-        </CartContext.Provider>,
-      );
+      render(<CartContent />, { cartContext: withdrawContextValue });
 
       expect(screen.getByText('Withdraw Cart')).toBeInTheDocument();
     });
 
     it('for deposit cart', () => {
       const depositContextValue = {
-        ...mockContextValue,
         cartState: 'Deposit',
         cartItems: mockDepositCart,
       };
 
-      render(
-        <CartContext.Provider value={depositContextValue}>
-          <CartContent />
-        </CartContext.Provider>,
-      );
+      render(<CartContent />, { cartContext: depositContextValue });
 
       expect(screen.getByText('Deposit Cart')).toBeInTheDocument();
     });

@@ -1,21 +1,14 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom';
-import { CartContext, CartProvider } from '../../../components/CartContext';
-import ItemContainer from '../../../components/ItemContainer/ItemContainer';
+import { ItemContainer } from '../../../components/ItemContainer/ItemContainer';
 import { CART_ITEM_TYPE_WITHDRAW } from '../../../globals';
-import { mockDepositCart } from '../../../mocks/cart';
-import { exampleItem } from '../../../mocks/items';
+import { exampleItem, mockDepositCart } from '../../../mocks';
+import { render, userEvent } from '../../../testSetup';
 
 describe('ItemContainer', () => {
   it('renders the component correctly', () => {
-    render(
-      <CartProvider>
-        <ItemContainer index={0} item={exampleItem} />
-      </CartProvider>,
-    );
+    render(<ItemContainer index={0} item={exampleItem} />);
 
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
     expect(screen.getByText('Unit: ' + exampleItem.unit)).toBeInTheDocument();
@@ -25,11 +18,7 @@ describe('ItemContainer', () => {
   });
 
   it('handles expiry date changes', async () => {
-    render(
-      <CartProvider>
-        <ItemContainer index={0} item={exampleItem} />
-      </CartProvider>,
-    );
+    render(<ItemContainer index={0} item={exampleItem} />);
     await userEvent.click(screen.getByText('All'));
     expect(
       screen.getByText('Quantity: ' + exampleItem.total_quantity),
@@ -44,15 +33,11 @@ describe('ItemContainer', () => {
   it('disable the withdraw button when cart is of deposit type', () => {
     const mockDepositContextValue = {
       cartState: 'Deposit',
-      setCartState: () => {},
       cartItems: mockDepositCart,
-      setCartItems: () => {},
     };
-    render(
-      <CartContext.Provider value={mockDepositContextValue}>
-        <ItemContainer index={0} item={exampleItem} />
-      </CartContext.Provider>,
-    );
+    render(<ItemContainer index={0} item={exampleItem} />, {
+      cartContext: mockDepositContextValue,
+    });
 
     expect(screen.getByText(CART_ITEM_TYPE_WITHDRAW)).toBeDisabled();
   });

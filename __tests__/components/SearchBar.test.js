@@ -1,10 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom';
-
-import SearchBar from '../../components/SearchBar';
-import { mockItems } from '../../mocks/items';
+import { SearchBar } from '../../components';
+import { mockItems } from '../../mocks';
 
 describe('SearchBar', () => {
   test('renders the search bar component', () => {
