@@ -25,7 +25,6 @@ import {
 import { useNewExpiryDate } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';
 import { CartContext } from '../../providers/CartProvider';
-import { addToCart } from '../../utils/cart-utils/addToCart';
 
 import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
 import { getValidationSchema } from './schema';
@@ -38,8 +37,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const disableExpirySelection = !canAddExpiry && !showDropdown;
   const preselectedExpiryId =
     selector == 'All' ? item.expiry_dates[0].id : selector;
-  const { cartItems, setCartItems, setCartState, cartState } =
-    useContext(CartContext);
+  const { cartItems, cartState, addToCart } = useContext(CartContext);
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -125,7 +123,6 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
       const currCartState = isDeposit
         ? CART_ITEM_TYPE_DEPOSIT
         : CART_ITEM_TYPE_WITHDRAW;
-      setCartState(currCartState);
       const cartItem = {
         ...item,
         expiryId: selectedExpiryId,
@@ -133,7 +130,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         cartQuantity: values.quantity,
       };
 
-      addToCart(cartItem, cartItems, setCartItems);
+      addToCart(cartItem);
       setAlert('success', 'Added to cart', true);
 
       handleClose();
