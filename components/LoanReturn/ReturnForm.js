@@ -5,11 +5,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
   Grid,
-  Typography,
-  Paper,
   LinearProgress,
+  Paper,
+  TextField,
+  Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -19,7 +19,7 @@ import {
   submitLoanReturn,
 } from '../../utils/submitLoanForm';
 
-const ReturnForm = ({ items, id, onClose, open }) => {
+export const ReturnForm = ({ items, id, onClose, open }) => {
   const [quantities, setQuantities] = useState(
     items.map(() => ({ quantityOpened: 0, quantityUnopened: 0 })),
   );
@@ -171,5 +171,3 @@ ReturnForm.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
 };
-
-export default ReturnForm;

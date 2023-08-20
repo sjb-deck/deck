@@ -66,9 +66,9 @@
 				"
 				onclick="window.location = '/accounts/edit';"
 			>
-				{%if request.user.extras.first.profilepic%}
+				{%if request.user.extras.first.profile_pic%}
 				<img
-					src="/uploaded/{{request.user.extras.first.profilepic}}"
+					src="/uploaded/{{request.user.extras.first.profile_pic}}"
 					style="
 						width: 100px;
 						height: 100px;

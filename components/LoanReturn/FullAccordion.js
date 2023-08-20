@@ -1,8 +1,8 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
   Button,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -13,7 +13,7 @@ import AccordionItem from './AccordionItem';
 import AccordionSummaryContent from './AccordionSummaryContent';
 import ReturnForm from './ReturnForm';
 
-const FullAccordion = ({ index, loan }) => {
+export const FullAccordion = ({ index, loan }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const isPC = useMediaQuery('(min-width: 1000px)');
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
@@ -103,5 +103,3 @@ FullAccordion.propTypes = {
     ).isRequired,
   }).isRequired,
 };
-
-export default FullAccordion;

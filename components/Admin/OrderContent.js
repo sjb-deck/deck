@@ -1,39 +1,49 @@
-import { ExpandMore } from '@mui/icons-material';
+import { Close, DeleteForever, ExpandMore } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Button,
   Divider,
   Grid,
   Stack,
-  Box,
 } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import { OrderPropType } from '../../globals';
-const OrderContent = ({ order, isMobile }) => {
-  const date = new Date(order.date);
-  const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}`;
+import { getSimpleDate } from '../../utils/getSimpleDate';
+import { Modal } from '../Modal/Modal';
+
+export const OrderContent = ({
+  order,
+  isMobile,
+  isLoading,
+  handleDeleteOrder,
+}) => {
+  const [orderDate, orderTime] = getSimpleDate(order.date);
   return (
-    <Accordion sx={{ maxWidth: '750px', minWidth: isMobile ? '95%' : '70%' }}>
+    <Accordion
+      key={order.id}
+      sx={{
+        width: isMobile ? '95%' : '70%',
+      }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMore />}
-        id={`panel${order.pk}-header`}
-        aria-controls={`panel${order.pk}-content`}
+        id={`panel${order.id}-header`}
+        aria-controls={`panel${order.id}-content`}
       >
         <Grid container>
           <Grid item xs={2}>
-            {order.pk}
+            {order.id}
           </Grid>
           <Grid item xs={isMobile ? 5 : 3}>
             {order.action}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
-            {date.toLocaleDateString()} {formattedTime}
+            {orderDate} {orderTime}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
@@ -95,21 +105,80 @@ const OrderContent = ({ order, isMobile }) => {
                     }}
                   >
                     <span>{item.item_expiry.item.name}</span>
-                    <span>placeholder qty</span>
+                    <span>{item.ordered_quantity}</span>
                   </Box>
                 );
               })}
             </Stack>
           </Grid>
         </Grid>
+        <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
+        <Box
+          sx={{
+            width: 1,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: 1,
+          }}
+        >
+          <Modal
+            control={
+              <Button
+                variant='contained'
+                role='submit-button'
+                color='error'
+                endIcon={<DeleteForever />}
+              >
+                Revert Loan
+              </Button>
+            }
+            maxWidth={500}
+          >
+            {(helper) => (
+              <Stack
+                sx={{ p: 2, paddingY: 4 }}
+                spacing={2}
+                justifyContent='center'
+                alignItems='center'
+              >
+                <span>Are you sure you want to delete this order?</span>
+                <Box
+                  sx={{ display: 'flex', justifyContent: 'flex-end', width: 1 }}
+                  gap={4}
+                >
+                  <Button
+                    variant='contained'
+                    role='submit-button'
+                    color='error'
+                    endIcon={<DeleteForever />}
+                    disabled={isLoading}
+                    onClick={async () => {
+                      await handleDeleteOrder(order.id);
+                      helper.close();
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                  <Button
+                    variant='contained'
+                    endIcon={<Close />}
+                    onClick={() => helper.close()}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Stack>
+            )}
+          </Modal>
+        </Box>
       </AccordionDetails>
     </Accordion>
   );
 };
 
-export default OrderContent;
-
 OrderContent.propTypes = {
   order: OrderPropType,
   isMobile: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  handleDeleteOrder: PropTypes.func.isRequired,
 };

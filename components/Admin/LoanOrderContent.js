@@ -13,43 +13,37 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import { LoanOrderPropType } from '../../globals';
-import Modal from '../Modal/Modal';
+import { getSimpleDate } from '../../utils/getSimpleDate';
+import { Modal } from '../Modal/Modal';
 
-const LoanOrderContent = ({
+export const LoanOrderContent = ({
   order,
   isMobile,
   isLoading,
   handleDeleteOrder,
 }) => {
-  const loanDate = new Date(order.date);
-  const formattedLoanTime = `${loanDate
-    .getHours()
-    .toString()
-    .padStart(2, '0')}:${loanDate.getMinutes().toString().padStart(2, '0')}`;
-  const returnDate = new Date(order.return_date);
+  const [orderDate, orderTime] = getSimpleDate(order.date);
+  const [returnDate] = getSimpleDate(order.return_date);
   return (
-    <Accordion
-      key={order.pk}
-      sx={{ maxWidth: '750px', minWidth: isMobile ? '95%' : '70%' }}
-    >
+    <Accordion key={order.id} sx={{ width: isMobile ? '95%' : '70%' }}>
       <AccordionSummary
         expandIcon={<ExpandMore />}
-        id={`panel${order.pk}-header`}
-        aria-controls={`panel${order.pk}-content`}
+        id={`panel${order.id}-header`}
+        aria-controls={`panel${order.id}-content`}
       >
         <Grid container>
           <Grid item xs={2}>
-            {order.pk}
+            {order.id}
           </Grid>
           <Grid item xs={isMobile ? 5 : 3}>
             {order.action}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
-            {loanDate.toLocaleDateString()} {formattedLoanTime}
+            {orderDate} {orderTime}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
-              {returnDate.toLocaleDateString()}
+              {returnDate}
             </Grid>
           )}
         </Grid>
@@ -117,7 +111,7 @@ const LoanOrderContent = ({
                     }}
                   >
                     <span>{item.item_expiry.item.name}</span>
-                    <span>placeholder qty</span>
+                    <span>{item.ordered_quantity}</span>
                   </Box>
                 );
               })}
@@ -165,7 +159,7 @@ const LoanOrderContent = ({
                     endIcon={<DeleteForever />}
                     disabled={isLoading}
                     onClick={async () => {
-                      await handleDeleteOrder(order.pk);
+                      await handleDeleteOrder(order.id);
                       helper.close();
                     }}
                   >
@@ -187,8 +181,6 @@ const LoanOrderContent = ({
     </Accordion>
   );
 };
-
-export default LoanOrderContent;
 
 LoanOrderContent.propTypes = {
   order: LoanOrderPropType,

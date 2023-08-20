@@ -3,15 +3,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import FullAccordion from '../../components/LoanReturn/FullAccordion';
-import NavBar from '../../components/NavBar/NavBar';
-import Theme from '../../components/Themes';
-import '../../inventory/src/scss/inventoryBase.scss';
-import { INV_API_USER_URL, INV_API_LOANS_URL } from '../../globals';
+import { FullAccordion, NavBar, Theme } from '../../components';
+import { INV_API_LOANS_URL } from '../../globals';
+import { useUser } from '../../hooks/queries';
 import useFetch from '../../hooks/use-fetch';
+import '../../inventory/src/scss/inventoryBase.scss';
 
 const LoanReturn = () => {
-  const { data: user, loading: userLoading } = useFetch(INV_API_USER_URL);
+  const { data: user, isLoading: userLoading } = useUser();
   const { data: loans, loading: loansLoading } = useFetch(INV_API_LOANS_URL);
 
   if (userLoading || loansLoading) {

@@ -1,6 +1,7 @@
 from django.db import models
-from .OrderModels import Order
+
 from ..Item import ItemExpiry
+from .OrderModels import Order
 
 """
 * A class that encapsulates an order item that belongs to an order.
@@ -11,10 +12,10 @@ from ..Item import ItemExpiry
         The order that this item belongs to
     -> item_expiry : ForeignKey
         The ItemExpiryModel that this order item belongs to
-    -> opened_quantity : IntegerField
-        The opened_quantity that is withdrawn or deposited
-    -> unopened_quantity : IntegerField
-        The unopened_quantity that is withdrawn or deposited
+    -> ordered_quantity : IntegerField
+        The quantity that is withdrawn or deposited
+    -> returned_quantity : IntegerField
+        Only used for loan orders. The quantity that is returned by the loanee
     
 """
 
@@ -24,8 +25,8 @@ class OrderItem(models.Model):
         Order, on_delete=models.CASCADE, related_name="order_items"
     )
     item_expiry = models.ForeignKey(ItemExpiry, on_delete=models.CASCADE)
-    opened_quantity = models.IntegerField(null=False, blank=False, default=0)
-    unopened_quantity = models.IntegerField(null=False, blank=False, default=0)
+    ordered_quantity = models.IntegerField(null=False, blank=False, default=0)
+    returned_quantity = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.order}, {self.item_expiry}, {self.opened_quantity}, {self.unopened_quantity}"
+        return f"{self.order}, {self.item_expiry}"

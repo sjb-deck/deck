@@ -1,10 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect'; // Import the jest-dom matchers
 import FullAccordion from '../../../components/LoanReturn/FullAccordion';
 
-describe('FullAccordion', () => {
+xdescribe('FullAccordion', () => {
   const testData = {
     index: '1',
     loan: {

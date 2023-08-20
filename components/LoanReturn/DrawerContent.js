@@ -1,9 +1,9 @@
-import { Grid, Paper, Typography, Avatar } from '@mui/material';
+import { Avatar, Grid, Paper, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const DrawerContent = ({ item }) => {
+export const DrawerContent = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const isPC = useMediaQuery('(min-width: 1000px)');
 
@@ -225,5 +225,3 @@ DrawerContent.propTypes = {
     imgpic: PropTypes.string,
   }).isRequired,
 };
-
-export default DrawerContent;

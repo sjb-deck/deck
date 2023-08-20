@@ -1,27 +1,32 @@
-import { Accordion, AccordionSummary, Box, Grid } from '@mui/material';
+import {
+  Accordion,
+  AccordionSummary,
+  Box,
+  Grid,
+  Pagination,
+  Skeleton,
+  Stack,
+} from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { PropTypes } from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { INV_API_REVERT_ORDER, LoanOrderPropType } from '../../globals';
-import usePostData from '../../hooks/use-post-data';
+import { LoanOrderPropType, ORDERS_PER_PAGE } from '../../globals';
+import { useRevertOrder } from '../../hooks/mutations';
 
-import LoanOrderContent from './LoanOrderContent';
+import { LoanOrderContent } from './LoanOrderContent';
 
-const LoanOrderList = ({ loanOrders, refetch }) => {
+export const LoanOrderList = ({ loanOrders }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { postData, isLoading } = usePostData(INV_API_REVERT_ORDER);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+  const endIndex = startIndex + ORDERS_PER_PAGE;
+  const { mutate, isLoading } = useRevertOrder();
   const handleDeleteOrder = async (id) => {
-    const payload = {
-      id,
-    };
-    const resp = await postData(payload);
-    if (resp.status === 'success') {
-      await refetch();
-    } else {
-      // handle error notification here
-    }
+    mutate(id);
+  };
+  const handlePageChange = (_, value) => {
+    setCurrentPage(value);
   };
   return (
     <Box
@@ -60,22 +65,53 @@ const LoanOrderList = ({ loanOrders, refetch }) => {
           </Grid>
         </AccordionSummary>
       </Accordion>
-      {loanOrders.map((order) => {
-        return (
-          <LoanOrderContent
-            key={order.pk}
-            order={order}
-            isMobile={isMobile}
-            isLoading={isLoading}
-            handleDeleteOrder={handleDeleteOrder}
+
+      <Stack
+        direction='column'
+        justifyContent='space-between'
+        alignItems='center'
+        spacing={3}
+        sx={{
+          marginTop: 1,
+          minHeight: 0.8,
+          width: 1,
+        }}
+      >
+        <Box
+          sx={{
+            width: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {loanOrders.slice(startIndex, endIndex).map((order) => {
+            return (
+              <LoanOrderContent
+                key={order.id}
+                order={order}
+                isMobile={isMobile}
+                isLoading={isLoading}
+                handleDeleteOrder={handleDeleteOrder}
+              />
+            );
+          })}
+        </Box>
+        {loanOrders ? (
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(loanOrders.length / ORDERS_PER_PAGE)}
+            onChange={handlePageChange}
           />
-        );
-      })}
+        ) : (
+          <Skeleton>
+            <Pagination />
+          </Skeleton>
+        )}
+      </Stack>
     </Box>
   );
 };
-
-export default LoanOrderList;
 
 LoanOrderList.propTypes = {
   loanOrders: PropTypes.arrayOf(LoanOrderPropType).isRequired,

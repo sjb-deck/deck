@@ -12,7 +12,7 @@ import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals';
+import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals/globals';
 import { ColorModeContext } from '../Themes';
 import { UserAvatar } from '../UserAvatar';
 
@@ -49,11 +49,11 @@ export const NavDrawer = ({ user }) => {
         )}
 
         <Typography variant='h6' sx={{ mt: 2 }}>
-          {user ? `Hello ${user.name}` : <Skeleton />}
+          {user ? `Hello ${user.extras.name}` : <Skeleton />}
         </Typography>
 
         <Typography variant='caption'>
-          {user ? user.role : <Skeleton />}
+          {user ? user.extras.role : <Skeleton />}
         </Typography>
       </Box>
       <Divider />

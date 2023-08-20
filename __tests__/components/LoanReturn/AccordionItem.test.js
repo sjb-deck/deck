@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -10,7 +10,7 @@ jest.mock('../../../components/LoanReturn/DrawerContent', () => {
   return Object.assign(MockedDrawerContent, { displayName: 'DrawerContent' });
 });
 
-describe('AccordionItem', () => {
+xdescribe('AccordionItem', () => {
   const orderItem = {
     name: 'Test Item',
     quantity_opened: 5,

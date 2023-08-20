@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import {
-  createTheme,
   ThemeProvider,
+  createTheme,
   responsiveFontSizes,
 } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -18,7 +18,7 @@ export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
-const Theme = ({ children }) => {
+export const Theme = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = React.useState(prefersDarkMode ? 'dark' : 'light');
   const colorMode = React.useMemo(
@@ -53,5 +53,3 @@ const Theme = ({ children }) => {
 Theme.propTypes = {
   children: PropTypes.node,
 };
-
-export default Theme;
