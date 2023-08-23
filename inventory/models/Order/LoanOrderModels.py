@@ -9,8 +9,10 @@ from .OrderModels import Order
     ----------
     -> loanee_name : CharField
         The name of the loanee
-    -> return_date : DateTimeField
+    -> stipulated_return_date : DateTimeField
         The date and time that the loanee is expected to return the item
+    -> return_date : DateTimeField
+        The date and time that the loanee returned the item
     -> loan_active : BooleanField
         Whether the loan is active or not
 
