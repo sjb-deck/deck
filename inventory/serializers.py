@@ -88,9 +88,7 @@ class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     order_items = OrderItemSerializer(many=True)
     loanee_name = serializers.CharField(source="loanorder.loanee_name", required=False)
-    stipulated_return_date = serializers.DateTimeField(
-        source="loanorder.stipulated_return_date", required=False
-    )
+    due_date = serializers.DateTimeField(source="loanorder.due_date", required=False)
     return_date = serializers.DateTimeField(
         source="loanorder.return_date", read_only=True
     )
@@ -111,9 +109,9 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"loanee_name": "This field is required for loans."}
                 )
-            if "stipulated_return_date" not in loan_order:
+            if "due_date" not in loan_order:
                 raise serializers.ValidationError(
-                    {"stipulated_return_date": "This field is required for loans."}
+                    {"due_date": "This field is required for loans."}
                 )
 
         return data

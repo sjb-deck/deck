@@ -9,7 +9,7 @@ from .OrderModels import Order
     ----------
     -> loanee_name : CharField
         The name of the loanee
-    -> stipulated_return_date : DateTimeField
+    -> due_date : DateTimeField
         The date and time that the loanee is expected to return the item
     -> return_date : DateTimeField
         The date and time that the loanee returned the item
@@ -22,7 +22,7 @@ from .OrderModels import Order
 class LoanOrder(Order):
     loanee_name = models.CharField(max_length=50)
     return_date = models.DateTimeField(null=True, blank=True)
-    stipulated_return_date = models.DateTimeField(null=False, blank=False)
+    due_date = models.DateTimeField(null=False, blank=False)
     loan_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
