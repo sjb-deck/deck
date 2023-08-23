@@ -95,7 +95,9 @@ export const CartContent = () => {
         ],
         fieldValues: {
           loanee_name: formik.values.loaneeName,
-          return_date: getDjangoFriendlyDate(formik.values.returnDate),
+          stipulated_return_date: getDjangoFriendlyDate(
+            formik.values.returnDate,
+          ),
         },
       },
       {
