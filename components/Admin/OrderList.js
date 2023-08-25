@@ -1,15 +1,19 @@
+import { Sort } from '@mui/icons-material';
 import {
   Accordion,
   AccordionSummary,
   Box,
   Grid,
+  MenuItem,
   Pagination,
+  Select,
   Skeleton,
   Stack,
+  TextField,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { PropTypes } from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { OrderPropType, ORDERS_PER_PAGE } from '../../globals';
 import { useRevertOrder } from '../../hooks/mutations';
@@ -19,6 +23,10 @@ import { OrderContent } from './OrderContent';
 export const OrderList = ({ orders }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState('item');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [ordersToDisplay, setOrdersToDisplay] = useState(orders);
+  const [dateEarliest, setDateEarliest] = useState(false);
   const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
   const endIndex = startIndex + ORDERS_PER_PAGE;
   const handlePageChange = (_, value) => {
@@ -28,6 +36,33 @@ export const OrderList = ({ orders }) => {
   const handleDeleteOrder = async (id) => {
     mutate(id);
   };
+
+  const handleSortDate = () => {
+    const newOrders = ordersToDisplay.sort((o1, o2) =>
+      dateEarliest
+        ? new Date(o1.date) - new Date(o2.date)
+        : new Date(o2.date) - new Date(o1.date),
+    );
+    setOrdersToDisplay(newOrders);
+    setDateEarliest(!dateEarliest);
+  };
+
+  useEffect(() => {
+    const newOrders = orders.filter(
+      (o) =>
+        !searchTerm ||
+        (filter === 'item' &&
+          o.order_items.some((i) =>
+            i.item_expiry.item.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()),
+          )) ||
+        (filter === 'user' &&
+          o.user.username.toLowerCase().includes(searchTerm.toLowerCase())),
+    );
+    setOrdersToDisplay(newOrders);
+  }, [filter, searchTerm, orders]);
+
   return (
     <Box
       sx={{
@@ -37,6 +72,25 @@ export const OrderList = ({ orders }) => {
         alignItems: 'center',
       }}
     >
+      <Box
+        className='dynamic-width'
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: 2,
+        }}
+      >
+        <TextField
+          label='Search'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: 1 }}
+        />
+        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <MenuItem value='item'>Item</MenuItem>
+          <MenuItem value='user'>User</MenuItem>
+        </Select>
+      </Box>
       <Accordion
         expanded={false}
         sx={{
@@ -55,7 +109,17 @@ export const OrderList = ({ orders }) => {
               Action
             </Grid>
             <Grid item xs={isMobile ? 5 : 4}>
-              Date
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingRight: '16px',
+                }}
+              >
+                <span>Date</span>
+                <Sort onClick={() => handleSortDate()} />
+              </Box>
             </Grid>
             {!isMobile && (
               <Grid item xs={3}>
@@ -85,7 +149,7 @@ export const OrderList = ({ orders }) => {
             alignItems: 'center',
           }}
         >
-          {orders.slice(startIndex, endIndex).map((order) => {
+          {ordersToDisplay.slice(startIndex, endIndex).map((order) => {
             return (
               <OrderContent
                 key={order.id}
