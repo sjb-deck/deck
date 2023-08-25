@@ -1,14 +1,13 @@
 import { Button, Grid, TextField, useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { DatePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const DateAndQuantity = ({
+export const DateAndQuantity = ({
   expiryFormData,
   setExpiryFormData,
   expiryFormError,
@@ -240,5 +239,3 @@ DateAndQuantity.propTypes = {
   setExpiryFormError: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
 };
-
-export default DateAndQuantity;

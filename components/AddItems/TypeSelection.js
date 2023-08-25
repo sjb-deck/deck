@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const TypeSelection = ({ addType, handleAddTypeSelection }) => {
+export const TypeSelection = ({ addType, handleAddTypeSelection }) => {
   return (
     <div>
       <Typography
@@ -56,5 +56,3 @@ TypeSelection.propTypes = {
   addType: PropTypes.string.isRequired,
   handleAddTypeSelection: PropTypes.func.isRequired,
 };
-
-export default TypeSelection;

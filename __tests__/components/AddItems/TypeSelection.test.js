@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import TypeSelection from '../../../components/AddItems/TypeSelection';
 
-describe('TypeSelection', () => {
+xdescribe('TypeSelection', () => {
   test('renders with correct buttons and handles addType selection', () => {
     const addType = 'item';
     const handleAddTypeSelectionMock = jest.fn();

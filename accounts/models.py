@@ -1,10 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class UserExtras(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="extras")
-    profilepic = models.ImageField(null=True, blank=True, upload_to="user_dp")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="extras")
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="user_dp")
     role = models.CharField(max_length=50, default="User")
     name = models.CharField(max_length=50, blank=True)
 

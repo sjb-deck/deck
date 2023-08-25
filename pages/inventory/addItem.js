@@ -9,37 +9,30 @@ import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 
-import AddExpiryForm from '../../components/AddItems/AddExpiryForm';
-import AddExpiryReview from '../../components/AddItems/AddExpiryReview';
-import AddItemForm from '../../components/AddItems/AddItemForm';
-import AddItemReview from '../../components/AddItems/AddItemReview';
-import ErrorDialog from '../../components/AddItems/ErrorDialog';
-import ItemPotentialMatchDialog from '../../components/AddItems/ItemPotentialMatchDialog';
-import SuccessDialog from '../../components/AddItems/SuccessDialog';
-import TypeSelection from '../../components/AddItems/TypeSelection';
-import NavBar from '../../components/NavBar/NavBar';
-import { SnackBarAlerts } from '../../components/SnackBarAlerts';
-import Theme from '../../components/Themes';
-import { INV_API_ITEMS_URL, INV_API_USER_URL } from '../../globals';
-import useFetch from '../../hooks/use-fetch';
+import {
+  AddExpiryForm,
+  AddExpiryReview,
+  AddItemForm,
+  AddItemReview,
+  ErrorDialog,
+  ItemPotentialMatchDialog,
+  NavBar,
+  SnackBarAlerts,
+  SuccessDialog,
+  Theme,
+  TypeSelection,
+} from '../../components';
+import { useItems, useUser } from '../../hooks/queries';
 import {
   checkExpiryFormData,
   checkItemFormData,
   processExpirySubmission,
+  processItemSubmission,
 } from '../../utils/submitForm';
-import { processItemSubmission } from '../../utils/submitForm';
 
 const AddItem = () => {
-  const {
-    data: items,
-    loading: dataLoading,
-    error: dataError,
-  } = useFetch(INV_API_ITEMS_URL);
-  const {
-    data: user,
-    loading: userLoading,
-    error: userError,
-  } = useFetch(INV_API_USER_URL);
+  const { data: items, isLoading: dataLoading, error: dataError } = useItems();
+  const { data: user, isLoading: userLoading, error: userError } = useUser();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [itemsData, setItems] = useState(items);
   const [userData, setUser] = useState(user);

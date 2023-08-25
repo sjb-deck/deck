@@ -11,7 +11,7 @@ import { ItemFormDataPropType } from '../../globals';
  * @param {Object} itemFormData - The form data for the new item.
  * @return {JSX.Element} - The rendered component.
  */
-function AddItemReview({ itemFormData }) {
+export const AddItemReview = ({ itemFormData }) => {
   return (
     <div>
       <Typography
@@ -201,10 +201,8 @@ function AddItemReview({ itemFormData }) {
       </div>
     </div>
   );
-}
+};
 
 AddItemReview.propTypes = {
   itemFormData: ItemFormDataPropType.isRequired,
 };
-
-export default AddItemReview;

@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const SuccessDialog = ({ open, onClose, message }) => {
+export const SuccessDialog = ({ open, onClose, message }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
@@ -30,5 +30,3 @@ SuccessDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   message: PropTypes.string.isRequired,
 };
-
-export default SuccessDialog;

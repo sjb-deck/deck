@@ -1,4 +1,5 @@
 from django.db import models
+
 from .ItemModels import Item
 
 # Create your models here.
@@ -8,13 +9,10 @@ from .ItemModels import Item
 
     ** Attributes
     ----------
-    -> expirydate : DateField
+    -> expiry_date : DateField
         The expiry of this item
-    -> quantityopen : IntegerField
+    -> quantity : IntegerField
         Quantity of opened item for current expirys.
-        Defaults to 0
-    -> quantityunopened : IntegerField
-        Quantity of unopened item for current expirys.
         Defaults to 0
     -> item : Item
         The Item object that this expiry belong to
@@ -28,31 +26,26 @@ from .ItemModels import Item
 
 
 class ItemExpiry(models.Model):
-    expirydate = models.DateField(null=True, blank=True)
-    quantityopen = models.IntegerField(null=False, blank=False, default=0)
-    quantityunopened = models.IntegerField(null=False, blank=False, default=0)
+    expiry_date = models.DateField(null=True, blank=True)
+    quantity = models.IntegerField(null=False, blank=False, default=0)
     item = models.ForeignKey(
-        Item, related_name="expirydates", on_delete=models.CASCADE, null=True
+        Item, related_name="expiry_dates", on_delete=models.CASCADE, null=True
     )
     archived = models.BooleanField(default=False)
 
-    def withdraw(self, quantity_open, quantity_unopened):
-        self.quantityopen -= quantity_open
-        self.quantityunopened -= quantity_unopened
+    def withdraw(self, quantity):
+        self.quantity -= quantity
         self.save()
 
-        self.item.total_quantityopen -= quantity_open
-        self.item.total_quantityunopened -= quantity_unopened
+        self.item.total_quantity -= quantity
         self.item.save()
 
-    def deposit(self, quantity_open, quantity_unopened):
-        self.quantityopen += quantity_open
-        self.quantityunopened += quantity_unopened
+    def deposit(self, quantity):
+        self.quantity += quantity
         self.save()
 
-        self.item.total_quantityopen += quantity_open
-        self.item.total_quantityunopened += quantity_unopened
+        self.item.total_quantity += quantity
         self.item.save()
 
     def __str__(self) -> str:
-        return f"{self.expirydate}, {self.item}"
+        return f"{self.expiry_date}, {self.item}"

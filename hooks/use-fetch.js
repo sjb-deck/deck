@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
  * The function uses the Fetch API to make a GET request to a specified URL and returns the response
@@ -13,22 +13,27 @@ function useFetch(url) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(url);
-        setData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get(url);
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
   }, [url]);
 
-  return { data, loading, error };
+  const refetch = async () => {
+    setLoading(true);
+    await fetchData();
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [url, fetchData]);
+
+  return { data, loading, error, refetch };
 }
 
 export default useFetch;

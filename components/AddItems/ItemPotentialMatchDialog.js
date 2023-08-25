@@ -7,7 +7,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const ItemPotentialMatchDialog = ({ open, onClose, match, setActiveStep }) => {
+export const ItemPotentialMatchDialog = ({
+  open,
+  onClose,
+  match,
+  setActiveStep,
+}) => {
   const handleMistake = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     onClose();
@@ -61,5 +66,3 @@ ItemPotentialMatchDialog.propTypes = {
   match: PropTypes.string.isRequired,
   setActiveStep: PropTypes.func.isRequired,
 };
-
-export default ItemPotentialMatchDialog;
