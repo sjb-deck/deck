@@ -12,8 +12,8 @@ import {
 import { PropTypes } from 'prop-types';
 import React from 'react';
 
-import { OrderPropType } from '../../globals';
-import { getReadableDate } from '../../utils/getDate';
+import { ORDER_REASONS, OrderPropType } from '../../globals';
+import { getReadableDate } from '../../utils';
 import { Modal } from '../Modal/Modal';
 
 export const OrderContent = ({
@@ -23,12 +23,8 @@ export const OrderContent = ({
   handleDeleteOrder,
 }) => {
   const { formattedDateTime: orderDateTime } = getReadableDate(order.date);
-  const reason =
-    order.reason === 'item_restock'
-      ? 'Restock'
-      : order.reason === 'unserviceable'
-      ? 'Unserviceable'
-      : 'Others';
+  const reason = ORDER_REASONS[order.reason];
+
   return (
     <Accordion
       key={order.id}

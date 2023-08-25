@@ -13,7 +13,7 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import { LoanOrderPropType } from '../../globals';
-import { getReadableDate } from '../../utils/getDate';
+import { getReadableDate } from '../../utils';
 import { Modal } from '../Modal/Modal';
 
 export const LoanOrderContent = ({
