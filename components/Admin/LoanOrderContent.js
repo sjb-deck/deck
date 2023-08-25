@@ -13,7 +13,7 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 
 import { LoanOrderPropType } from '../../globals';
-import { getSimpleDate } from '../../utils/getSimpleDate';
+import { getReadableDate } from '../../utils/getDate';
 import { Modal } from '../Modal/Modal';
 
 export const LoanOrderContent = ({
@@ -22,8 +22,9 @@ export const LoanOrderContent = ({
   isLoading,
   handleDeleteOrder,
 }) => {
-  const [orderDate, orderTime] = getSimpleDate(order.date);
-  const [returnDate] = getSimpleDate(order.return_date);
+  const { formattedDateTime: orderDateTime } = getReadableDate(order.date);
+  const { formattedDate: returnDate } = getReadableDate(order.due_date);
+
   return (
     <Accordion key={order.id} sx={{ width: isMobile ? '95%' : '70%' }}>
       <AccordionSummary
@@ -39,7 +40,7 @@ export const LoanOrderContent = ({
             {order.action}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
-            {orderDate} {orderTime}
+            {orderDateTime}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
@@ -92,6 +93,16 @@ export const LoanOrderContent = ({
               >
                 <span>No. of items</span>
                 <span>{order.order_items.length}</span>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <span>Return Date:</span>
+                <span>{returnDate}</span>
               </Box>
             </Stack>
           </Grid>
