@@ -40,12 +40,31 @@ class ItemExpiry(models.Model):
         self.item.total_quantity -= quantity
         self.item.save()
 
+        if self.should_archive():
+            self.archived = True
+            self.save()
+
     def deposit(self, quantity):
         self.quantity += quantity
         self.save()
 
         self.item.total_quantity += quantity
         self.item.save()
+
+        if self.archived and not self.should_archive:
+            self.archived = False
+            self.save()
+
+    def should_archive(self):
+        """
+        Checks if we should archive. When do we need to archive?
+        1. When the quantity of an item expiry is 0
+        2. When there are no active loans that are associated with that item expiry
+        """
+        return self.quantity == 0 and not self.is_in_active_loan()
+
+    def is_in_active_loan(self):
+        return self.order_items.filter(loan_active=True).exists()
 
     def __str__(self) -> str:
         return f"{self.expiry_date}, {self.item}"

@@ -72,7 +72,6 @@ def api_user(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_orders(request, option="all", order_id=None):
-    # TODO: Add validation
     try:
         if option == "order":
             data = OrderSerializer(Order.objects.exclude(reason="loan"), many=True).data
@@ -126,9 +125,9 @@ def api_add_item(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_new_expiry(request, item_id):
+def create_new_expiry(request):
     try:
-        item = Item.objects.get(id=item_id)
+        item = Item.objects.get(id=request.item_id)
         expiry_serializer = AddItemExpirySerializer(data=request.data)
         if expiry_serializer.is_valid(raise_exception=True):
             expiry = expiry_serializer.save()
@@ -170,7 +169,7 @@ def revert_order(request):
             instance = Order.objects.get(pk=order_id)
             revert_order_items(instance)
             instance.delete()
-            return Response({"message": "Order successfully deleted"}, status=200)
+            return Response({"message": "Successfully reverted order"}, status=200)
         except:
             return Response({"error": "Order not found"}, status=404)
     except:

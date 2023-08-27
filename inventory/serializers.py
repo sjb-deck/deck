@@ -6,7 +6,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 
 from accounts.models import User, UserExtras
 
-from .globals import action_choices
+from .globals import action_choices, action_reasons
 from .models.Item.ItemExpiryModels import ItemExpiry
 from .models.Item.ItemModels import Item
 from .models.Order.LoanOrderModels import LoanOrder
@@ -83,6 +83,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "returned_quantity",
         ]
 
+    def validate_item_expiry_id(self, value):
+        """
+        Check that item_expiry_id exists.
+        """
+        if not ItemExpiry.objects.filter(id=value).exists():
+            raise serializers.ValidationError("Invalid item_expiry_id provided.")
+        return value
+
 
 class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -102,8 +110,22 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         reason = data.get("reason")
+        action = data.get("action")
         loan_order = data.get("loanorder", {})
 
+        # check that the type is either withdraw or loan
+        if action not in [action[0] for action in action_choices]:
+            raise serializers.ValidationError(
+                {"action": "Invalid action provided for order."}
+            )
+
+        # check if the reason provided is one of the values we expect
+        if reason not in [reason[0] for reason in action_reasons]:
+            raise serializers.ValidationError(
+                {"reason": "Invalid reason provided for order."}
+            )
+
+        # check that the loanee name and due date is provided for loan orders
         if reason == "loan":
             if "loanee_name" not in loan_order:
                 raise serializers.ValidationError(
@@ -113,6 +135,17 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"due_date": "This field is required for loans."}
                 )
+
+        # check if there is sufficient quantity for each item if withdraw
+        if action == "Withdraw":
+            for item in data["order_items"]:
+                item_expiry = ItemExpiry.objects.get(id=item["item_expiry_id"])
+                if item["ordered_quantity"] >= item_expiry.quantity:
+                    raise serializers.ValidationError(
+                        {
+                            "order_items": f"Insufficient quantity for {item_expiry.item.name} with expiry date {item_expiry.expiry_date}"
+                        }
+                    )
 
         return data
 
@@ -154,6 +187,11 @@ class LoanReturnSerializer(serializers.Serializer):
         except Order.DoesNotExist:
             raise serializers.ValidationError(
                 {"order_id": "Order with this ID does not exist."}
+            )
+
+        if not order.loan_active:
+            raise serializers.ValidationError(
+                {"order_id": "This loan has already been returned."}
             )
 
         if not data["items"]:
