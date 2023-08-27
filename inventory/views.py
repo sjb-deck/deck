@@ -44,6 +44,10 @@ def loan_return(request):
 def admin(request):
     return render(request, "admin.html")
 
+@login_required(login_url="/r'^login/$'")
+def order_receipt(request):
+    return render(request, "order_receipt.html")
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

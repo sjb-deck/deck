@@ -15,6 +15,7 @@ export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
+export const URL_ORDER_RECEIPT = '/inventory/receipt';
 
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';

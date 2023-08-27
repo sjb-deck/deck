@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React, { useContext, useMemo } from 'react';
 
-import { CART_ITEM_TYPE_WITHDRAW, URL_INV_ITEMS } from '../../globals';
+import { CART_ITEM_TYPE_WITHDRAW, URL_ORDER_RECEIPT } from '../../globals';
 import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
 import { getDjangoFriendlyDate } from '../../utils';
@@ -38,10 +38,22 @@ export const CartContent = () => {
     onSubmit: async (values) => {
       const data = buildPayload(values);
       mutate(data, {
-        onSuccess: () => {
+        onSuccess: (res) => {
           // TODO: Instead of redirecting, show order items
+          console.log(res);
+          console.log(res.order_items);
+
+          // const NEW_URL_ORDER_RECEIPT = {`${URL_ORDER_RECEIPT}?orderItems=${res.order_items}`};
+
+          // window.location.href = URL_ORDER_RECEIPT + '?orderItems=' + res.order_items;
+          const orderItemString = JSON.stringify(res);
+          // const orderItems = encodeURIComponent(orderItemString);
+
+          window.location.href = `${URL_ORDER_RECEIPT}?orderData=${orderItemString}`;
+          // window.location.href = `${URL_ORDER_RECEIPT}?orderItems=2`;
+
           clearCart();
-          window.location.href = URL_INV_ITEMS;
+          // window.location.href = URL_INV_ITEMS;
         },
       });
     },
