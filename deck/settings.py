@@ -90,7 +90,7 @@ if IN_GITHUB_ACTIONS:
             "ENGINE": "django.db.backends.mysql",
             "NAME": "test_deck_staging",
             "USER": "root",
-            "PASSWORD": config("TEST_DB_PW"),
+            "PASSWORD": "testrootpassword",
             "HOST": "127.0.0.1",
             "PORT": "3306",
         }
