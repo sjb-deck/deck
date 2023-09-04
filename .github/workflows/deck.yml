@@ -40,7 +40,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PW: ${{ secrets.DB_PW }}
         run: |
-          coverage run manage.py test
+          coverage run manage.py test --noinput
           coverage xml -o coverage.xml
           npm run test:coverage
       - name: Upload coverage reports to Codecov
