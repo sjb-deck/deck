@@ -84,15 +84,13 @@ WSGI_APPLICATION = "deck.wsgi.application"
 
 IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", False)
 
-print(IN_GITHUB_ACTIONS)
-
 if IN_GITHUB_ACTIONS:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
             "NAME": "test_deck_staging",
             "USER": "root",
-            "PASSWORD": "testrootpass",
+            "PASSWORD": config("TEST_DB_PW"),
             "HOST": "127.0.0.1",
             "PORT": "3306",
         }

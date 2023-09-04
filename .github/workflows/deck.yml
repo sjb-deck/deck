@@ -14,7 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: test_deck_staging
-          MYSQL_ROOT_PASSWORD: testrootpass
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_TEST_PW }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -41,10 +41,6 @@ jobs:
         run: |
           black . --check
           npx eslint .
-      - name: Check MySQL Connection
-        run: |
-          mysql --host=127.0.0.1 --port=3306 --user=root --password=testrootpass -e "SHOW DATABASES;"
-        
       - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -52,10 +48,6 @@ jobs:
           DEBUG: ${{ secrets.DEBUG }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PW: ${{ secrets.DB_PW }}
-          DATABASE_NAME: test_deck_staging
-          DATABASE_USERNAME: root          
-          DATABASE_PASSWORD: testrootpass          
-          DATABASE_ENDPOINT: 127.0.0.1
         run: |
           coverage run manage.py test --noinput
           coverage xml -o coverage.xml
