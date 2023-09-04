@@ -41,6 +41,10 @@ jobs:
         run: |
           black . --check
           npx eslint .
+      - name: Check MySQL Connection
+        run: |
+          mysql --host=127.0.0.1 --port=3306 --user=root --password=testrootpass -e "SHOW DATABASES;"
+        
       - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}

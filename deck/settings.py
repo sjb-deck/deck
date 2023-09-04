@@ -84,6 +84,8 @@ WSGI_APPLICATION = "deck.wsgi.application"
 
 IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", False)
 
+print(IN_GITHUB_ACTIONS)
+
 if IN_GITHUB_ACTIONS:
     DATABASES = {
         "default": {
