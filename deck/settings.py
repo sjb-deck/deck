@@ -82,17 +82,30 @@ WSGI_APPLICATION = "deck.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# staging shared DB
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "deck_staging",
-        "HOST": "deckland.nhhs-sjb.org",
-        "PORT": "3306",
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PW"),
+IN_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS", False)
+
+if IN_GITHUB_ACTIONS:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "test_deck_staging",
+            "USER": "root",
+            "PASSWORD": "root",
+            "HOST": "127.0.0.1",
+            "PORT": "3306",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "deck_staging",
+            "HOST": "deckland.nhhs-sjb.org",
+            "PORT": "3306",
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PW"),
+        }
+    }
 
 # uncomment this to use local db
 # DATABASES = {

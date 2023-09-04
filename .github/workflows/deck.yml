@@ -9,6 +9,15 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.8]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: test_deck_staging
+          MYSQL_ROOT_PASSWORD: testrootpass
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
@@ -39,6 +48,10 @@ jobs:
           DEBUG: ${{ secrets.DEBUG }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PW: ${{ secrets.DB_PW }}
+          DATABASE_NAME: test_deck_staging
+          DATABASE_USERNAME: root          
+          DATABASE_PASSWORD: testrootpass          
+          DATABASE_ENDPOINT: 127.0.0.1
         run: |
           coverage run manage.py test --noinput
           coverage xml -o coverage.xml
