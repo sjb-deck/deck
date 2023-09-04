@@ -39,6 +39,26 @@ class AddItemExpirySerializer(serializers.ModelSerializer):
         model = ItemExpiry
         fields = ["item", "expiry_date", "quantity"]
 
+    def validate(self, attrs):
+        item = attrs["item"]
+        expiry_date = attrs["expiry_date"]
+
+        # check if expiry date is unique
+        if ItemExpiry.objects.filter(item=item, expiry_date=expiry_date).exists():
+            raise serializers.ValidationError(
+                {"expiry_date": "Expiry date must be unique."}
+            )
+
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        item_id = validated_data["item"]
+        quantity = validated_data["quantity"]
+        item = Item.objects.get(id=item_id.id)
+        item.total_quantity += quantity
+        item.save()
+        return super().create(validated_data)
+
 
 class ItemInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,6 +67,12 @@ class ItemInfoSerializer(serializers.ModelSerializer):
 
 
 class ItemExpirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemExpiry
+        fields = ["id", "expiry_date", "quantity", "archived"]
+
+
+class ItemExpiryWithItemSerializer(serializers.ModelSerializer):
     item = ItemInfoSerializer()
 
     class Meta:
@@ -61,6 +87,30 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = "__all__"
 
+    def validate(self, data):
+        expiry_items = data.get("expiry_dates")
+
+        # ensure that at least an expiry item is provided
+        if len(expiry_items) == 0:
+            raise serializers.ValidationError(
+                {"expiry_dates": "At least one expiry date must be provided."}
+            )
+
+        # ensure that the expiry dates are unique
+        expiry_dates = [item["expiry_date"] for item in expiry_items]
+        if len(expiry_dates) != len(set(expiry_dates)):
+            raise serializers.ValidationError(
+                {"expiry_dates": "Expiry dates must be unique."}
+            )
+
+        # ensure that the item name is unique
+        if Item.objects.filter(name=data.get("name")).exists():
+            raise serializers.ValidationError(
+                {"name": "Item with this name already exists."}
+            )
+
+        return data
+
     def create(self, validated_data):
         expiry_data = validated_data.pop("expiry_dates")
         item = Item.objects.create(**validated_data)
@@ -70,7 +120,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    item_expiry = ItemExpirySerializer(read_only=True)
+    item_expiry = ItemExpiryWithItemSerializer(read_only=True)
     item_expiry_id = serializers.IntegerField(write_only=True)
 
     class Meta:
@@ -140,7 +190,7 @@ class OrderSerializer(serializers.ModelSerializer):
         if action == "Withdraw":
             for item in data["order_items"]:
                 item_expiry = ItemExpiry.objects.get(id=item["item_expiry_id"])
-                if item["ordered_quantity"] >= item_expiry.quantity:
+                if item["ordered_quantity"] > item_expiry.quantity:
                     raise serializers.ValidationError(
                         {
                             "order_items": f"Insufficient quantity for {item_expiry.item.name} with expiry date {item_expiry.expiry_date}"
@@ -171,6 +221,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class LoanItemReturnSerializer(serializers.ModelSerializer):
     order_item_id = serializers.IntegerField(required=True, write_only=True)
+    returned_quantity = serializers.IntegerField(required=True, min_value=0)
 
     class Meta:
         model = OrderItem
@@ -189,7 +240,7 @@ class LoanReturnSerializer(serializers.Serializer):
                 {"order_id": "Order with this ID does not exist."}
             )
 
-        if not order.loan_active:
+        if not order.reason == "loan" or not order.loanorder.loan_active:
             raise serializers.ValidationError(
                 {"order_id": "This loan has already been returned."}
             )
@@ -199,18 +250,19 @@ class LoanReturnSerializer(serializers.Serializer):
 
         for item in data["items"]:
             try:
-                order_item = order.order_items.get(id=item["order_item_id"])
+                order_item = order.order_items.get(
+                    item_expiry=ItemExpiry.objects.get(id=item["order_item_id"])
+                )
             except OrderItem.DoesNotExist:
                 raise serializers.ValidationError(
                     {"items": "Order item with this ID does not exist."}
                 )
 
-        return super().validate(data)
+        return data
 
     def create(self, validated_data):
         items = validated_data.pop("items")
         order_id = validated_data.pop("order_id")
-
         try:
             loan_order = LoanOrder.objects.get(id=order_id)
             loan_order.loan_active = False
@@ -218,11 +270,18 @@ class LoanReturnSerializer(serializers.Serializer):
             loan_order.save()
 
             for item in items:
-                order_item = loan_order.order_items.get(id=item["order_item_id"])
+                order_item = loan_order.order_items.get(
+                    item_expiry=ItemExpiry.objects.get(id=item["order_item_id"])
+                )
                 order_item.returned_quantity = item["returned_quantity"]
                 order_item.save()
 
                 order_item.item_expiry.deposit(item["returned_quantity"])
+
+            # for items that are not returned, we set returned_quantity to 0
+            for order_item in loan_order.order_items.filter(returned_quantity=None):
+                order_item.returned_quantity = 0
+                order_item.save()
 
             return loan_order
 

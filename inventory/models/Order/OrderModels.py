@@ -34,5 +34,14 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     other_info = models.CharField(max_length=100, null=True, blank=True)
 
+    def revert_order(self):
+        try:
+            for item in self.order_items.all():
+                item.revert_order_item()
+            self.delete()
+        except Exception as e:
+            print("Error when reverting order")
+            raise e
+
     def __str__(self) -> str:
         return f"{self.action}, {self.reason}, {self.date}, {self.user}"

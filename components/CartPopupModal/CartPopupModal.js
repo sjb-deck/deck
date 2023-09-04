@@ -89,7 +89,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
 
   const addNewExpiry = async () => {
     const data = {
-      item_id: item.id,
+      item: item.id,
       expiry_date: selectedDate,
       quantity: formik.values.quantity,
     };
