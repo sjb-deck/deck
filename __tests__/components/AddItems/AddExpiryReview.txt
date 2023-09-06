@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import AddExpiryReview from '../../../components/AddItems/AddExpiryReview';
+import { AddExpiryReview } from "../../../components";
 
 const expiryFormData = {
   image: 'test-image-url',

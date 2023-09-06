@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
-import DateAndQuantity from '../../../components/AddItems/DateAndQuantity';
+import { DateAndQuantity } from "../../../components";
 
 const expiryFormData = {
   expiry: [

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import ErrorDialog from '../../../components/AddItems/ErrorDialog';
+import { ErrorDialog } from "../../../components";
 
 describe('ErrorDialog', () => {
   test('renders with correct error message and close button', () => {

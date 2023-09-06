@@ -16,7 +16,7 @@ export const DateAndQuantity = ({
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
   const firstItem = index === 0;
-  const expiry_date = expiryFormData.expiry[index].expiry_date;
+  const expiryDate = expiryFormData.expiry[index].expiry_date;
   const quantity = expiryFormData.expiry[index].quantity;
 
   const handleDateChange = (newDate) => {
@@ -35,7 +35,7 @@ export const DateAndQuantity = ({
   };
 
   const handleFormChange = (event) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const exp = expiryFormData.expiry;
     const err = expiryFormError.expiry;
     exp[index].quantity = value;
@@ -92,7 +92,7 @@ export const DateAndQuantity = ({
           <Grid item xs={isSmallScreen ? 12 : 8} sm={8}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                defaultValue={dayjs(expiry_date)}
+                defaultValue={dayjs(expiryDate)}
                 onChange={(date) => handleDateChange(date)}
                 sx={{ paddingTop: '10px', paddingLeft: '15px' }}
                 minDate={dayjs()}
@@ -103,7 +103,9 @@ export const DateAndQuantity = ({
                   fontSize: '12px',
                   paddingLeft: '15px',
                   paddingTop: '3px',
-                  color: expiryFormError.expiry[index].expiry_date ? 'red' : 'gray',
+                  color: expiryFormError.expiry[index].expiry_date
+                    ? 'red'
+                    : 'gray',
                 }}
               >
                 {expiryFormError.expiry[index].expiry_date
@@ -169,33 +171,18 @@ DateAndQuantity.propTypes = {
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
         expiry_date: PropTypes.string.isRequired,
-        total_quantity: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string,
-        ]).isRequired,
+        quantity: PropTypes.number.isRequired,
       }),
     ).isRequired,
-    min_quantityopen: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    min_quantityunopened: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
   }).isRequired,
   setExpiryFormData: PropTypes.func.isRequired,
   expiryFormError: PropTypes.shape({
-    name: PropTypes.bool.isRequired,
-    type: PropTypes.bool.isRequired,
-    unit: PropTypes.bool.isRequired,
-    image: PropTypes.bool.isRequired,
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
         expiry_date: PropTypes.bool.isRequired,
-        total_quantity: PropTypes.bool.isRequired,
+        quantity: PropTypes.bool.isRequired,
       }),
     ).isRequired,
-    min_quantityopen: PropTypes.bool.isRequired,
-    min_quantityunopened: PropTypes.bool.isRequired,
   }).isRequired,
   setExpiryFormError: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,

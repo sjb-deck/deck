@@ -214,7 +214,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
               fontWeight: 'bold',
             }}
           >
-              Item Opened:
+            Item Opened:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}

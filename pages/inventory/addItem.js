@@ -8,28 +8,21 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import {useAddItem} from "../../hooks/mutations";
 
 import {
   AddExpiryForm,
   AddExpiryReview,
   AddItemForm,
   AddItemReview,
-  ErrorDialog,
   ItemPotentialMatchDialog,
   NavBar,
   SnackBarAlerts,
-  SuccessDialog,
   Theme,
   TypeSelection,
 } from '../../components';
+import { useAddItem } from '../../hooks/mutations';
 import { useItems, useUser } from '../../hooks/queries';
-import {
-  checkExpiryFormData,
-  checkItemFormData,
-  processExpirySubmission,
-  processItemSubmission,
-} from '../../utils/submitForm';
+import { checkExpiryFormData, checkItemFormData } from '../../utils';
 
 const AddItem = () => {
   const { data: items, isLoading: dataLoading, error: dataError } = useItems();
@@ -43,9 +36,9 @@ const AddItem = () => {
   const [itemPotentialMatch, setItemPotentialMatch] = useState('');
   const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
     useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  // const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const { mutate, isLoading } = useAddItem();
+  const { mutate } = useAddItem();
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
@@ -97,8 +90,7 @@ const AddItem = () => {
     is_opened: false,
   });
 
-  const processItemSubmission = (
-  ) => {
+  const processItemSubmission = () => {
     // setLoading(true);
     const payload = {
       name: itemFormData.name,
@@ -112,16 +104,13 @@ const AddItem = () => {
         {
           expiry_date: null,
           quantity: itemFormData.total_quantity,
-          archived: false
+          archived: false,
         },
-      ]
-    }
-    console.log(payload)
+      ],
+    };
+    console.log(payload);
     mutate(payload, {
       onSuccess: () => {
-        setSuccessMessage(
-            `${itemFormData.name} added successfully to the ${itemFormData.type} category!`,
-        );
         setActiveStep(0);
         setAddType('');
         setItemFormData({
@@ -134,7 +123,6 @@ const AddItem = () => {
           is_opened: false,
         });
         setLoading(false);
-        console.log(response.data);
       },
       onError: () => {
         setActiveStep(0);
@@ -149,13 +137,11 @@ const AddItem = () => {
           is_opened: false,
         });
         setLoading(false);
-        console.error(error);
       },
     });
   };
 
-  const processExpirySubmission = (
-  ) => {
+  const processExpirySubmission = () => {
     // setLoading(true);
     const modifiedExpiry = expiryFormData.expiry.map((item) => ({
       expiry_date: item.expiry_date,
@@ -163,9 +149,9 @@ const AddItem = () => {
       archived: false,
     }));
 
-    const total_quantity = modifiedExpiry.reduce(
-        (total, item) => total + item.quantity,
-        0,
+    const totalQuantity = modifiedExpiry.reduce(
+      (total, item) => total + item.quantity,
+      0,
     );
 
     const payload = {
@@ -173,16 +159,13 @@ const AddItem = () => {
       type: expiryFormData.type,
       unit: expiryFormData.unit,
       imgpic: null,
-      total_quantity: total_quantity,
+      total_quantity: totalQuantity,
       min_quantity: expiryFormData.min_quantity,
       is_opened: expiryFormData.is_opened,
       expiry_dates: modifiedExpiry,
     };
     mutate(payload, {
       onSuccess: () => {
-        setSuccessMessage(
-            `${expiryFormData.name} added successfully - with expiry date(s) - to the ${expiryFormData.type} category!`,
-        );
         setActiveStep(0);
         setAddType('');
         setExpiryFormData({
@@ -301,13 +284,6 @@ const AddItem = () => {
       default:
         return;
     }
-  };
-
-  const handleSuccessDialogClose = () => {
-    setSuccessMessage('');
-  };
-
-  const handleErrorDialogClose = () => {
   };
 
   const handleItemPotentialMatchDialogClose = () => {

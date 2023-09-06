@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import TypeSelection from '../../../components/AddItems/TypeSelection';
+import { TypeSelection } from "../../../components";
 
 describe('TypeSelection', () => {
   test('renders with correct buttons and handles addType selection', () => {

@@ -1,7 +1,7 @@
 import {
   Box,
-    FormControlLabel,
-    Switch,
+  FormControlLabel,
+  Switch,
   Grid,
   MenuItem,
   Select,
@@ -186,11 +186,11 @@ export const AddItemForm = ({
           </Grid>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <FormControlLabel
-                control={<Switch checked={itemFormData.is_opened} />}
-                label={itemFormData.is_opened ? 'Opened' : 'Unopened'}
-                labelPlacement="end"
-                onChange={handleFormChange}
-                name='is_opened'
+              control={<Switch checked={itemFormData.is_opened} />}
+              label={itemFormData.is_opened ? 'Opened' : 'Unopened'}
+              labelPlacement='end'
+              onChange={handleFormChange}
+              name='is_opened'
             />
           </Grid>
         </Grid>

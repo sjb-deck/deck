@@ -4,18 +4,18 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 import { FullAccordion, NavBar, Theme } from '../../components';
-import { INV_API_LOANS_URL } from '../../globals';
-import { useUser } from '../../hooks/queries';
-import useFetch from '../../hooks/use-fetch';
 import '../../inventory/src/scss/inventoryBase.scss';
-
+import { useUser } from '../../hooks/queries';
+import { useLoans } from '../../hooks/queries/useLoans';
 const LoanReturn = () => {
   const { data: user, isLoading: userLoading } = useUser();
-  const { data: loans, loading: loansLoading } = useFetch(INV_API_LOANS_URL);
+  const { data: loans, isLoading: loansLoading } = useLoans();
 
   if (userLoading || loansLoading) {
     return <div>LOADING...</div>;
   }
+
+  console.log(loans);
 
   if (loans.length === 0) {
     return (

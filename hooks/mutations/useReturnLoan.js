@@ -3,8 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { Api } from '../../globals';
 import { getRequest } from '../../utils/getRequest';
 
-export const useAddItem = (options) => {
-  const key = 'addItem';
+export const useReturnLoan = (options) => {
+  const key = 'returnLoan';
   const url = Api[key];
   const request = getRequest();
 

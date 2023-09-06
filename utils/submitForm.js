@@ -1,17 +1,12 @@
-import axios from 'axios';
 import dayjs from 'dayjs';
 
-import { INV_API_EXPIRY_POST_URL } from '../globals';
-
 import findPotentialMatch from './levenshteinDistance';
-import {clearCart} from "./cart-utils";
 
 const PLACEHOLDER_IMAGE =
   'https://cdn4.buysellads.net/uu/1/127419/1670531697-AdobeTeams.jpg';
 
 // Normalised Levenshtein distance threshold
 const LEVENSHTEIN_THRESHOLD = 0.2;
-
 
 const isValidInt = (value) => {
   return Number.isInteger(value) && value >= 0 && value <= 1000;
@@ -25,10 +20,7 @@ const isValidInt = (value) => {
  */
 function isNoErrorInArray(expiryErrorArray) {
   for (let i = 0; i < expiryErrorArray.length; i++) {
-    if (
-      expiryErrorArray[i].total_quantity ||
-      expiryErrorArray[i].expiry_date
-    ) {
+    if (expiryErrorArray[i].total_quantity || expiryErrorArray[i].expiry_date) {
       return false;
     }
   }
@@ -67,8 +59,9 @@ const checkExpiryFormData = (
     image: false,
     expiry: expiryFormData.expiry.map((item, index, array) => ({
       expiry_date:
-        array.findIndex((elem, i) => elem.expiry_date === item.expiry_date && i !== index) !==
-        -1,
+        array.findIndex(
+          (elem, i) => elem.expiry_date === item.expiry_date && i !== index,
+        ) !== -1,
       quantity: false,
     })),
     min_quantity: false,
@@ -92,7 +85,6 @@ const checkExpiryFormData = (
     }
   }
 
-
   try {
     expiryFormData.min_quantity = parseInt(expiryFormData.min_quantity);
   } catch {
@@ -115,14 +107,13 @@ const checkExpiryFormData = (
       if (!isValidInt(expiryFormData.expiry[i].quantity)) {
         tempExpiryFormError.expiry[i].quantity = true;
       }
-      if (
-        expiryFormData.expiry[i].quantity <= 0
-      ) {
+      if (expiryFormData.expiry[i].quantity <= 0) {
         tempExpiryFormError.expiry[i].quantity = true;
       }
       if (
         expiryFormData.expiry[i].expiry_date === null ||
-        expiryFormData.expiry[i].expiry_date === dayjs(new Date()).format('YYYY-MM-DD')
+        expiryFormData.expiry[i].expiry_date ===
+          dayjs(new Date()).format('YYYY-MM-DD')
       ) {
         tempExpiryFormError.expiry[i].expiry_date = true;
       }
@@ -190,16 +181,11 @@ const checkItemFormData = (
     tempItemFormError.unit = true;
   }
 
-  if (
-    !tempItemFormError.total_quantity &&
-    !tempItemFormError.min_quantity
-  ) {
+  if (!tempItemFormError.total_quantity && !tempItemFormError.min_quantity) {
     if (!isValidInt(itemFormData.total_quantity)) {
       tempItemFormError.total_quantity = true;
     }
-    if (
-      itemFormData.total_quantity <= 0
-    ) {
+    if (itemFormData.total_quantity <= 0) {
       tempItemFormError.total_quantity = true;
     }
     if (!isValidInt(itemFormData.min_quantity)) {
@@ -227,8 +213,4 @@ const checkItemFormData = (
   setActiveStep((prevActiveStep) => prevActiveStep + 1);
 };
 
-
-export {
-  checkItemFormData,
-  checkExpiryFormData,
-};
+export { checkItemFormData, checkExpiryFormData };

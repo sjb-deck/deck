@@ -2,7 +2,9 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import ItemPotentialMatchDialog from '../../../components/AddItems/ItemPotentialMatchDialog';
+import {
+  ItemPotentialMatchDialog,
+} from "../../../components";
 
 describe('ItemPotentialMatchDialog', () => {
   test('renders with correct match and buttons', () => {

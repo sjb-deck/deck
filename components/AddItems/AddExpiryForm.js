@@ -1,9 +1,11 @@
 import {
   Box,
-  Button, FormControlLabel,
+  Button,
+  FormControlLabel,
   Grid,
   MenuItem,
-  Select, Switch,
+  Select,
+  Switch,
   TextField,
   useMediaQuery,
 } from '@mui/material';
@@ -14,7 +16,7 @@ import React from 'react';
 
 import { ExpiryFormDataPropType } from '../../globals';
 
-import {DateAndQuantity} from './DateAndQuantity';
+import { DateAndQuantity } from './DateAndQuantity';
 
 const types = [
   'General',
@@ -218,11 +220,11 @@ export const AddExpiryForm = ({
           </Grid>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <FormControlLabel
-                control={<Switch checked={expiryFormData.is_opened} />}
-                label={expiryFormData.is_opened ? 'Opened' : 'Unopened'}
-                labelPlacement="end"
-                onChange={handleFormChange}
-                name='is_opened'
+              control={<Switch checked={expiryFormData.is_opened} />}
+              label={expiryFormData.is_opened ? 'Opened' : 'Unopened'}
+              labelPlacement='end'
+              onChange={handleFormChange}
+              name='is_opened'
             />
           </Grid>
         </Grid>
