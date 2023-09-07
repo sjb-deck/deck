@@ -46,8 +46,9 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           DEBUG: ${{ secrets.DEBUG }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PW: ${{ secrets.DB_PW }}
+          DB_USER: root
+          DB_PW: testrootpassword
+          DB_HOST: 127.0.0.1
         run: |
           coverage run manage.py test --noinput
           coverage xml -o coverage.xml
