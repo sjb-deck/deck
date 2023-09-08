@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Footer,
+  LoadingSpinner,
   LoanOrderList,
   NavBar,
   OrderList,
@@ -79,12 +80,16 @@ const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {data &&
+        {dataLoading ? (
+          <LoadingSpinner />
+        ) : (
+          data &&
           (view === 'orders' ? (
             <OrderList orders={data.orders} />
           ) : (
             <LoanOrderList loanOrders={data.loan_orders} />
-          ))}
+          ))
+        )}
       </Box>
       <Footer />
     </>

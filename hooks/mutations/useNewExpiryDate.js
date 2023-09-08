@@ -24,10 +24,7 @@ export const useNewExpiryDate = (options) => {
 
   return useMutation(
     async (newExpiryDate) => {
-      const response = await request.post(
-        `${url}/${newExpiryDate.item}`,
-        newExpiryDate,
-      );
+      const response = await request.post(url, newExpiryDate);
 
       if (response.status != 201) throw new Error(response.statusText);
 

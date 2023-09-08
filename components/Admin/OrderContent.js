@@ -12,8 +12,8 @@ import {
 import { PropTypes } from 'prop-types';
 import React from 'react';
 
-import { OrderPropType } from '../../globals';
-import { getSimpleDate } from '../../utils/getSimpleDate';
+import { ORDER_REASONS, OrderPropType } from '../../globals';
+import { getReadableDate } from '../../utils';
 import { Modal } from '../Modal/Modal';
 
 export const OrderContent = ({
@@ -22,7 +22,9 @@ export const OrderContent = ({
   isLoading,
   handleDeleteOrder,
 }) => {
-  const [orderDate, orderTime] = getSimpleDate(order.date);
+  const { formattedDateTime: orderDateTime } = getReadableDate(order.date);
+  const reason = ORDER_REASONS[order.reason];
+
   return (
     <Accordion
       key={order.id}
@@ -43,18 +45,18 @@ export const OrderContent = ({
             {order.action}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
-            {orderDate} {orderTime}
+            {orderDateTime}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
-              {order.reason}
+              {reason}
             </Grid>
           )}
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
         <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
-        <Grid container spacing={2} sx={{ marginTop: 0.5 }}>
+        <Grid container spacing={2} sx={{ marginTop: 0.5, marginBottom: 1 }}>
           <Grid item xs={12} lg={5.5}>
             <Stack spacing={1.5}>
               <Box
@@ -65,7 +67,7 @@ export const OrderContent = ({
                 }}
               >
                 <span>Other info:</span>
-                <span>{order.other_info ?? 'none'}</span>
+                <span>{order.other_info ?? '-'}</span>
               </Box>
               <Box
                 sx={{
@@ -75,7 +77,7 @@ export const OrderContent = ({
                 }}
               >
                 <span>Reason:</span>
-                <span>{order.reason}</span>
+                <span>{reason}</span>
               </Box>
               <Box
                 sx={{
@@ -129,7 +131,7 @@ export const OrderContent = ({
                 color='error'
                 endIcon={<DeleteForever />}
               >
-                Revert Loan
+                Revert Order
               </Button>
             }
             maxWidth={500}

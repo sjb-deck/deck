@@ -152,3 +152,9 @@ export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders`;
 export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
 export const INV_API_LOANS_URL = `${INV_API_BASE_URL}/loans`;
 export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
+
+export const ORDER_REASONS = {
+  item_restock: 'Restock',
+  unserviceable: 'Unserviceable',
+  others: 'Others',
+};
