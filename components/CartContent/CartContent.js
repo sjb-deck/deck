@@ -40,17 +40,9 @@ export const CartContent = () => {
       mutate(data, {
         onSuccess: (res) => {
           // TODO: Instead of redirecting, show order items
-          console.log(res);
-          console.log(res.order_items);
-
-          // const NEW_URL_ORDER_RECEIPT = {`${URL_ORDER_RECEIPT}?orderItems=${res.order_items}`};
-
-          // window.location.href = URL_ORDER_RECEIPT + '?orderItems=' + res.order_items;
-          const orderItemString = JSON.stringify(res);
-          // const orderItems = encodeURIComponent(orderItemString);
+          const orderItemString = encodeURIComponent(JSON.stringify(res));
 
           window.location.href = `${URL_ORDER_RECEIPT}?orderData=${orderItemString}`;
-          // window.location.href = `${URL_ORDER_RECEIPT}?orderItems=2`;
 
           clearCart();
           // window.location.href = URL_INV_ITEMS;
