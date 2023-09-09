@@ -82,12 +82,11 @@ WSGI_APPLICATION = "deck.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# staging shared DB
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "deck_staging",
-        "HOST": "deckland.nhhs-sjb.org",
+        "HOST": config("DB_HOST"),
         "PORT": "3306",
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PW"),

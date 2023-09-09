@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from .models import *
 from .models.Item.ItemModels import Item
 from .serializers import *
-from .views_utils import manage_items_change, revert_order_items
+from .views_utils import manage_items_change
 
 
 # Create your views here.
@@ -77,7 +77,6 @@ def api_user(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_orders(request, option="all", order_id=None):
-    # TODO: Add validation
     try:
         if option == "order":
             data = OrderSerializer(Order.objects.exclude(reason="loan"), many=True).data
@@ -131,17 +130,12 @@ def api_add_item(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_new_expiry(request, item_id):
+def create_new_expiry(request):
     try:
-        item = Item.objects.get(id=item_id)
         expiry_serializer = AddItemExpirySerializer(data=request.data)
         if expiry_serializer.is_valid(raise_exception=True):
             expiry = expiry_serializer.save()
-            expiry.item = item
-            item.total_quantity += expiry.quantity
-            item.save()
-            expiry.save()
-            return Response(ItemSerializer(item).data, status=201)
+            return Response(ItemSerializer(expiry.item).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -170,13 +164,16 @@ def revert_order(request):
     order_id = request.data
     try:
         if order_id is None:
-            return Response({"error": "Invalid request body"}, status=400)
+            return Response({"error": "Invalid request body"}, status=500)
         try:
-            instance = Order.objects.get(pk=order_id)
-            revert_order_items(instance)
-            instance.delete()
-            return Response({"message": "Order successfully deleted"}, status=200)
-        except:
-            return Response({"error": "Order not found"}, status=404)
+            order = Order.objects.get(id=order_id)
+            if order.reason == "loan":
+                loan_order = LoanOrder.objects.get(id=order_id)
+                loan_order.revert_order()
+            else:
+                order.revert_order()
+            return Response({"message": "Successfully reverted order"}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
     except:
-        return Response({"error": "Something went wrong"}, status=404)
+        return Response({"error": "Something went wrong"}, status=500)

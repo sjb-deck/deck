@@ -12,8 +12,8 @@ urlpatterns = [
         "orders/<str:option>/<int:order_id>", views.api_orders, name="api_order_items"
     ),
     path("submit_order", views.api_submit_order, name="submit_order"),
-    path("add_item", views.api_add_item, name="add_item"),
-    path("add_expiry/<int:item_id>", views.create_new_expiry, name="create_new_expiry"),
+    path("add_item", views.api_add_item, name="api_add_item"),
+    path("add_expiry", views.create_new_expiry, name="create_new_expiry"),
     path("loan_return_post", views.loan_return_post, name="loan_return_post"),
     path("revert_order", views.revert_order, name="revert_order"),
 ]
