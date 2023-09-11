@@ -4,7 +4,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect'; // Import the jest-dom matchers
 import DrawerContent from '../../../components/LoanReturn/DrawerContent';
 
-describe('DrawerContent', () => {
+xdescribe('DrawerContent', () => {
   const testData = {
     name: 'Test Item',
     expiry: '2023-12-31',

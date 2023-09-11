@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip } from '@mui/material';
+import { Avatar, Box, Button, Chip } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -10,8 +10,8 @@ import {
   CART_ITEM_TYPE_WITHDRAW,
   ItemPropType,
 } from '../../globals';
-import { CartContext } from '../CartContext';
-import CartPopupModal from '../CartPopupModal/CartPopupModal';
+import { CartContext } from '../../providers';
+import { CartPopupModal } from '../CartPopupModal';
 import { Paper } from '../styled';
 
 /**
@@ -19,16 +19,21 @@ import { Paper } from '../styled';
  * @returns Item container
  */
 
-const ItemContainer = ({ item }) => {
+export const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
-  const { cartState, setCartState } = useContext(CartContext);
-  const hasExpiry = !!item.expirydates[0].expirydate;
+  const { cartState } = useContext(CartContext);
+  const hasExpiry = !!item.expiry_dates[0].expiry_date;
+  const [openModal, setOpenModal] = useState(false);
+  const [orderType, setOrderType] = useState('');
 
-  const getTotalQty = ({ quantityopen, quantityunopened }) =>
-    quantityopen + quantityunopened;
   const handleExpiryChange = (itemExpiry) => {
     setSelectedExpiry(itemExpiry == 'All' ? itemExpiry : itemExpiry.id);
+  };
+
+  const handleOpen = (orderType) => {
+    setOpenModal(true);
+    setOrderType(orderType);
   };
 
   useEffect(() => {
@@ -47,11 +52,11 @@ const ItemContainer = ({ item }) => {
                 variant={selectedExpiry === 'All' ? 'filled' : 'outlined'}
                 onClick={() => handleExpiryChange('All')}
               />
-              {item.expirydates.map((itemExpiry) => {
+              {item.expiry_dates.map((itemExpiry) => {
                 return (
                   <Chip
                     key={itemExpiry.id}
-                    label={itemExpiry.expirydate}
+                    label={itemExpiry.expiry_date}
                     color='primary'
                     variant={
                       selectedExpiry === itemExpiry.id ? 'filled' : 'outlined'
@@ -104,30 +109,12 @@ const ItemContainer = ({ item }) => {
             </Typography>
             <Typography variant='caption'>Unit: {item.unit}</Typography>
             <Typography variant='caption'>
-              Total Qty:{' '}
+              Quantity:{' '}
               {selectedExpiry == 'All'
-                ? item.total_quantityopen + item.total_quantityunopened
-                : getTotalQty(
-                    item.expirydates.find(
-                      (itemExpiry) => itemExpiry.id == selectedExpiry,
-                    ),
-                  )}
-            </Typography>
-            <Typography variant='caption'>
-              Opened Qty:{' '}
-              {selectedExpiry == 'All'
-                ? item.total_quantityopen
-                : item.expirydates.find(
+                ? item.total_quantity
+                : item.expiry_dates.find(
                     (itemExpiry) => itemExpiry.id == selectedExpiry,
-                  ).quantityopen}
-            </Typography>
-            <Typography variant='caption'>
-              Unopened Qty:{' '}
-              {selectedExpiry == 'All'
-                ? item.total_quantityunopened
-                : item.expirydates.find(
-                    (itemExpiry) => itemExpiry.id == selectedExpiry,
-                  ).quantityunopened}
+                  ).quantity}
             </Typography>
           </Stack>
         </Stack>
@@ -136,20 +123,32 @@ const ItemContainer = ({ item }) => {
           spacing={{ xs: 0, sm: 1, md: 2 }}
           justifyContent='space-evenly'
         >
-          <CartPopupModal
-            type={CART_ITEM_TYPE_DEPOSIT}
-            item={item}
-            selector={selectedExpiry}
-            setCartState={setCartState}
+          <Button
+            size='small'
+            variant='contained'
+            color='success'
+            onClick={() => handleOpen(CART_ITEM_TYPE_DEPOSIT)}
             disabled={cartState === CART_ITEM_TYPE_WITHDRAW}
-          />
+          >
+            {CART_ITEM_TYPE_DEPOSIT}
+          </Button>
+
+          <Button
+            size='small'
+            variant='contained'
+            color='error'
+            onClick={() => handleOpen(CART_ITEM_TYPE_WITHDRAW)}
+            disabled={cartState === CART_ITEM_TYPE_DEPOSIT}
+          >
+            {CART_ITEM_TYPE_WITHDRAW}
+          </Button>
 
           <CartPopupModal
-            type={CART_ITEM_TYPE_WITHDRAW}
+            type={orderType}
             item={item}
             selector={selectedExpiry}
-            setCartState={setCartState}
-            disabled={cartState === CART_ITEM_TYPE_DEPOSIT}
+            open={openModal}
+            setOpen={setOpenModal}
           />
         </Stack>
       </Stack>
@@ -160,5 +159,3 @@ const ItemContainer = ({ item }) => {
 ItemContainer.propTypes = {
   item: ItemPropType.isRequired,
 };
-
-export default ItemContainer;

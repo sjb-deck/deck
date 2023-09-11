@@ -1,11 +1,11 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Grid, Typography, Box, IconButton, Drawer } from '@mui/material';
+import { Box, Drawer, Grid, IconButton, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import DrawerContent from './DrawerContent';
 
-const AccordionItem = ({ orderItem }) => {
+export const AccordionItem = ({ orderItem }) => {
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -87,5 +87,3 @@ AccordionItem.propTypes = {
     // Add other prop types here as needed for orderItem object
   }).isRequired,
 };
-
-export default AccordionItem;

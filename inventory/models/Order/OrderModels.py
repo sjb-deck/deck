@@ -1,6 +1,7 @@
-from django.db import models
-from inventory.globals import action_choices, action_reasons
 from django.contrib.auth.models import User
+from django.db import models
+
+from inventory.globals import action_choices, action_reasons
 
 """
 * A class that encapsulates an Order placed by the user.
@@ -30,8 +31,17 @@ class Order(models.Model):
     action = models.CharField(max_length=50, choices=action_choices)
     reason = models.CharField(max_length=50, choices=action_reasons)
     date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     other_info = models.CharField(max_length=100, null=True, blank=True)
+
+    def revert_order(self):
+        try:
+            for item in self.order_items.all():
+                item.revert_order_item()
+            self.delete()
+        except Exception as e:
+            print("Error when reverting order")
+            raise e
 
     def __str__(self) -> str:
         return f"{self.action}, {self.reason}, {self.date}, {self.user}"

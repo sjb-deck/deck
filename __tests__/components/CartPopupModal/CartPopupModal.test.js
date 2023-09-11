@@ -1,16 +1,20 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import dayjs from 'dayjs';
 import React from 'react';
 
-import CartPopupModal from '../../../components/CartPopupModal/CartPopupModal';
+import { CartPopupModal } from '../../../components';
 import {
   CART_ITEM_TYPE_DEPOSIT,
   CART_ITEM_TYPE_WITHDRAW,
   LOCAL_STORAGE_CART_KEY,
 } from '../../../globals';
-import { exampleItem } from '../../../mocks/items';
+import {
+  exampleItem,
+  mockDepositCartContext,
+  mockWithdrawCartContext,
+} from '../../../mocks';
+import { render, userEvent } from '../../../testSetup';
 
 describe('CartPopupModal', () => {
   it('renders without crashing', () => {
@@ -19,8 +23,10 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
   });
 
@@ -30,8 +36,10 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
     expect(screen.getByText(CART_ITEM_TYPE_DEPOSIT)).toBeInTheDocument();
   });
@@ -42,44 +50,51 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_WITHDRAW}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockWithdrawCartContext },
     );
     expect(screen.getByText(CART_ITEM_TYPE_WITHDRAW)).toBeInTheDocument();
   });
 
-  it('opens the modal when the button is clicked', () => {
+  it('opens the modal when the button is clicked', async () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
-    fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
+
+    await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
   });
 
-  it('displays the correct item name', () => {
+  it('displays the correct item name', async () => {
     render(
       <CartPopupModal
         type={CART_ITEM_TYPE_DEPOSIT}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
-    fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
+    await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(screen.getByText(exampleItem.name)).toBeInTheDocument();
   });
 
   it('displays the dropdown when there are multiple expiry dates', async () => {
     const mockItemWithDates = {
       ...exampleItem,
-      expirydates: [
-        { expirydate: '2024-06-11', id: 1 },
-        { expirydate: '2024-06-12', id: 2 },
+      expiry_dates: [
+        { expiry_date: '2024-06-11', id: 1 },
+        { expiry_date: '2024-06-12', id: 2 },
       ],
     };
     render(
@@ -87,24 +102,26 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={mockItemWithDates}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
-    fireEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
+    await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     expect(
       screen.getByRole('button', {
-        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
+        name: `Expiry Date ${mockItemWithDates.expiry_dates[0].expiry_date}`,
       }),
     ).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText('Expiry Date'));
     expect(
       screen.getByDisplayValue(
-        `${mockItemWithDates.expirydates[0].expirydate}`,
+        `${mockItemWithDates.expiry_dates[0].expiry_date}`,
       ),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('option', {
-        name: `${mockItemWithDates.expirydates[1].expirydate}`,
+        name: `${mockItemWithDates.expiry_dates[1].expiry_date}`,
       }),
     ).toBeInTheDocument();
   });
@@ -112,9 +129,9 @@ describe('CartPopupModal', () => {
   it('updates selectedExpiry when a date is clicked', async () => {
     const mockItemWithDates = {
       ...exampleItem,
-      expirydates: [
-        { expirydate: '2024-06-11', id: 1 },
-        { expirydate: '2024-06-12', id: 2 },
+      expiry_dates: [
+        { expiry_date: '2024-06-11', id: 1 },
+        { expiry_date: '2024-06-12', id: 2 },
       ],
     };
     render(
@@ -122,25 +139,24 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={mockItemWithDates}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     await userEvent.click(
       screen.getByRole('button', {
-        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
+        name: `Expiry Date ${mockItemWithDates.expiry_dates[0].expiry_date}`,
       }),
     );
-    const btnList = screen.queryAllByRole('option', { hidden: true });
-    const button = btnList.find(
-      (btn) =>
-        btn.getAttribute('data-value') ===
-        `${mockItemWithDates.expirydates[1].expirydate}`,
-    );
-    await userEvent.click(button, { hidden: true });
+    const expiryOption = screen.getByRole('option', {
+      name: mockItemWithDates.expiry_dates[1].expiry_date,
+    });
+    await userEvent.click(expiryOption);
     expect(
       screen.getByRole('button', {
-        name: `Expiry Date ${mockItemWithDates.expirydates[1].expirydate}`,
+        name: `Expiry Date ${mockItemWithDates.expiry_dates[1].expiry_date}`,
       }),
     ).toBeInTheDocument();
   });
@@ -148,9 +164,9 @@ describe('CartPopupModal', () => {
   it('display calendar when New is clicked and update selected date', async () => {
     const mockItemWithDates = {
       ...exampleItem,
-      expirydates: [
-        { expirydate: '2024-06-11', id: 1 },
-        { expirydate: '2024-06-12', id: 2 },
+      expiry_dates: [
+        { expiry_date: '2024-06-11', id: 1 },
+        { expiry_date: '2024-06-12', id: 2 },
       ],
     };
     render(
@@ -158,42 +174,34 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={mockItemWithDates}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
     await userEvent.click(
       screen.getByRole('button', {
-        name: `Expiry Date ${mockItemWithDates.expirydates[0].expirydate}`,
+        name: `Expiry Date ${mockItemWithDates.expiry_dates[0].expiry_date}`,
       }),
     );
-    const btnList = screen.queryAllByRole('option', { hidden: true });
-    const button = btnList.find(
-      (btn) => btn.getAttribute('data-value') === 'New',
-    );
-    await userEvent.click(button, { hidden: true });
-    expect(screen.getByText('Pick a new expiry date')).toBeInTheDocument();
+    const addExpiryOption = screen.getByRole('option', { name: 'Add Expiry' });
+    await userEvent.click(addExpiryOption);
+    expect(
+      await screen.findByText('Pick a new expiry date'),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: 'Ok',
       }),
     ).toBeInTheDocument();
-    const dateBtnList = screen.queryAllByText(dayjs().get('date'));
-    const dateButton = dateBtnList.find(
-      (btn) => btn.getAttribute('role') === 'gridcell',
-    );
-    expect(dateButton).toBeInTheDocument();
-    await userEvent.click(dateButton);
     await userEvent.click(screen.getByText('Ok'));
-    await waitFor(() => {
-      const modal = screen.queryByText('Pick a new expiry date');
-      expect(modal).toBeNull(); // Ensure that the modal content is no longer in the document
-    });
-    expect(
-      screen.getByRole('button', {
-        name: `Expiry Date ${dayjs().format('YYYY-MM-DD')}`,
-      }),
-    ).toBeInTheDocument();
+    await waitForElementToBeRemoved(() =>
+      screen.getByText('Pick a new expiry date'),
+    );
+    const expirySelector = screen.getByRole('textbox', { name: 'Expiry Date' });
+    expect(expirySelector).toHaveValue(dayjs().format('YYYY-MM-DD'));
+    expect(expirySelector).toBeDisabled();
   });
 
   it('renders the text fields with the correct labels', async () => {
@@ -202,12 +210,13 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={exampleItem}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
     await userEvent.click(screen.getByText(CART_ITEM_TYPE_DEPOSIT));
-    expect(screen.getByText('Opened Qty')).toBeInTheDocument();
-    expect(screen.getByText('Unopened Qty')).toBeInTheDocument();
+    expect(screen.getByText('Quantity')).toBeInTheDocument();
   });
 
   it('displays an error message when the field has negative numbers', async () => {
@@ -217,19 +226,23 @@ describe('CartPopupModal', () => {
         type={CART_ITEM_TYPE_DEPOSIT}
         item={item}
         selector='All'
-        setCartState={jest.fn}
+        open={true}
+        setOpen={jest.fn()}
       />,
+      { cartContext: mockDepositCartContext },
     );
 
     await userEvent.click(screen.getByText(/Deposit/i));
 
-    const openedQtyInput = screen.getByLabelText(/Opened Qty/i);
+    const qtyInput = screen.getByLabelText(/Quantity/i);
 
-    await userEvent.clear(openedQtyInput);
-    await userEvent.type(openedQtyInput, '-1');
+    await userEvent.clear(qtyInput);
+    await userEvent.type(qtyInput, '-1');
     await userEvent.click(screen.getByRole('submit-button'));
 
-    expect(screen.getByText(/Number cannot be negative/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Number must be greater than 0/i),
+    ).toBeInTheDocument();
   });
 
   describe('Updates localstorage correctly', () => {
@@ -247,10 +260,9 @@ describe('CartPopupModal', () => {
       const expectedItem = [
         {
           ...item,
-          expiryId: item.expirydates[0].id,
+          expiryId: item.expiry_dates[0].id,
           type: CART_ITEM_TYPE_DEPOSIT,
-          cartOpenedQuantity: 1,
-          cartUnopenedQuantity: 0,
+          cartQuantity: 1,
         },
       ];
 
@@ -259,22 +271,24 @@ describe('CartPopupModal', () => {
           type={CART_ITEM_TYPE_DEPOSIT}
           item={item}
           selector='All'
-          setCartState={jest.fn}
+          open={true}
+          setOpen={jest.fn()}
         />,
+        { cartContext: mockDepositCartContext },
       );
 
       await userEvent.click(screen.getByText(/Deposit/i));
 
-      const openedQtyInput = screen.getByLabelText('Opened Qty');
-      await userEvent.clear(openedQtyInput);
-      await userEvent.type(openedQtyInput, '1');
+      const qtyInput = screen.getByLabelText('Quantity');
+      await userEvent.clear(qtyInput);
+      await userEvent.type(qtyInput, '1');
 
       const depositButton = screen.getByRole('submit-button');
       await userEvent.click(depositButton);
 
       expect(localStorage.setItem).toHaveBeenCalledWith(
         LOCAL_STORAGE_CART_KEY,
-        JSON.stringify(expectedItem),
+        JSON.stringify([...mockDepositCartContext.cartItems, ...expectedItem]),
       );
     });
 
@@ -285,8 +299,10 @@ describe('CartPopupModal', () => {
           type={CART_ITEM_TYPE_DEPOSIT}
           item={item}
           selector='All'
-          setCartState={jest.fn}
+          open={true}
+          setOpen={jest.fn()}
         />,
+        { cartContext: mockDepositCartContext },
       );
 
       await userEvent.click(screen.getByText(/Deposit/i));

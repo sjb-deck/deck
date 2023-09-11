@@ -1,9 +1,9 @@
 import {
-  TextField,
   Box,
-  Select,
-  MenuItem,
   Grid,
+  MenuItem,
+  Select,
+  TextField,
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -20,7 +20,11 @@ const types = [
   'Universal Precaution',
 ];
 
-const AddItemForm = ({ itemFormData, handleFormChange, itemFormError }) => {
+export const AddItemForm = ({
+  itemFormData,
+  handleFormChange,
+  itemFormError,
+}) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
 
   return (
@@ -249,5 +253,3 @@ AddItemForm.propTypes = {
     min_quantityunopened: PropTypes.bool.isRequired,
   }).isRequired,
 };
-
-export default AddItemForm;

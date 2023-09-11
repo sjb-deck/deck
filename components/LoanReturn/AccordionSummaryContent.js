@@ -4,7 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const AccordionSummaryContent = ({
+export const AccordionSummaryContent = ({
   index,
   orderDate,
   returnDate,
@@ -100,5 +100,3 @@ AccordionSummaryContent.propTypes = {
   returnDate: PropTypes.string.isRequired,
   loaneeName: PropTypes.string.isRequired,
 };
-
-export default AccordionSummaryContent;

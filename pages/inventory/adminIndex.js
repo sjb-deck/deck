@@ -1,28 +1,22 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import LoanOrderList from '../../components/Admin/LoanOrderList';
-import OrderList from '../../components/Admin/OrderList';
-import Footer from '../../components/Footer';
-import NavBar from '../../components/NavBar/NavBar';
-import { SnackBarAlerts } from '../../components/SnackBarAlerts';
-import Theme from '../../components/Themes';
-import { INV_API_ORDERS_URL, INV_API_USER_URL } from '../../globals';
-import useFetch from '../../hooks/use-fetch';
+import {
+  Footer,
+  LoadingSpinner,
+  LoanOrderList,
+  NavBar,
+  OrderList,
+  SnackBarAlerts,
+} from '../../components';
+import { useUser } from '../../hooks/queries';
+import { useOrders } from '../../hooks/queries/useOrders';
 import '../../inventory/src/scss/inventoryBase.scss';
 
 const AdminIndex = () => {
-  const {
-    data,
-    loading: dataLoading,
-    error: dataError,
-    refetch,
-  } = useFetch(INV_API_ORDERS_URL);
-  const {
-    data: user,
-    loading: userLoading,
-    error: userError,
-  } = useFetch(INV_API_USER_URL);
+  const { data, isLoading: dataLoading, error: dataError } = useOrders();
+
+  const { data: user, loading: userLoading, error: userError } = useUser();
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [view, setView] = useState('orders');
@@ -38,7 +32,7 @@ const AdminIndex = () => {
   }, [dataLoading, userLoading, dataError, userError, user]);
 
   return (
-    <Theme>
+    <>
       <NavBar user={userData} />
       <SnackBarAlerts
         open={snackbarOpen}
@@ -86,15 +80,19 @@ const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {data &&
+        {dataLoading ? (
+          <LoadingSpinner />
+        ) : (
+          data &&
           (view === 'orders' ? (
             <OrderList orders={data.orders} />
           ) : (
-            <LoanOrderList loanOrders={data.loan_orders} refetch={refetch} />
-          ))}
+            <LoanOrderList loanOrders={data.loan_orders} />
+          ))
+        )}
       </Box>
       <Footer />
-    </Theme>
+    </>
   );
 };
 
