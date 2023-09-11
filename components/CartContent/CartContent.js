@@ -39,13 +39,9 @@ export const CartContent = () => {
       const data = buildPayload(values);
       mutate(data, {
         onSuccess: (res) => {
-          // TODO: Instead of redirecting, show order items
-          const orderItemString = encodeURIComponent(JSON.stringify(res));
-
-          window.location.href = `${URL_ORDER_RECEIPT}?orderData=${orderItemString}`;
-
+          const orderId = encodeURIComponent(JSON.stringify(res.id));
+          window.location.href = `${URL_ORDER_RECEIPT}?orderId=${orderId}`;
           clearCart();
-          // window.location.href = URL_INV_ITEMS;
         },
       });
     },

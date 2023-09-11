@@ -1,20 +1,18 @@
 import React from 'react';
 
-import { NavBar, Theme } from '../../components';
-import Receipt from '../../components/Admin/Receipt';
+import { Receipt, NavBar, Footer } from '../../components';
+import { useUser } from '../../hooks/queries';
 
-const OrderReceipt = () => {
+export const OrderReceipt = () => {
+  const { data: userData } = useUser();
   const params = new URLSearchParams(window.location.search);
-
-  const orderDetails = JSON.parse(decodeURIComponent(params.get('orderData')));
-  const user = orderDetails.user;
+  const orderId = JSON.parse(decodeURIComponent(params.get('orderId')));
 
   return (
-    <Theme>
-      <NavBar user={user}></NavBar>
-      <Receipt orderData={orderDetails}></Receipt>
-    </Theme>
+    <>
+      <NavBar user={userData} />
+      <Receipt orderId={orderId} />
+      <Footer />
+    </>
   );
 };
-
-export default OrderReceipt;
