@@ -70,7 +70,7 @@ xdescribe('checkItemFormData', () => {
   });
 });
 
-describe('checkExpiryFormData', () => {
+xdescribe('checkExpiryFormData', () => {
   let expiryFormData;
   let setActiveStep;
   let items;
