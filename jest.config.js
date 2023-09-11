@@ -4,4 +4,7 @@ module.exports = {
     '\\.(css|less|scss)$': 'identity-obj-proxy',
   },
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
+  fakeTimers: {
+    enableGlobally: true,
+  },
 };

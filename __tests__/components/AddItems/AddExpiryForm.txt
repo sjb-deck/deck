@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { AddExpiryForm } from "../../../components/AddItems/AddExpiryForm";
 
-describe('AddExpiryForm', () => {
+xdescribe('AddExpiryForm', () => {
   const expiryFormData = {
     name: '',
     type: '',

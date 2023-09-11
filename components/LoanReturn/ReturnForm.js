@@ -35,7 +35,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
     };
     for (let i = 0; i < items.length; i++) {
       payload.items.push({
-        order_item_id: items[i].id,
+        order_item_id: items[i].item_expiry.id,
         returned_quantity: quantities[i].returnQuantity,
       });
     }

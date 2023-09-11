@@ -15,7 +15,6 @@ import { ITEMS_PER_PAGE } from '../../globals';
 import { useItems, useUser } from '../../hooks/queries';
 import '../../inventory/src/scss/inventoryBase.scss';
 import { exampleItem } from '../../mocks/items';
-import { CartProvider } from '../../providers';
 
 export const ItemIndex = () => {
   const { data: items } = useItems();
@@ -57,7 +56,7 @@ export const ItemIndex = () => {
   };
 
   return (
-    <CartProvider>
+    <>
       <NavBar user={userData} />
       <div
         className='nav-margin-compensate'
@@ -126,6 +125,6 @@ export const ItemIndex = () => {
       <FloatingCart />
 
       <Footer />
-    </CartProvider>
+    </>
   );
 };

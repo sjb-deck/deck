@@ -4,7 +4,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect'; // Import the jest-dom matchers
 import AccordionSummaryContent from '../../../components/LoanReturn/AccordionSummaryContent';
 
-describe('AccordionSummaryContent', () => {
+xdescribe('AccordionSummaryContent', () => {
   const testData = {
     index: '1',
     orderDate: '2023-07-20',

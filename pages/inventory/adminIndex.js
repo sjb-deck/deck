@@ -3,22 +3,19 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Footer,
+  LoadingSpinner,
   LoanOrderList,
   NavBar,
   OrderList,
   SnackBarAlerts,
-  Theme,
 } from '../../components';
-import { useItems, useUser } from '../../hooks/queries';
+import { useUser } from '../../hooks/queries';
+import { useOrders } from '../../hooks/queries/useOrders';
 import '../../inventory/src/scss/inventoryBase.scss';
 
 const AdminIndex = () => {
-  const {
-    data,
-    isLoading: dataLoading,
-    error: dataError,
-    refetch,
-  } = useItems();
+  const { data, isLoading: dataLoading, error: dataError } = useOrders();
+
   const { data: user, loading: userLoading, error: userError } = useUser();
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -35,7 +32,7 @@ const AdminIndex = () => {
   }, [dataLoading, userLoading, dataError, userError, user]);
 
   return (
-    <Theme>
+    <>
       <NavBar user={userData} />
       <SnackBarAlerts
         open={snackbarOpen}
@@ -83,15 +80,19 @@ const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {data &&
+        {dataLoading ? (
+          <LoadingSpinner />
+        ) : (
+          data &&
           (view === 'orders' ? (
             <OrderList orders={data.orders} />
           ) : (
-            <LoanOrderList loanOrders={data.loan_orders} refetch={refetch} />
-          ))}
+            <LoanOrderList loanOrders={data.loan_orders} />
+          ))
+        )}
       </Box>
       <Footer />
-    </Theme>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
+import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 
@@ -36,7 +37,7 @@ const AddItem = () => {
   const [itemPotentialMatch, setItemPotentialMatch] = useState('');
   const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
     useState(false);
-  // const [successMessage, setSuccessMessage] = useState('');
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { mutate } = useAddItem();
 
@@ -123,6 +124,7 @@ const AddItem = () => {
           is_opened: false,
         });
         setLoading(false);
+        queryClient.invalidateQueries('items');
       },
       onError: () => {
         setActiveStep(0);
@@ -198,6 +200,7 @@ const AddItem = () => {
           is_opened: false,
         });
         setLoading(false);
+        queryClient.invalidateQueries('items');
       },
       onError: () => {
         setActiveStep(0);

@@ -14,6 +14,7 @@ export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
 export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
 export const ITEMS_PER_PAGE = 5;
+export const ORDERS_PER_PAGE = 10;
 
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
@@ -44,8 +45,7 @@ export const CartItemPropType = PropTypes.shape({
   ...ItemPropType,
   type: PropTypes.string,
   expiryId: PropTypes.number,
-  cartOpenedQuantity: PropTypes.number,
-  cartUnopenedQuantity: PropTypes.number,
+  cartQuantity: PropTypes.number,
 });
 
 export const UserPropType = PropTypes.shape({
@@ -105,10 +105,10 @@ export const ExpiryFormDataPropType = PropTypes.shape({
 });
 
 export const LoanOrderPropType = PropTypes.shape({
-  pk: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
   action: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  return_date: PropTypes.string.isRequired,
+  return_date: PropTypes.string,
   loan_active: PropTypes.bool.isRequired,
   loanee_name: PropTypes.string.isRequired,
   other_info: PropTypes.string,
@@ -125,7 +125,7 @@ export const LoanOrderPropType = PropTypes.shape({
 }).isRequired;
 
 export const OrderPropType = PropTypes.shape({
-  pk: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
   action: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   other_info: PropTypes.string,
@@ -147,8 +147,14 @@ export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
 export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
 export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
 export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
-export const INV_API_CREATE_NEW_EXPIRY_URL = `${INV_API_BASE_URL}/create_new_expiry`;
-export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders`;
+export const INV_API_CREATE_NEW_EXPIRY_URL = `${INV_API_BASE_URL}/add_expiry`;
+export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders/all`;
 export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
 export const INV_API_LOANS_URL = `${INV_API_BASE_URL}/loans`;
 export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
+
+export const ORDER_REASONS = {
+  item_restock: 'Restock',
+  unserviceable: 'Unserviceable',
+  others: 'Others',
+};
