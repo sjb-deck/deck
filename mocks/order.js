@@ -131,7 +131,7 @@ export const mockLoanOrder = {
         },
       },
       ordered_quantity: 1,
-      returned_quantity: 0,
+      returned_quantity: 1,
     },
   ],
   loanee_name: 'test',

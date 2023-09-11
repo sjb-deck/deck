@@ -56,6 +56,19 @@ describe('Receipt', () => {
     expect(
       screen.getByText(new Date(mockWithdrawOrder.date).toLocaleString()),
     ).toBeInTheDocument();
+
+    // check order items
+    for (const orderItem of mockWithdrawOrder.order_items) {
+      expect(
+        screen.getByText(orderItem.item_expiry.expiry_date ?? 'No Expiry'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(orderItem.item_expiry.item.name),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`Ordered Quantity: ${orderItem.ordered_quantity}`),
+      ).toBeInTheDocument();
+    }
   });
 
   it('should render the component with the correct data when it is a deposit order', async () => {
@@ -101,6 +114,19 @@ describe('Receipt', () => {
     expect(
       screen.getByText(new Date(mockDepositOrder.date).toLocaleString()),
     ).toBeInTheDocument();
+
+    // check order items
+    for (const orderItem of mockDepositOrder.order_items) {
+      expect(
+        screen.getByText(orderItem.item_expiry.expiry_date ?? 'No Expiry'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(orderItem.item_expiry.item.name),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`Ordered Quantity: ${orderItem.ordered_quantity}`),
+      ).toBeInTheDocument();
+    }
   });
 
   it('should render the component with the correct data when it is a loan order', async () => {
@@ -160,5 +186,21 @@ describe('Receipt', () => {
     expect(
       screen.getByText(new Date(mockLoanOrder.return_date).toLocaleString()),
     ).toBeInTheDocument();
+
+    // check order items
+    for (const orderItem of mockLoanOrder.order_items) {
+      expect(
+        screen.getByText(orderItem.item_expiry.expiry_date ?? 'No Expiry'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(orderItem.item_expiry.item.name),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`Ordered Quantity: ${orderItem.ordered_quantity}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`Returned Quantity: ${orderItem.returned_quantity}`),
+      ).toBeInTheDocument();
+    }
   });
 });
