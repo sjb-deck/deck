@@ -86,7 +86,11 @@ export const OrderList = ({ orders }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ width: 1 }}
         />
-        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <Select
+          inputProps={{ 'data-testid': 'search-select' }}
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
           <MenuItem value='item'>Item</MenuItem>
           <MenuItem value='user'>User</MenuItem>
         </Select>

@@ -26,7 +26,11 @@ export const LoanOrderContent = ({
   const { formattedDate: returnDate } = getReadableDate(order.due_date);
 
   return (
-    <Accordion key={order.id} sx={{ width: isMobile ? '95%' : '70%' }}>
+    <Accordion
+      data-testid={`order-${order.id}`}
+      key={order.id}
+      sx={{ width: isMobile ? '95%' : '70%' }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMore />}
         id={`panel${order.id}-header`}
@@ -49,7 +53,7 @@ export const LoanOrderContent = ({
           )}
         </Grid>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails data-testid={`details-${order.id}`}>
         <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
         <Grid container spacing={2} sx={{ marginTop: 0.5, marginBottom: 1 }}>
           <Grid item xs={12} lg={5.5}>
@@ -142,7 +146,7 @@ export const LoanOrderContent = ({
             control={
               <Button
                 variant='contained'
-                role='submit-button'
+                role='button'
                 color='error'
                 endIcon={<DeleteForever />}
               >

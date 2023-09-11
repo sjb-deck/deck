@@ -91,6 +91,7 @@ export const LoanOrderList = ({ loanOrders }) => {
         />
         <Select
           label='Filter by'
+          inputProps={{ 'data-testid': 'search-select' }}
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
@@ -187,5 +188,4 @@ export const LoanOrderList = ({ loanOrders }) => {
 
 LoanOrderList.propTypes = {
   loanOrders: PropTypes.arrayOf(LoanOrderPropType).isRequired,
-  refetch: PropTypes.func.isRequired,
 };
