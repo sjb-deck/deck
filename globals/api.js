@@ -6,5 +6,6 @@ export const Api = {
   submitOrder: `${INV_API_BASE_URL}/submit_order`,
   submitNewExpiryDate: `${INV_API_BASE_URL}/add_expiry`,
   orders: `${INV_API_BASE_URL}/orders/all`,
+  order: `${INV_API_BASE_URL}/orders/get/:id`,
   revertOrder: `${INV_API_BASE_URL}/revert_order`,
 };

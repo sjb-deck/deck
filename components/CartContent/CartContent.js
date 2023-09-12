@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React, { useContext, useMemo } from 'react';
 
-import { CART_ITEM_TYPE_WITHDRAW, URL_INV_ITEMS } from '../../globals';
+import { CART_ITEM_TYPE_WITHDRAW, URL_ORDER_RECEIPT } from '../../globals';
 import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
 import { getDjangoFriendlyDate } from '../../utils';
@@ -38,10 +38,10 @@ export const CartContent = () => {
     onSubmit: async (values) => {
       const data = buildPayload(values);
       mutate(data, {
-        onSuccess: () => {
-          // TODO: Instead of redirecting, show order items
+        onSuccess: (res) => {
+          const orderId = encodeURIComponent(JSON.stringify(res.id));
+          window.location.href = `${URL_ORDER_RECEIPT}?orderId=${orderId}`;
           clearCart();
-          window.location.href = URL_INV_ITEMS;
         },
       });
     },
