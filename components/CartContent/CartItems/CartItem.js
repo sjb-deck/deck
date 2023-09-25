@@ -27,7 +27,7 @@ export const CartItem = ({ cartItem }) => {
   };
 
   return (
-    <Paper style={{ width: '100%' }}>
+    <Paper style={{ width: '100%' }} elevation={3}>
       <Stack
         direction='row'
         spacing={2}
