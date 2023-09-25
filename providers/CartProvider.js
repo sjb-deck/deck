@@ -77,9 +77,30 @@ export const CartProvider = ({ children, value: testValues }) => {
     setCartState(newCartItems[0].type);
   };
 
+  const editCartItemQuantity = (expiryId, newQuantity) => {
+    const newCartItems = cartItems.map((item) => {
+      if (item.expiryId === expiryId) {
+        return {
+          ...item,
+          cartQuantity: newQuantity,
+        };
+      }
+      return item;
+    });
+    localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(newCartItems));
+    setCartItems(newCartItems);
+  };
+
   return (
     <CartContext.Provider
-      value={{ cartState, cartItems, addToCart, clearCart, removeItemFromCart }}
+      value={{
+        cartState,
+        cartItems,
+        addToCart,
+        clearCart,
+        removeItemFromCart,
+        editCartItemQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>
