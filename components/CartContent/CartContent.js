@@ -167,11 +167,12 @@ export const CartContent = () => {
         alignItems='center'
         justifyContent='center'
         spacing={3}
+        padding={1}
         width='100%'
         position='absolute'
         top='80px'
       >
-        <Paper className='dynamic-width' style={{ padding: 20 }}>
+        <Paper className='dynamic-width' style={{ padding: 20 }} elevation={3}>
           <Stack justifyContent='center' alignItems='center' spacing={2}>
             <Typography variant='h4' alignSelf='start'>
               {cartState} Cart
