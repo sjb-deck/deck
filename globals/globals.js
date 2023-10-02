@@ -13,6 +13,7 @@ export const URL_INV_VIEW_ORDERS_LOANS = '/inventory/admin';
 export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
 export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
+export const URL_INV_VIEW_ITEM_LIST = '/inventory/item_list';
 export const URL_ORDER_RECEIPT = '/inventory/receipt';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
