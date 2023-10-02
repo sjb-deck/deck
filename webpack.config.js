@@ -14,6 +14,7 @@ module.exports = {
     addItem: ['./inventory/src/js/addItem.js'],
     loanReturn: ['./inventory/src/js/loanReturn.js'],
     orderReceipt: ['./inventory/src/js/orderReceipt.js'],
+    itemList: ['./inventory/src/js/itemList.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

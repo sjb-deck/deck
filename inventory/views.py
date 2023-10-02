@@ -1,7 +1,9 @@
 import json
-
+import csv
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.forms.models import model_to_dict
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -48,6 +50,11 @@ def admin(request):
 @login_required(login_url="/r'^login/$'")
 def order_receipt(request):
     return render(request, "order_receipt.html")
+
+
+@login_required(login_url="/r'^login/$'")
+def item_list(request):
+    return render(request, "item_list.html")
 
 
 @api_view(["GET"])
@@ -177,3 +184,65 @@ def revert_order(request):
             return Response({"error": str(e)}, status=500)
     except:
         return Response({"error": "Something went wrong"}, status=500)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def export_items_csv(request):
+    response = HttpResponse(content_type="text/csv")
+    writer = csv.writer(response)
+    writer.writerow(["name", "type", "unit", "expiry_date", "total_quantity", "opened"])
+    items_data = Item.objects.all()
+
+    for item in items_data:
+        expiry_dates = item.expiry_dates.all()
+        for expiry in expiry_dates:
+            writer.writerow(
+                [
+                    item.name,
+                    item.type,
+                    item.unit,
+                    expiry.expiry_date,
+                    item.total_quantity,
+                    item.is_opened,
+                ]
+            )
+
+    response["Content-Disposition"] = "attachment; filename=items.csv"
+
+    return response
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def import_items_csv(request):
+    reader = csv.reader(request.FILES["file"].read().decode("utf-8-sig").splitlines())
+    errors = []
+    for idx, row in enumerate(reader):
+        try:
+            upl = {
+                "name": row[0],
+                "type": row[1],
+                "unit": row[2],
+                "total_quantity": row[3],
+                "is_opened": row[4].lower() == "true",
+                "expiry_dates": [
+                    {
+                        "expiry_date": row[5],
+                        "quantity": row[6],
+                        "archived": row[7],
+                    }
+                ],
+            }
+            item = ItemSerializer(data=upl)
+            if item.is_valid():
+                item.save()
+            else:
+                errors.append("Row {}: {}".format(idx + 1, item.errors))
+        except Exception as e:
+            errors.append("Row {}: {}".format(idx + 1, str(e)))
+
+    if errors:
+        return Response({"message": errors}, status=400)
+
+    return Response({"message": "Success"}, status=201)

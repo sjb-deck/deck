@@ -8,4 +8,5 @@ export const Api = {
   orders: `${INV_API_BASE_URL}/orders/all`,
   order: `${INV_API_BASE_URL}/orders/get/:id`,
   revertOrder: `${INV_API_BASE_URL}/revert_order`,
+  importItems: `${INV_API_BASE_URL}/import_items`,
 };
