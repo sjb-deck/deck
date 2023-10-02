@@ -38,6 +38,26 @@ describe('<EditCartItemPopUp />', () => {
     expect(screen.getByRole('submit-button')).toBeInTheDocument();
   });
 
+  it('renders correctly when there is expiry date', () => {
+    const mockCartItem = mockDepositCart[1];
+    render(
+      <EditCartItemPopUp
+        cartItem={mockCartItem}
+        open={true}
+        handleClose={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText(mockCartItem.name)).toBeInTheDocument();
+    expect(screen.getByLabelText('Expiry Date')).toHaveValue(
+      mockCartItem.expiry_dates[0].expiry_date ?? 'No Expiry',
+    );
+    expect(screen.getByLabelText('Quantity')).toHaveValue(
+      mockCartItem.cartQuantity,
+    );
+    expect(screen.getByRole('submit-button')).toBeInTheDocument();
+  });
+
   it('updates the localstorage correctly', async () => {
     const mockCartItem = mockDepositCart[0];
     render(
