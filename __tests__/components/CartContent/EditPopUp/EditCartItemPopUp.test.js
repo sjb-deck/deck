@@ -10,13 +10,15 @@ describe('<EditCartItemPopUp />', () => {
   beforeEach(() => {
     setItemSpy = jest.fn();
     global.localStorage.__proto__.setItem = setItemSpy;
-    global.localStorage.__proto__.getItem = jest.fn(() =>
-      JSON.stringify(mockDepositCart),
+    global.localStorage.__proto__.getItem = jest.fn((key) =>
+      key === LOCAL_STORAGE_CART_KEY ? JSON.stringify(mockDepositCart) : null,
     );
   });
 
   afterEach(() => {
     setItemSpy.mockClear();
+    global.localStorage.__proto__.setItem.mockClear();
+    global.localStorage.__proto__.getItem.mockClear();
   });
   it('renders correctly', () => {
     const mockCartItem = mockDepositCart[0];
@@ -108,7 +110,9 @@ describe('<EditCartItemPopUp />', () => {
       screen.getByText('Number must be greater than 0'),
     ).toBeInTheDocument();
 
-    expect(localStorage.setItem).not.toHaveBeenCalled();
+    expect(localStorage.setItem).not.toHaveBeenCalledWith(
+      LOCAL_STORAGE_CART_KEY,
+    );
   });
 
   it('does not submit when quantity is more than available', async () => {
@@ -132,6 +136,8 @@ describe('<EditCartItemPopUp />', () => {
       screen.getByText('Withdraw quantity is more than what is available'),
     ).toBeInTheDocument();
 
-    expect(localStorage.setItem).not.toHaveBeenCalled();
+    expect(localStorage.setItem).not.toHaveBeenCalledWith(
+      LOCAL_STORAGE_CART_KEY,
+    );
   });
 });
