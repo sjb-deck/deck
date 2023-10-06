@@ -9,7 +9,7 @@ export const useAddItem = (options) => {
   const request = getRequest();
 
   return useMutation(async (order) => {
-    const response = request.post(url, order);
+    const response = await request.post(url, order);
     return response.data;
   });
 };

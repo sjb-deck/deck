@@ -8,7 +8,7 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   AddExpiryForm,
@@ -23,6 +23,7 @@ import {
 } from '../../components';
 import { useAddItem } from '../../hooks/mutations';
 import { useItems, useUser } from '../../hooks/queries';
+import { AlertContext } from '../../providers';
 import { checkExpiryFormData, checkItemFormData } from '../../utils';
 
 const AddItem = () => {
@@ -40,6 +41,7 @@ const AddItem = () => {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { mutate } = useAddItem();
+  const { setAlert } = useContext(AlertContext);
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
@@ -92,7 +94,7 @@ const AddItem = () => {
   });
 
   const processItemSubmission = () => {
-    // setLoading(true);
+    setLoading(true);
     const payload = {
       name: itemFormData.name,
       type: itemFormData.type,
@@ -123,6 +125,7 @@ const AddItem = () => {
           min_quantity: 0,
           is_opened: false,
         });
+        setAlert('success', 'Added new item', true);
         setLoading(false);
         queryClient.invalidateQueries('items');
       },
@@ -138,13 +141,14 @@ const AddItem = () => {
           min_quantity: 0,
           is_opened: false,
         });
+        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
         setLoading(false);
       },
     });
   };
 
   const processExpirySubmission = () => {
-    // setLoading(true);
+    setLoading(true);
     const modifiedExpiry = expiryFormData.expiry.map((item) => ({
       expiry_date: item.expiry_date,
       quantity: item.quantity,
@@ -199,6 +203,7 @@ const AddItem = () => {
           min_quantity: false,
           is_opened: false,
         });
+        setAlert('success', 'Added new item', true);
         setLoading(false);
         queryClient.invalidateQueries('items');
       },
@@ -234,6 +239,7 @@ const AddItem = () => {
           min_quantity: false,
           is_opened: false,
         });
+        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
         setLoading(false);
       },
     });

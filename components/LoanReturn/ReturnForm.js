@@ -12,10 +12,11 @@ import {
   Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { URL_INV_LOAN_RETURN } from '../../globals';
 import { useReturnLoan } from '../../hooks/mutations/useReturnLoan';
+import { AlertContext } from '../../providers';
 import { checkLoanReturnForm } from '../../utils';
 
 export const ReturnForm = ({ items, id, onClose, open }) => {
@@ -27,6 +28,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
   );
   const [loading, setLoading] = useState(false);
   const { mutate } = useReturnLoan();
+  const { setAlert } = useContext(AlertContext);
 
   const processReturnSubmission = () => {
     const payload = {
@@ -41,9 +43,11 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
     }
     mutate(payload, {
       onSuccess: () => {
+        setAlert('success', 'Loan returned successfully', true);
         window.location.href = URL_INV_LOAN_RETURN;
       },
       onError: () => {
+        setAlert('error', 'Failed to return loan, contact Fabian Sir!', true);
         setLoading(false);
       },
     });
