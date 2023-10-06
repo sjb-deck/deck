@@ -9,5 +9,6 @@ export const Api = {
   returnLoan: `${INV_API_BASE_URL}/loan_return_post`,
   submitNewExpiryDate: `${INV_API_BASE_URL}/add_expiry`,
   orders: `${INV_API_BASE_URL}/orders/all`,
+  order: `${INV_API_BASE_URL}/orders/get/:id`,
   revertOrder: `${INV_API_BASE_URL}/revert_order`,
 };

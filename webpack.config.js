@@ -13,6 +13,7 @@ module.exports = {
     adminIndex: ['./inventory/src/js/adminIndex.js'],
     addItem: ['./inventory/src/js/addItem.js'],
     loanReturn: ['./inventory/src/js/loanReturn.js'],
+    orderReceipt: ['./inventory/src/js/orderReceipt.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

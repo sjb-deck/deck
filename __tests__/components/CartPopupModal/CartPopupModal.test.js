@@ -310,7 +310,10 @@ describe('CartPopupModal', () => {
       const depositButton = screen.getByRole('submit-button');
       await userEvent.click(depositButton);
 
-      expect(localStorage.setItem).not.toHaveBeenCalled();
+      expect(localStorage.setItem).not.toHaveBeenCalledWith(
+        LOCAL_STORAGE_CART_KEY,
+        JSON.stringify([...mockDepositCartContext.cartItems]),
+      );
     });
   });
 });

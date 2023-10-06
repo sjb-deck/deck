@@ -16,6 +16,7 @@ export const CartItems = () => {
         alignItems='center'
         height={'50%'}
         spacing={2}
+        padding={1}
       >
         {cartItems.map((item) => (
           <CartItem key={item.expiryId} cartItem={item} />
