@@ -79,11 +79,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
           {items.map((item, index) => (
             <Grid item={true} xs={12} key={index}>
               <Paper key={index} sx={{ padding: '15px' }}>
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{ marginLeft: '2px', marginRight: '2px' }}
-                >
+                <Grid container spacing={2} sx={{ marginLeft: '2px' }}>
                   <Grid item xs={6}>
                     <DialogContentText>
                       <Typography variant='body1' component='span'>
@@ -104,7 +100,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
                         ')'}
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={6} sx={{ marginRight: '1px' }}>
                     <TextField
                       fullWidth
                       label='Returning Quantity'
