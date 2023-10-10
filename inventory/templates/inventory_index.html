@@ -142,6 +142,23 @@
       First Aid
     </button>
   </a>
+  <a href="{% url 'loan_return'%}">
+    <!--Remove disabled state when development starts-->
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      style="
+        margin-bottom: 20px;
+        width: 220px;
+        height: 51px;
+        font-size: 25px;
+        animation: fadeinexpandbutton 1s forwards;
+        overflow: hidden;
+      "
+    >
+      Loans
+    </button>
+  </a>
   <a href="#">
     <!--Remove disabled state when development starts-->
     <button
@@ -160,24 +177,7 @@
       Kits
     </button>
   </a>
-  <a href="#" onclick="loading()">
-    <!--Remove disabled state when development starts-->
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      style="
-        margin-bottom: 20px;
-        width: 220px;
-        height: 51px;
-        font-size: 25px;
-        animation: fadeinexpandbutton 1s forwards;
-        overflow: hidden;
-      "
-      disabled
-    >
-      Notifications
-    </button>
-  </a>
+ 
 </div>
 <script>
   function appdeck() {

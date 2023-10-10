@@ -42,7 +42,7 @@ export const FullAccordion = ({ index, loan }) => {
           <AccordionSummaryContent
             index={index}
             orderDate={loan.date}
-            returnDate={loan.return_date ? loan.return_date : 'N/A'}
+            returnDate={loan.due_date ? loan.due_date : 'N/A'}
             loaneeName={loan.loanee_name}
           />
         </AccordionSummary>
@@ -88,7 +88,7 @@ FullAccordion.propTypes = {
   loan: PropTypes.shape({
     id: PropTypes.number.isRequired, // Add this line for 'id'
     date: PropTypes.string.isRequired, // Example: You can specify the expected type and requirements for 'date'
-    return_date: PropTypes.string, // Example: You can specify the expected type for 'return_date' (optional)
+    due_date: PropTypes.string, // Example: You can specify the expected type for 'return_date' (optional)
     loanee_name: PropTypes.string.isRequired, // Example: You can specify the expected type and requirements for 'loanee_name'
     order_items: PropTypes.array.isRequired, // This line specifies that 'order_items' should be an array but doesn't specify its structure
   }).isRequired,

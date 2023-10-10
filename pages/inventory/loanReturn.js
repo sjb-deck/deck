@@ -3,19 +3,17 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import { FullAccordion, NavBar, Theme } from '../../components';
+import { FullAccordion, LoadingSpinner, NavBar, Theme } from '../../components';
 import '../../inventory/src/scss/inventoryBase.scss';
-import { useUser } from '../../hooks/queries';
-import { useLoans } from '../../hooks/queries/useLoans';
+import { useUser, useLoans } from '../../hooks/queries';
+
 const LoanReturn = () => {
   const { data: user, isLoading: userLoading } = useUser();
   const { data: loans, isLoading: loansLoading } = useLoans();
 
   if (userLoading || loansLoading) {
-    return <div>LOADING...</div>;
+    return <LoadingSpinner />;
   }
-
-  console.log(loans);
 
   if (loans.length === 0) {
     return (
