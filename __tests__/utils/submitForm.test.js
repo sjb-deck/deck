@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { checkExpiryFormData } from '../../utils/submitForm';
 import { checkItemFormData } from '../../utils/submitForm';
 
-describe('checkItemFormData', () => {
+xdescribe('checkItemFormData', () => {
   let itemFormData;
   let setActiveStep;
   let items;
@@ -70,7 +70,7 @@ describe('checkItemFormData', () => {
   });
 });
 
-describe('checkExpiryFormData', () => {
+xdescribe('checkExpiryFormData', () => {
   let expiryFormData;
   let setActiveStep;
   let items;

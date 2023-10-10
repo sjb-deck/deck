@@ -6,29 +6,25 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
+import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   AddExpiryForm,
   AddExpiryReview,
   AddItemForm,
   AddItemReview,
-  ErrorDialog,
   ItemPotentialMatchDialog,
   NavBar,
   SnackBarAlerts,
-  SuccessDialog,
   Theme,
   TypeSelection,
 } from '../../components';
+import { useAddItem } from '../../hooks/mutations';
 import { useItems, useUser } from '../../hooks/queries';
-import {
-  checkExpiryFormData,
-  checkItemFormData,
-  processExpirySubmission,
-  processItemSubmission,
-} from '../../utils/submitForm';
+import { AlertContext } from '../../providers';
+import { checkExpiryFormData, checkItemFormData } from '../../utils';
 
 const AddItem = () => {
   const { data: items, isLoading: dataLoading, error: dataError } = useItems();
@@ -42,64 +38,212 @@ const AddItem = () => {
   const [itemPotentialMatch, setItemPotentialMatch] = useState('');
   const [isItemPotentialMatchDialogOpen, setItemPotentialMatchDialogOpen] =
     useState(false);
-  const [isSuccessDialogOpen, setSuccessDialogOpen] = useState(false);
-  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const { mutate } = useAddItem();
+  const { setAlert } = useContext(AlertContext);
 
   const [itemFormData, setItemFormData] = useState({
     name: '',
     type: 'General',
     unit: '',
-    image: '',
-    total_quantityopen: 0,
-    total_quantityunopened: 0,
-    min_quantityopen: 0,
-    min_quantityunopened: 0,
+    imgpic: '',
+    total_quantity: 0,
+    min_quantity: 0,
+    is_opened: false,
   });
 
   const [expiryFormData, setExpiryFormData] = useState({
     name: '',
     type: 'General',
     unit: '',
-    image: '',
+    imgpic: '',
     expiry: [
       {
-        date: dayjs(new Date()).format('YYYY-MM-DD'),
-        total_quantityopen: 0,
-        total_quantityunopened: 0,
+        expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+        quantity: 0,
       },
     ],
-    min_quantityopen: 0,
-    min_quantityunopened: 0,
+    min_quantity: 0,
+    is_opened: false,
   });
 
   const [itemFormError, setItemFormError] = useState({
     name: false,
     type: false,
     unit: false,
-    image: false,
-    total_quantityopen: false,
-    total_quantityunopened: false,
-    min_quantityopen: false,
-    min_quantityunopened: false,
+    imgpic: false,
+    total_quantity: false,
+    min_quantity: false,
+    is_opened: false,
   });
 
   const [expiryFormError, setExpiryFormError] = useState({
     name: false,
     type: false,
     unit: false,
-    image: false,
+    imgpic: false,
     expiry: [
       {
-        date: false,
-        total_quantityopen: false,
-        total_quantityunopened: false,
+        expiry_date: false,
+        quantity: false,
       },
     ],
-    min_quantityopen: false,
-    min_quantityunopened: false,
+    min_quantity: false,
+    is_opened: false,
   });
+
+  const processItemSubmission = () => {
+    setLoading(true);
+    const payload = {
+      name: itemFormData.name,
+      type: itemFormData.type,
+      unit: itemFormData.unit,
+      imgpic: null,
+      total_quantity: itemFormData.total_quantity,
+      min_quantity: itemFormData.min_quantity,
+      is_opened: itemFormData.is_opened,
+      expiry_dates: [
+        {
+          expiry_date: null,
+          quantity: itemFormData.total_quantity,
+          archived: false,
+        },
+      ],
+    };
+    console.log(payload);
+    mutate(payload, {
+      onSuccess: () => {
+        setActiveStep(0);
+        setAddType('');
+        setItemFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          total_quantity: 0,
+          min_quantity: 0,
+          is_opened: false,
+        });
+        setAlert('success', 'Added new item', true);
+        setLoading(false);
+        queryClient.invalidateQueries('items');
+      },
+      onError: () => {
+        setActiveStep(0);
+        setAddType('');
+        setItemFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          total_quantity: 0,
+          min_quantity: 0,
+          is_opened: false,
+        });
+        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
+        setLoading(false);
+      },
+    });
+  };
+
+  const processExpirySubmission = () => {
+    setLoading(true);
+    const modifiedExpiry = expiryFormData.expiry.map((item) => ({
+      expiry_date: item.expiry_date,
+      quantity: item.quantity,
+      archived: false,
+    }));
+
+    const totalQuantity = modifiedExpiry.reduce(
+      (total, item) => total + item.quantity,
+      0,
+    );
+
+    const payload = {
+      name: expiryFormData.name,
+      type: expiryFormData.type,
+      unit: expiryFormData.unit,
+      imgpic: null,
+      total_quantity: totalQuantity,
+      min_quantity: expiryFormData.min_quantity,
+      is_opened: expiryFormData.is_opened,
+      expiry_dates: modifiedExpiry,
+    };
+    mutate(payload, {
+      onSuccess: () => {
+        setActiveStep(0);
+        setAddType('');
+        setExpiryFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          expiry: [
+            {
+              expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+              quantity: 0,
+            },
+          ],
+          min_quantity: 0,
+          is_opened: false,
+        });
+
+        setExpiryFormError({
+          name: false,
+          type: false,
+          unit: false,
+          imgpic: false,
+          expiry: [
+            {
+              expiry_date: false,
+              quantity: false,
+            },
+          ],
+          min_quantity: false,
+          is_opened: false,
+        });
+        setAlert('success', 'Added new item', true);
+        setLoading(false);
+        queryClient.invalidateQueries('items');
+      },
+      onError: () => {
+        setActiveStep(0);
+        setAddType('');
+        setExpiryFormData({
+          name: '',
+          type: 'General',
+          unit: '',
+          imgpic: '',
+          expiry: [
+            {
+              expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+              quantity: 0,
+            },
+          ],
+          min_quantity: 0,
+          is_opened: false,
+        });
+
+        setExpiryFormError({
+          name: false,
+          type: false,
+          unit: false,
+          imgpic: false,
+          expiry: [
+            {
+              expiry_date: false,
+              quantity: false,
+            },
+          ],
+          min_quantity: false,
+          is_opened: false,
+        });
+        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
+        setLoading(false);
+      },
+    });
+  };
 
   useEffect(() => {
     if (dataError || userError) {
@@ -141,42 +285,14 @@ const AddItem = () => {
         return;
       case 2:
         if (addType === 'item') {
-          processItemSubmission(
-            itemFormData,
-            setActiveStep,
-            setItemFormData,
-            setAddType,
-            setSuccessDialogOpen,
-            setSuccessMessage,
-            setErrorDialogOpen,
-            setLoading,
-          );
+          processItemSubmission();
         } else if (addType === 'expiry') {
-          processExpirySubmission(
-            expiryFormData,
-            setActiveStep,
-            setExpiryFormData,
-            setExpiryFormError,
-            setAddType,
-            setSuccessDialogOpen,
-            setSuccessMessage,
-            setErrorDialogOpen,
-            setLoading,
-          );
+          processExpirySubmission();
         }
         return;
       default:
         return;
     }
-  };
-
-  const handleSuccessDialogClose = () => {
-    setSuccessDialogOpen(false);
-    setSuccessMessage('');
-  };
-
-  const handleErrorDialogClose = () => {
-    setErrorDialogOpen(false);
   };
 
   const handleItemPotentialMatchDialogClose = () => {
@@ -189,19 +305,16 @@ const AddItem = () => {
   };
 
   const handleItemFormChange = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    if (name === 'is_opened') {
+      value = !itemFormData.is_opened;
+    }
+
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
-
-    if (name === 'total_quantityopen' || name === 'total_quantityunopened') {
-      setItemFormError((prevFormError) => ({
-        ...prevFormError,
-        total_quantityopen: false,
-        total_quantityunopened: false,
-      }));
-    }
 
     setItemFormError((prevFormError) => ({
       ...prevFormError,
@@ -210,7 +323,12 @@ const AddItem = () => {
   };
 
   const handleExpiryFormChange = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    if (name === 'is_opened') {
+      value = !expiryFormData.is_opened;
+    }
+
     setExpiryFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -319,15 +437,6 @@ const AddItem = () => {
                       {loading ? <LinearProgress /> : null}
                     </div>
                   </div>
-                  <SuccessDialog
-                    open={isSuccessDialogOpen}
-                    onClose={handleSuccessDialogClose}
-                    message={successMessage}
-                  />
-                  <ErrorDialog
-                    open={isErrorDialogOpen}
-                    onClose={handleErrorDialogClose}
-                  />
                   <ItemPotentialMatchDialog
                     open={isItemPotentialMatchDialogOpen}
                     onClose={handleItemPotentialMatchDialogClose}

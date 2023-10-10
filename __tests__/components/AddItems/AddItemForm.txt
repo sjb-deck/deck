@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import AddItemForm from '../../../components/AddItems/AddItemForm';
+import { AddItemForm } from "../../../components";
 
 xdescribe('AddItemForm', () => {
   const itemFormData = {

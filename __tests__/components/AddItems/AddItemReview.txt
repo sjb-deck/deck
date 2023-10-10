@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import AddItemReview from '../../../components/AddItems/AddItemReview';
+import { AddItemReview } from "../../../components";
 
 const itemFormData = {
   name: 'Test Item',

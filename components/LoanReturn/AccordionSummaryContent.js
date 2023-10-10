@@ -33,7 +33,7 @@ export const AccordionSummaryContent = ({
                 marginTop: isMobile ? '-2px' : '0px',
               }}
             >
-              {isMobile ? 'Return' : 'Return:'}
+              {isMobile ? 'Due Date' : 'Due Date:'}
             </Typography>
           </Grid>
           {!isMobile && <Box sx={{ width: '15px' }} />}

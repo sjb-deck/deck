@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import SuccessDialog from '../../../components/AddItems/SuccessDialog';
+import { SuccessDialog } from "../../../components";
 
 xdescribe('SuccessDialog', () => {
   test('renders with correct success message and close button', () => {

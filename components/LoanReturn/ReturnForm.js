@@ -12,26 +12,51 @@ import {
   Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
-import {
-  checkLoanReturnForm,
-  submitLoanReturn,
-} from '../../utils/submitLoanForm';
+import { URL_INV_LOAN_RETURN } from '../../globals';
+import { useReturnLoan } from '../../hooks/mutations';
+import { AlertContext } from '../../providers';
+import { checkLoanReturnForm } from '../../utils';
 
 export const ReturnForm = ({ items, id, onClose, open }) => {
   const [quantities, setQuantities] = useState(
-    items.map(() => ({ quantityOpened: 0, quantityUnopened: 0 })),
+    items.map(() => ({ returnQuantity: 0 })),
   );
   const [errors, setErrors] = useState(
-    items.map(() => ({ quantityOpened: false, quantityUnopened: false })),
+    items.map(() => ({ returnQuantity: false })),
   );
   const [loading, setLoading] = useState(false);
+  const { mutate } = useReturnLoan();
+  const { setAlert } = useContext(AlertContext);
 
-  const handleQuantityChange = (index, field, value) => {
+  const processReturnSubmission = () => {
+    const payload = {
+      order_id: id,
+      items: [],
+    };
+    for (let i = 0; i < items.length; i++) {
+      payload.items.push({
+        order_item_id: items[i].item_expiry.id,
+        returned_quantity: quantities[i].returnQuantity,
+      });
+    }
+    mutate(payload, {
+      onSuccess: () => {
+        setAlert('success', 'Loan returned successfully', true);
+        window.location.href = URL_INV_LOAN_RETURN;
+      },
+      onError: () => {
+        setAlert('error', 'Failed to return loan, contact Fabian Sir!', true);
+        setLoading(false);
+      },
+    });
+  };
+
+  const handleQuantityChange = (index, value) => {
     setQuantities((prevQuantities) => {
       const updatedQuantities = [...prevQuantities];
-      updatedQuantities[index][field] = value;
+      updatedQuantities[index]['returnQuantity'] = value;
       return updatedQuantities;
     });
   };
@@ -39,7 +64,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
   const handleFormSubmit = () => {
     setLoading(true);
     if (checkLoanReturnForm(items, quantities, setErrors)) {
-      submitLoanReturn(items, quantities, id, setLoading);
+      processReturnSubmission();
     } else {
       setLoading(false);
       console.log('Error: Loan return form is invalid');
@@ -54,71 +79,43 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
           {items.map((item, index) => (
             <Grid item={true} xs={12} key={index}>
               <Paper key={index} sx={{ padding: '15px' }}>
-                <DialogContentText>
-                  <Typography variant='body1' component='span'>
-                    {item.name}
-                  </Typography>
-                </DialogContentText>
-                <Typography
-                  variant='caption'
-                  component='span'
-                  sx={{ color: '#666' }}
-                >
-                  {' (Expiry: ' +
-                    (item.expiry ? item.expiry : 'N/A') +
-                    ', Unit: ' +
-                    item.unit +
-                    ')'}
-                </Typography>
-                <Grid container spacing={2} sx={{ marginTop: '2px' }}>
+                <Grid container spacing={2} sx={{ marginLeft: '2px' }}>
                   <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      label='Returning Opened'
-                      type='number'
-                      value={quantities[index].quantityOpened}
-                      onChange={(event) =>
-                        handleQuantityChange(
-                          index,
-                          'quantityOpened',
-                          event.target.value,
-                        )
-                      }
-                      variant='standard'
-                      sx={{
-                        '& .MuiInputLabel-root': {
-                          color: errors[index].quantityOpened ? 'red' : 'white',
-                        },
-                        '& .MuiFormLabel-root': {
-                          color: errors[index].quantityOpened ? 'red' : 'white',
-                        },
-                      }}
-                    />
+                    <DialogContentText>
+                      <Typography variant='body1' component='span'>
+                        {item.item_expiry.item.name}
+                      </Typography>
+                    </DialogContentText>
+                    <Typography
+                      variant='caption'
+                      component='span'
+                      sx={{ color: '#666' }}
+                    >
+                      {' (Expiry: ' +
+                        (item.item_expiry.expiry_date
+                          ? item.item_expiry.expiry_date
+                          : 'N/A') +
+                        ', Unit: ' +
+                        item.item_expiry.item.unit +
+                        ')'}
+                    </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={6} sx={{ marginRight: '1px' }}>
                     <TextField
                       fullWidth
-                      label='Returning Unopened'
+                      label='Returning Quantity'
                       type='number'
-                      value={quantities[index].quantityUnopened}
+                      value={quantities[index].returnQuantity}
                       onChange={(event) =>
-                        handleQuantityChange(
-                          index,
-                          'quantityUnopened',
-                          event.target.value,
-                        )
+                        handleQuantityChange(index, event.target.value)
                       }
                       variant='standard'
                       sx={{
                         '& .MuiInputLabel-root': {
-                          color: errors[index].quantityUnopened
-                            ? 'red'
-                            : 'white',
+                          color: errors[index].returnQuantity ? 'red' : 'white',
                         },
                         '& .MuiFormLabel-root': {
-                          color: errors[index].quantityUnopened
-                            ? 'red'
-                            : 'white',
+                          color: errors[index].returnQuantity ? 'red' : 'white',
                         },
                       }}
                     />
@@ -158,13 +155,14 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
 ReturnForm.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      expiry: PropTypes.string,
-      type: PropTypes.string,
-      quantity_opened: PropTypes.number.isRequired,
-      quantity_unopened: PropTypes.number.isRequired,
-      unit: PropTypes.string.isRequired,
-      imgpic: PropTypes.string,
+      id: PropTypes.number.isRequired,
+      item_expiry: PropTypes.shape({
+        item: PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          unit: PropTypes.string.isRequired,
+        }).isRequired,
+        expiry_date: PropTypes.string,
+      }).isRequired,
     }),
   ).isRequired,
   id: PropTypes.number.isRequired,
