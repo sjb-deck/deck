@@ -246,7 +246,7 @@ class TestApiImportExportViews(TestCase):
 
         item1 = Item.objects.get(name="CSV Item Test 1")
         item5 = Item.objects.filter(name="CSV Item Test 5").first()
-        
+
         self.assertEqual(item1.total_quantity, 100)
         self.assertIsNone(item5)
 
