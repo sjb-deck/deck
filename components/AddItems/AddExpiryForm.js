@@ -1,9 +1,11 @@
 import {
   Box,
   Button,
+  FormControlLabel,
   Grid,
   MenuItem,
   Select,
+  Switch,
   TextField,
   useMediaQuery,
 } from '@mui/material';
@@ -14,7 +16,7 @@ import React from 'react';
 
 import { ExpiryFormDataPropType } from '../../globals';
 
-import DateAndQuantity from './DateAndQuantity';
+import { DateAndQuantity } from './DateAndQuantity';
 
 const types = [
   'General',
@@ -39,14 +41,12 @@ export const AddExpiryForm = ({
     const exp = expiryFormData.expiry;
     const err = expiryFormError.expiry;
     exp.push({
-      date: dayjs(new Date()).format('YYYY-MM-DD'),
-      total_quantityopen: 0,
-      total_quantityunopened: 0,
+      expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
+      quantity: 0,
     });
     err.push({
-      date: false,
-      total_quantityopen: false,
-      total_quantityunopened: false,
+      expiry_date: false,
+      quantity: false,
     });
     setExpiryFormData((prev) => ({
       ...prev,
@@ -182,8 +182,8 @@ export const AddExpiryForm = ({
 
         <TextField
           label='Image'
-          name='image'
-          value={expiryFormData.image}
+          name='imgpic'
+          value={expiryFormData.imgpic}
           onChange={handleFormChange}
           helperText='Image URL'
           variant='standard'
@@ -195,13 +195,13 @@ export const AddExpiryForm = ({
         <Grid container spacing={3}>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <TextField
-              label='Min Quantity (Open)'
-              name='min_quantityopen'
-              value={expiryFormData.min_quantityopen}
+              label='Min Quantity'
+              name='min_quantity'
+              value={expiryFormData.min_quantity}
               onChange={handleFormChange}
               type='number'
               helperText={
-                expiryFormError.min_quantityopen
+                expiryFormError.min_quantity
                   ? 'Quantity must be a non-negative number!'
                   : 'Minimum quantity for opened item before warning'
               }
@@ -209,38 +209,22 @@ export const AddExpiryForm = ({
               sx={{
                 '& .MuiInputLabel-root': {
                   fontSize: '14px',
-                  color: expiryFormError.min_quantityopen ? 'red' : 'white',
+                  color: expiryFormError.min_quantity ? 'red' : 'white',
                 },
                 '& .MuiFormHelperText-root': {
-                  color: expiryFormError.min_quantityopen ? 'red' : 'gray',
+                  color: expiryFormError.min_quantity ? 'red' : 'gray',
                   fontSize: '12px',
                 },
               }}
             />
           </Grid>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
-            <TextField
-              label='Min Quantity (Unopened)'
-              name='min_quantityunopened'
-              value={expiryFormData.min_quantityunopened}
+            <FormControlLabel
+              control={<Switch checked={expiryFormData.is_opened} />}
+              label={expiryFormData.is_opened ? 'Opened' : 'Unopened'}
+              labelPlacement='end'
               onChange={handleFormChange}
-              type='number'
-              helperText={
-                expiryFormError.min_quantityopen
-                  ? 'Quantity must be a non-negative number!'
-                  : 'Minimum quantity for unopened item before warning'
-              }
-              variant='standard'
-              sx={{
-                '& .MuiInputLabel-root': {
-                  fontSize: '14px',
-                  color: expiryFormError.min_quantityunopened ? 'red' : 'white',
-                },
-                '& .MuiFormHelperText-root': {
-                  color: expiryFormError.min_quantityunopened ? 'red' : 'gray',
-                  fontSize: '12px',
-                },
-              }}
+              name='is_opened'
             />
           </Grid>
         </Grid>
@@ -256,16 +240,15 @@ AddExpiryForm.propTypes = {
     name: PropTypes.bool.isRequired,
     type: PropTypes.bool.isRequired,
     unit: PropTypes.bool.isRequired,
-    image: PropTypes.bool.isRequired,
+    imgpic: PropTypes.bool.isRequired,
     expiry: PropTypes.arrayOf(
       PropTypes.shape({
-        date: PropTypes.bool.isRequired,
-        total_quantityopen: PropTypes.bool.isRequired,
-        total_quantityunopened: PropTypes.bool.isRequired,
+        expiry_date: PropTypes.bool.isRequired,
+        quantity: PropTypes.bool.isRequired,
       }),
     ).isRequired,
-    min_quantityopen: PropTypes.bool.isRequired,
-    min_quantityunopened: PropTypes.bool.isRequired,
+    min_quantity: PropTypes.bool.isRequired,
+    is_opened: PropTypes.bool.isRequired,
   }).isRequired,
   setExpiryFormData: PropTypes.func.isRequired,
   setExpiryFormError: PropTypes.func.isRequired,

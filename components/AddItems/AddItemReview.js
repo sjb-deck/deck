@@ -121,12 +121,12 @@ export const AddItemReview = ({ itemFormData }) => {
               fontWeight: 'bold',
             }}
           >
-            Total Quantity (Open):
+            Total Quantity:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {itemFormData.total_quantityopen}
+            {itemFormData.total_quantity}
           </Typography>
         </div>
         <div
@@ -144,12 +144,12 @@ export const AddItemReview = ({ itemFormData }) => {
               fontWeight: 'bold',
             }}
           >
-            Total Quantity (Unopened):
+            Min Quantity:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {itemFormData.total_quantityunopened}
+            {itemFormData.min_quantity}
           </Typography>
         </div>
         <div
@@ -167,35 +167,12 @@ export const AddItemReview = ({ itemFormData }) => {
               fontWeight: 'bold',
             }}
           >
-            Min Quantity (Open):
+            Item Opened:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {itemFormData.min_quantityopen}
-          </Typography>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '10px',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: '14px',
-              lineHeight: '1.5',
-              textAlign: 'left',
-              fontWeight: 'bold',
-            }}
-          >
-            Min Quantity (Unopened):
-          </Typography>
-          <Typography
-            sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
-          >
-            {itemFormData.min_quantityunopened}
+            {itemFormData.is_opened ? 'Yes' : 'No'}
           </Typography>
         </div>
       </div>

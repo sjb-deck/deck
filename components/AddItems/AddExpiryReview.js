@@ -141,7 +141,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
                       textAlign: 'right',
                     }}
                   >
-                    {item.date}
+                    {item.expiry_date}
                   </Typography>
                 </div>
                 <div
@@ -159,7 +159,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
                       fontWeight: 'bold',
                     }}
                   >
-                    Total Quantity (Open):
+                    Quantity:
                   </Typography>
                   <Typography
                     sx={{
@@ -168,34 +168,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
                       textAlign: 'right',
                     }}
                   >
-                    {item.total_quantityopen}
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    marginBottom: '2px',
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                      textAlign: 'left',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Total Quantity (Unopened):
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                      textAlign: 'right',
-                    }}
-                  >
-                    {item.total_quantityunopened}
+                    {item.quantity}
                   </Typography>
                 </div>
               </Box>
@@ -218,12 +191,12 @@ export const AddExpiryReview = ({ expiryFormData }) => {
               fontWeight: 'bold',
             }}
           >
-            Min Quantity (Open):
+            Min Quantity:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {expiryFormData.min_quantityopen}
+            {expiryFormData.min_quantity}
           </Typography>
         </div>
         <div
@@ -241,12 +214,12 @@ export const AddExpiryReview = ({ expiryFormData }) => {
               fontWeight: 'bold',
             }}
           >
-            Min Quantity (Unopened):
+            Item Opened:
           </Typography>
           <Typography
             sx={{ fontSize: '14px', lineHeight: '1.5', textAlign: 'right' }}
           >
-            {expiryFormData.min_quantityunopened}
+            {expiryFormData.is_opened ? 'Yes' : 'No'}
           </Typography>
         </div>
       </div>

@@ -73,7 +73,7 @@ class ItemExpirySerializer(serializers.ModelSerializer):
 
 
 class ItemExpiryWithItemSerializer(serializers.ModelSerializer):
-    item = ItemInfoSerializer()
+    item = ItemInfoSerializer(required=False)
 
     class Meta:
         model = ItemExpiry

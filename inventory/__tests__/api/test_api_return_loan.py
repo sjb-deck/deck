@@ -156,6 +156,8 @@ class TestApiLoanReturnViews(TestCase):
         self.outstanding_loan.save()
         self.check_no_change()
 
+    # TODO: test return loan order with more than qty
+
     def check_no_change(self):
         # check that order is not updated
         updated_order = LoanOrder.objects.get(id=self.outstanding_loan.id)

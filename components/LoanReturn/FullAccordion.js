@@ -9,9 +9,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import AccordionItem from './AccordionItem';
-import AccordionSummaryContent from './AccordionSummaryContent';
-import ReturnForm from './ReturnForm';
+import { AccordionItem } from './AccordionItem';
+import { AccordionSummaryContent } from './AccordionSummaryContent';
+import { ReturnForm } from './ReturnForm';
 
 export const FullAccordion = ({ index, loan }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
@@ -41,8 +41,8 @@ export const FullAccordion = ({ index, loan }) => {
         >
           <AccordionSummaryContent
             index={index}
-            orderDate={loan.order_date}
-            returnDate={loan.return_date}
+            orderDate={loan.date}
+            returnDate={loan.due_date ? loan.due_date : 'N/A'}
             loaneeName={loan.loanee_name}
           />
         </AccordionSummary>
@@ -75,7 +75,7 @@ export const FullAccordion = ({ index, loan }) => {
       </Accordion>
       <ReturnForm
         items={loan.order_items}
-        id={loan.order_id}
+        id={loan.id}
         open={openDialog}
         onClose={handleDialogClose}
       />
@@ -84,22 +84,12 @@ export const FullAccordion = ({ index, loan }) => {
 };
 
 FullAccordion.propTypes = {
-  index: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired, // Example: You can specify the expected type and requirements for 'index'
   loan: PropTypes.shape({
-    order_id: PropTypes.number.isRequired,
-    order_date: PropTypes.string.isRequired,
-    return_date: PropTypes.string.isRequired,
-    loanee_name: PropTypes.string.isRequired,
-    order_items: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        expiry: PropTypes.string,
-        type: PropTypes.string,
-        quantity_opened: PropTypes.number.isRequired,
-        quantity_unopened: PropTypes.number.isRequired,
-        unit: PropTypes.string.isRequired,
-        imgpic: PropTypes.string,
-      }),
-    ).isRequired,
+    id: PropTypes.number.isRequired, // Add this line for 'id'
+    date: PropTypes.string.isRequired, // Example: You can specify the expected type and requirements for 'date'
+    due_date: PropTypes.string, // Example: You can specify the expected type for 'return_date' (optional)
+    loanee_name: PropTypes.string.isRequired, // Example: You can specify the expected type and requirements for 'loanee_name'
+    order_items: PropTypes.array.isRequired, // This line specifies that 'order_items' should be an array but doesn't specify its structure
   }).isRequired,
 };

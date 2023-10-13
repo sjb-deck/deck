@@ -3,7 +3,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export const DrawerContent = ({ item }) => {
+export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const isPC = useMediaQuery('(min-width: 1000px)');
 
@@ -85,7 +85,7 @@ export const DrawerContent = ({ item }) => {
           </Grid>
           <Grid item xs={6}>
             <Typography variant='body2' align='right'>
-              {item.expiry ? item.expiry : 'N/A'}
+              {itemExpiry ? itemExpiry : 'N/A'}
             </Typography>
           </Grid>
         </Grid>
@@ -167,12 +167,12 @@ export const DrawerContent = ({ item }) => {
         >
           <Grid item xs={9}>
             <Typography variant='body2' align='left'>
-              Opened Qty Loaned:
+              Qty Loaned:
             </Typography>
           </Grid>
           <Grid item xs={3}>
             <Typography variant='body2' align='right'>
-              {item.quantity_opened}
+              {orderedQuantity}
             </Typography>
           </Grid>
         </Grid>
@@ -196,7 +196,7 @@ export const DrawerContent = ({ item }) => {
         >
           <Grid item xs={9}>
             <Typography variant='body2' align='left'>
-              Unopened Qty Loaned:
+              Is Opened:
             </Typography>
           </Grid>
           <Grid item xs={3}>
@@ -205,7 +205,7 @@ export const DrawerContent = ({ item }) => {
               align='right'
               sx={{ marginBottom: '5px' }}
             >
-              {item.quantity_unopened}
+              {item.is_opened ? 'Yes' : 'No'}
             </Typography>
           </Grid>
         </Grid>
@@ -216,12 +216,12 @@ export const DrawerContent = ({ item }) => {
 
 DrawerContent.propTypes = {
   item: PropTypes.shape({
+    imgpic: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    expiry: PropTypes.string,
-    type: PropTypes.string,
-    quantity_opened: PropTypes.number.isRequired,
-    quantity_unopened: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
     unit: PropTypes.string.isRequired,
-    imgpic: PropTypes.string,
+    is_opened: PropTypes.bool.isRequired,
   }).isRequired,
+  itemExpiry: PropTypes.string,
+  orderedQuantity: PropTypes.number.isRequired,
 };

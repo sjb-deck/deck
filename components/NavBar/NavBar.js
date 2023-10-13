@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -22,10 +23,13 @@ import React from 'react';
 import {
   URL_INV_ADD_ITEM,
   URL_INV_CART,
+  URL_INV_INDEX,
+  URL_INV_ITEMS,
   URL_INV_VIEW_ITEM_LIST,
   URL_INV_VIEW_ORDERS_LOANS,
   URL_LOGOUT,
   URL_PROFILE,
+  URL_INV_LOAN_RETURN,
   UserPropType,
 } from '../../globals';
 import { ColorModeContext } from '../Themes';
@@ -54,6 +58,11 @@ export const navItems = [
   },
 ];
 export const actionItems = [
+  {
+    title: 'View Loans',
+    icon: <KeyboardReturnIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_LOAN_RETURN,
+  },
   {
     title: 'Add new item',
     icon: <AddIcon style={{ marginRight: 5 }} />,
@@ -90,6 +99,15 @@ export const NavBar = ({ user }) => {
     setAnchorEl(null);
   };
 
+  const getIconClickUrl = () => {
+    const currentUrl = window.location.pathname;
+    let target = URL_INV_ITEMS;
+    if (currentUrl == URL_INV_ITEMS || currentUrl == URL_INV_LOAN_RETURN) {
+      target = URL_INV_INDEX;
+    }
+    return target;
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar component='nav'>
@@ -99,14 +117,14 @@ export const NavBar = ({ user }) => {
             style={{ marginRight: 10, cursor: 'pointer' }}
             src='/static/inventory/img/logo.png'
             alt='logo'
-            onClick={() => history.back()}
+            onClick={() => (window.location.href = getIconClickUrl())}
           />
           <Typography
             style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
-            onClick={() => history.back()}
+            onClick={() => (window.location.href = getIconClickUrl())}
           >
             IMS
           </Typography>
