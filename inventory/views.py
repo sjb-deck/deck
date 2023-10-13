@@ -1,7 +1,7 @@
 import json
 import csv
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.db import DatabaseError, transaction
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -218,31 +218,44 @@ def export_items_csv(request):
 def import_items_csv(request):
     reader = csv.reader(request.FILES["file"].read().decode("utf-8-sig").splitlines())
     errors = []
-    for idx, row in enumerate(reader):
-        try:
-            upl = {
-                "name": row[0],
-                "type": row[1],
-                "unit": row[2],
-                "total_quantity": row[3],
-                "is_opened": row[4].lower() == "true",
-                "expiry_dates": [
-                    {
-                        "expiry_date": row[5],
-                        "quantity": row[6],
-                        "archived": row[7],
+    next(reader)
+    try:
+        with transaction.atomic():
+            for idx, row in enumerate(reader):
+                try:
+                    upl = {
+                        "name": row[0],
+                        "type": row[1],
+                        "unit": row[2],
+                        "total_quantity": row[3],
+                        "is_opened": row[4].lower() == "true",
+                        "expiry_dates": [
+                            {
+                                "expiry_date": row[5],
+                                "quantity": row[6],
+                                "archived": row[7],
+                            }
+                        ],
                     }
-                ],
-            }
-            item = ItemSerializer(data=upl)
-            if item.is_valid():
-                item.save()
-            else:
-                errors.append("Row {}: {}".format(idx + 1, item.errors))
-        except Exception as e:
-            errors.append("Row {}: {}".format(idx + 1, str(e)))
-
-    if errors:
+                    item = ItemSerializer(data=upl)
+                    current_item = Item.objects.filter(name=upl["name"])
+                    if current_item.exists():
+                        new_expiry = {
+                            "item": current_item.first().id,
+                            "expiry_date": row[5],
+                            "quantity": row[3],
+                        }
+                        expiry_serializer = AddItemExpirySerializer(data=new_expiry)
+                        if expiry_serializer.is_valid(raise_exception=True):
+                            expiry_serializer.save()
+                    elif item.is_valid(raise_exception=True):
+                        item.save()
+                except Exception as e:
+                    errors.append("Row {}: {}".format(idx + 1, str(e)))
+            if errors:
+                # Forces a rollback for atomicity
+                raise DatabaseError
+    except:
         return Response({"message": errors}, status=400)
 
     return Response({"message": "Success"}, status=201)

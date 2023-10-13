@@ -21,7 +21,6 @@ export const useImportItems = (options) => {
     async (file) => {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('csrfmiddlewaretoken', CSRF_TOKEN);
       const response = await request.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

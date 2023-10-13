@@ -21,22 +21,21 @@ const ItemTable = ({ items }) => {
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
   const [searchTerm, setSearchTerm] = useState('');
   const [types, setTypes] = useState([]);
-  const [currentType, setCurrentType] = useState('');
+  const [currentType, setCurrentType] = useState('All');
 
   useEffect(() => {
-    const tmpTypes = [];
+    const tmpTypes = ['All'];
     items.map(
       (item) => !tmpTypes.includes(item.type) && tmpTypes.push(item.type),
     );
     setTypes(tmpTypes);
-    if (tmpTypes) setCurrentType(tmpTypes[0]);
   }, [items]);
 
   useEffect(() => {
     const newItems = items.filter(
       (item) =>
         (!searchTerm || item.name.includes(searchTerm.toLowerCase())) &&
-        (!currentType || currentType === item.type),
+        (currentType === 'All' || currentType === item.type),
     );
     setItemsToDisplay(newItems);
   }, [searchTerm, types, currentType, items]);
@@ -94,7 +93,10 @@ const ItemTable = ({ items }) => {
               {itemsToDisplay.map((item) =>
                 item.expiry_dates.map((expiry) => {
                   return (
-                    <TableRow key={expiry.id}>
+                    <TableRow
+                      key={expiry.id}
+                      data-testid={`item-row-${expiry.id}`}
+                    >
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.type}</TableCell>
                       <TableCell>{expiry.expiry_date ?? 'None'}</TableCell>

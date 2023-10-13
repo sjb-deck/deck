@@ -6,7 +6,7 @@ import React, { useContext, useState } from 'react';
 import { useImportItems } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';
 
-export const ImportModal = ({ open, handleClose }) => {
+export const ImportModal = ({ open, setOpen }) => {
   const [file, setFile] = useState(null);
   const { mutate } = useImportItems();
   const queryClient = useQueryClient();
@@ -18,7 +18,7 @@ export const ImportModal = ({ open, handleClose }) => {
           setAlert('success', 'Items created successfully!', true);
           queryClient.invalidateQueries('items');
           setFile(null);
-          handleClose();
+          setOpen(false);
         },
       });
     }
@@ -29,7 +29,7 @@ export const ImportModal = ({ open, handleClose }) => {
       aria-labelledby='keep-mounted-modal-title'
       aria-describedby='keep-mounted-modal-description'
       open={open}
-      onClose={handleClose}
+      onClose={() => setOpen(false)}
     >
       <Fade in={open}>
         <Box
@@ -56,10 +56,11 @@ export const ImportModal = ({ open, handleClose }) => {
             </span>
             <input
               type='file'
+              data-testid='csv-input'
               accept='.csv'
               onChange={(e) => setFile(e.target.files[0])}
             />
-            <Button onClick={onImportClick}>Import</Button>
+            <Button onClick={onImportClick}>Import CSV</Button>
           </Stack>
         </Box>
       </Fade>
@@ -69,5 +70,5 @@ export const ImportModal = ({ open, handleClose }) => {
 
 ImportModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };
