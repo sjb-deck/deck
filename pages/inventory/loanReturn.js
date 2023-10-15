@@ -13,7 +13,7 @@ import {
 import '../../inventory/src/scss/inventoryBase.scss';
 import { useUser, useLoans } from '../../hooks/queries';
 
-const LoanReturn = () => {
+export const LoanReturn = () => {
   const { data: user, isLoading: userLoading } = useUser();
   const { data: loans, isLoading: loansLoading } = useLoans();
 
@@ -21,14 +21,14 @@ const LoanReturn = () => {
     return <LoadingSpinner />;
   }
 
-  if (loans.length === 0) {
+  if (!loans || loans.length === 0) {
     return (
       <Theme>
         <NavBar user={user} />
         <Stack justifyContent='center' alignItems='center'>
-          <Typography className='nav-margin-compensate' variant='h1'>
-            No active loans
-          </Typography>
+          <div className='nav-margin-compensate'>
+            <Typography variant='h1'>No active loans</Typography>
+          </div>
         </Stack>
       </Theme>
     );
@@ -64,5 +64,3 @@ const LoanReturn = () => {
     </Theme>
   );
 };
-
-export default LoanReturn;
