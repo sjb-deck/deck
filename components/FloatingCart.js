@@ -27,6 +27,7 @@ export const FloatingCart = () => {
         padding: '6px',
         height: '60px',
         width: '60px',
+        zIndex: 1000,
       }}
     >
       <Badge

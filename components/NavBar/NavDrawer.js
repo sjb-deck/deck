@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 import { URL_LOGOUT, URL_PROFILE, UserPropType } from '../../globals/globals';
+import { CartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
 import { UserAvatar } from '../UserAvatar';
 
@@ -27,6 +28,7 @@ import { actionItems, navItems } from './NavBar';
 
 export const NavDrawer = ({ user }) => {
   const theme = useTheme();
+  const { cartItems } = React.useContext(CartContext);
   const colorMode = React.useContext(ColorModeContext);
 
   return (
@@ -87,7 +89,7 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {navItems.map((item, index) => (
+        {navItems(0, cartItems.length).map((item, index) => (
           <ListItem key={index} disablePadding>
             <Button
               fullWidth

@@ -17,7 +17,7 @@ export const exampleItem = {
   name: 'Scissors',
   type: 'General',
   unit: 'pair',
-  imgpic: '/uploaded/item_img/example.png',
+  imgpic: '',
   total_quantity: 2,
   min_quantity: 0,
 };

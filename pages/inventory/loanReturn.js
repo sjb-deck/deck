@@ -3,7 +3,13 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import { FullAccordion, LoadingSpinner, NavBar, Theme } from '../../components';
+import {
+  Footer,
+  FullAccordion,
+  LoadingSpinner,
+  NavBar,
+  Theme,
+} from '../../components';
 import '../../inventory/src/scss/inventoryBase.scss';
 import { useUser, useLoans } from '../../hooks/queries';
 
@@ -32,12 +38,11 @@ const LoanReturn = () => {
     <Theme>
       <NavBar user={user} />
       <Stack
+        className='nav-margin-compensate'
         alignItems='center'
-        justifyContent='center'
         spacing={3}
         width='100%'
-        position='absolute'
-        top='80px'
+        minHeight={'100vh'}
       >
         <Typography variant='h4'>Loan Return</Typography>
         <Box
@@ -55,6 +60,7 @@ const LoanReturn = () => {
           ))}
         </Box>
       </Stack>
+      <Footer />
     </Theme>
   );
 };

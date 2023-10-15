@@ -15,3 +15,4 @@ export * from './SnackBarAlerts';
 export * from './Themes';
 export * from './UserAvatar';
 export * from './Receipt';
+export * from './ErrorMessage';

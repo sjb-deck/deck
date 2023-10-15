@@ -22,6 +22,7 @@ export const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
+  const [searchTerm, setSearchTerm] = useState('');
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -40,44 +41,24 @@ export const ItemIndex = () => {
     if (!items) return;
     const newItems = items.filter(
       (item) =>
-        selectedFilter.includes('All') || selectedFilter.includes(item.type),
-    );
-    setItemsToDisplay(newItems);
-  }, [items, selectedFilter]);
-
-  const searchCallback = (searchTerm) => {
-    const newItems = items.filter(
-      (item) =>
         (!searchTerm ||
           item.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (selectedFilter.includes('All') || selectedFilter.includes(item.type)),
     );
     setItemsToDisplay(newItems);
-  };
+  }, [items, selectedFilter, searchTerm]);
 
   return (
     <>
       <NavBar user={userData} />
-      <div
+      <Stack
         className='nav-margin-compensate'
-        style={{ display: 'flex', justifyContent: 'center' }}
+        spacing={2}
+        sx={{ alignItems: 'center' }}
       >
-        {items ? (
-          <SearchBar
-            items={items}
-            selectedFilter={selectedFilter}
-            callback={searchCallback}
-          />
-        ) : (
-          <Skeleton>
-            <SearchBar items={[exampleItem]} selectedFilter={selectedFilter} />
-          </Skeleton>
-        )}
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+        <SearchBar callback={setSearchTerm} />
         <SearchFilter onFilterChange={handleFilterChange} />
-      </div>
+      </Stack>
 
       <Stack
         direction='column'

@@ -32,10 +32,12 @@ import {
   URL_INV_LOAN_RETURN,
   UserPropType,
 } from '../../globals';
+import { CartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
 import { UserAvatar } from '../UserAvatar';
 
 import { NavDrawer } from './NavDrawer';
+import { StyledBadge } from './styled';
 
 /**
  * A React component that renders the NavBar
@@ -45,15 +47,24 @@ import { NavDrawer } from './NavDrawer';
  */
 
 const drawerWidth = 240;
-export const navItems = [
+
+export const navItems = (notiCount, cartCount) => [
   {
     title: 'Alerts',
-    icon: <NotificationsIcon style={{ marginRight: 5 }} />,
+    icon: (
+      <StyledBadge badgeContent={notiCount} color='error'>
+        <NotificationsIcon style={{ marginRight: 5 }} />
+      </StyledBadge>
+    ),
     link: '#',
   },
   {
     title: 'Cart',
-    icon: <ShoppingCartIcon style={{ marginRight: 5 }} />,
+    icon: (
+      <StyledBadge badgeContent={cartCount} color='error'>
+        <ShoppingCartIcon style={{ marginRight: 5 }} />
+      </StyledBadge>
+    ),
     link: URL_INV_CART,
   },
 ];
@@ -82,6 +93,7 @@ export const actionItems = [
 
 export const NavBar = ({ user }) => {
   const theme = useTheme();
+  const { cartItems } = React.useContext(CartContext);
   const colorMode = React.useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -146,7 +158,7 @@ export const NavBar = ({ user }) => {
               spacing: 2,
             }}
           >
-            {navItems.map((item, index) => (
+            {navItems(0, cartItems.length).map((item, index) => (
               <Button
                 color='inherit'
                 aria-label={item.title}

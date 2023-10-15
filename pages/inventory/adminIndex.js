@@ -1,43 +1,24 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import {
-  Footer,
-  LoadingSpinner,
-  LoanOrderList,
-  NavBar,
-  OrderList,
-  SnackBarAlerts,
-} from '../../components';
+import { Footer, LoanOrderList, NavBar, OrderList } from '../../components';
 import { useUser } from '../../hooks/queries';
-import { useOrders } from '../../hooks/queries/useOrders';
 import '../../inventory/src/scss/inventoryBase.scss';
 
-const AdminIndex = () => {
-  const { data, isLoading: dataLoading, error: dataError } = useOrders();
-
+export const AdminIndex = () => {
   const { data: user, loading: userLoading, error: userError } = useUser();
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [view, setView] = useState('orders');
   const [userData, setUserData] = useState(user);
 
   useEffect(() => {
-    if (dataError || userError) {
-      setSnackbarOpen(true);
-    }
     if (!userLoading && !userError) {
       setUserData(user);
     }
-  }, [dataLoading, userLoading, dataError, userError, user]);
+  }, [userLoading, userError, user]);
 
   return (
     <>
       <NavBar user={userData} />
-      <SnackBarAlerts
-        open={snackbarOpen}
-        message={dataError?.message || userError?.message}
-      />
       <Box
         sx={{
           display: 'flex',
@@ -80,20 +61,9 @@ const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {dataLoading ? (
-          <LoadingSpinner />
-        ) : (
-          data &&
-          (view === 'orders' ? (
-            <OrderList orders={data.orders} />
-          ) : (
-            <LoanOrderList loanOrders={data.loan_orders} />
-          ))
-        )}
+        {view === 'orders' ? <OrderList /> : <LoanOrderList />}
       </Box>
       <Footer />
     </>
   );
 };
-
-export default AdminIndex;

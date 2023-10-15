@@ -10,6 +10,8 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { ReceiptDetails } from './ReceiptDetails';
 import { ReceiptItem } from './ReceiptItem';
 
+import '../../inventory/src/scss/inventoryBase.scss';
+
 const getOrderInfo = (orderData) => {
   // eslint-disable-next-line no-unused-vars
   const { id, order_items: orderItems, user, ...orderInfo } = orderData;
@@ -48,6 +50,7 @@ export function Receipt({ orderId }) {
 
   return !isLoading && !isError ? (
     <Stack
+      className='nav-margin-compensate'
       spacing={2}
       sx={{
         justifyContent: 'center',

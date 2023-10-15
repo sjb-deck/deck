@@ -3,7 +3,6 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { Box, Divider, Link, Paper, Typography } from '@mui/material';
-import { PropTypes } from 'prop-types';
 import React from 'react';
 
 const footerPadding = 4;
@@ -26,10 +25,6 @@ const SectionHeader = ({ text }) => {
   );
 };
 
-SectionHeader.propTypes = {
-  text: PropTypes.string.isRequired,
-};
-
 const CustomLink = ({ text, link }) => {
   return (
     <Typography>
@@ -45,11 +40,6 @@ const CustomLink = ({ text, link }) => {
   );
 };
 
-CustomLink.propTypes = {
-  text: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
-};
-
 /**
  * A React component that is renders the footer
  * ie. the container at the very bottom of the page
@@ -57,7 +47,7 @@ CustomLink.propTypes = {
  */
 export const Footer = () => {
   return (
-    <Box component='footer'>
+    <Box component='footer' position={'absolute'}>
       <Paper
         sx={{
           mt: 3,
@@ -89,7 +79,7 @@ export const Footer = () => {
 
           <Box sx={{ flex: 1, p: sectionPadding }}>
             <SectionHeader text='Categories' />
-            <CustomLink text='Items' link='https://www.facebook.com/' />
+            <CustomLink text='Items' link='/inventory/items' />
             <CustomLink text='Kits' link='https://www.facebook.com/' />
             <CustomLink text='Alerts' link='https://www.facebook.com/' />
           </Box>
@@ -97,7 +87,7 @@ export const Footer = () => {
           <Box sx={{ flex: 1, p: sectionPadding }}>
             <SectionHeader text='Quick Links' />
             <CustomLink text='Portal' link='https://nhhs-sjb.org/' />
-            <CustomLink text='Github' link='https://www.facebook.com/' />
+            <CustomLink text='Github' link='https://github.com/sjb-deck/deck' />
           </Box>
         </Box>
 
