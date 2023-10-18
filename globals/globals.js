@@ -13,6 +13,7 @@ export const URL_INV_VIEW_ORDERS_LOANS = '/inventory/admin';
 export const URL_INV_VIEW_ORDERS = '/inventory/view_orders';
 export const URL_INV_VIEW_LOANS = '/inventory/view_loans';
 export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
+export const URL_INV_VIEW_ITEM_LIST = '/inventory/item_list';
 export const URL_ORDER_RECEIPT = '/inventory/receipt';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
@@ -155,6 +156,8 @@ export const INV_API_ORDER_URL = `${INV_API_BASE_URL}/orders/get/:id`;
 export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
 export const INV_API_LOANS_URL = `${INV_API_BASE_URL}/loans`;
 export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
+export const INV_API_IMPORT_ITEMS_URL = `${INV_API_BASE_URL}/import_items`;
+export const INV_API_EXPORT_ITEMS_URL = `${INV_API_BASE_URL}/export_items`;
 
 export const ORDER_REASONS = {
   item_restock: 'Restock',

@@ -25,7 +25,7 @@ import {
   URL_INV_CART,
   URL_INV_INDEX,
   URL_INV_ITEMS,
-  URL_INV_VIEW_ITEM,
+  URL_INV_VIEW_ITEM_LIST,
   URL_INV_VIEW_ORDERS_LOANS,
   URL_LOGOUT,
   URL_PROFILE,
@@ -69,14 +69,14 @@ export const actionItems = [
     link: URL_INV_ADD_ITEM,
   },
   {
-    title: 'View Item Data',
-    icon: <TextSnippet style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_ITEM,
-  },
-  {
     title: 'View orders & loans',
     icon: <LocalMallIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS_LOANS,
+  },
+  {
+    title: 'View Item List',
+    icon: <TextSnippet style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ITEM_LIST,
   },
 ];
 

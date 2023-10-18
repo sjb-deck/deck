@@ -16,4 +16,6 @@ urlpatterns = [
     path("add_expiry", views.create_new_expiry, name="create_new_expiry"),
     path("loan_return_post", views.loan_return_post, name="loan_return_post"),
     path("revert_order", views.revert_order, name="revert_order"),
+    path("export_items", views.export_items_csv, name="export_items"),
+    path("import_items", views.import_items_csv, name="import_items"),
 ]
