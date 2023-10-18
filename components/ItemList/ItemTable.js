@@ -2,7 +2,9 @@ import {
   Box,
   MenuItem,
   Paper,
+  Pagination,
   Select,
+  Skeleton,
   Stack,
   Table,
   TableBody,
@@ -15,14 +17,16 @@ import {
 import { PropTypes } from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { ItemPropType } from '../../globals';
+import { ItemPropType, ORDERS_PER_PAGE } from '../../globals';
 
 const ItemTable = ({ items }) => {
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
   const [searchTerm, setSearchTerm] = useState('');
   const [types, setTypes] = useState([]);
   const [currentType, setCurrentType] = useState('All');
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+  const endIndex = startIndex + ORDERS_PER_PAGE;
   useEffect(() => {
     const tmpTypes = ['All'];
     items.map(
@@ -40,6 +44,10 @@ const ItemTable = ({ items }) => {
     setItemsToDisplay(newItems);
   }, [searchTerm, types, currentType, items]);
 
+  const handlePageChange = (_, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <Box
       sx={{
@@ -50,7 +58,7 @@ const ItemTable = ({ items }) => {
         },
       }}
     >
-      <Stack>
+      <Stack spacing={3} alignItems={'center'}>
         <Box
           sx={{
             width: 1,
@@ -90,26 +98,30 @@ const ItemTable = ({ items }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {itemsToDisplay.map((item) =>
-                item.expiry_dates.map((expiry) => {
-                  return (
-                    <TableRow
-                      key={expiry.id}
-                      data-testid={`item-row-${expiry.id}`}
-                    >
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.type}</TableCell>
-                      <TableCell>{expiry.expiry_date ?? 'None'}</TableCell>
-                      <TableCell>{item.unit}</TableCell>
-                      <TableCell>{item.total_quantity}</TableCell>
-                      <TableCell>{item.is_opened ? 'Yes' : 'No'}</TableCell>
-                    </TableRow>
-                  );
-                }),
-              )}
+              {itemsToDisplay.slice(startIndex, endIndex).map((item) => (
+                <TableRow key={item.id} data-testid={`item-row-${item.id}`}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.type}</TableCell>
+                  <TableCell>{item.expiry_date ?? 'None'}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.is_opened ? 'Yes' : 'No'}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {items ? (
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(items.length / ORDERS_PER_PAGE)}
+            onChange={handlePageChange}
+          />
+        ) : (
+          <Skeleton>
+            <Pagination />
+          </Skeleton>
+        )}
       </Stack>
     </Box>
   );

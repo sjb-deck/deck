@@ -2,11 +2,11 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import ItemTable from '../../../components/ItemList/ItemTable';
-import { mockItemList } from '../../../mocks/itemList';
+import { mockExpiryList } from '../../../mocks/itemList';
 
 describe('Item Table', () => {
   it('should render the Item Table properly', async () => {
-    render(<ItemTable items={mockItemList} />);
+    render(<ItemTable items={mockExpiryList} />);
 
     const tableHeadings = [
       'Item Name',
@@ -27,7 +27,7 @@ describe('Item Table', () => {
       'Misc',
       '2023-08-19',
       'units',
-      '86',
+      '2',
       'No',
     ];
 
@@ -41,7 +41,7 @@ describe('Item Table', () => {
   });
 
   it('Search filter works', async () => {
-    render(<ItemTable items={mockItemList} />);
+    render(<ItemTable items={mockExpiryList} />);
 
     const searchInput = screen.getByLabelText('Search');
     const selectInput = screen.getByTestId('type-select');

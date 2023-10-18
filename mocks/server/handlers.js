@@ -8,7 +8,7 @@ import {
   INV_API_ORDERS_URL,
   INV_API_USER_URL,
 } from '../../globals';
-import { mockItemList, mockItems, mockOrders, mockUser } from '../index';
+import { mockItemList, mockOrders, mockUser } from '../index';
 
 export const handlers = [
   rest.get(INV_API_USER_URL, (req, res, ctx) => {
@@ -16,7 +16,7 @@ export const handlers = [
   }),
 
   rest.get(INV_API_ITEMS_URL, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(mockItems));
+    return res(ctx.status(200), ctx.json(mockItemList));
   }),
 
   rest.get(INV_API_ORDERS_URL, (req, res, ctx) => {

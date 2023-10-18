@@ -21,6 +21,7 @@ export const ItemList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [userData, setUserData] = useState(user);
   const [modalOpen, setModalOpen] = useState(false);
+  const [expiryDates, setExpiryDates] = useState([]);
 
   useEffect(() => {
     if (userError || itemsError) {
@@ -30,6 +31,20 @@ export const ItemList = () => {
       setUserData(user);
     }
   }, [userLoading, userError, user, itemsError]);
+
+  useEffect(() => {
+    if (!items) return;
+    const tmpExpiryDates = [];
+    items.map((item) =>
+      item.expiry_dates.map((expiry) => {
+        tmpExpiryDates.push({
+          ...item,
+          ...expiry,
+        });
+      }),
+    );
+    setExpiryDates(tmpExpiryDates);
+  }, [items]);
 
   return (
     <>
@@ -69,7 +84,7 @@ export const ItemList = () => {
         {itemsLoading ? (
           <LoadingSpinner />
         ) : (
-          items && <ItemTable items={items} />
+          expiryDates && <ItemTable items={expiryDates} />
         )}
       </Box>
       <Footer />
