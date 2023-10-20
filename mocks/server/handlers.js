@@ -2,12 +2,13 @@
 import { rest } from 'msw';
 
 import {
+  INV_API_EXPORT_ITEMS_URL,
+  INV_API_IMPORT_ITEMS_URL,
   INV_API_ITEMS_URL,
   INV_API_ORDERS_URL,
-  INV_API_SUBMIT_ORDER_URL,
   INV_API_USER_URL,
 } from '../../globals';
-import { mockItems, mockOrders, mockUser } from '../index';
+import { mockItemList, mockOrders, mockUser } from '../index';
 
 export const handlers = [
   rest.get(INV_API_USER_URL, (req, res, ctx) => {
@@ -15,7 +16,7 @@ export const handlers = [
   }),
 
   rest.get(INV_API_ITEMS_URL, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(mockItems));
+    return res(ctx.status(200), ctx.json(mockItemList));
   }),
 
   rest.get(INV_API_ORDERS_URL, (req, res, ctx) => {
@@ -26,12 +27,16 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(orders));
   }),
 
-  rest.post(INV_API_SUBMIT_ORDER_URL, (req, res, ctx) => {
+  rest.post(INV_API_IMPORT_ITEMS_URL, (req, res, ctx) => {
+    return res(ctx.status(201), ctx.json(mockItemList));
+  }),
+
+  rest.get(INV_API_EXPORT_ITEMS_URL, (req, res, ctx) => {
     return res(
       ctx.status(200),
-      ctx.json({
-        // Mocked response after submitting an order
-      }),
+      ctx.set('Content-Disposition', 'attachment; filename=items.csv'),
+      ctx.set('Content-Type', 'text/csv'),
+      ctx.json([]),
     );
   }),
 ];
