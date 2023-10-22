@@ -15,6 +15,7 @@ import {
   AddExpiryReview,
   AddItemForm,
   AddItemReview,
+  Footer,
   ItemPotentialMatchDialog,
   NavBar,
   SnackBarAlerts,
@@ -406,7 +407,7 @@ export const AddItem = () => {
         message={dataError?.message || userError?.message}
       />
       <NavBar user={userData} />
-      <div style={{ overflowY: 'auto', maxHeight: '90vh' }}>
+      <div style={{ minHeight: '100vh' }}>
         <Box
           sx={{ maxWidth: 400, marginTop: 12, marginLeft: 4, marginRight: 4 }}
         >
@@ -449,6 +450,7 @@ export const AddItem = () => {
           </Stepper>
         </Box>
       </div>
+      <Footer />
     </Theme>
   );
 };
