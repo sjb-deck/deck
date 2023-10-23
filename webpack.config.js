@@ -7,14 +7,14 @@ const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 module.exports = {
   entry: {
     login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
-    inventoryBase: ['./inventory/src/scss/inventoryBase.scss'],
-    itemIndex: ['./inventory/src/js/itemIndex.js'],
-    cartIndex: ['./inventory/src/js/cartIndex.js'],
-    adminIndex: ['./inventory/src/js/adminIndex.js'],
-    addItem: ['./inventory/src/js/addItem.js'],
-    loanReturn: ['./inventory/src/js/loanReturn.js'],
-    orderReceipt: ['./inventory/src/js/orderReceipt.js'],
-    itemList: ['./inventory/src/js/itemList.js'],
+    inventoryBase: ['./inventory/src/globals/styles/inventoryBase.scss'],
+    itemIndex: ['./inventory/src/pages/render/itemIndex.js'],
+    cartIndex: ['./inventory/src/pages/render/cartIndex.js'],
+    adminIndex: ['./inventory/src/pages/render/adminIndex.js'],
+    addItem: ['./inventory/src/pages/render/addItem.js'],
+    loanReturn: ['./inventory/src/pages/render/loanReturn.js'],
+    orderReceipt: ['./inventory/src/pages/render/orderReceipt.js'],
+    itemList: ['./inventory/src/pages/render/itemList.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
