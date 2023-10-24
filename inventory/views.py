@@ -171,7 +171,7 @@ def revert_order(request):
     order_id = request.data
     try:
         if order_id is None:
-            return Response({"error": "Invalid request body"}, status=500)
+            return Response({"message": "Invalid request body"}, status=500)
         try:
             order = Order.objects.get(id=order_id)
             if order.reason == "loan":
@@ -181,9 +181,9 @@ def revert_order(request):
                 order.revert_order()
             return Response({"message": "Successfully reverted order"}, status=200)
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"message": str(e)}, status=500)
     except:
-        return Response({"error": "Something went wrong"}, status=500)
+        return Response({"message": "Something went wrong"}, status=500)
 
 
 @api_view(["GET"])
