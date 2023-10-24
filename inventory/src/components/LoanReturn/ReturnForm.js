@@ -119,6 +119,11 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
                       }
                       variant='standard'
                       error={errors[index].returnQuantity}
+                      helperText={
+                        errors[index].returnQuantity
+                          ? "Either the quantity is invalid or it's greater than the quantity borrowed"
+                          : ''
+                      }
                     />
                   </Grid>
                 </Grid>
