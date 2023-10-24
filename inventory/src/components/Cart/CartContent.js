@@ -155,8 +155,35 @@ export const CartContent = () => {
   if (isEmpty) {
     return (
       <Stack justifyContent='center' alignItems='center' minHeight={'100vh'}>
-        <div className='nav-margin-compensate'>
-          <Typography variant='h1'>{emptyCartMessage}</Typography>
+        <div
+          className='nav-margin-compensate'
+          style={{
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            width: '75%',
+          }}
+        >
+          <img
+            src='/static/inventory/img/emptycart.png'
+            alt='empty-cart'
+            style={{ width: '15vw', height: '15vw', marginBottom: '5vw' }}
+          />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginBottom: '5vw',
+            }}
+          >
+            <Typography variant='h3' gutterBottom>
+              I&apos;m Feeling Empty
+            </Typography>
+            <Typography variant='body'>{emptyCartMessage}</Typography>
+          </div>
         </div>
       </Stack>
     );
