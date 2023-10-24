@@ -52,7 +52,7 @@ export function Receipt({ orderId }) {
       className='nav-margin-compensate'
       spacing={2}
       sx={{
-        justifyContent: 'center',
+        justifyContent: 'start',
         alignItems: 'center',
         marginBottom: '100px',
         minHeight: '100vh',

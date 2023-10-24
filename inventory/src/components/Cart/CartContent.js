@@ -162,65 +162,74 @@ export const CartContent = () => {
     );
   }
 
-  return !isLoading ? (
+  return (
     <Stack
       className='nav-margin-compensate'
       spacing={3}
       padding={1}
       sx={{
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'start',
         width: '100%',
         marginBottom: '50px',
+        minHeight: '100vh',
       }}
     >
-      <Paper className='dynamic-width' style={{ padding: 20 }} elevation={3}>
-        <Stack justifyContent='center' alignItems='center' spacing={2}>
-          <Typography variant='h4' alignSelf='start'>
-            {cartState} Cart
-          </Typography>
-          <TextField
-            select
-            label={`${cartState} Options`}
-            fullWidth
-            value={formik.values.selectedOption}
-            onChange={(event) => setSelectedOption(event.target.value)}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <Paper
+            className='dynamic-width'
+            style={{ padding: 20 }}
+            elevation={3}
           >
-            {isWithdraw
-              ? withdrawOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))
-              : depositOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-          </TextField>
-          {formik.values.selectedOption &&
-            (isWithdraw
-              ? withdrawOptions.find(
-                  (option) => option.value === formik.values.selectedOption,
-                ).fields
-              : depositOptions.find(
-                  (option) => option.value === formik.values.selectedOption,
-                ).fields)}
-        </Stack>
-      </Paper>
-      <CartItems />
-      <LoadingButton
-        className='dynamic-width'
-        variant='contained'
-        onClick={formik.handleSubmit}
-        endIcon={<SendIcon />}
-        color={cartState === CART_ITEM_TYPE_WITHDRAW ? 'error' : 'success'}
-        sx={{ marginBottom: '20px' }}
-      >
-        Submit
-      </LoadingButton>
+            <Stack justifyContent='center' alignItems='center' spacing={2}>
+              <Typography variant='h4' alignSelf='start'>
+                {cartState} Cart
+              </Typography>
+              <TextField
+                select
+                label={`${cartState} Options`}
+                fullWidth
+                value={formik.values.selectedOption}
+                onChange={(event) => setSelectedOption(event.target.value)}
+              >
+                {isWithdraw
+                  ? withdrawOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))
+                  : depositOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+              </TextField>
+              {formik.values.selectedOption &&
+                (isWithdraw
+                  ? withdrawOptions.find(
+                      (option) => option.value === formik.values.selectedOption,
+                    ).fields
+                  : depositOptions.find(
+                      (option) => option.value === formik.values.selectedOption,
+                    ).fields)}
+            </Stack>
+          </Paper>
+          <CartItems />
+          <LoadingButton
+            className='dynamic-width'
+            variant='contained'
+            onClick={formik.handleSubmit}
+            endIcon={<SendIcon />}
+            color={cartState === CART_ITEM_TYPE_WITHDRAW ? 'error' : 'success'}
+            sx={{ marginBottom: '20px' }}
+          >
+            Submit
+          </LoadingButton>
+        </>
+      )}
     </Stack>
-  ) : (
-    <LoadingSpinner />
   );
 };
