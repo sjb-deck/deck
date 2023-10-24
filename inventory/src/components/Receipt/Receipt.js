@@ -47,7 +47,7 @@ const getOrderInfo = (orderData) => {
 export function Receipt({ orderId }) {
   const { data, isLoading, isError } = useOrder(orderId);
 
-  return !isLoading && !isError ? (
+  return (
     <Stack
       className='nav-margin-compensate'
       spacing={2}
@@ -55,22 +55,27 @@ export function Receipt({ orderId }) {
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: '100px',
+        minHeight: '100vh',
       }}
     >
-      <Box sx={{ mt: 20 }}>
-        <Typography variant='h4' align='center'>
-          Order {orderId} Confirmed!
-        </Typography>
-        <Typography variant='body1' align='center'>
-          View your order details below:
-        </Typography>
-      </Box>
-      <ReceiptDetails details={getOrderInfo(data)} />
-      {data.order_items.map((orderItem) => {
-        return <ReceiptItem key={orderItem.id} item={orderItem} />;
-      })}
+      {isLoading || isError ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <Box sx={{ mt: 20 }}>
+            <Typography variant='h4' align='center'>
+              Order {orderId} Confirmed!
+            </Typography>
+            <Typography variant='body1' align='center'>
+              View your order details below:
+            </Typography>
+          </Box>
+          <ReceiptDetails details={getOrderInfo(data)} />
+          {data.order_items.map((orderItem) => {
+            return <ReceiptItem key={orderItem.id} item={orderItem} />;
+          })}
+        </>
+      )}
     </Stack>
-  ) : (
-    <LoadingSpinner />
   );
 }

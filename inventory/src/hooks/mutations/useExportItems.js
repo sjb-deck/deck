@@ -11,8 +11,13 @@ export const useExportItems = (options) => {
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     onError: (error) => {
-      console.error(error.response.data.message);
-      setAlert('error', error.message, false);
+      console.error(error.response?.data?.message);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 

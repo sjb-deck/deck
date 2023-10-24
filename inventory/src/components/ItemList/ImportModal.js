@@ -14,7 +14,11 @@ export const ImportModal = ({ open, setOpen }) => {
     if (file) {
       mutate(file, {
         onSuccess: () => {
-          setAlert('success', 'Items created successfully!', true);
+          setAlert({
+            severity: 'success',
+            message: 'Successfully imported items!',
+            autoHide: true,
+          });
           queryClient.invalidateQueries('items');
           setFile(null);
           setOpen(false);

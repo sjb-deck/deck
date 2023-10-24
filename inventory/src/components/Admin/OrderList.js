@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 
 import { ORDERS_PER_PAGE } from '../../globals';
 import { useRevertOrder } from '../../hooks/mutations';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { OrderContent } from './OrderContent';
 
@@ -71,6 +72,7 @@ export const OrderList = ({ orders }) => {
         alignItems: 'center',
       }}
     >
+      {isLoading ? <LoadingSpinner /> : null}
       <Box
         className='dynamic-width'
         sx={{

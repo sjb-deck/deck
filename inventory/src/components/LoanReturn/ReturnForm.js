@@ -16,7 +16,8 @@ import React, { useContext, useState } from 'react';
 import { URL_INV_LOAN_RETURN } from '../../globals';
 import { useReturnLoan } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';
-import { checkLoanReturnForm } from '../../utils';
+
+import { checkLoanReturnForm } from './validation';
 
 export const ReturnForm = ({ items, id, onClose, open }) => {
   const [quantities, setQuantities] = useState(
@@ -42,11 +43,19 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
     }
     mutate(payload, {
       onSuccess: () => {
-        setAlert('success', 'Loan returned successfully', true);
+        setAlert({
+          severity: 'success',
+          message: 'Successfully returned loan!',
+          autoHide: true,
+        });
         window.location.href = URL_INV_LOAN_RETURN;
       },
-      onError: () => {
-        setAlert('error', 'Failed to return loan, contact Fabian Sir!', true);
+      onError: (error) => {
+        setAlert({
+          severity: 'error',
+          message: error.message,
+          additionalInfo: error.response?.data?.message,
+        });
         setLoading(false);
       },
     });
@@ -109,14 +118,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
                         handleQuantityChange(index, event.target.value)
                       }
                       variant='standard'
-                      sx={{
-                        '& .MuiInputLabel-root': {
-                          color: errors[index].returnQuantity ? 'red' : 'white',
-                        },
-                        '& .MuiFormLabel-root': {
-                          color: errors[index].returnQuantity ? 'red' : 'white',
-                        },
-                      }}
+                      error={errors[index].returnQuantity}
                     />
                   </Grid>
                 </Grid>

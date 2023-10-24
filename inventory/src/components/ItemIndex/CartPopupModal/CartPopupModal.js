@@ -128,7 +128,11 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
       };
 
       addToCart(cartItem);
-      setAlert('success', 'Added to cart', true);
+      setAlert({
+        severity: 'success',
+        message: `${cartItem.name} added to cart!`,
+        autoHide: true,
+      });
 
       handleClose();
     },
