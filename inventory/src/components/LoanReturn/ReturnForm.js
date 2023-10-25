@@ -16,7 +16,7 @@ import React, { useContext, useState } from 'react';
 import { URL_INV_LOAN_RETURN } from '../../globals';
 import { useReturnLoan } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';
-import { checkLoanReturnForm } from '../../../items/src/utils';
+import { checkLoanReturnForm } from '../../utils';
 
 export const ReturnForm = ({ items, id, onClose, open }) => {
   const [quantities, setQuantities] = useState(

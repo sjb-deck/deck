@@ -12,7 +12,7 @@ import {
 import React from 'react';
 
 import { ORDER_REASONS } from '../../globals';
-import { getReadableDate } from '../../../items/src/utils';
+import { getReadableDate } from '../../utils';
 
 import { Modal } from './Modal';
 

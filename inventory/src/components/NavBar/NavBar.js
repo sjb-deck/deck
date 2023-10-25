@@ -31,7 +31,7 @@ import {
   URL_INV_LOAN_RETURN,
 } from '../../globals';
 import { CartContext } from '../../providers';
-import { ColorModeContext } from '../../../items/src/components/Themes';
+import { ColorModeContext } from '../Themes';
 
 import { NavDrawer } from './NavDrawer';
 import { StyledBadge } from './styled';

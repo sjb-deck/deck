@@ -14,6 +14,7 @@ from inventory.items.views_utils import manage_items_change
 
 # Create your views here.
 
+
 @login_required(login_url="/r'^login/$'")
 def items(request):
     return render(request, "items.html")

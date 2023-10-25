@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { Api } from '../../globals';
-import { getRequest } from '../../../items/src/utils/getRequest';
+import { getRequest } from '../../utils/getRequest';
 
 export const useAddItem = (options) => {
   const key = 'addItem';

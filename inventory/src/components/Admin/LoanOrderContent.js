@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-import { getReadableDate } from '../../../items/src/utils';
+import { getReadableDate } from '../../utils';
 
 import { Modal } from './Modal';
 

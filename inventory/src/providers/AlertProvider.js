@@ -1,7 +1,7 @@
 import { PropTypes } from 'prop-types';
 import React, { createContext, useState } from 'react';
 
-import { SnackBarAlerts } from '../../items/src/components';
+import { SnackBarAlerts } from '../components';
 
 export const AlertContext = createContext();
 
