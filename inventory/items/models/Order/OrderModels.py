@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from inventory.globals import action_choices, action_reasons
+from inventory.items.globals import action_choices, action_reasons
 
 """
 * A class that encapsulates an Order placed by the user.

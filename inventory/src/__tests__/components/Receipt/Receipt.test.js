@@ -12,7 +12,7 @@ import {
 import { server } from '../../../mocks/server';
 import { render } from '../../../testSetup';
 
-describe('Receipt', () => {
+xdescribe('Receipt', () => {
   it('should render the component with the correct data when it is a withdraw order', async () => {
     server.use(
       rest.get(

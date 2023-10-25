@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.models import Item
+from inventory.items.models import Item
 
 
 class TestApiAddItemExpiryViews(TestCase):

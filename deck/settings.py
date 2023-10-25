@@ -63,7 +63,11 @@ ROOT_URLCONF = "deck.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "deck/templates")],
+        "DIRS": [
+            os.path.join(BASE_DIR, "deck/templates"),
+            os.path.join(BASE_DIR, "inventory/items/templates"),
+            os.path.join(BASE_DIR, "inventory/kits/templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
