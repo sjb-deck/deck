@@ -54,18 +54,6 @@ def api_items(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def api_user(request):
-    try:
-        user_data = UserSerializer(request.user).data
-        return Response(user_data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response(
-            {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def api_orders(request, option="all", order_id=None):
     try:
         if option == "order":

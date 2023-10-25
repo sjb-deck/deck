@@ -2,7 +2,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 
-from accounts.models import User, UserExtras
+from inventory.serializers import UserSerializer
 
 from inventory.items.globals import action_choices, action_reasons
 from inventory.items.models import ItemExpiry
@@ -10,20 +10,6 @@ from inventory.items.models import Item
 from inventory.items.models.Order import LoanOrder
 from inventory.items.models.Order import OrderItem
 from inventory.items.models.Order import Order
-
-
-class UserExtrasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserExtras
-        fields = ["profile_pic", "role", "name"]
-
-
-class UserSerializer(serializers.ModelSerializer):
-    extras = UserExtrasSerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ["id", "username", "email", "extras"]
 
 
 class AddItemExpirySerializer(serializers.ModelSerializer):

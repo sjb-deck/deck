@@ -18,3 +18,15 @@ def admin(request):
 @login_required(login_url="/r'^login/$'")
 def loan_return(request):
     return render(request, "loan_return.html")
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def api_user(request):
+    try:
+        user_data = UserSerializer(request.user).data
+        return Response(user_data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
