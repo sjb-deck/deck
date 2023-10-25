@@ -14,7 +14,7 @@ import React from 'react';
 
 import { URL_LOGOUT, URL_PROFILE } from '../../globals/globals';
 import { CartContext } from '../../providers';
-import { ColorModeContext } from '../Themes';
+import { ColorModeContext } from '../../../items/src/components/Themes';
 
 import { actionItems, navItems } from './NavBar';
 import { UserAvatar } from './UserAvatar';

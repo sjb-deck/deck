@@ -8,13 +8,13 @@ module.exports = {
   entry: {
     login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
     inventoryBase: ['./inventory/src/globals/styles/inventoryBase.scss'],
-    itemIndex: ['./inventory/src/pages/render/itemIndex.js'],
-    cartIndex: ['./inventory/src/pages/render/cartIndex.js'],
+    itemIndex: ['./inventory/items/src/pages/render/itemIndex.js'],
+    cartIndex: ['./inventory/items/src/pages/render/cartIndex.js'],
     adminIndex: ['./inventory/src/pages/render/adminIndex.js'],
-    addItem: ['./inventory/src/pages/render/addItem.js'],
+    addItem: ['./inventory/items/src/pages/render/addItem.js'],
     loanReturn: ['./inventory/src/pages/render/loanReturn.js'],
-    orderReceipt: ['./inventory/src/pages/render/orderReceipt.js'],
-    itemList: ['./inventory/src/pages/render/itemList.js'],
+    orderReceipt: ['./inventory/items/src/pages/render/orderReceipt.js'],
+    itemList: ['./inventory/items/src/pages/render/itemList.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

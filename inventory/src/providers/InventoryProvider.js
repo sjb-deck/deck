@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 
-import { Theme } from '../components';
+import { Theme } from '../../items/src/components';
 
 import { AlertProvider } from './AlertProvider';
 import { CartProvider } from './CartProvider';

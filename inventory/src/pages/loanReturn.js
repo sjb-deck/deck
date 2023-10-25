@@ -9,7 +9,7 @@ import {
   LoadingSpinner,
   NavBar,
   Theme,
-} from '../components';
+} from '../../items/src/components';
 import { useUser, useLoans } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 

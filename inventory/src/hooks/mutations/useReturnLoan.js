@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { Api } from '../../globals';
-import { getRequest } from '../../utils/getRequest';
+import { getRequest } from '../../../items/src/utils/getRequest';
 
 export const useReturnLoan = (options) => {
   const key = 'returnLoan';

@@ -7,7 +7,7 @@ import {
   LoanOrderList,
   NavBar,
   OrderList,
-} from '../components';
+} from '../../items/src/components';
 import { useOrders, useUser } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 

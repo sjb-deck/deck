@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 import { Api } from '../../globals';
 import { AlertContext } from '../../providers';
-import { getRequest } from '../../utils/getRequest';
+import { getRequest } from '../../../items/src/utils/getRequest';
 
 export const useImportItems = (options) => {
   const key = 'importItems';
