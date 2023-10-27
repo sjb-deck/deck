@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from datetime import timedelta
 from accounts.models import User, UserExtras
-from inventory.models import Item, Order, LoanOrder, ItemExpiry
+from inventory.items.models import Item, Order, LoanOrder, ItemExpiry
 import datetime
 
 

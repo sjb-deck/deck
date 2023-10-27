@@ -1,6 +1,6 @@
 from django.db import models
 
-from inventory.globals import typechoices
+from inventory.items.globals import typechoices
 
 # Create your models here.
 """
