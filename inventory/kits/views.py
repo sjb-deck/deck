@@ -1,11 +1,14 @@
+import datetime
+import json
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
 from .serializers import *
 from ..items.models import *
+from .views_utils import *
 
 
 @api_view(["GET"])
@@ -13,12 +16,13 @@ from ..items.models import *
 def api_kits(request):
     try:
         kits = Kit.objects.all()
-        serializer = KitSerializer(kits, many=True)
-        blueprints = Blueprint.objects.values_list('name', flat=True).distinct()
+        kit_serializer = KitSerializer(kits, many=True)
+        blueprint = Blueprint.objects.filter(status="ACTIVE")
+        blueprint_serializer = BlueprintSerializer(blueprint, many=True)
 
         return Response({
-            'kits': serializer.data,
-            'blueprints': list(blueprints)
+            'kits': kit_serializer.data,
+            'blueprints': blueprint_serializer.data,
         })
     except Exception as e:
         return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
@@ -30,17 +34,38 @@ def add_kit(request):
     try:
         blueprint_id = request.data.get("blueprint")
         name = request.data.get("name")
+        username = request.user.username
 
-        if not blueprint_id or not name:
+        if blueprint_id is None or not name or not username:
             return Response({"error": "Required parameters are missing!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        blueprint = Blueprint.objects.get(id=blueprint_id)
+        try:
+            blueprint = Blueprint.objects.get(id=blueprint_id, status="ACTIVE")
+        except Blueprint.DoesNotExist:
+            return Response({"error": "No such blueprint found!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        Kit.objects.create(
+        if Kit.objects.filter(name=name).exists():
+            return Response({"error": "Kit with this name already exists!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        content = blueprint.complete_content
+
+        if not attempt_items_withdrawal(content):
+            return Response({"error": "Not enough items in stock!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        new_kit = Kit.objects.create(
             name=name,
             blueprint=blueprint,
             status="READY",
             content=blueprint.complete_content,
+        )
+
+        History.objects.create(
+            kit=new_kit,
+            type="CREATION",
+            date=datetime.date.today(),
+            person=username,
+            pre_snapshot=blueprint.complete_content,
+            post_snapshot=blueprint.complete_content
         )
 
         return Response({"message": "Kit added successfully!"},
@@ -107,7 +132,7 @@ def add_blueprint(request):
 
         # Check if all items in content exist in ItemExpiry
         for item in content:
-            item_id = item.get("id")
+            item_id = item.get("item_expiry_id")
             if not item_id:
                 raise Exception("Content JSON is missing required data for an item.")
 
@@ -115,13 +140,15 @@ def add_blueprint(request):
                 return Response({"error": f"Item with ID {item_id} does not exist in ItemExpiry."},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-        Blueprint.objects.create(
+        blueprint = Blueprint.objects.create(
             name=name,
-            content=content,
+            complete_content=content,
         )
 
-        return Response({"message": "Blueprint added successfully!"},
-                        status=status.HTTP_201_CREATED)
+        return Response({
+            "message": "Blueprint added successfully!",
+            "blueprint_id": blueprint.id
+        }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -129,8 +156,18 @@ def add_blueprint(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def kit_history(request):
-    return Response({"message": "Hello, world!"})
+def kit_history(request, kit_id):
+    try:
+        if not Kit.objects.filter(id=kit_id).exists():
+            return Response({"error": "No such kit found."}, status=status.HTTP_404_NOT_FOUND)
+
+        histories = History.objects.filter(kit__id=kit_id).order_by('-date')
+
+        serializer = HistorySerializer(histories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

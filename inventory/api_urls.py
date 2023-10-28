@@ -2,6 +2,7 @@
 from django.urls import path
 
 from inventory.items import views as item_views
+from inventory.kits import views as kit_views
 from inventory import views
 
 item_api_urls = [
@@ -20,6 +21,11 @@ item_api_urls = [
     path("revert_order", item_views.revert_order, name="revert_order"),
     path("export_items", item_views.export_items_csv, name="export_items"),
     path("import_items", item_views.import_items_csv, name="import_items"),
+    path("kits", kit_views.api_kits, name="api_kits"),
+    path("add_kit", kit_views.add_kit, name="add_kit"),
+    path("retire_kit", kit_views.retire_kit, name="retire_kit"),
+    path("add_blueprint", kit_views.add_blueprint, name="add_blueprint"),
+    path('kit_history/<int:kit_id>/', kit_views.kit_history, name='kit_history'),
 ]
 
 urlpatterns = [

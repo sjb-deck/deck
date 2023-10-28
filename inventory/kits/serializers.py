@@ -1,7 +1,6 @@
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
-
 from accounts.models import User, UserExtras
 
 from .models import *
@@ -10,32 +9,39 @@ from .models import *
 class KitSerializer(serializers.ModelSerializer):
     complete = serializers.SerializerMethodField()
     blueprint_name = serializers.SerializerMethodField()
+    blueprint_id = PrimaryKeyRelatedField(queryset=Blueprint.objects.all(), source='blueprint')
 
     class Meta:
         model = Kit
-        fields = ['id', 'name', 'status', 'content', 'blueprint_name', 'complete']
+        fields = ['id', 'name', 'status', 'content', 'blueprint_name', 'blueprint_id', 'complete']
 
     @staticmethod
     def get_complete(obj):
         kit_content = obj.content
         blueprint_content = obj.blueprint.complete_content
 
-        # Check if they have the same set of keys
-        if set(kit_content.keys()) != set(blueprint_content.keys()):
-            return "item-mismatch"
-
-        # Compare individual fields
-        for key, kit_value in kit_content.items():
-            blueprint_value = blueprint_content.get(key)
-
-            if kit_value > blueprint_value:
+        for kit_item, blueprint_item in zip(kit_content, blueprint_content):
+            if kit_item['item_expiry_id'] != blueprint_item['item_expiry_id']:
+                return "item-mismatch"
+            if kit_item['quantity'] > blueprint_item['quantity']:
                 return "overloaded"
-            elif kit_value < blueprint_value:
+            if kit_item['quantity'] < blueprint_item['quantity']:
                 return "incomplete"
 
-        # If the loop completes without returning, all fields are equal
         return "complete"
 
     @staticmethod
     def get_blueprint_name(obj):
         return obj.blueprint.name
+
+
+class BlueprintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blueprint
+        exclude = ('status',)
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = '__all__'

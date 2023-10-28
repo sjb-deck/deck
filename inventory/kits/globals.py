@@ -12,4 +12,11 @@ KIT_STATUS = [
 HISTORY_TYPE = [
     ("LOAN", "LOAN"),
     ("RESTOCK", "RESTOCK"),
+    ("CREATION", "CREATION"),
+    ("RETIREMENT", "RETIREMENT"),
+]
+
+BLUEPRINT_STATUS = [
+    ("ACTIVE", "ACTIVE"),
+    ("DELETED", "DELETED"),
 ]
