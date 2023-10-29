@@ -101,7 +101,7 @@ def retire_kit(request, kit_id):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def add_blueprint(request):
     try:
@@ -155,19 +155,105 @@ def kit_history(request, kit_id):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def submit_kit_order(request):
-    return Response({"message": "Hello, world!"})
+    try:
+        kit_id = request.data.get("kit_id")
+        force = request.data.get("force")
+        loanee_name = request.data.get("loanee_name")
+        due_date = request.data.get("due_date")
+
+        # Check if kit is available
+        kit = Kit.objects.get(id=kit_id)
+        if kit.status != "READY":
+            return Response({"error": "Kit is not ready and available."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if kit is complete
+        if not kit_is_complete(kit_id) and not force:
+            return Response({"error": "Kit is not complete and normal loan if not possible."}, status=status.HTTP_400_BAD_REQUEST)
+
+        LoanHistory.objects.create(
+            kit=kit,
+            type='LOAN',
+            date=timezone.now(),
+            person=request.user.username,
+            snapshot=None,
+            loanee_name=loanee_name,
+            due_date=due_date,
+            return_date=None
+        )
+
+        kit.status = "LOANED"
+        kit.save()
+
+        return Response({"message": "Kit loaned successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def return_kit_order(request):
-    return Response({"message": "Hello, world!"})
+    try:
+        kit_id = request.data.get("kit_id")
+        content = request.data.get("content")
+
+        # Check if kit is loaned
+        kit = Kit.objects.get(id=kit_id)
+        if kit.status != "LOANED":
+            return Response({"error": "Kit is not loaned and cannot be returned."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if content matches
+        if content_matches(content, kit.blueprint.complete_content) is False:
+            return Response({"error": "Expected content does not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update loan history
+        loan_history = LoanHistory.objects.filter(kit=kit, return_date__isnull=True).latest('date')
+
+        loan_history.return_date = timezone.now()
+        loan_history.snapshot = content
+        loan_history.save()
+
+        kit.content = content
+        kit.status = "READY"
+        kit.save()
 
 
-@api_view(["GET"])
+        return Response({"message": "Kit returned successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def revert_kit_order(request):
-    return Response({"message": "Hello, world!"})
+def revert_kit_order(request, kit_id):
+    try:
+        # Check if kit is loaned
+        kit = Kit.objects.get(id=kit_id)
+
+        if kit.status != "LOANED":
+            return Response({"error": "Kit is not loaned and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        loan_history = LoanHistory.objects.get(kit__id=kit_id, return_date__isnull=True)
+
+        # Update loan history
+        prev_snapshot = History.objects \
+            .filter(kit__id=kit_id) \
+            .exclude(id=loan_history.id) \
+            .latest('date').snapshot
+
+        loan_history.return_date = timezone.now()
+        loan_history.snapshot = prev_snapshot
+        loan_history.type = "LOAN AND REVERT"
+        loan_history.save()
+
+        kit.status = "READY"
+        kit.save()
+
+        return Response({"message": "Kit reverted successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

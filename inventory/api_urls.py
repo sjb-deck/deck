@@ -26,6 +26,9 @@ item_api_urls = [
     path("retire_kit/<int:kit_id>", kit_views.retire_kit, name="retire_kit"),
     path("add_blueprint", kit_views.add_blueprint, name="add_blueprint"),
     path('kit_history/<int:kit_id>', kit_views.kit_history, name='kit_history'),
+    path('submit_kit_order', kit_views.submit_kit_order, name='submit_kit_order'),
+    path('return_kit_order', kit_views.return_kit_order, name='kit_order_history'),
+    path('revert_kit_order/<int:kit_id>', kit_views.revert_kit_order, name='kit_order_history'),
 ]
 
 urlpatterns = [

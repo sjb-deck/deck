@@ -1,5 +1,6 @@
 import json
 
+from .models import Kit
 from ..items.models import *
 
 
@@ -39,5 +40,29 @@ def attempt_items_deposit(content):
         item_expiry = ItemExpiry.objects.get(id=item_id)
         item_expiry.deposit(quantity)
         item["quantity"] = 0
+
+    return True
+
+
+def kit_is_complete(kit_id):
+    kit = Kit.objects.get(id=kit_id)
+    kit_content = kit.content
+    blueprint_content = kit.blueprint.complete_content
+
+    for kit_item, blueprint_item in zip(kit_content, blueprint_content):
+        if kit_item['item_expiry_id'] != blueprint_item['item_expiry_id']:
+            return False
+        if kit_item['quantity'] > blueprint_item['quantity']:
+            return False
+        if kit_item['quantity'] < blueprint_item['quantity']:
+            return False
+
+    return True
+
+
+def content_matches(content, blueprint_content):
+    for item, blueprint_item in zip(content, blueprint_content):
+        if item['item_expiry_id'] != blueprint_item['item_expiry_id']:
+            return False
 
     return True

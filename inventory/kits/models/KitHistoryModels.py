@@ -29,7 +29,7 @@ class History(models.Model):
     type = models.CharField(max_length=50, choices=HISTORY_TYPE)
     date = models.DateField()
     person = models.CharField(max_length=50)
-    snapshot = models.JSONField()
+    snapshot = models.JSONField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.type} - {self.date}"
