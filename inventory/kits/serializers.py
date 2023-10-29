@@ -42,6 +42,26 @@ class BlueprintSerializer(serializers.ModelSerializer):
 
 
 class HistorySerializer(serializers.ModelSerializer):
+    loan_info = serializers.SerializerMethodField()
+
     class Meta:
         model = History
         fields = '__all__'
+
+    @staticmethod
+    def get_loan_info(obj):
+        loan_history = getattr(obj, 'loanhistory', None)
+        if loan_history:
+            return {
+                'loanee_name': loan_history.loanee_name,
+                'due_date': loan_history.due_date,
+                'return_date': loan_history.return_date,
+            }
+        return None
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if ret.get('loan_info') is None:
+            ret.pop('loan_info', None)
+        return ret
+

@@ -16,9 +16,7 @@ from inventory.kits.models.KitModels import Kit
         Blueprint that the kit shall reference to.
     -> person : CharField
         Person loaning or restocking the kit.
-    -> pre_snapshot : JSONField
-        Contents of the kit before the change.
-    -> post_snapshot : JSONField
+    -> snapshot : JSONField
         Contents of the kit after the change.
     ** Methods
     -------
@@ -31,8 +29,16 @@ class History(models.Model):
     type = models.CharField(max_length=50, choices=HISTORY_TYPE)
     date = models.DateField()
     person = models.CharField(max_length=50)
-    pre_snapshot = models.JSONField()
-    post_snapshot = models.JSONField()
+    snapshot = models.JSONField()
 
     def __str__(self) -> str:
         return f"{self.type} - {self.date}"
+
+
+class LoanHistory(History):
+    loanee_name = models.CharField(max_length=50)
+    due_date = models.DateTimeField()
+    return_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.loanee_name} - {self.due_date}"

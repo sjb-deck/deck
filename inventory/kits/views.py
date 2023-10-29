@@ -64,8 +64,7 @@ def add_kit(request):
             type="CREATION",
             date=datetime.date.today(),
             person=username,
-            pre_snapshot=blueprint.complete_content,
-            post_snapshot=blueprint.complete_content
+            snapshot=blueprint.complete_content
         )
 
         return Response({"message": "Kit added successfully!"},
@@ -77,38 +76,24 @@ def add_kit(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def retire_kit(request):
+def retire_kit(request, kit_id):
     try:
-        kit_id = request.GET.get("kit_id")
-
-        if not kit_id:
-            return Response({"error": "Required parameters are missing!"}, status=status.HTTP_400_BAD_REQUEST)
-
         kit = Kit.objects.get(id=kit_id)
         content = kit.content
 
-        # Check that all items can be deposited
-        for item in content:
-            item_id = item.get("id")
-            quantity = item.get("quantity")
-            if not item_id or quantity is None:
-                raise Exception("Content JSON is missing required data.")
-
-            item_expiry = ItemExpiry.objects.get(id=item_id)
-
-            if item_expiry.quantity is None or quantity < 0 or (item_expiry.quantity + quantity) < 0:
-                raise Exception(f"Cannot deposit {quantity} for item with ID {item_id}.")
-
-        # Deposit all items
-        for item in content:
-            item_id = item.get("id")
-            quantity = item.get("quantity")
-
-            item_expiry = ItemExpiry.objects.get(id=item_id)
-            item_expiry.deposit(quantity)
+        if not attempt_items_deposit(content):
+            return Response({"error": "Fail to deposit and cannot retire kit."}, status=status.HTTP_400_BAD_REQUEST)
 
         kit.status = "RETIRED"
         kit.save()
+
+        History.objects.create(
+            kit=kit,
+            type="RETIREMENT",
+            date=datetime.date.today(),
+            person=request.user.username,
+            snapshot=content
+        )
 
         return Response({"message": "Kit retired and contents deposited successfully!"}, status=status.HTTP_200_OK)
 

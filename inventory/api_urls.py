@@ -23,9 +23,9 @@ item_api_urls = [
     path("import_items", item_views.import_items_csv, name="import_items"),
     path("kits", kit_views.api_kits, name="api_kits"),
     path("add_kit", kit_views.add_kit, name="add_kit"),
-    path("retire_kit", kit_views.retire_kit, name="retire_kit"),
+    path("retire_kit/<int:kit_id>", kit_views.retire_kit, name="retire_kit"),
     path("add_blueprint", kit_views.add_blueprint, name="add_blueprint"),
-    path('kit_history/<int:kit_id>/', kit_views.kit_history, name='kit_history'),
+    path('kit_history/<int:kit_id>', kit_views.kit_history, name='kit_history'),
 ]
 
 urlpatterns = [
