@@ -4,6 +4,8 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from accounts.models import User, UserExtras
 
 from .models import *
+from .views_utils import compress_content
+from ..items.models import Item
 
 
 class KitSerializer(serializers.ModelSerializer):
@@ -17,11 +19,11 @@ class KitSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_complete(obj):
-        kit_content = obj.content
+        kit_content = compress_content(obj.content)
         blueprint_content = obj.blueprint.complete_content
 
         for kit_item, blueprint_item in zip(kit_content, blueprint_content):
-            if kit_item['item_expiry_id'] != blueprint_item['item_expiry_id']:
+            if kit_item['item_id'] != blueprint_item['item_id']:
                 return "item-mismatch"
             if kit_item['quantity'] > blueprint_item['quantity']:
                 return "overloaded"
@@ -39,6 +41,21 @@ class BlueprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blueprint
         exclude = ('status',)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        complete_content = data.get('complete_content', [])
+        for item_data in complete_content:
+            item_id = item_data.get('item_id')
+            if item_id is not None:
+                try:
+                    item = Item.objects.get(id=item_id)
+                    item_data['name'] = item.name
+                except Item.DoesNotExist:
+                    item_data['name'] = None
+            else:
+                item_data['name'] = None
+        return data
 
 
 class HistorySerializer(serializers.ModelSerializer):

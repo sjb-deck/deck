@@ -23,12 +23,15 @@ item_api_urls = [
     path("import_items", item_views.import_items_csv, name="import_items"),
     path("kits", kit_views.api_kits, name="api_kits"),
     path("add_kit", kit_views.add_kit, name="add_kit"),
+    path("get_new_kit_recipe/<int:blueprint_id>", kit_views.get_new_kit_recipe, name="get_new_kit_recipe"),
     path("retire_kit/<int:kit_id>", kit_views.retire_kit, name="retire_kit"),
     path("add_blueprint", kit_views.add_blueprint, name="add_blueprint"),
     path('kit_history/<int:kit_id>', kit_views.kit_history, name='kit_history'),
     path('submit_kit_order', kit_views.submit_kit_order, name='submit_kit_order'),
     path('return_kit_order', kit_views.return_kit_order, name='kit_order_history'),
     path('revert_kit_order/<int:kit_id>', kit_views.revert_kit_order, name='kit_order_history'),
+    path('restock_options/<int:kit_id>', kit_views.restock_options, name='restock_options'),
+    path('restock_kit', kit_views.restock_kit, name='restock_kit'),
 ]
 
 urlpatterns = [
