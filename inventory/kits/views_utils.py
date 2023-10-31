@@ -92,20 +92,19 @@ def content_matches(compressed_content, blueprint_content):
     return True
 
 
+def order_return_matches(content, original_content):
+    for item, original_item in zip(content, original_content):
+        if item['item_expiry_id'] != original_item['item_expiry_id']:
+            return False, True
+        if item['quantity'] > original_item['quantity']:
+            return False, False
+
+    return True, None
+
+
 def add_more_than_expected(compressed_content, blueprint_content):
     for item, blueprint_item in zip(compressed_content, blueprint_content):
         if item['quantity'] > blueprint_item['quantity']:
-            return True
-
-    return False
-
-
-def return_more_than_borrowed(compressed_content, kit_id):
-    latest_loan = LoanHistory.objects.filter(kit__id=kit_id, return_date__isnull=True).latest('date')
-    loan_content = compress_content(latest_loan.snapshot)
-
-    for loan_item, returning_item in zip(loan_content, compressed_content):
-        if loan_item['quantity'] < returning_item['quantity']:
             return True
 
     return False
@@ -193,3 +192,27 @@ def merge_contents(kit_content, restock_content):
 
     return [{"quantity": quantity, "item_expiry_id": item_expiry_id} for item_expiry_id, quantity in
             merged_content.items()]
+
+
+def get_stock_change(current_content, previous_content):
+    curr = {}
+    for item in current_content:
+        item_expiry_id = item["item_expiry_id"]
+        quantity = item["quantity"]
+        curr[item_expiry_id] = quantity
+
+    prev = {}
+    for item in previous_content:
+        item_expiry_id = item["item_expiry_id"]
+        quantity = item["quantity"]
+        prev[item_expiry_id] = quantity
+
+    stock_change = []
+    for item_expiry_id, quantity in curr.items():
+        if item_expiry_id in prev:
+            change = quantity - prev[item_expiry_id]
+            stock_change.append({"item_expiry_id": item_expiry_id, "quantity": change})
+        else:
+            stock_change.append({"item_expiry_id": item_expiry_id, "quantity": quantity})
+
+    return stock_change

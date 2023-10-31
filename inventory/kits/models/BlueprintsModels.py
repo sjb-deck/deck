@@ -1,5 +1,4 @@
 from django.db import models
-from inventory.kits.globals import BLUEPRINT_STATUS
 
 """
 * A class that encapsulates a Kit Blueprint. The blueprint acts as an identifier for the type of the kit.
@@ -18,7 +17,7 @@ from inventory.kits.globals import BLUEPRINT_STATUS
 
 class Blueprint(models.Model):
     name = models.CharField(max_length=50)
-    status = models.CharField(max_length=50, choices=BLUEPRINT_STATUS, default="ACTIVE")
+    archived = models.BooleanField(default=False)
     complete_content = models.JSONField()
 
     def __str__(self) -> str:

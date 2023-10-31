@@ -17,7 +17,7 @@ def api_kits(request):
     try:
         kits = Kit.objects.all()
         kit_serializer = KitSerializer(kits, many=True)
-        blueprint = Blueprint.objects.filter(status="ACTIVE")
+        blueprint = Blueprint.objects.filter(archived=False)
         blueprint_serializer = BlueprintSerializer(blueprint, many=True)
 
         return Response({
@@ -107,7 +107,7 @@ def retire_kit(request, kit_id):
             return Response({"error": "Kit is not ready and cannot be retired."}, status=status.HTTP_400_BAD_REQUEST)
 
         if not attempt_items_deposit(content):
-            return Response({"error": "Fail to deposit and cannot retire kit."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Fail to deposit back into inventory and cannot retire kit."}, status=status.HTTP_400_BAD_REQUEST)
 
         kit.status = "RETIRED"
         kit.save()
@@ -164,7 +164,7 @@ def kit_history(request, kit_id):
         if not Kit.objects.filter(id=kit_id).exists():
             return Response({"error": "No such kit found."}, status=status.HTTP_404_NOT_FOUND)
 
-        histories = History.objects.filter(kit__id=kit_id)
+        histories = History.objects.filter(kit__id=kit_id).order_by('-id')
 
         serializer = HistorySerializer(histories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -220,20 +220,21 @@ def return_kit_order(request):
 
         # Check if kit is loaned
         kit = Kit.objects.get(id=kit_id)
+
         if kit.status != "LOANED":
             return Response({"error": "Kit is not loaned and cannot be returned."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if content matches
-        compressed_content = compress_content(content)
-        if content_matches(compressed_content, kit.blueprint.complete_content) is False:
-            return Response({"error": "Expected content does not match."}, status=status.HTTP_400_BAD_REQUEST)
-
-        if return_more_than_borrowed(compressed_content, kit_id):
-            return Response({"error": "Returned content is more than expected."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Update loan history
+        # Check if uncompressed content matches
         loan_history = LoanHistory.objects.filter(kit=kit, return_date__isnull=True).latest('date')
 
+        res = order_return_matches(content, loan_history.snapshot)
+        if not res[0]:
+            if res[1]:
+                return Response({"error": "Expected content does not match."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "Attempting to return more than borrowed not allowed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update loan history
         loan_history.return_date = timezone.now()
         loan_history.snapshot = content
         loan_history.save()
@@ -243,31 +244,6 @@ def return_kit_order(request):
         kit.save()
 
         return Response({"message": "Kit returned successfully!"}, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def revert_kit_order(request, kit_id):
-    try:
-        # Check if kit is loaned
-        kit = Kit.objects.get(id=kit_id)
-
-        if kit.status != "LOANED":
-            return Response({"error": "Kit is not loaned and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
-
-        loan_history = LoanHistory.objects.filter(kit__id=kit_id, return_date__isnull=True).latest('date')
-
-        loan_history.return_date = timezone.now()
-        loan_history.type = "LOAN AND REVERT"
-        loan_history.save()
-
-        kit.status = "READY"
-        kit.save()
-
-        return Response({"message": "Kit reverted successfully!"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -327,6 +303,98 @@ def restock_kit(request):
         )
 
         return Response({"message": "Kit restocked successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def revert_kit_order(request, kit_id):
+    try:
+        # Check if kit is loaned
+        kit = Kit.objects.get(id=kit_id)
+
+        if kit.status != "LOANED":
+            return Response({"error": "Kit is not loaned and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        history = History.objects.filter(kit__id=kit_id).latest('id')
+        if history.type != "LOAN":
+            return Response({"error": "Kit is not loaned recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        loan_history = LoanHistory.objects.get(id=history.id)
+        if loan_history.return_date is not None:
+            return Response({"error": "Kit is not loaned and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        loan_history.delete()
+
+        kit.status = "READY"
+        kit.save()
+
+        return Response({"message": "Kit loan reverted successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def revert_restock(request, kit_id):
+    try:
+        kit = Kit.objects.get(id=kit_id)
+
+        if kit.status != "READY":
+            return Response({"error": "Kit is not ready and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        history = History.objects.filter(kit__id=kit_id).latest('id')
+        if history.type != "RESTOCK":
+            return Response({"error": "Kit is not restocked recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        previous_history = History.objects.filter(kit__id=kit_id).order_by('-id')[1]
+        stock_change = get_stock_change(history.snapshot, previous_history.snapshot)
+
+        if not attempt_items_deposit(stock_change):
+            return Response({"error": "Fail to deposit back into inventory and cannot revert restock."}, status=status.HTTP_400_BAD_REQUEST)
+
+        history.delete()
+        kit.content = previous_history.snapshot  # status is still READY
+        kit.save()
+
+        return Response({"message": "Kit restock reverted successfully!"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def revert_return_order(request, kit_id):
+    try:
+        # Check if kit has been returned
+        kit = Kit.objects.get(id=kit_id)
+
+        if kit.status != "READY":
+            return Response({"error": "Kit is not returned yet and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        history = History.objects.filter(kit__id=kit_id).latest('id')
+        if history.type != "LOAN":
+            return Response({"error": "Kit is not loaned recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        loan_history = LoanHistory.objects.get(id=history.id)
+        if loan_history.return_date is None:
+            return Response({"error": "Kit is not returned yet and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+
+        previous_loan_history = History.objects.filter(kit__id=kit_id).order_by('-id')[1]
+
+        loan_history.return_date = None
+        loan_history.snapshot = previous_loan_history.snapshot
+        loan_history.save()
+
+        kit.status = "LOANED"
+        kit.content = previous_loan_history.snapshot
+        kit.save()
+
+        return Response({"message": "Kit return reverted successfully!"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

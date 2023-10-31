@@ -40,7 +40,7 @@ class KitSerializer(serializers.ModelSerializer):
 class BlueprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blueprint
-        exclude = ('status',)
+        exclude = ('archived',)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
