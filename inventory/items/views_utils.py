@@ -17,21 +17,13 @@ def manage_items_change(order):
         raise e
 
 
-# Returns a promise that creates an order, updates the quantity of the items,
-# updates other_info with the kit data and returns the order id
 def create_order(data, request):
     try:
         serializer = OrderSerializer(data=data, context={"request": request})
         if serializer.is_valid(raise_exception=True):
-
-            def promise(kit):
-                order = serializer.save()
-                manage_items_change(order)
-                order.other_info = json.dumps({"kit_id": kit.id, "kit_name": kit.name})
-                order.save()
-                return order.id
-
-            return promise
+            order = serializer.save()
+            manage_items_change(order)
+            return order
     except Exception as e:
         print("Error when creating order")
         raise e
