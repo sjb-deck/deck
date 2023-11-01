@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .models import Kit, Blueprint, LoanHistory
 from ..items.models import *
+from ..items.views_utils import create_order
 
 
 def compress_content(content):
@@ -68,6 +69,25 @@ def attempt_items_deposit(content):
         item["quantity"] = 0
 
     return True
+
+
+# Builds payload to call create_order which returns a order_id
+def transact_items(content, request, kit, isWithdraw):
+    order_items = [
+        {"item_expiry_id": item["item_expiry_id"], "ordered_quantity": item["quantity"]}
+        for item in content
+    ]
+    payload = {
+        "action": "Withdraw" if isWithdraw else "Deposit",
+        "reason": "kit_restock" if isWithdraw else "kit_retire",
+        "order_items": order_items,
+    }
+    order = create_order(payload, request)
+
+    # Update other_info with kit data
+    order.other_info = json.dumps({"kit_id": kit.id, "kit_name": kit.name})
+    order.save()
+    return order.id
 
 
 def kit_is_complete(kit_id):

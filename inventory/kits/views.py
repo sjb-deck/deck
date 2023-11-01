@@ -1,5 +1,6 @@
 import datetime
 import json
+from django.db import transaction
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -69,25 +70,23 @@ def add_kit(request):
         if add_more_than_expected(compressed_content, blueprint.complete_content):
             return Response({"message": "Added content is more than expected."}, status=status.HTTP_400_BAD_REQUEST)
 
-        res = attempt_items_withdrawal(content)
-        item_insufficient = res[1]
-        if not res[0]:
-            return Response({"message": f"Insufficient stock for {item_insufficient}."}, status=status.HTTP_400_BAD_REQUEST)
+        with transaction.atomic():
+            new_kit = Kit.objects.create(
+                name=name,
+                blueprint=blueprint,
+                status="READY",
+                content=content,
+            )
 
-        new_kit = Kit.objects.create(
-            name=name,
-            blueprint=blueprint,
-            status="READY",
-            content=content,
-        )
+            order_id = transact_items(content, request, new_kit, isWithdraw=True)
 
-        History.objects.create(
-            kit=new_kit,
-            type="CREATION",
-            date=datetime.date.today(),
-            person=username,
-            snapshot=content
-        )
+            History.objects.create(
+                kit=new_kit,
+                type="CREATION",
+                date=datetime.date.today(),
+                person=username,
+                snapshot=content
+            )
 
         return Response({"message": "Kit added successfully!"},
                         status=status.HTTP_201_CREATED)
