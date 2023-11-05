@@ -4,7 +4,7 @@ import React from 'react';
 import { CartContent } from '../../../components/CartContent/CartContent';
 import { emptyCartMessage } from '../../../components/CartContent/labels';
 import { mockDepositCart, mockWithdrawCart } from '../../../mocks/cart';
-import { render } from '../../../testSetup';
+import { render, userEvent } from '../../../testSetup';
 
 const mockContextValue = {
   cartState: '',
@@ -42,18 +42,136 @@ describe('<CartContent />', () => {
   });
 
   describe('renders the correct fields when it is a ', () => {
-    it.todo('loan withdrawal order');
+    it('loan withdrawal order', async () => {
+      const withdrawContextValue = {
+        cartState: 'Withdraw',
+        cartItems: mockWithdrawCart,
+      };
 
-    it.todo('unserviceable withdrawal order');
+      render(<CartContent />, {
+        cartContext: withdrawContextValue,
+      });
 
-    it.todo('others withdrawal order');
+      await userEvent.click(
+        screen.getByRole('button', { name: /Withdraw Options/ }),
+      );
+      await userEvent.click(screen.getByRole('option', { name: 'Loan' }));
+      expect(
+        screen.getByRole('button', { name: 'Withdraw Options Loan' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('textbox', { name: 'Loanee Name' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('textbox', { name: 'Return Date' }),
+      ).toBeInTheDocument();
+    });
 
-    it.todo('restocking deposit order');
+    it('unserviceable withdrawal order', async () => {
+      const withdrawContextValue = {
+        cartState: 'Withdraw',
+        cartItems: mockWithdrawCart,
+      };
 
-    it.todo('others deposit order');
+      render(<CartContent />, {
+        cartContext: withdrawContextValue,
+      });
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /Withdraw Options/ }),
+      );
+      await userEvent.click(
+        screen.getByRole('option', { name: 'Unserviceable' }),
+      );
+      expect(
+        screen.getByRole('button', { name: 'Withdraw Options Unserviceable' }),
+      ).toBeInTheDocument();
+    });
+
+    it('others withdrawal order', async () => {
+      const withdrawContextValue = {
+        cartState: 'Withdraw',
+        cartItems: mockWithdrawCart,
+      };
+
+      render(<CartContent />, {
+        cartContext: withdrawContextValue,
+      });
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /Withdraw Options/ }),
+      );
+      await userEvent.click(screen.getByRole('option', { name: 'Others' }));
+      expect(
+        screen.getByRole('button', { name: 'Withdraw Options Others' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('textbox', { name: 'Reason' }),
+      ).toBeInTheDocument();
+    });
+
+    it('restocking deposit order', async () => {
+      const depositContextValue = {
+        cartState: 'Deposit',
+        cartItems: mockDepositCart,
+      };
+
+      render(<CartContent />, { cartContext: depositContextValue });
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /Deposit Options/ }),
+      );
+      await userEvent.click(
+        screen.getByRole('option', { name: 'Restocking of Stocks' }),
+      );
+      expect(
+        screen.getByRole('button', {
+          name: 'Deposit Options Restocking of Stocks',
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it('others deposit order', async () => {
+      const depositContextValue = {
+        cartState: 'Deposit',
+        cartItems: mockDepositCart,
+      };
+
+      render(<CartContent />, { cartContext: depositContextValue });
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /Deposit Options/ }),
+      );
+      await userEvent.click(screen.getByRole('option', { name: 'Others' }));
+      expect(
+        screen.getByRole('button', {
+          name: 'Deposit Options Others',
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('textbox', { name: 'Reason' }),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('submits the correct payload when it is a ', () => {
+    it('loan withdrawal order', async () => {
+      const withdrawContextValue = {
+        cartState: 'Withdraw',
+        cartItems: mockWithdrawCart,
+      };
+
+      render(<CartContent />, {
+        cartContext: withdrawContextValue,
+      });
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /Withdraw Options/ }),
+      );
+      await userEvent.click(screen.getByRole('option', { name: 'Loan' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    });
+
     it.todo('loan withdrawal order');
 
     it.todo('unserviceable withdrawal order');
