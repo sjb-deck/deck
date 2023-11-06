@@ -5,8 +5,8 @@ import { useContext } from 'react';
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
 
-export const useOrders = (page, options) => {
-  const key = 'orders';
+export const useActiveLoans = (page, options) => {
+  const key = 'loan_active';
   const url = Api[key].replace(':page', page);
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
@@ -26,8 +26,7 @@ export const useOrders = (page, options) => {
     [key, page],
     async () => {
       const response = await axios.get(url);
-      const results = response.data;
-      return results;
+      return response.data;
     },
     {
       ...defaultOptions,

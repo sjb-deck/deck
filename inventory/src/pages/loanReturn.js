@@ -1,7 +1,8 @@
+import { Pagination, Skeleton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Footer,
@@ -10,18 +11,24 @@ import {
   NavBar,
   Theme,
 } from '../components';
-import { useUser, useLoans } from '../hooks/queries';
+import { useUser, useActiveLoans } from '../hooks/queries';
+
 import '../globals/styles/inventoryBase.scss';
 
 export const LoanReturn = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const { data: user, isLoading: userLoading } = useUser();
-  const { data: loans, isLoading: loansLoading } = useLoans();
+  const { data: loans, isLoading: loansLoading } = useActiveLoans(currentPage);
+
+  const handlePageChange = (_, value) => {
+    setCurrentPage(value);
+  };
 
   if (userLoading || loansLoading) {
     return <LoadingSpinner />;
   }
 
-  if (!loans || loans.length === 0) {
+  if (!loans || loans.results.length === 0) {
     return (
       <Theme>
         <NavBar user={user} />
@@ -51,7 +58,7 @@ export const LoanReturn = () => {
           alignItems='center'
           width='100%'
         >
-          {loans.map((loan, index) => (
+          {loans.results.map((loan, index) => (
             <FullAccordion
               key={index}
               index={(index + 1).toString() + '.'}
@@ -59,6 +66,17 @@ export const LoanReturn = () => {
             />
           ))}
         </Box>
+        {loans ? (
+          <Pagination
+            page={currentPage}
+            count={loans.num_pages}
+            onChange={handlePageChange}
+          />
+        ) : (
+          <Skeleton>
+            <Pagination />
+          </Skeleton>
+        )}
       </Stack>
       <Footer />
     </Theme>

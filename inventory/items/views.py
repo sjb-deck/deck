@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError, transaction
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -54,18 +55,53 @@ def api_items(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def api_orders(request, option="all", order_id=None):
+def api_orders(request):
     try:
+        option = request.query_params.get("option")
+        order_id = request.query_params.get("orderId")
+        page = request.query_params.get("page", 1)
+        page_size = request.query_params.get("pageSize", 10)
+
         if option == "order":
-            data = OrderSerializer(Order.objects.exclude(reason="loan"), many=True).data
+            queryset = (
+                Order.objects.exclude(reason="loan")
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
         elif option == "loan":
-            data = OrderSerializer(
-                LoanOrder.objects.filter(loan_active=True), many=True
-            ).data
-        elif option == "get":
-            data = OrderSerializer(Order.objects.get(id=order_id)).data
+            queryset = (
+                LoanOrder.objects.all()
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
+        elif option == "loan_active":
+            queryset = (
+                LoanOrder.objects.filter(loan_active=True)
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
+        elif order_id:
+            queryset = (
+                Order.objects.filter(id=order_id)
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
         else:
-            data = OrderSerializer(Order.objects.all(), many=True).data
+            queryset = (
+                Order.objects.all()
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
+
+        queryset = queryset.order_by("-date")
+
+        paginator = Paginator(queryset, page_size)
+        page_obj = paginator.get_page(page)
+
+        data = {
+            "results": OrderSerializer(page_obj, many=True).data,
+            "num_pages": paginator.num_pages,
+        }
         return Response(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(
@@ -142,7 +178,7 @@ def revert_order(request):
     order_id = request.data
     try:
         if order_id is None:
-            return Response({"error": "Invalid request body"}, status=500)
+            return Response({"message": "Invalid request body"}, status=500)
         try:
             order = Order.objects.get(id=order_id)
             if order.reason == "loan":
@@ -152,9 +188,9 @@ def revert_order(request):
                 order.revert_order()
             return Response({"message": "Successfully reverted order"}, status=200)
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"message": str(e)}, status=500)
     except:
-        return Response({"error": "Something went wrong"}, status=500)
+        return Response({"message": "Something went wrong"}, status=500)
 
 
 @api_view(["GET"])
