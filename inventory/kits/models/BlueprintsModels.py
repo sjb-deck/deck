@@ -17,6 +17,7 @@ from django.db import models
 
 class Blueprint(models.Model):
     name = models.CharField(max_length=50)
+    archived = models.BooleanField(default=False)
     complete_content = models.JSONField()
 
     def __str__(self) -> str:
