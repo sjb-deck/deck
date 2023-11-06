@@ -1,4 +1,3 @@
-import { Sort } from '@mui/icons-material';
 import {
   Accordion,
   AccordionSummary,
@@ -63,21 +62,11 @@ export const LoanOrderList = () => {
               Action
             </Grid>
             <Grid item xs={isMobile ? 5 : 4}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingRight: '16px',
-                }}
-              >
-                <span>Date</span>
-                <Sort onClick={() => handleSortDate()} />
-              </Box>
+              Date
             </Grid>
             {!isMobile && (
               <Grid item xs={3}>
-                Return Date
+                Return Deadline
               </Grid>
             )}
           </Grid>

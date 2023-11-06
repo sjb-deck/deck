@@ -10,7 +10,7 @@ export const Api = {
   orders: `${INV_API_BASE_URL}/orders?option=order&page=:page`,
   loans: `${INV_API_BASE_URL}/orders?option=loan&page=:page`,
   loan_active: `${INV_API_BASE_URL}/orders?option=loan_active&page=:page`,
-  order: `${INV_API_BASE_URL}/orders/get/:id`,
+  order: `${INV_API_BASE_URL}/orders?orderId=:id`,
   revertOrder: `${INV_API_BASE_URL}/revert_order`,
   importItems: `${INV_API_BASE_URL}/import_items`,
   exportItems: `${INV_API_BASE_URL}/export_items`,

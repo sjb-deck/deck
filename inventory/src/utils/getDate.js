@@ -14,6 +14,7 @@ export const getSimpleDate = (date) => {
 };
 
 export const getReadableDate = (date) => {
+  if (!date) return { formattedDate: '', formattedDateTime: '' };
   const formattedDateTime = dayjs(date)
     .locale('en')
     .format('D MMM YYYY - HH:mm');
