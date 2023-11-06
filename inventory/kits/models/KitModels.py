@@ -26,7 +26,7 @@ class Kit(models.Model):
     name = models.CharField(max_length=50)
     blueprint = models.ForeignKey(Blueprint, on_delete=models.RESTRICT)
     status = models.CharField(max_length=50, choices=KIT_STATUS)
-    content = models.JSONField()
+    content = models.JSONField(null=True)
 
     def __str__(self) -> str:
         return f"{self.name}"

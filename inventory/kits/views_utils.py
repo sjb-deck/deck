@@ -72,14 +72,14 @@ def attempt_items_deposit(content):
 
 
 # Builds payload to call create_order which returns a order_id
-def transact_items(content, request, kit, isWithdraw):
+def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     order_items = [
         {"item_expiry_id": item["item_expiry_id"], "ordered_quantity": item["quantity"]}
         for item in content
     ]
     payload = {
-        "action": "Withdraw" if isWithdraw else "Deposit",
-        "reason": "kit_restock" if isWithdraw else "kit_retire",
+        "action": "Withdraw" if is_withdraw else "Deposit",
+        "reason": "kit_create" if is_create_kit else ("kit_restock" if is_withdraw else "kit_retire"),
         "order_items": order_items,
     }
     order = create_order(payload, request)

@@ -16,7 +16,7 @@ from .views_utils import *
 @permission_classes([IsAuthenticated])
 def api_kits(request):
     try:
-        kits = Kit.objects.all()
+        kits = Kit.objects.all().exclude(status='RETIRED')
         kit_serializer = KitSerializer(kits, many=True)
         blueprint = Blueprint.objects.filter(archived=False)
         blueprint_serializer = BlueprintSerializer(blueprint, many=True)
@@ -58,7 +58,7 @@ def add_kit(request):
         if blueprint_id is None or not name or not username or not content:
             return Response({"message": "Required parameters are missing!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if Kit.objects.filter(name=name).exists():
+        if Kit.objects.filter(name=name).exclude(status='RETIRED').exists():
             return Response({"message": "Kit with this name already exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
         blueprint = Blueprint.objects.get(id=blueprint_id, archived=False)
@@ -78,18 +78,18 @@ def add_kit(request):
                 content=content,
             )
 
-            order_id = transact_items(content, request, new_kit, isWithdraw=True)
+            order_id = transact_items(content, request, new_kit, is_withdraw=True, is_create_kit=True)
 
             History.objects.create(
                 kit=new_kit,
                 type="CREATION",
                 date=datetime.date.today(),
                 person=username,
-                snapshot=content
+                snapshot=content,
+                order_id=order_id
             )
 
-        return Response({"message": "Kit added successfully!"},
-                        status=status.HTTP_201_CREATED)
+        return Response({"message": "Kit added successfully!", "kit_id": new_kit.id}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -105,19 +105,20 @@ def retire_kit(request, kit_id):
         if kit.status != "READY":
             return Response({"message": "Kit is not ready and cannot be retired."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not attempt_items_deposit(content):
-            return Response({"message": "Fail to deposit back into inventory and cannot retire kit."}, status=status.HTTP_400_BAD_REQUEST)
-
-        kit.status = "RETIRED"
-        kit.save()
+        order_id = transact_items(content, request, kit, is_withdraw=False)
 
         History.objects.create(
             kit=kit,
             type="RETIREMENT",
             date=datetime.date.today(),
             person=request.user.username,
-            snapshot=content
+            snapshot=None,
+            order_id=order_id
         )
+
+        kit.status = "RETIRED"
+        kit.content = None
+        kit.save()
 
         return Response({"message": "Kit retired and contents deposited successfully!"}, status=status.HTTP_200_OK)
 
@@ -284,11 +285,7 @@ def restock_kit(request):
         if add_more_than_expected(compressed_projected_content, blueprint.complete_content):
             return Response({"message": "Added content is more than expected."}, status=status.HTTP_400_BAD_REQUEST)
 
-        res = attempt_items_withdrawal(restock_expiries)
-        item_insufficient = res[1]
-        if not res[0]:
-            return Response({"message": f"Insufficient stock for {item_insufficient}."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        order_id = transact_items(restock_expiries, request, kit, is_withdraw=True)
 
         kit.content = projected_content
         kit.save()
@@ -298,7 +295,8 @@ def restock_kit(request):
             type="RESTOCK",
             date=datetime.date.today(),
             person=request.user.username,
-            snapshot=projected_content
+            snapshot=projected_content,
+            order_id=order_id
         )
 
         return Response({"message": "Kit restocked successfully!"}, status=status.HTTP_200_OK)
@@ -349,13 +347,11 @@ def revert_restock(request, kit_id):
         if history.type != "RESTOCK":
             return Response({"message": "Kit is not restocked recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
 
-        previous_history = History.objects.filter(kit__id=kit_id).order_by('-id')[1]
-        stock_change = get_stock_change(history.snapshot, previous_history.snapshot)
-
-        if not attempt_items_deposit(stock_change):
-            return Response({"message": "Fail to deposit back into inventory and cannot revert restock."}, status=status.HTTP_400_BAD_REQUEST)
+        Order.objects.get(id=history.order_id).revert_order()
 
         history.delete()
+
+        previous_history = History.objects.filter(kit__id=kit_id).order_by('-id')[1]
         kit.content = previous_history.snapshot  # status is still READY
         kit.save()
 
@@ -377,7 +373,7 @@ def revert_return_order(request, kit_id):
 
         history = History.objects.filter(kit__id=kit_id).latest('id')
         if history.type != "LOAN":
-            return Response({"message": "Kit is not loaned recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Kit is not returned recently and cannot be reverted."}, status=status.HTTP_400_BAD_REQUEST)
 
         loan_history = LoanHistory.objects.get(id=history.id)
         if loan_history.return_date is None:

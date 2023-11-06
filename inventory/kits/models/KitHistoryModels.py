@@ -30,6 +30,7 @@ class History(models.Model):
     date = models.DateField()
     person = models.CharField(max_length=50)
     snapshot = models.JSONField(null=True, blank=True)
+    order_id = models.IntegerField(null=True, blank=True, default=None)
 
     def __str__(self) -> str:
         return f"{self.type} - {self.date}"
