@@ -2,6 +2,7 @@ from django.db import models
 
 from inventory.kits.globals import HISTORY_TYPE
 from inventory.kits.models.KitModels import Kit
+from django.contrib.auth.models import User
 
 """
 * A class that encapsulates a Kit History.
@@ -27,8 +28,8 @@ from inventory.kits.models.KitModels import Kit
 class History(models.Model):
     kit = models.ForeignKey(Kit, on_delete=models.RESTRICT)
     type = models.CharField(max_length=50, choices=HISTORY_TYPE)
-    date = models.DateField()
-    person = models.CharField(max_length=50)
+    date = models.DateTimeField(auto_now_add=True)
+    person = models.ForeignKey(User, on_delete=models.RESTRICT)
     snapshot = models.JSONField(null=True, blank=True)
     order_id = models.IntegerField(null=True, blank=True, default=None)
 
@@ -38,8 +39,8 @@ class History(models.Model):
 
 class LoanHistory(History):
     loanee_name = models.CharField(max_length=50)
-    due_date = models.DateTimeField()
-    return_date = models.DateTimeField(null=True, blank=True)
+    due_date = models.DateField()
+    return_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.loanee_name} - {self.due_date}"

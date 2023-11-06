@@ -58,7 +58,7 @@ def add_kit(request):
         blueprint_id = request.data.get("blueprint")
         name = request.data.get("name")
         content = request.data.get("content")
-        username = request.user.username
+        username = request.user
 
         if blueprint_id is None or not name or not username or not content:
             return Response(
@@ -102,7 +102,6 @@ def add_kit(request):
             History.objects.create(
                 kit=new_kit,
                 type="CREATION",
-                date=datetime.date.today(),
                 person=username,
                 snapshot=content,
                 order_id=order_id,
@@ -135,8 +134,7 @@ def retire_kit(request, kit_id):
         History.objects.create(
             kit=kit,
             type="RETIREMENT",
-            date=datetime.date.today(),
-            person=request.user.username,
+            person=request.user,
             snapshot=None,
             order_id=order_id,
         )
@@ -236,8 +234,7 @@ def submit_kit_order(request):
         LoanHistory.objects.create(
             kit=kit,
             type="LOAN",
-            date=timezone.now(),
-            person=request.user.username,
+            person=request.user,
             snapshot=kit.content,
             loanee_name=loanee_name,
             due_date=due_date,
@@ -290,7 +287,7 @@ def return_kit_order(request):
                 )
 
         # Update loan history
-        loan_history.return_date = timezone.now()
+        loan_history.return_date = datetime.date.today()
         loan_history.snapshot = content
         loan_history.save()
 
@@ -368,8 +365,7 @@ def restock_kit(request):
         History.objects.create(
             kit=kit,
             type="RESTOCK",
-            date=datetime.date.today(),
-            person=request.user.username,
+            person=request.user,
             snapshot=projected_content,
             order_id=order_id,
         )
