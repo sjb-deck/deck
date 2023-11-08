@@ -62,6 +62,10 @@ def api_orders(request):
         page = request.query_params.get("page", 1)
         page_size = request.query_params.get("pageSize", 10)
 
+        loanee_name = request.query_params.get("loaneeName")
+        item = request.query_params.get("item")
+        username = request.query_params.get("username")
+
         if option == "order":
             queryset = (
                 Order.objects.exclude(reason="loan")
@@ -92,6 +96,10 @@ def api_orders(request):
                 .prefetch_related("order_items__item_expiry__item")
                 .select_related("user")
             )
+
+        if loanee_name: queryset = queryset.filter(loanee_name__icontains=loanee_name)
+        if item: queryset = queryset.filter(order_items__item_expiry__item__name__icontains=item)
+        if username: queryset = queryset.filter(user__username=username)
 
         queryset = queryset.order_by("-date")
 

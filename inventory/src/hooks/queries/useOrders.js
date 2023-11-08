@@ -4,10 +4,10 @@ import { useContext } from 'react';
 
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
+import { buildUrl } from '../../utils';
 
-export const useOrders = (page, options) => {
+export const useOrders = (params, options) => {
   const key = 'orders';
-  const url = Api[key].replace(':page', page);
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     refetchOnWindowFocus: false,
@@ -23,8 +23,9 @@ export const useOrders = (page, options) => {
   };
 
   return useQuery(
-    [key, page],
+    [key, params],
     async () => {
+      const url = buildUrl(Api['orders'], params);
       const response = await axios.get(url);
       const results = response.data;
       return results;

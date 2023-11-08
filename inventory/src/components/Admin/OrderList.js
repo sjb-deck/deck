@@ -3,12 +3,16 @@ import {
   AccordionSummary,
   Box,
   Grid,
+  MenuItem,
   Pagination,
+  Select,
   Skeleton,
   Stack,
+  TextField,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useRevertOrder } from '../../hooks/mutations';
 import { useOrders } from '../../hooks/queries';
@@ -19,7 +23,19 @@ import { OrderContent } from './OrderContent';
 export const OrderList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: orders, isLoading: dataLoading } = useOrders(currentPage);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermInput, setSearchTermInput] = useState('');
+  // empty dependency array added to prevent repeated calls to API
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetSearchTerm = useCallback(
+    debounce((value) => setSearchTerm(value), 500),
+    [],
+  );
+  const [filter, setFilter] = useState('item');
+  const { data: orders, isLoading: dataLoading } = useOrders({
+    page: currentPage,
+    [filter]: searchTerm,
+  });
   const [ordersToDisplay, setOrdersToDisplay] = useState(orders?.results);
   const handlePageChange = (_, value) => {
     setCurrentPage(value);
@@ -44,6 +60,32 @@ export const OrderList = () => {
       }}
     >
       {isLoading || dataLoading ? <LoadingSpinner /> : null}
+      <Box
+        className='dynamic-width'
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: 2,
+        }}
+      >
+        <TextField
+          label='Search'
+          value={searchTermInput}
+          onChange={(e) => {
+            setSearchTermInput(e.target.value);
+            debouncedSetSearchTerm(e.target.value);
+          }}
+          sx={{ width: 1 }}
+        />
+        <Select
+          inputProps={{ 'data-testid': 'search-select' }}
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <MenuItem value='item'>Item</MenuItem>
+          <MenuItem value='username'>User</MenuItem>
+        </Select>
+      </Box>
       <Accordion
         expanded={false}
         sx={{
