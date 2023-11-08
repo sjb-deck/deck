@@ -88,9 +88,9 @@ WSGI_APPLICATION = "deck.wsgi.application"
 
 if sys.argv[1] == "test":
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
         }
     }
 else:

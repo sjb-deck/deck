@@ -22,8 +22,10 @@ class TestApiAddItemExpiryViews(TestCase):
         self.url = reverse("add_kit")
         self.clear_relevant_models()
         self.create_items()
-        self.compressed_blueprint_content = [{'item_id': self.item.id, 'quantity': 10},
-                                             {'item_id': self.item_no_expiry.id, 'quantity': 5}]
+        self.compressed_blueprint_content = [
+            {"item_id": self.item.id, "quantity": 10},
+            {"item_id": self.item_no_expiry.id, "quantity": 5},
+        ]
         self.create_blueprint()
         self.item_expiry1_id = self.itemExpiry1.id
         self.item_expiry2_id = self.itemExpiry2.id
@@ -33,19 +35,10 @@ class TestApiAddItemExpiryViews(TestCase):
             "blueprint": self.blueprint_id,
             "name": "Test Kit",
             "content": [
-                {
-                    "item_expiry_id": self.item_expiry1_id,
-                    "quantity": 5
-                },
-                {
-                    "item_expiry_id": self.item_expiry2_id,
-                    "quantity": 5
-                },
-                {
-                    "item_expiry_id": self.item_no_expiry_id,
-                    "quantity": 5
-                }
-            ]
+                {"item_expiry_id": self.item_expiry1_id, "quantity": 5},
+                {"item_expiry_id": self.item_expiry2_id, "quantity": 5},
+                {"item_expiry_id": self.item_no_expiry_id, "quantity": 5},
+            ],
         }
 
     def create_blueprint(self):
@@ -99,7 +92,9 @@ class TestApiAddItemExpiryViews(TestCase):
         self.request["blueprint"] = 0
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Blueprint matching query does not exist.")
+        self.assertEqual(
+            response.data["message"], "Blueprint matching query does not exist."
+        )
         self.request["blueprint"] = self.blueprint_id
 
     def test_create_new_kit_with_invalid_item_expiry(self):
@@ -107,7 +102,9 @@ class TestApiAddItemExpiryViews(TestCase):
         self.request["content"][0]["item_expiry_id"] = 0
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "ItemExpiry matching query does not exist.")
+        self.assertEqual(
+            response.data["message"], "ItemExpiry matching query does not exist."
+        )
         self.request["content"][0]["item_expiry_id"] = item_expiry_id
 
     def test_create_new_kit_with_more_than_blueprint(self):
@@ -115,11 +112,13 @@ class TestApiAddItemExpiryViews(TestCase):
         self.request["content"][0]["quantity"] = 1000
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Added content is more than expected.")
+        self.assertEqual(
+            response.data["message"], "Added content is more than expected."
+        )
         self.request["content"][0]["quantity"] = quantity
 
     def test_create_new_kit_with_more_than_stock(self):
-        new_compress_blueprint_content = [{'item_id': self.item.id, 'quantity': 1000}]
+        new_compress_blueprint_content = [{"item_id": self.item.id, "quantity": 1000}]
         new_blueprint = Blueprint.objects.create(
             name="New Test Blueprint",
             complete_content=new_compress_blueprint_content,
@@ -132,8 +131,10 @@ class TestApiAddItemExpiryViews(TestCase):
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
 
-        stock_error_msg = "{'order_items': [ErrorDetail(string='Insufficient quantity for Another Item with expiry " \
-                          "date 2023-12-31', code='invalid')]}"
+        stock_error_msg = (
+            "{'order_items': [ErrorDetail(string='Insufficient quantity for Another Item with expiry "
+            "date 2023-12-31', code='invalid')]}"
+        )
         self.assertEqual(response.data["message"], stock_error_msg)
         self.request["content"][0]["quantity"] = quantity
         self.request["content"] = content
@@ -167,7 +168,6 @@ class TestApiAddItemExpiryViews(TestCase):
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Kit with this name already exists!")
-
 
     def tearDown(self):
         self.clear_relevant_models()

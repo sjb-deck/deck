@@ -28,21 +28,15 @@ class TestApiAddItemExpiryViews(TestCase):
         self.request = {
             "name": "Test Blueprint",
             "content": [
-                {
-                    "item_expiry_id": self.item_expiry1_id,
-                    "quantity": 5
-                },
-                {
-                    "item_expiry_id": self.item_expiry2_id,
-                    "quantity": 5
-                },
-                {
-                    "item_expiry_id": self.item_no_expiry_id,
-                    "quantity": 5
-                }
-            ]
+                {"item_expiry_id": self.item_expiry1_id, "quantity": 5},
+                {"item_expiry_id": self.item_expiry2_id, "quantity": 5},
+                {"item_expiry_id": self.item_no_expiry_id, "quantity": 5},
+            ],
         }
-        self.compressed_blueprint_content = [{'item_id': self.item.id, 'quantity': 10}, {'item_id': self.item_no_expiry.id, 'quantity': 5}]
+        self.compressed_blueprint_content = [
+            {"item_id": self.item.id, "quantity": 10},
+            {"item_id": self.item_no_expiry.id, "quantity": 5},
+        ]
 
     def create_items(self):
         self.item = Item.objects.create(
@@ -93,13 +87,15 @@ class TestApiAddItemExpiryViews(TestCase):
 
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], 'Blueprint with this name already exists!')
+        self.assertEqual(
+            response.data["message"], "Blueprint with this name already exists!"
+        )
 
     def test_create_new_blueprint_without_required_fields(self):
         self.request.pop("name")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], 'Required parameters are missing!')
+        self.assertEqual(response.data["message"], "Required parameters are missing!")
 
         self.request["name"] = "Test Blueprint"
         content = self.request["content"]
@@ -107,14 +103,16 @@ class TestApiAddItemExpiryViews(TestCase):
 
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], 'Required parameters are missing!')
+        self.assertEqual(response.data["message"], "Required parameters are missing!")
         self.request["content"] = content
 
     def test_create_new_blueprint_with_invalid_item_expiry_id(self):
         self.request["content"][0]["item_expiry_id"] = 0
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], 'ItemExpiry matching query does not exist.')
+        self.assertEqual(
+            response.data["message"], "ItemExpiry matching query does not exist."
+        )
 
     def tearDown(self):
         self.clear_relevant_models()
