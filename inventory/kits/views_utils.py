@@ -61,9 +61,9 @@ def attempt_items_deposit(content):
         item_expiry = ItemExpiry.objects.get(id=item_id)
 
         if (
-            item_expiry.quantity is None
-            or quantity < 0
-            or (item_expiry.quantity + quantity) < 0
+                item_expiry.quantity is None
+                or quantity < 0
+                or (item_expiry.quantity + quantity) < 0
         ):
             return False
 
@@ -91,6 +91,7 @@ def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
         else ("kit_restock" if is_withdraw else "kit_retire"),
         "order_items": order_items,
     }
+
     order = create_order(payload, request)
 
     # Update other_info with kit data

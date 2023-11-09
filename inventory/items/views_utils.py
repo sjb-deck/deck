@@ -13,7 +13,7 @@ def manage_items_change(order):
             elif action == "Deposit":
                 item_expiry.deposit(item.ordered_quantity)
     except Exception as e:
-        print("Error when updating quantity")
+        # print("Error when updating quantity")
         raise e
 
 
@@ -25,5 +25,5 @@ def create_order(data, request):
             manage_items_change(order)
             return order
     except Exception as e:
-        print("Error when creating order")
+        # print("Error when creating order")
         raise e

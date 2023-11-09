@@ -6,7 +6,7 @@ from inventory.items.models import Item
 from inventory.kits.models import Blueprint
 
 
-class TestApiAddItemExpiryViews(TestCase):
+class TestApiAddBlueprintViews(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
@@ -67,6 +67,7 @@ class TestApiAddItemExpiryViews(TestCase):
         )
 
     def clear_relevant_models(self):
+        Blueprint.objects.all().delete()
         Item.objects.all().delete()
 
     def test_create_new_blueprint(self):
@@ -91,16 +92,22 @@ class TestApiAddItemExpiryViews(TestCase):
             response.data["message"], "Blueprint with this name already exists!"
         )
 
-    def test_create_new_blueprint_without_required_fields(self):
-        self.request.pop("name")
+    def test_create_new_blueprint_with_invalid_name(self):
+        name = self.request["name"]
+        self.request["name"] = ""
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Required parameters are missing!")
+        self.request["name"] = name
 
-        self.request["name"] = "Test Blueprint"
-        content = self.request["content"]
-        self.request.pop("content")
+    def test_create_new_blueprint_without_required_fields(self):
+        name = self.request.pop("name")
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["message"], "Required parameters are missing!")
+        self.request["name"] = name
 
+        content = self.request.pop("content")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Required parameters are missing!")

@@ -216,6 +216,27 @@ def submit_kit_order(request):
         loanee_name = request.data.get("loanee_name")
         due_date = request.data.get("due_date")
 
+        if not kit_id or not loanee_name or not due_date or force is None:
+            return Response(
+                {"message": "Required parameters are missing!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check date format
+        try:
+            datetime.date.fromisoformat(due_date)
+        except ValueError:
+            return Response(
+                {"message": "Invalid date format."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if datetime.date.fromisoformat(due_date) < datetime.date.today():
+            return Response(
+                {"message": "Due date cannot be in the past."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         # Check if kit is available
         kit = Kit.objects.get(id=kit_id)
         if kit.status != "READY":
@@ -258,6 +279,19 @@ def return_kit_order(request):
     try:
         kit_id = request.data.get("kit_id")
         content = request.data.get("content")
+
+        if not kit_id or not content:
+            return Response(
+                {"message": "Required parameters are missing!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        for item in content:
+            if item["quantity"] < 0:
+                return Response(
+                    {"message": "Quantity cannot be negative."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         # Check if kit is loaned
         kit = Kit.objects.get(id=kit_id)

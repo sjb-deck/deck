@@ -2,11 +2,11 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
-from inventory.kits.models import Blueprint, Kit
+from inventory.items.models import Item, ItemExpiry, Order
+from inventory.kits.models import Blueprint, Kit, History
 
 
-class TestApiAddItemExpiryViews(TestCase):
+class TestApiAddAddKitViews(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
@@ -76,10 +76,12 @@ class TestApiAddItemExpiryViews(TestCase):
         )
 
     def clear_relevant_models(self):
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
         Item.objects.all().delete()
 
     def test_create_new_kit(self):
-        # create blueprint
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 201)
 
@@ -87,6 +89,22 @@ class TestApiAddItemExpiryViews(TestCase):
         kit = Kit.objects.get(id=response.data["kit_id"])
         self.assertEqual(kit.name, "Test Kit")
         self.assertEqual(kit.content, self.request["content"])
+
+        # check that history is created
+        history = History.objects.all()
+        self.assertEqual(history[0].type, "CREATION")
+
+        # check that item expiry quantities are updated
+        item_expiry = ItemExpiry.objects.get(id=self.item_expiry1_id)
+        self.assertEqual(item_expiry.quantity, 45)
+        item_expiry = ItemExpiry.objects.get(id=self.item_expiry2_id)
+        self.assertEqual(item_expiry.quantity, 45)
+        item_expiry = ItemExpiry.objects.get(id=self.item_no_expiry_id)
+        self.assertEqual(item_expiry.quantity, 45)
+
+        # check that order is created
+        order = Order.objects.all()
+        self.assertEqual(order[0].reason, "kit_create")
 
     def test_create_new_kit_with_invalid_blueprint(self):
         self.request["blueprint"] = 0
@@ -147,19 +165,25 @@ class TestApiAddItemExpiryViews(TestCase):
         self.assertEqual(response.data["message"], "Required parameters are missing!")
         self.request["blueprint"] = self.blueprint_id
 
-        name = self.request["name"]
-        self.request.pop("name")
+        name = self.request.pop("name")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Required parameters are missing!")
         self.request["name"] = name
 
-        content = self.request["content"]
-        self.request.pop("content")
+        content = self.request.pop("content")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Required parameters are missing!")
         self.request["content"] = content
+
+    def test_create_new_kit_with_invalid_name(self):
+        name = self.request["name"]
+        self.request["name"] = ""
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["message"], "Required parameters are missing!")
+        self.request["name"] = name
 
     def test_create_new_kit_with_same_name(self):
         response = self.client.post(self.url, self.request, format="json")
