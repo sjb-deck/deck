@@ -193,11 +193,7 @@ def add_blueprint(request):
 @permission_classes([IsAuthenticated])
 def kit_history(request, kit_id):
     try:
-        if not Kit.objects.filter(id=kit_id).exists():
-            return Response(
-                {"message": "No such kit found."}, status=status.HTTP_404_NOT_FOUND
-            )
-
+        kit = Kit.objects.get(id=kit_id)
         histories = History.objects.filter(kit__id=kit_id).order_by("-id")
 
         serializer = HistorySerializer(histories, many=True)
@@ -473,11 +469,10 @@ def revert_restock(request, kit_id):
 
         Order.objects.get(id=history.order_id).revert_order()
 
-        history.delete()
-
         previous_history = History.objects.filter(kit__id=kit_id).order_by("-id")[1]
         kit.content = previous_history.snapshot  # status is still READY
         kit.save()
+        history.delete()
 
         return Response(
             {"message": "Kit restock reverted successfully!"}, status=status.HTTP_200_OK

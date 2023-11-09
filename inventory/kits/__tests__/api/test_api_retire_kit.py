@@ -31,10 +31,10 @@ class TestApiRetireKitViews(TestCase):
         self.item_no_expiry_id = self.itemExpiry_no_expiry.id
         self.blueprint_id = self.blueprint.id
         self.kit_content = [
-                {"item_expiry_id": self.item_expiry1_id, "quantity": 5},
-                {"item_expiry_id": self.item_expiry2_id, "quantity": 5},
-                {"item_expiry_id": self.item_no_expiry_id, "quantity": 5},
-            ]
+            {"item_expiry_id": self.item_expiry1_id, "quantity": 5},
+            {"item_expiry_id": self.item_expiry2_id, "quantity": 5},
+            {"item_expiry_id": self.item_no_expiry_id, "quantity": 5},
+        ]
         self.create_kit()
         self.kit_id = self.kit.id
 
@@ -87,9 +87,13 @@ class TestApiRetireKitViews(TestCase):
         Item.objects.all().delete()
 
     def test_retire_kit(self):
-        response = self.client.get(reverse("retire_kit", args=[self.kit_id]), None, format="json")
+        response = self.client.get(
+            reverse("retire_kit", args=[self.kit_id]), None, format="json"
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit retired and contents deposited successfully!")
+        self.assertEqual(
+            response.data["message"], "Kit retired and contents deposited successfully!"
+        )
 
         # check that kit is retired
         kit = Kit.objects.get(id=self.kit_id)

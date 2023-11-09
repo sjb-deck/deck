@@ -41,18 +41,11 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.loan_kit()
         self.request = {
             "kit_id": self.kit_id,
-            "content": [{
-                "item_expiry_id": self.item_expiry1_id,
-                "quantity": 1
-            },
-            {
-                "item_expiry_id": self.item_expiry2_id,
-                "quantity": 2
-            },
-            {
-                "item_expiry_id": self.item_no_expiry_id,
-                "quantity": 3
-            }]
+            "content": [
+                {"item_expiry_id": self.item_expiry1_id, "quantity": 1},
+                {"item_expiry_id": self.item_expiry2_id, "quantity": 2},
+                {"item_expiry_id": self.item_no_expiry_id, "quantity": 3},
+            ],
         }
 
     def loan_kit(self):
@@ -60,7 +53,7 @@ class TestApiSubmitKitOrderViews(TestCase):
             "kit_id": self.kit_id,
             "force": False,
             "loanee_name": "test loanee",
-            "due_date": "2050-01-01"
+            "due_date": "2050-01-01",
         }
         response = self.client.post(reverse("submit_kit_order"), request, format="json")
         self.assertEqual(response.status_code, 200)
@@ -126,7 +119,9 @@ class TestApiSubmitKitOrderViews(TestCase):
 
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Kit is not loaned and cannot be returned.")
+        self.assertEqual(
+            response.data["message"], "Kit is not loaned and cannot be returned."
+        )
 
     def test_return_order_with_invalid_kit_id(self):
         self.request["kit_id"] = 999
@@ -142,12 +137,23 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.assertEqual(response.data["message"], "Expected content does not match.")
         self.request["content"][0]["item_expiry_id"] = item_expiry_id
 
+    def test_return_order_with_missing_item_expiry(self):
+        content = self.request["content"]
+        self.request["content"].pop(0)
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["message"], "Expected content does not match.")
+        self.request["content"] = content
+
     def test_return_order_with_invalid_quantity(self):
         quantity = self.request["content"][0]["quantity"]
         self.request["content"][0]["quantity"] = 999
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Attempting to return more than borrowed not allowed.")
+        self.assertEqual(
+            response.data["message"],
+            "Attempting to return more than borrowed not allowed.",
+        )
 
         self.request["content"][0]["quantity"] = -1
         response = self.client.post(self.url, self.request, format="json")

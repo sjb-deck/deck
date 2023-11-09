@@ -28,6 +28,7 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.create_blueprint()
         self.item_expiry1_id = self.itemExpiry1.id
         self.item_expiry2_id = self.itemExpiry2.id
+        self.item_expiry3_id = self.itemExpiry3.id
         self.item_no_expiry_id = self.itemExpiry_no_expiry.id
         self.blueprint_id = self.blueprint.id
         self.kit_content = [
@@ -43,12 +44,14 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.create_kits()
         self.kit_id = self.kit.id
         self.incomplete_kit_id = self.incomplete_kit.id
-        self.url = reverse("submit_kit_order")
+        self.url = reverse("restock_kit")
         self.request = {
-            "kit_id": self.kit_id,
-            "force": False,
-            "loanee_name": "test loanee",
-            "due_date": "2050-01-01",
+            "kit_id": self.incomplete_kit_id,
+            "content": [
+                {"item_expiry_id": self.item_expiry1_id, "quantity": 4},
+                {"item_expiry_id": self.item_expiry2_id, "quantity": 4},
+                {"item_expiry_id": self.item_no_expiry_id, "quantity": 4},
+            ],
         }
 
     def create_kits(self):
@@ -77,7 +80,7 @@ class TestApiSubmitKitOrderViews(TestCase):
             name="Another Item",
             type="General",
             unit="units",
-            total_quantity=100,
+            total_quantity=150,
             min_quantity=10,
             is_opened=False,
         )
@@ -86,6 +89,9 @@ class TestApiSubmitKitOrderViews(TestCase):
         )
         self.itemExpiry2 = self.item.expiry_dates.create(
             expiry_date="2024-12-31", quantity=50, archived=False
+        )
+        self.itemExpiry3 = self.item.expiry_dates.create(
+            expiry_date="2025-12-31", quantity=50, archived=False
         )
 
         self.item_no_expiry = Item.objects.create(
@@ -106,112 +112,131 @@ class TestApiSubmitKitOrderViews(TestCase):
         Blueprint.objects.all().delete()
         Item.objects.all().delete()
 
-    def test_order_kit(self):
-        response = self.client.post(self.url, self.request, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit loaned successfully!")
-
-        # check that kit is loaned
-        kit = Kit.objects.get(id=self.kit_id)
-        self.assertEqual(kit.status, "LOANED")
-
-        # check that history is created
-        history = History.objects.get(kit=kit)
-        self.assertEqual(history.type, "LOAN")
-
-    def test_order_kit_that_is_already_loaned(self):
-        response = self.client.post(self.url, self.request, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit loaned successfully!")
-
-        response = self.client.post(self.url, self.request, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Kit is not ready and available.")
-
-    def test_order_kit_force(self):
-        # check that kit is incomplete and cannot be loaned normally
-        self.request["kit_id"] = self.incomplete_kit_id
+    def test_restock_kit_complete_kit(self):
+        # Test that restock_kit returns 400 when trying to restock a complete kit
+        self.request["kit_id"] = self.kit_id
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            response.data["message"],
-            "Kit is not complete and normal loan if not possible.",
+            response.data["message"], "Added content is more than expected."
         )
+        self.request["kit_id"] = self.incomplete_kit_id
 
-        self.request["force"] = True
+        # Check that the kit is still complete
+        kit = Kit.objects.get(id=self.kit_id)
+        self.assertEqual(kit.content[0]["quantity"], 5)
+
+    def test_restock_kit_incomplete_kit(self):
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit loaned successfully!")
+        self.assertEqual(response.data["message"], "Kit restocked successfully!")
 
-        # check that kit is loaned
+        # Check that the kit is now complete
         kit = Kit.objects.get(id=self.incomplete_kit_id)
-        self.assertEqual(kit.status, "LOANED")
+        self.assertEqual(kit.content[0]["quantity"], 5)
 
-        # check that history is created
-        history = History.objects.get(kit=kit)
-        self.assertEqual(history.type, "LOAN")
+    def test_restock_kit_under_restock(self):
+        self.request["content"][0]["quantity"] = 1
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Kit restocked successfully!")
+        self.request["content"][0]["quantity"] = 4
 
-        self.request["force"] = False
-        self.request["kit_id"] = self.kit_id
+        # Check that the kit is still incomplete
+        kit = Kit.objects.get(id=self.incomplete_kit_id)
+        self.assertEqual(kit.content[0]["quantity"], 2)
 
-    def test_order_kit_invalid_kit_id(self):
+    def test_restock_kit_over_restock(self):
+        self.request["content"][0]["quantity"] = 10
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["message"], "Added content is more than expected."
+        )
+        self.request["content"][0]["quantity"] = 4
+
+        # Check that the kit is still incomplete
+        kit = Kit.objects.get(id=self.incomplete_kit_id)
+        self.assertEqual(kit.content[0]["quantity"], 1)
+
+    def test_restock_kit_invalid_kit_id(self):
         self.request["kit_id"] = 999
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Kit matching query does not exist.")
-        self.request["kit_id"] = self.kit_id
+        self.request["kit_id"] = self.incomplete_kit_id
 
-    def test_order_kit_invalid_loanee_name(self):
-        loanee_name = self.request["loanee_name"]
-        self.request["loanee_name"] = ""
+    def test_restock_kit_invalid_item_expiry_id(self):
+        item_expiry_id = self.request["content"][0]["item_expiry_id"]
+        self.request["content"][0]["item_expiry_id"] = 999
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["loanee_name"] = loanee_name
+        self.assertEqual(
+            response.data["message"], "ItemExpiry matching query does not exist."
+        )
+        self.request["content"][0]["item_expiry_id"] = item_expiry_id
 
-    def test_order_kit_invalid_due_date(self):
-        due_date = self.request["due_date"]
-        self.request["due_date"] = "2000-01-01"
+    def test_restock_kit_invalid_quantity(self):
+        self.request["content"][0]["quantity"] = -1
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Due date cannot be in the past.")
+        self.assertEqual(response.data["message"], "Cannot withdraw negative quantity")
+        self.request["content"][0]["quantity"] = 4
 
-        self.request["due_date"] = ""
+    def test_restock_kit_new_item_expiry(self):
+        # Check that restocking with another item expiry of the same item works
+        content = self.request["content"]
+        self.request["content"].append(
+            {"item_expiry_id": self.item_expiry3_id, "quantity": 4}
+        )
+        self.request["content"].pop(0)
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Kit restocked successfully!")
+        self.request["content"] = content
+
+    def test_restock_kit_new_item_expiry_overload(self):
+        content = self.request["content"]
+        self.request["content"].append(
+            {"item_expiry_id": self.item_expiry3_id, "quantity": 4}
+        )
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
+        self.assertEqual(
+            response.data["message"], "Added content is more than expected."
+        )
+        self.request["content"] = content
 
-        self.request["due_date"] = "XXX"
+    def test_restock_kit_missing_content_fields(self):
+        content = self.request["content"]
+        self.request["content"][0].pop("quantity")
+        self.request["content"][1].pop("quantity")
+        self.request["content"][2].pop("quantity")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Invalid date format.")
+        self.assertEqual(response.data["message"], "'quantity'")
+        self.request["content"] = content
 
-        self.request["due_date"] = due_date
-
-    def test_order_kit_missing_fields(self):
-        id = self.request.pop("kit_id")
+        self.request["content"][0].pop("item_expiry_id")
+        self.request["content"][1].pop("item_expiry_id")
+        self.request["content"][2].pop("item_expiry_id")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["kit_id"] = id
+        self.assertEqual(response.data["message"], "'item_expiry_id'")
+        self.request["content"] = content
 
-        loanee_name = self.request.pop("loanee_name")
+    def test_restock_kit_missing_fields(self):
+        self.request.pop("kit_id")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["loanee_name"] = loanee_name
+        self.assertEqual(response.data["message"], "Kit matching query does not exist.")
+        self.request["kit_id"] = self.incomplete_kit_id
 
-        due_date = self.request.pop("due_date")
+        content = self.request.pop("content")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["due_date"] = due_date
-
-        force = self.request.pop("force")
-        response = self.client.post(self.url, self.request, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["force"] = force
+        self.assertEqual(response.data["message"], "'NoneType' object is not iterable")
+        self.request["content"] = content
 
     def tearDown(self):
         self.clear_relevant_models()

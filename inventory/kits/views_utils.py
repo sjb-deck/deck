@@ -61,9 +61,9 @@ def attempt_items_deposit(content):
         item_expiry = ItemExpiry.objects.get(id=item_id)
 
         if (
-                item_expiry.quantity is None
-                or quantity < 0
-                or (item_expiry.quantity + quantity) < 0
+            item_expiry.quantity is None
+            or quantity < 0
+            or (item_expiry.quantity + quantity) < 0
         ):
             return False
 
