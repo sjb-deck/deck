@@ -6,7 +6,7 @@ from inventory.items.models import Item
 from inventory.kits.models import Blueprint, Kit, History
 
 
-class TestApiGetNewKitRecipeViews(TestCase):
+class TestApiRestockOptionsViews(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
