@@ -241,6 +241,14 @@ class LoanReturnSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     {"items": "Order item with this ID does not exist."}
                 )
+            if item["returned_quantity"] > order_item.ordered_quantity:
+                raise serializers.ValidationError(
+                    {
+                        "items": f"Returned quantity cannot be greater than ordered quantity for {order_item.item_expiry.item.name} with expiry date {order_item.item_expiry.expiry_date}"
+                    }
+                )
+            
+        
 
         return data
 

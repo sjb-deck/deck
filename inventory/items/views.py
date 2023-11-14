@@ -66,23 +66,21 @@ def api_orders(request):
         item = request.query_params.get("item")
         username = request.query_params.get("username")
 
+        item_orders = Order.objects.exclude(reason="kit_create").exclude(
+            reason="kit_restock"
+        ).exclude(reason="kit_retire").prefetch_related("order_items__item_expiry__item").select_related("user")
+        item_loan_orders = LoanOrder.objects.all().prefetch_related("order_items__item_expiry__item").select_related("user")
+
         if option == "order":
             queryset = (
-                Order.objects.exclude(reason="loan")
-                .prefetch_related("order_items__item_expiry__item")
-                .select_related("user")
+                item_orders.exclude(reason="loan")
             )
         elif option == "loan":
-            queryset = (
-                LoanOrder.objects.all()
-                .prefetch_related("order_items__item_expiry__item")
-                .select_related("user")
-            )
+            queryset = item_loan_orders
         elif option == "loan_active":
             queryset = (
-                LoanOrder.objects.filter(loan_active=True)
-                .prefetch_related("order_items__item_expiry__item")
-                .select_related("user")
+                item_loan_orders.filter(loan_active=True)
+            
             )
         elif order_id:
             queryset = (
@@ -91,12 +89,8 @@ def api_orders(request):
                 .select_related("user")
             )
         else:
-            queryset = (
-                Order.objects.all()
-                .prefetch_related("order_items__item_expiry__item")
-                .select_related("user")
-            )
-
+            queryset = item_orders
+            
         if loanee_name: queryset = queryset.filter(loanee_name__icontains=loanee_name)
         if item: queryset = queryset.filter(order_items__item_expiry__item__name__icontains=item)
         if username: queryset = queryset.filter(user__username=username)
