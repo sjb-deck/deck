@@ -67,6 +67,16 @@ export const LoanOrderContent = ({
                   alignItems: 'center',
                 }}
               >
+                <span>Ordered by:</span>
+                <span>{order.user.username}</span>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <span>Loan Status:</span>
                 <span>{order.loan_active ? 'Active' : 'Returned'}</span>
               </Box>

@@ -69,6 +69,16 @@ export const OrderContent = ({
                   alignItems: 'center',
                 }}
               >
+                <span>Ordered by:</span>
+                <span>{order.user.username}</span>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <span>Other info:</span>
                 <span>{order.other_info ?? '-'}</span>
               </Box>
