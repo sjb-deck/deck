@@ -16,6 +16,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { useRevertOrder } from '../../hooks/mutations';
 import { useLoans } from '../../hooks/queries';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 import { LoanOrderContent } from './LoanOrderContent';
@@ -137,6 +138,12 @@ export const LoanOrderList = () => {
             alignItems: 'center',
           }}
         >
+          {!dataLoading && ordersToDisplay?.length === 0 && (
+            <EmptyMessage
+              message='There are no orders matching your search parameters'
+              fullscreen={false}
+            />
+          )}
           {!dataLoading &&
             ordersToDisplay?.length > 0 &&
             ordersToDisplay?.map((order) => {

@@ -16,6 +16,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { useRevertOrder } from '../../hooks/mutations';
 import { useOrders } from '../../hooks/queries';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 import { OrderContent } from './OrderContent';
@@ -143,7 +144,14 @@ export const OrderList = () => {
             alignItems: 'center',
           }}
         >
+          {!dataLoading && ordersToDisplay?.length === 0 && (
+            <EmptyMessage
+              message='There are no orders matching your search parameters'
+              fullscreen={false}
+            />
+          )}
           {!dataLoading &&
+            ordersToDisplay?.length > 0 &&
             ordersToDisplay?.map((order) => {
               return (
                 <OrderContent

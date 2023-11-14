@@ -10,3 +10,4 @@ export * from './Footer';
 export * from './LoadingSpinner';
 export * from './Alerts';
 export * from './Themes';
+export * from './EmptyMessage';

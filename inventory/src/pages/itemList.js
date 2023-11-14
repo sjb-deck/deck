@@ -7,6 +7,7 @@ import {
   NavBar,
   ImportModal,
   ItemTable,
+  EmptyMessage,
 } from '../components';
 import { useExportItems } from '../hooks/mutations';
 import { useItems, useUser } from '../hooks/queries';
@@ -79,7 +80,12 @@ export const ItemList = () => {
             Export
           </Button>
         </ButtonGroup>
-        {!!expiryDates.length && <ItemTable items={expiryDates} />}
+        {!itemsLoading &&
+          (expiryDates.length ? (
+            <ItemTable items={expiryDates} />
+          ) : (
+            <EmptyMessage message='No items found' fullscreen={false} />
+          ))}
       </Box>
       <Footer />
     </>
