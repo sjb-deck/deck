@@ -138,6 +138,7 @@ export const LoanOrderList = () => {
           }}
         >
           {!dataLoading &&
+            ordersToDisplay?.length > 0 &&
             ordersToDisplay?.map((order) => {
               return (
                 <LoanOrderContent
