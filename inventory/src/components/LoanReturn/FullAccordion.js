@@ -5,16 +5,15 @@ import {
   AccordionSummary,
   Button,
 } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useState } from 'react';
 
 import { AccordionItem } from './AccordionItem';
 import { AccordionSummaryContent } from './AccordionSummaryContent';
 import { ReturnForm } from './ReturnForm';
 
+import '../../globals/styles/inventoryBase.scss';
+
 export const FullAccordion = ({ index, loan }) => {
-  const isMobile = useMediaQuery('(max-width: 600px)');
-  const isPC = useMediaQuery('(min-width: 1000px)');
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
 
   const handleDialogOpen = () => {
@@ -27,12 +26,7 @@ export const FullAccordion = ({ index, loan }) => {
 
   return (
     <>
-      <Accordion
-        sx={{
-          maxWidth: '750px',
-          minWidth: isMobile ? '90%' : isPC ? '50%' : '70%',
-        }}
-      >
+      <Accordion className='dynamic-width'>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
