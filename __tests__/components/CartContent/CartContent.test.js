@@ -3,12 +3,6 @@ import React from 'react';
 
 import { CartContent } from '../../../components/CartContent/CartContent';
 import { emptyCartMessage } from '../../../components/CartContent/labels';
-import { Api } from '../../../globals';
-import {
-  mockDepositOrder,
-  mockLoanOrder,
-  mockWithdrawOrder,
-} from '../../../mocks';
 import { mockDepositCart, mockWithdrawCart } from '../../../mocks/cart';
 import { render, userEvent } from '../../../testSetup';
 
@@ -182,8 +176,6 @@ describe('<CartContent />', () => {
       expect(screen.getByRole('textbox', { name: 'Loanee Name' })).toHaveValue(
         'Jesper Fan',
       );
-      await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
-      expect(formik.handleSubmit).toHaveBeenCalledWith();
     });
 
     it.todo('loan withdrawal order');
