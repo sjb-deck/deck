@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
 from inventory.items.models import Item, ItemExpiry, Order
-from inventory.kits.models import Blueprint, Kit, History
+from inventory.kits.models import Blueprint, Kit, History, LoanHistory
 
 
 class TestApiReturnKitOrderViews(TestCase):
@@ -108,9 +108,27 @@ class TestApiReturnKitOrderViews(TestCase):
         Item.objects.all().delete()
 
     def test_return_order(self):
+        # Before returning
+        loan_history = LoanHistory.objects.filter(kit_id=self.kit_id).latest("id")
+        self.assertEqual(loan_history.type, "LOAN")
+        self.assertIsNone(loan_history.return_date)
+        self.assertEqual(loan_history.snapshot, self.kit_content)
+        kit = Kit.objects.get(id=self.kit_id)
+        self.assertEqual(kit.status, "LOANED")
+        self.assertEqual(kit.content, self.kit_content)
+
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Kit returned successfully!")
+
+        # After returning
+        loan_history = LoanHistory.objects.filter(kit_id=self.kit_id).latest("id")
+        self.assertEqual(loan_history.type, "LOAN")
+        self.assertIsNotNone(loan_history.return_date)
+        self.assertEqual(loan_history.snapshot, self.request["content"])
+        kit = Kit.objects.get(id=self.kit_id)
+        self.assertEqual(kit.status, "READY")
+        self.assertEqual(kit.content, self.request["content"])
 
     def test_return_order_after_return(self):
         response = self.client.post(self.url, self.request, format="json")

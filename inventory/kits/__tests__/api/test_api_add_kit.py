@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History
 
 
@@ -82,6 +82,7 @@ class TestApiAddAddKitViews(TestCase):
         Item.objects.all().delete()
 
     def test_create_new_kit(self):
+        order_count = Order.objects.count()
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 201)
 
@@ -102,9 +103,20 @@ class TestApiAddAddKitViews(TestCase):
         item_expiry = ItemExpiry.objects.get(id=self.item_no_expiry_id)
         self.assertEqual(item_expiry.quantity, 45)
 
-        # check that order is created
-        order = Order.objects.all()
-        self.assertEqual(order[0].reason, "kit_create")
+        # check that order is created correctly
+        self.assertEqual(Order.objects.count(), order_count + 1)
+        order = Order.objects.get(id=response.data["order_id"])
+        self.assertEqual(order.reason, "kit_create")
+        order_items = OrderItem.objects.filter(order=order)
+        self.assertEqual(order_items.count(), 3)
+        items_ordered = [
+            self.item_expiry1_id,
+            self.item_expiry2_id,
+            self.item_no_expiry_id,
+        ]
+        for order_item in order_items:
+            self.assertEqual(order_item.item_expiry.id, items_ordered.pop(0))
+            self.assertEqual(order_item.ordered_quantity, 5)
 
     def test_create_new_kit_with_invalid_blueprint(self):
         self.request["blueprint"] = 0
@@ -133,6 +145,9 @@ class TestApiAddAddKitViews(TestCase):
         self.assertEqual(
             response.data["message"], "Added content is more than expected."
         )
+        kit = Kit.objects.all()
+        self.assertEqual(len(kit), 0)
+
         self.request["content"][0]["quantity"] = quantity
 
     def test_create_new_kit_with_more_than_stock(self):
@@ -154,6 +169,9 @@ class TestApiAddAddKitViews(TestCase):
             "date 2023-12-31', code='invalid')]}"
         )
         self.assertEqual(response.data["message"], stock_error_msg)
+        kit = Kit.objects.all()
+        self.assertEqual(len(kit), 0)
+
         self.request["content"][0]["quantity"] = quantity
         self.request["content"] = content
         self.request["blueprint"] = self.blueprint_id

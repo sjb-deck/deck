@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History
 
 
@@ -113,6 +113,8 @@ class TestApiRestockKitViews(TestCase):
         Item.objects.all().delete()
 
     def test_restock_kit_complete_kit(self):
+        order_count = Order.objects.count()
+
         # Test that restock_kit returns 400 when trying to restock a complete kit
         self.request["kit_id"] = self.kit_id
         response = self.client.post(self.url, self.request, format="json")
@@ -126,7 +128,11 @@ class TestApiRestockKitViews(TestCase):
         kit = Kit.objects.get(id=self.kit_id)
         self.assertEqual(kit.content[0]["quantity"], 5)
 
+        # Check no order is created
+        self.assertEqual(Order.objects.count(), order_count)
+
     def test_restock_kit_incomplete_kit(self):
+        order_count = Order.objects.count()
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Kit restocked successfully!")
@@ -135,7 +141,31 @@ class TestApiRestockKitViews(TestCase):
         kit = Kit.objects.get(id=self.incomplete_kit_id)
         self.assertEqual(kit.content[0]["quantity"], 5)
 
+        # Check items are deducted from inventory
+        item_expiry1 = ItemExpiry.objects.get(id=self.item_expiry1_id)
+        self.assertEqual(item_expiry1.quantity, 46)
+        item_expiry2 = ItemExpiry.objects.get(id=self.item_expiry2_id)
+        self.assertEqual(item_expiry2.quantity, 46)
+        item_expiry_no_expiry = ItemExpiry.objects.get(id=self.item_no_expiry_id)
+        self.assertEqual(item_expiry_no_expiry.quantity, 46)
+
+        # Check that an order is created
+        self.assertEqual(Order.objects.count(), order_count + 1)
+        order = Order.objects.get(id=response.data["order_id"])
+        self.assertEqual(order.reason, "kit_restock")
+        order_items = OrderItem.objects.filter(order=order)
+        self.assertEqual(order_items.count(), 3)
+        items_ordered = [
+            self.item_expiry1_id,
+            self.item_expiry2_id,
+            self.item_no_expiry_id,
+        ]
+        for order_item in order_items:
+            self.assertEqual(order_item.item_expiry.id, items_ordered.pop(0))
+            self.assertEqual(order_item.ordered_quantity, 4)
+
     def test_restock_kit_under_restock(self):
+        order_count = Order.objects.count()
         self.request["content"][0]["quantity"] = 1
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 200)
@@ -146,7 +176,34 @@ class TestApiRestockKitViews(TestCase):
         kit = Kit.objects.get(id=self.incomplete_kit_id)
         self.assertEqual(kit.content[0]["quantity"], 2)
 
+        # Check items are deducted from inventory
+        item_expiry1 = ItemExpiry.objects.get(id=self.item_expiry1_id)
+        self.assertEqual(item_expiry1.quantity, 49)
+        item_expiry2 = ItemExpiry.objects.get(id=self.item_expiry2_id)
+        self.assertEqual(item_expiry2.quantity, 46)
+        item_expiry_no_expiry = ItemExpiry.objects.get(id=self.item_no_expiry_id)
+        self.assertEqual(item_expiry_no_expiry.quantity, 46)
+
+        # Check that an order is created
+        self.assertEqual(Order.objects.count(), order_count + 1)
+        order = Order.objects.get(id=response.data["order_id"])
+        self.assertEqual(order.reason, "kit_restock")
+        order_items = OrderItem.objects.filter(order=order)
+        self.assertEqual(order_items.count(), 3)
+        items_ordered = [
+            self.item_expiry1_id,
+            self.item_expiry2_id,
+            self.item_no_expiry_id,
+        ]
+        temp_index = 0
+        for order_item in order_items:
+            self.assertEqual(order_item.item_expiry.id, items_ordered.pop(0))
+            assert_value = 1 if temp_index == 0 else 4
+            self.assertEqual(order_item.ordered_quantity, assert_value)
+            temp_index += 1
+
     def test_restock_kit_over_restock(self):
+        order_count = Order.objects.count()
         self.request["content"][0]["quantity"] = 10
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)

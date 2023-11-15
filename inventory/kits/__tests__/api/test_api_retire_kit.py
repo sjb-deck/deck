@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History
 
 
@@ -87,6 +87,7 @@ class TestApiRetireKitViews(TestCase):
         Item.objects.all().delete()
 
     def test_retire_kit(self):
+        order_count = Order.objects.count()
         response = self.client.get(
             reverse("retire_kit", args=[self.kit_id]), None, format="json"
         )
@@ -111,9 +112,20 @@ class TestApiRetireKitViews(TestCase):
         item_expiry = ItemExpiry.objects.get(id=self.item_no_expiry_id)
         self.assertEqual(item_expiry.quantity, 55)
 
-        # check that order is created
-        order = Order.objects.all()
-        self.assertEqual(order[0].reason, "kit_retire")
+        # Check that an order is created
+        self.assertEqual(Order.objects.count(), order_count + 1)
+        order = Order.objects.get(id=response.data["order_id"])
+        self.assertEqual(order.reason, "kit_retire")
+        order_items = OrderItem.objects.filter(order=order)
+        self.assertEqual(order_items.count(), 3)
+        items_ordered = [
+            self.item_expiry1_id,
+            self.item_expiry2_id,
+            self.item_no_expiry_id,
+        ]
+        for order_item in order_items:
+            self.assertEqual(order_item.item_expiry.id, items_ordered.pop(0))
+            self.assertEqual(order_item.ordered_quantity, 5)
 
     def test_retire_kit_with_invalid_kit_id(self):
         response = self.client.get(reverse("retire_kit", args=[0]), None, format="json")
