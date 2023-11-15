@@ -214,6 +214,13 @@ class TestApiRevertOrderView(TestCase):
         response = self.client.post(self.url, self.kit_order.id, format="json")
         self.assertEqual(response.status_code, 500)
 
+    def test_revert_deposit_order_with_insufficient_quantity(self):
+        self.deposit_order_item1.ordered_quantity = 100
+        self.deposit_order_item1.save()
+        response = self.client.post(self.url, self.deposit_order.id, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(self.itemExpiry1.quantity, 50)
+
     def tearDown(self) -> None:
         self.clear_relevant_models()
         return super().tearDown()
