@@ -8,9 +8,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+import requests
+from django.urls import reverse
 
 from inventory.items.serializers import *
-from inventory.items.views_utils import manage_items_change
+from inventory.items.views_utils import *
 
 
 # Create your views here.
@@ -115,15 +117,8 @@ def api_orders(request):
 @permission_classes([IsAuthenticated])
 def api_submit_order(request):
     try:
-        data = request.data
-        serializer = OrderSerializer(data=data, context={"request": request})
-        if serializer.is_valid(raise_exception=True):
-            order = serializer.save()
-            manage_items_change(order)
-            return Response(
-                OrderSerializer(order).data,
-                status=status.HTTP_201_CREATED,
-            )
+        order = create_order(request.data, request)
+        return Response(OrderSerializer(order).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -148,10 +143,8 @@ def api_add_item(request):
 @permission_classes([IsAuthenticated])
 def create_new_expiry(request):
     try:
-        expiry_serializer = AddItemExpirySerializer(data=request.data)
-        if expiry_serializer.is_valid(raise_exception=True):
-            expiry = expiry_serializer.save()
-            return Response(ItemSerializer(expiry.item).data, status=201)
+        item_expiry, _ = create_new_item_expiry(request.data, request)
+        return Response(ItemExpirySerializer(item_expiry).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -252,11 +245,9 @@ def import_items_csv(request):
                         new_expiry = {
                             "item": current_item.first().id,
                             "expiry_date": row[5],
-                            "quantity": row[3],
+                            "quantity": int(row[3]),
                         }
-                        expiry_serializer = AddItemExpirySerializer(data=new_expiry)
-                        if expiry_serializer.is_valid(raise_exception=True):
-                            expiry_serializer.save()
+                        create_new_item_expiry(new_expiry, request)
                     elif item.is_valid(raise_exception=True):
                         item.save()
                 except Exception as e:

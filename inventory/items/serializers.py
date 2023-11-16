@@ -34,13 +34,11 @@ class AddItemExpirySerializer(serializers.ModelSerializer):
             )
 
         return super().validate(attrs)
-
+    
     def create(self, validated_data):
-        item_id = validated_data["item"]
-        quantity = validated_data["quantity"]
-        item = Item.objects.get(id=item_id.id)
-        item.total_quantity += quantity
-        item.save()
+        # we create item expiry with 0 quantity
+        # quantity will be updated later when we create the order
+        validated_data['quantity'] = 0
         return super().create(validated_data)
 
 

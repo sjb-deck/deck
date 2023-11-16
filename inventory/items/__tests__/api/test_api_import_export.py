@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
+from inventory.items.models import Item, Order
 
 
 class TestApiImportExportViews(TestCase):
@@ -228,6 +228,9 @@ class TestApiImportExportViews(TestCase):
         self.assertEqual(item1_new_expiry.item.id, item1.id)
         self.assertEqual(item1.total_quantity, 157)
         self.assertEqual(item2.total_quantity, 145)
+
+        # check that order is created
+        self.assertEqual(Order.objects.count(), 2)
 
     def test_import_invalid_csv_duplicate_expiry(self):
         with open(self.file_name, "w", newline="") as file:
