@@ -51,19 +51,21 @@ export const ItemContainer = ({ item }) => {
                 variant={selectedExpiry === 'All' ? 'filled' : 'outlined'}
                 onClick={() => handleExpiryChange('All')}
               />
-              {item.expiry_dates.map((itemExpiry) => {
-                return (
-                  <Chip
-                    key={itemExpiry.id}
-                    label={itemExpiry.expiry_date}
-                    color='primary'
-                    variant={
-                      selectedExpiry === itemExpiry.id ? 'filled' : 'outlined'
-                    }
-                    onClick={() => handleExpiryChange(itemExpiry)}
-                  />
-                );
-              })}
+              {item.expiry_dates
+                .filter((x) => !x.archived)
+                .map((itemExpiry) => {
+                  return (
+                    <Chip
+                      key={itemExpiry.id}
+                      label={itemExpiry.expiry_date}
+                      color='primary'
+                      variant={
+                        selectedExpiry === itemExpiry.id ? 'filled' : 'outlined'
+                      }
+                      onClick={() => handleExpiryChange(itemExpiry)}
+                    />
+                  );
+                })}
             </Stack>
           </Box>
           <Divider
