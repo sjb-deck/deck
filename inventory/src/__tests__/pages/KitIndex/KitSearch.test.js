@@ -13,7 +13,7 @@ describe('KitIndex Search', () => {
     const searchInput = screen.getByLabelText('Search by Blueprint');
     expect(searchInput).toBeInTheDocument();
 
-    fireEvent.change(searchInput, { target: { value: 'tEst kI' } });
+    fireEvent.change(searchInput, { target: { value: 'tEst bLuepri' } });
     expect(screen.getByTestId('kit-30')).toBeInTheDocument();
     expect(screen.queryByTestId('kit-31')).not.toBeInTheDocument();
     expect(screen.queryByTestId('kit-32')).not.toBeInTheDocument();
@@ -24,7 +24,7 @@ describe('KitIndex Search', () => {
     await waitFor(() => {
       expect(screen.getAllByText('Status')[0]).toBeInTheDocument();
     });
-    const selectInput = screen.getByTestId('search-select');
+    const selectInput = screen.getByTestId('kit-select');
     expect(selectInput).toBeInTheDocument();
 
     fireEvent.change(selectInput, { target: { value: 'complete' } });
