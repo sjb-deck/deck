@@ -15,6 +15,7 @@ module.exports = {
     loanReturn: ['./inventory/src/pages/render/loanReturn.js'],
     orderReceipt: ['./inventory/src/pages/render/orderReceipt.js'],
     itemList: ['./inventory/src/pages/render/itemList.js'],
+    kitIndex: ['./inventory/src/pages/render/kitIndex.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

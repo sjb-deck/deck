@@ -5,10 +5,11 @@ import {
   INV_API_EXPORT_ITEMS_URL,
   INV_API_IMPORT_ITEMS_URL,
   INV_API_ITEMS_URL,
+  INV_API_KITS_URL,
   INV_API_ORDERS_URL,
   INV_API_USER_URL,
 } from '../../globals';
-import { mockItemList, mockOrders, mockUser } from '../index';
+import { mockItemList, mockKitsList, mockOrders, mockUser } from '../index';
 
 export const handlers = [
   rest.get(INV_API_USER_URL, (req, res, ctx) => {
@@ -38,5 +39,9 @@ export const handlers = [
       ctx.set('Content-Type', 'text/csv'),
       ctx.json([]),
     );
+  }),
+
+  rest.get(INV_API_KITS_URL, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ kits: mockKitsList }));
   }),
 ];

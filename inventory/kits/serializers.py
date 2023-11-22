@@ -2,10 +2,24 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 from accounts.models import User, UserExtras
+from inventory.items.serializers import ItemExpiryWithItemSerializer
+
 
 from .models import *
 from .views_utils import compress_content
-from ..items.models import Item
+from ..items.models import Item, ItemExpiry
+
+
+class KitContentSerializer(serializers.Serializer):
+    item_expiry_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["item_expiry"] = ItemExpiryWithItemSerializer(
+            ItemExpiry.objects.get(id=data.get("item_expiry_id"))
+        ).data
+        return data
 
 
 class KitSerializer(serializers.ModelSerializer):
@@ -14,6 +28,7 @@ class KitSerializer(serializers.ModelSerializer):
     blueprint_id = PrimaryKeyRelatedField(
         queryset=Blueprint.objects.all(), source="blueprint"
     )
+    content = KitContentSerializer(many=True)
 
     class Meta:
         model = Kit
