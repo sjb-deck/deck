@@ -84,9 +84,7 @@ class TestApiAddItemExpiryViews(TestCase):
             newly_created_order.order_items.get().item_expiry.id,
             newly_created_item_expiry.id,
         )
-        self.assertEqual(
-            newly_created_order.order_items.get().ordered_quantity, 10
-        )
+        self.assertEqual(newly_created_order.order_items.get().ordered_quantity, 10)
 
     def test_create_new_expiry_with_invalid_expiry_date(self):
         request_with_invalid_expiry_date = self.request.copy()

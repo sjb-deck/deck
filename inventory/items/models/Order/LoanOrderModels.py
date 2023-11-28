@@ -35,6 +35,5 @@ class LoanOrder(Order):
             self.return_date = None
             self.save()
 
-
     def __str__(self) -> str:
         return f"LoanOrder #{self.pk}"

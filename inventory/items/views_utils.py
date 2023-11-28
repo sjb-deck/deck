@@ -1,6 +1,9 @@
-from inventory.items.serializers import OrderSerializer, AddItemExpirySerializer, ItemSerializer
+from inventory.items.serializers import (
+    OrderSerializer,
+    AddItemExpirySerializer,
+    ItemSerializer,
+)
 from django.db import transaction
-
 
 
 def manage_items_change(order):
@@ -19,7 +22,8 @@ def create_order(data, request):
         order = serializer.save()
         manage_items_change(order)
         return order
-    
+
+
 def create_payload_for_new_expiry_order(data, item_expiry_id):
     payload = {
         "action": "Deposit",
@@ -33,6 +37,7 @@ def create_payload_for_new_expiry_order(data, item_expiry_id):
     }
     return payload
 
+
 def create_new_item_expiry(data, request):
     expiry_serializer = AddItemExpirySerializer(data=data)
     if expiry_serializer.is_valid(raise_exception=True):
@@ -42,4 +47,3 @@ def create_new_item_expiry(data, request):
             order = create_order(payload, request)
             order.save()
     return expiry, order
-  

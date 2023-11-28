@@ -68,22 +68,25 @@ def api_orders(request):
         item = request.query_params.get("item")
         username = request.query_params.get("username")
 
-        item_orders = Order.objects.exclude(reason="kit_create").exclude(
-            reason="kit_restock"
-        ).exclude(reason="kit_retire").prefetch_related("order_items__item_expiry__item").select_related("user")
-        item_loan_orders = LoanOrder.objects.all().prefetch_related("order_items__item_expiry__item").select_related("user")
+        item_orders = (
+            Order.objects.exclude(reason="kit_create")
+            .exclude(reason="kit_restock")
+            .exclude(reason="kit_retire")
+            .prefetch_related("order_items__item_expiry__item")
+            .select_related("user")
+        )
+        item_loan_orders = (
+            LoanOrder.objects.all()
+            .prefetch_related("order_items__item_expiry__item")
+            .select_related("user")
+        )
 
         if option == "order":
-            queryset = (
-                item_orders.exclude(reason="loan")
-            )
+            queryset = item_orders.exclude(reason="loan")
         elif option == "loan":
             queryset = item_loan_orders
         elif option == "loan_active":
-            queryset = (
-                item_loan_orders.filter(loan_active=True)
-            
-            )
+            queryset = item_loan_orders.filter(loan_active=True)
         elif order_id:
             queryset = (
                 Order.objects.filter(id=order_id)
@@ -92,10 +95,15 @@ def api_orders(request):
             )
         else:
             queryset = item_orders
-            
-        if loanee_name: queryset = queryset.filter(loanee_name__icontains=loanee_name)
-        if item: queryset = queryset.filter(order_items__item_expiry__item__name__icontains=item)
-        if username: queryset = queryset.filter(user__username=username)
+
+        if loanee_name:
+            queryset = queryset.filter(loanee_name__icontains=loanee_name)
+        if item:
+            queryset = queryset.filter(
+                order_items__item_expiry__item__name__icontains=item
+            )
+        if username:
+            queryset = queryset.filter(user__username=username)
 
         queryset = queryset.order_by("-date")
 

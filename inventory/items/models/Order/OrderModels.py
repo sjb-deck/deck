@@ -35,7 +35,11 @@ class Order(models.Model):
     other_info = models.CharField(max_length=100, null=True, blank=True)
 
     def revert_order(self):
-        if self.reason == "kit_create" or self.reason == 'kit_restock' or self.reason == 'kit_retire':
+        if (
+            self.reason == "kit_create"
+            or self.reason == "kit_restock"
+            or self.reason == "kit_retire"
+        ):
             raise Exception("Cannot revert kit creation/restock/retire")
         for item in self.order_items.all():
             item.revert_order_item()

@@ -34,11 +34,11 @@ class AddItemExpirySerializer(serializers.ModelSerializer):
             )
 
         return super().validate(attrs)
-    
+
     def create(self, validated_data):
         # we create item expiry with 0 quantity
         # quantity will be updated later when we create the order
-        validated_data['quantity'] = 0
+        validated_data["quantity"] = 0
         return super().create(validated_data)
 
 
@@ -245,8 +245,6 @@ class LoanReturnSerializer(serializers.Serializer):
                         "items": f"Returned quantity cannot be greater than ordered quantity for {order_item.item_expiry.item.name} with expiry date {order_item.item_expiry.expiry_date}"
                     }
                 )
-            
-        
 
         return data
 
