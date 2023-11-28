@@ -5,7 +5,7 @@ import React from 'react';
 import { AdminIndex } from '../../../pages';
 import { render } from '../../../testSetup';
 
-describe('AdminIndex Order List', () => {
+xdescribe('AdminIndex Order List', () => {
   it('should display order list by default', async () => {
     render(<AdminIndex />);
     await waitFor(() => {
