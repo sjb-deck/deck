@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import sys
 from pathlib import Path
 import os
 from decouple import config
@@ -86,16 +86,24 @@ WSGI_APPLICATION = "deck.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "deck_staging",
-        "HOST": config("DB_HOST"),
-        "PORT": "3306",
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PW"),
+if sys.argv[1] == "test":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "deck_staging",
+            "HOST": config("DB_HOST"),
+            "PORT": "3306",
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PW"),
+        },
+    }
 
 # uncomment this to use local db
 # DATABASES = {
