@@ -186,7 +186,11 @@ def revert_order(request):
             return Response({"message": "Invalid request body"}, status=500)
         try:
             order = Order.objects.get(id=order_id)
-            if order.reason == "kit_create" or order.reason == "kit_restock" or order.reason == "kit_retire":
+            if (
+                order.reason == "kit_create"
+                or order.reason == "kit_restock"
+                or order.reason == "kit_retire"
+            ):
                 raise Exception("Cannot revert kit creation/restock/retire")
             if order.reason == "loan":
                 loan_order = LoanOrder.objects.get(id=order_id)
