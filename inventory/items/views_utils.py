@@ -50,27 +50,27 @@ def create_new_item_expiry(data, request):
             order.save()
     return expiry, order
 
+
 def check_correct_csv_format(row, idx):
     types = [str, str, str, int, bool, str, int, bool]
     for i, val in enumerate(row):
         # check if boolean
         if types[i] == bool:
             if val.lower() not in ["true", "false"]:
-                return False, "Row {}: Expected boolean, found {}".format(
-                    idx + 1, val
-                )
+                return False, "Row {}: Expected boolean, found {}".format(idx + 1, val)
         # check if non negative integer
         elif types[i] == int:
             try:
                 int(val)
                 if int(val) < 0:
-                    return False, "Row {}: Expected non negative integer, found {}".format(
-                        idx + 1, val
+                    return (
+                        False,
+                        "Row {}: Expected non negative integer, found {}".format(
+                            idx + 1, val
+                        ),
                     )
             except ValueError:
-                return False, "Row {}: Expected integer, found {}".format(
-                    idx + 1, val
-                )
+                return False, "Row {}: Expected integer, found {}".format(idx + 1, val)
         # check if valid type
         elif i == 1:
             item_types = [i[0] for i in typechoices]
@@ -79,7 +79,5 @@ def check_correct_csv_format(row, idx):
                     idx + 1, item_types, val
                 )
         elif not isinstance(val, types[i]):
-            return False, "Row {}: Expected {}, found {}".format(
-                idx + 1, types[i], val
-            )
+            return False, "Row {}: Expected {}, found {}".format(idx + 1, types[i], val)
     return True, ""

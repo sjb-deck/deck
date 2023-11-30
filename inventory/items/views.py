@@ -230,8 +230,11 @@ def export_items_csv(request):
 def import_items_csv(request):
     # Check the size of the uploaded file
     if request.FILES["file"].size > 5 * 1024 * 1024:
-        return Response({"message": "The uploaded file is too large. Maximum size is 5 MB."}, status=400)
-        
+        return Response(
+            {"message": "The uploaded file is too large. Maximum size is 5 MB."},
+            status=400,
+        )
+
     reader = csv.reader(request.FILES["file"].read().decode("utf-8-sig").splitlines())
     errors = []
     next(reader)
