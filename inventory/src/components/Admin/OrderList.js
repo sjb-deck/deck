@@ -60,7 +60,6 @@ export const OrderList = () => {
         alignItems: 'center',
       }}
     >
-      {isLoading || dataLoading ? <LoadingSpinner /> : null}
       <Box
         className='dynamic-width'
         sx={{
@@ -176,6 +175,7 @@ export const OrderList = () => {
           </Skeleton>
         )}
       </Stack>
+      {isLoading || dataLoading ? <LoadingSpinner /> : null}
     </Box>
   );
 };
