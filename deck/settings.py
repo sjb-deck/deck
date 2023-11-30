@@ -91,24 +91,17 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if sys.argv[1] == "test":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": "deck_staging",
-            "HOST": config("DB_HOST"),
-            "PORT": "3306",
-            "USER": config("DB_USER"),
-            "PASSWORD": config("DB_PW"),
-        },
-    }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "deck_staging",
+        "HOST": config("DB_HOST"),
+        "PORT": "3306",
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PW"),
+    },
+}
 
 # uncomment this to use local db
 # DATABASES = {
