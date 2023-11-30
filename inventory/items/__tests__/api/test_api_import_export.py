@@ -88,7 +88,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2023-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "CSV Item Test 5",
@@ -98,7 +98,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2024-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "CSV Item Test 1",
@@ -108,7 +108,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2025-12-31",
                 "50",
-                "0",
+                "False",
             ],
         ]
 
@@ -131,7 +131,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2026-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "CSV Item Test 1",
@@ -141,7 +141,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2023-12-31",
                 "50",
-                "0",
+                "False",
             ],
         ]
 
@@ -164,7 +164,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2023-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "CSV Item Test 1",
@@ -174,7 +174,7 @@ class TestApiImportExportViews(TestCase):
                 "True",
                 "2026-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "Wrong Entry",
@@ -184,7 +184,7 @@ class TestApiImportExportViews(TestCase):
                 "False",
                 "2024-12-31",
                 "50",
-                "0",
+                "False",
             ],
             [
                 "Wrong Entry2",
@@ -194,7 +194,7 @@ class TestApiImportExportViews(TestCase):
                 "False",
                 "10/10/2024",
                 "50",
-                "0",
+                "False",
             ],
         ]
 
