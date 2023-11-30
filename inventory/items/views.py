@@ -225,6 +225,10 @@ def export_items_csv(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def import_items_csv(request):
+    # Check the size of the uploaded file
+    if request.FILES["file"].size > 5 * 1024 * 1024:
+        return Response({"message": "The uploaded file is too large. Maximum size is 5 MB."}, status=400)
+        
     reader = csv.reader(request.FILES["file"].read().decode("utf-8-sig").splitlines())
     errors = []
     next(reader)
@@ -232,6 +236,17 @@ def import_items_csv(request):
         with transaction.atomic():
             for idx, row in enumerate(reader):
                 try:
+                    if len(row) != 8:
+                        errors.append(
+                            "Row {}: Expected 8 columns, found {}".format(
+                                idx + 1, len(row)
+                            )
+                        )
+                        continue
+                    is_valid, error_message = check_correct_csv_format(row, idx)
+                    if not is_valid:
+                        errors.append(error_message)
+                        continue
                     upl = {
                         "name": row[0],
                         "type": row[1],
@@ -242,7 +257,7 @@ def import_items_csv(request):
                             {
                                 "expiry_date": row[5],
                                 "quantity": row[6],
-                                "archived": row[7],
+                                "archived": row[7].lower() == "true",
                             }
                         ],
                     }
