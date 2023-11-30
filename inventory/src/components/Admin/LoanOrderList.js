@@ -105,7 +105,7 @@ export const LoanOrderList = () => {
               ID
             </Grid>
             <Grid item xs={isMobile ? 5 : 3}>
-              Action
+              Loanee
             </Grid>
             <Grid item xs={isMobile ? 5 : 4}>
               Date

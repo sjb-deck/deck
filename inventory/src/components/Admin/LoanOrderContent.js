@@ -43,7 +43,7 @@ export const LoanOrderContent = ({
             {order.id}
           </Grid>
           <Grid item xs={isMobile ? 5 : 3}>
-            {order.action}
+            {order.loanee_name}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
             {orderDateTime}
