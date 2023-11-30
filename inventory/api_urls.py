@@ -34,17 +34,9 @@ item_api_urls = [
     ),
     path("restock_kit", kit_views.restock_kit, name="restock_kit"),
     path(
-        "revert_kit_order/<int:kit_id>",
-        kit_views.revert_kit_order,
-        name="revert_kit_order",
-    ),
-    path(
-        "revert_restock/<int:kit_id>", kit_views.revert_restock, name="revert_restock"
-    ),
-    path(
-        "revert_return_order/<int:kit_id>",
-        kit_views.revert_return_order,
-        name="revert_return_order",
+        "revert_kit/<int:history_id>",
+        kit_views.revert_kit,
+        name="revert_kit",
     ),
 ]
 

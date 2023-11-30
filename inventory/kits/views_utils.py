@@ -91,6 +91,7 @@ def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
         else ("kit_restock" if is_withdraw else "kit_retire"),
         "order_items": order_items,
     }
+
     order = create_order(payload, request)
 
     # Update other_info with kit data
