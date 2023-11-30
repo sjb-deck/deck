@@ -156,7 +156,14 @@ class TestApiLoanReturnViews(TestCase):
         self.outstanding_loan.save()
         self.check_no_change()
 
-    # TODO: test return loan order with more than qty
+    def test_return_loan_order_with_more_than_ordered_quantity(self):
+        request_with_more_than_ordered_quantity = self.loan_return_request.copy()
+        request_with_more_than_ordered_quantity["items"][0]["returned_quantity"] = 6
+        response = self.client.post(
+            self.url, request_with_more_than_ordered_quantity, format="json"
+        )
+        self.assertEqual(response.status_code, 500)
+        self.check_no_change()
 
     def check_no_change(self):
         # check that order is not updated

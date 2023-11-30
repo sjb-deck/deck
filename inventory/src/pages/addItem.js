@@ -126,11 +126,15 @@ export const AddItem = () => {
           min_quantity: 0,
           is_opened: false,
         });
-        setAlert('success', 'Added new item', true);
+        setAlert({
+          severity: 'success',
+          message: 'Successfully added new item!',
+          autoHide: true,
+        });
         setLoading(false);
         queryClient.invalidateQueries('items');
       },
-      onError: () => {
+      onError: (error) => {
         setActiveStep(0);
         setAddType('');
         setItemFormData({
@@ -142,7 +146,12 @@ export const AddItem = () => {
           min_quantity: 0,
           is_opened: false,
         });
-        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
+        setAlert({
+          severity: 'error',
+          message: error.message,
+          autoHide: true,
+          additionalInfo: error.response?.data?.message,
+        });
         setLoading(false);
       },
     });
@@ -204,11 +213,15 @@ export const AddItem = () => {
           min_quantity: false,
           is_opened: false,
         });
-        setAlert('success', 'Added new item', true);
+        setAlert({
+          severity: 'success',
+          message: 'Successfully added new item!',
+          autoHide: true,
+        });
         setLoading(false);
         queryClient.invalidateQueries('items');
       },
-      onError: () => {
+      onError: (error) => {
         setActiveStep(0);
         setAddType('');
         setExpiryFormData({
@@ -240,7 +253,11 @@ export const AddItem = () => {
           min_quantity: false,
           is_opened: false,
         });
-        setAlert('error', 'Failed to add item, contact Fabian Sir!', true);
+        setAlert({
+          severity: 'error',
+          message: error.message,
+          additionalInfo: error.response?.data?.message,
+        });
         setLoading(false);
       },
     });

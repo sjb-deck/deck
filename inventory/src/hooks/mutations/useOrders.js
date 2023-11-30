@@ -13,12 +13,21 @@ export const useOrders = (options) => {
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     onSuccess: () => {
-      setAlert('success', 'Order submitted successfully!', true);
+      setAlert({
+        severity: 'success',
+        message: 'Successfully submitted order!',
+        autoHide: true,
+      });
       queryClient.invalidateQueries('items');
     },
     onError: (error) => {
       console.error(error);
-      setAlert('error', error.message, false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 

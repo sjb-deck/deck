@@ -1,33 +1,43 @@
-import { Sort } from '@mui/icons-material';
 import {
   Accordion,
   AccordionSummary,
   Box,
   Grid,
+  MenuItem,
   Pagination,
+  Select,
   Skeleton,
   Stack,
   TextField,
-  Select,
-  MenuItem,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
+import React, { useState, useEffect, useCallback } from 'react';
 
-import { ORDERS_PER_PAGE } from '../../globals';
 import { useRevertOrder } from '../../hooks/mutations';
+import { useLoans } from '../../hooks/queries';
+import { EmptyMessage } from '../EmptyMessage';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { LoanOrderContent } from './LoanOrderContent';
 
-export const LoanOrderList = ({ loanOrders }) => {
+export const LoanOrderList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState('item');
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermInput, setSearchTermInput] = useState('');
+  // empty dependency array added to prevent repeated calls to API
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetSearchTerm = useCallback(
+    debounce((value) => setSearchTerm(value), 500),
+    [],
+  );
+  const [filter, setFilter] = useState('item');
+  const { data: loanOrders, isLoading: dataLoading } = useLoans({
+    page: currentPage,
+    [filter]: searchTerm,
+  });
   const [ordersToDisplay, setOrdersToDisplay] = useState(loanOrders);
-  const [dateEarliest, setDateEarliest] = useState(false);
-  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-  const endIndex = startIndex + ORDERS_PER_PAGE;
   const { mutate, isLoading } = useRevertOrder();
 
   const handleDeleteOrder = async (id) => {
@@ -37,33 +47,10 @@ export const LoanOrderList = ({ loanOrders }) => {
     setCurrentPage(value);
   };
 
-  const handleSortDate = () => {
-    const newOrders = ordersToDisplay.sort((o1, o2) =>
-      dateEarliest
-        ? new Date(o1.date) - new Date(o2.date)
-        : new Date(o2.date) - new Date(o1.date),
-    );
-    setOrdersToDisplay(newOrders);
-    setDateEarliest(!dateEarliest);
-  };
-
   useEffect(() => {
-    const newOrders = loanOrders.filter(
-      (o) =>
-        !searchTerm ||
-        (filter === 'item' &&
-          o.order_items.some((i) =>
-            i.item_expiry.item.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-          )) ||
-        (filter === 'user' &&
-          o.user.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (filter === 'loanee' &&
-          o.loanee_name.toLowerCase().includes(searchTerm.toLowerCase())),
-    );
-    setOrdersToDisplay(newOrders);
-  }, [filter, searchTerm, loanOrders]);
+    if (!loanOrders) return;
+    setOrdersToDisplay(loanOrders.results);
+  }, [loanOrders]);
 
   return (
     <Box
@@ -74,6 +61,7 @@ export const LoanOrderList = ({ loanOrders }) => {
         alignItems: 'center',
       }}
     >
+      {isLoading || dataLoading ? <LoadingSpinner /> : null}
       <Box
         className='dynamic-width'
         sx={{
@@ -84,8 +72,11 @@ export const LoanOrderList = ({ loanOrders }) => {
       >
         <TextField
           label='Search'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTermInput}
+          onChange={(e) => {
+            setSearchTermInput(e.target.value);
+            debouncedSetSearchTerm(e.target.value);
+          }}
           sx={{ width: 1 }}
         />
         <Select
@@ -95,8 +86,8 @@ export const LoanOrderList = ({ loanOrders }) => {
           onChange={(e) => setFilter(e.target.value)}
         >
           <MenuItem value='item'>Item</MenuItem>
-          <MenuItem value='loanee'>Loanee</MenuItem>
-          <MenuItem value='user'>User</MenuItem>
+          <MenuItem value='loaneeName'>Loanee</MenuItem>
+          <MenuItem value='username'>User</MenuItem>
         </Select>
       </Box>
       <Accordion
@@ -114,24 +105,14 @@ export const LoanOrderList = ({ loanOrders }) => {
               ID
             </Grid>
             <Grid item xs={isMobile ? 5 : 3}>
-              Action
+              Loanee
             </Grid>
             <Grid item xs={isMobile ? 5 : 4}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingRight: '16px',
-                }}
-              >
-                <span>Date</span>
-                <Sort onClick={() => handleSortDate()} />
-              </Box>
+              Date
             </Grid>
             {!isMobile && (
               <Grid item xs={3}>
-                Return Date
+                Return Deadline
               </Grid>
             )}
           </Grid>
@@ -157,22 +138,30 @@ export const LoanOrderList = ({ loanOrders }) => {
             alignItems: 'center',
           }}
         >
-          {ordersToDisplay?.slice(startIndex, endIndex).map((order) => {
-            return (
-              <LoanOrderContent
-                key={order.id}
-                order={order}
-                isMobile={isMobile}
-                isLoading={isLoading}
-                handleDeleteOrder={handleDeleteOrder}
-              />
-            );
-          })}
+          {!dataLoading && ordersToDisplay?.length === 0 && (
+            <EmptyMessage
+              message='There are no orders matching your search parameters'
+              fullscreen={false}
+            />
+          )}
+          {!dataLoading &&
+            ordersToDisplay?.length > 0 &&
+            ordersToDisplay?.map((order) => {
+              return (
+                <LoanOrderContent
+                  key={order.id}
+                  order={order}
+                  isMobile={isMobile}
+                  isLoading={isLoading}
+                  handleDeleteOrder={handleDeleteOrder}
+                />
+              );
+            })}
         </Box>
         {loanOrders ? (
           <Pagination
             page={currentPage}
-            count={Math.ceil(loanOrders.length / ORDERS_PER_PAGE)}
+            count={loanOrders.num_pages}
             onChange={handlePageChange}
           />
         ) : (

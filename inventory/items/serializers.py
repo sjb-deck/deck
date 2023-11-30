@@ -36,11 +36,9 @@ class AddItemExpirySerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        item_id = validated_data["item"]
-        quantity = validated_data["quantity"]
-        item = Item.objects.get(id=item_id.id)
-        item.total_quantity += quantity
-        item.save()
+        # we create item expiry with 0 quantity
+        # quantity will be updated later when we create the order
+        validated_data["quantity"] = 0
         return super().create(validated_data)
 
 
@@ -240,6 +238,12 @@ class LoanReturnSerializer(serializers.Serializer):
             except OrderItem.DoesNotExist:
                 raise serializers.ValidationError(
                     {"items": "Order item with this ID does not exist."}
+                )
+            if item["returned_quantity"] > order_item.ordered_quantity:
+                raise serializers.ValidationError(
+                    {
+                        "items": f"Returned quantity cannot be greater than ordered quantity for {order_item.item_expiry.item.name} with expiry date {order_item.item_expiry.expiry_date}"
+                    }
                 )
 
         return data

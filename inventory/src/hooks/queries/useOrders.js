@@ -4,27 +4,30 @@ import { useContext } from 'react';
 
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
+import { buildUrl } from '../../utils';
 
-export const useOrders = (options) => {
+export const useOrders = (params, options) => {
   const key = 'orders';
-  const url = Api[key];
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     refetchOnWindowFocus: false,
     onError: (error) => {
       console.error(error);
-      setAlert('error', error.message, false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 
   return useQuery(
-    [key],
+    [key, params],
     async () => {
+      const url = buildUrl(Api['orders'], params);
       const response = await axios.get(url);
-      const results = {
-        orders: response.data.filter((order) => order.reason !== 'loan'),
-        loan_orders: response.data.filter((order) => order.reason === 'loan'),
-      };
+      const results = response.data;
       return results;
     },
     {

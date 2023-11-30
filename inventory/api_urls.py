@@ -8,12 +8,6 @@ from inventory import views
 item_api_urls = [
     path("items", item_views.api_items, name="api_items"),
     path("orders", item_views.api_orders, name="api_orders"),
-    path("orders/<str:option>", item_views.api_orders, name="api_orders_option"),
-    path(
-        "orders/<str:option>/<int:order_id>",
-        item_views.api_orders,
-        name="api_order_items",
-    ),
     path("submit_order", item_views.api_submit_order, name="submit_order"),
     path("add_item", item_views.api_add_item, name="api_add_item"),
     path("add_expiry", item_views.create_new_expiry, name="create_new_expiry"),

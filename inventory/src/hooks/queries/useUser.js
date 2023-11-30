@@ -13,7 +13,12 @@ export const useUser = (options) => {
     refetchOnWindowFocus: false,
     onError: (error) => {
       console.error(error);
-      setAlert('error', error.message, false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 

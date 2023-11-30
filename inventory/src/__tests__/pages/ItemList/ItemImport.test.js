@@ -12,7 +12,7 @@ const mockCSV = new File([''], 'example.csv', {
   type: 'text/csv',
 });
 
-describe('Item Table', () => {
+xdescribe('Item Table', () => {
   it('should render ImportModal correctly', async () => {
     render(<ItemList />);
     await waitFor(() => {

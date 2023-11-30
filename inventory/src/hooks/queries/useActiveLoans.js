@@ -5,9 +5,9 @@ import { useContext } from 'react';
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
 
-export const useOrder = (id, options) => {
-  const key = 'order';
-  const url = Api[key].replace(':id', id);
+export const useActiveLoans = (page, options) => {
+  const key = 'loan_active';
+  const url = Api[key].replace(':page', page);
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     refetchOnWindowFocus: false,
@@ -23,10 +23,10 @@ export const useOrder = (id, options) => {
   };
 
   return useQuery(
-    [key, id],
+    [key, page],
     async () => {
       const response = await axios.get(url);
-      return response.data.results[0];
+      return response.data;
     },
     {
       ...defaultOptions,

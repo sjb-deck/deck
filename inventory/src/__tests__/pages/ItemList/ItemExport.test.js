@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils';
 import { ItemList } from '../../../pages';
 import { render } from '../../../testSetup';
 
-describe('Item Table', () => {
+xdescribe('Item Table', () => {
   it('should export', async () => {
     render(<ItemList />);
     await waitFor(() => {

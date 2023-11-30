@@ -27,7 +27,7 @@ export const AccordionSummaryContent = ({
           <Grid item>
             <Typography
               sx={{
-                fontSize: isMobile ? '8px' : '12px',
+                fontSize: isMobile ? '8px' : '15px',
                 marginBottom: isMobile ? '-4px' : '0px',
                 marginTop: isMobile ? '-2px' : '0px',
               }}
@@ -51,7 +51,7 @@ export const AccordionSummaryContent = ({
           <Grid item>
             <Typography
               sx={{
-                fontSize: isMobile ? '8px' : '12px',
+                fontSize: isMobile ? '8px' : '15px',
                 marginBottom: isMobile ? '-4px' : '0px',
                 marginTop: isMobile ? '-2px' : '0px',
               }}
@@ -75,7 +75,7 @@ export const AccordionSummaryContent = ({
           <Grid item>
             <Typography
               sx={{
-                fontSize: isMobile ? '8px' : '12px',
+                fontSize: isMobile ? '8px' : '15px',
                 marginBottom: isMobile ? '-4px' : '0px',
                 marginTop: isMobile ? '-2px' : '0px',
               }}

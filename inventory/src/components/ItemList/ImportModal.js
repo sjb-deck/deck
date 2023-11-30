@@ -4,17 +4,22 @@ import React, { useContext, useState } from 'react';
 
 import { useImportItems } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 export const ImportModal = ({ open, setOpen }) => {
   const [file, setFile] = useState(null);
-  const { mutate } = useImportItems();
+  const { mutate, isLoading } = useImportItems();
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const onImportClick = async (e) => {
     if (file) {
       mutate(file, {
         onSuccess: () => {
-          setAlert('success', 'Items created successfully!', true);
+          setAlert({
+            severity: 'success',
+            message: 'Successfully imported items!',
+            autoHide: true,
+          });
           queryClient.invalidateQueries('items');
           setFile(null);
           setOpen(false);
@@ -47,6 +52,7 @@ export const ImportModal = ({ open, setOpen }) => {
             flexDirection: 'column',
           })}
         >
+          {isLoading && <LoadingSpinner />}
           <Stack gap={3}>
             <h2>Upload CSV</h2>
             <span>

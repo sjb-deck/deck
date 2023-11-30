@@ -1,19 +1,12 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import {
-  Footer,
-  LoadingSpinner,
-  LoanOrderList,
-  NavBar,
-  OrderList,
-} from '../components';
-import { useOrders, useUser } from '../hooks/queries';
+import { Footer, LoanOrderList, NavBar, OrderList } from '../components';
+import { useUser } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 
 export const AdminIndex = () => {
-  const { data: user, loading: userLoading, error: userError } = useUser();
-  const { data, isLoading: dataLoading } = useOrders();
+  const { data: user, isLoading: userLoading, error: userError } = useUser();
   const [view, setView] = useState('orders');
   const [userData, setUserData] = useState(user);
 
@@ -36,11 +29,11 @@ export const AdminIndex = () => {
         <ButtonGroup
           variant='text'
           aria-label='text button group'
+          className='dynamic-width'
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
-            width: { xs: '90%', sm: '70%', md: '70%', lg: '45%', xl: '35%' },
           }}
         >
           <Button
@@ -68,16 +61,7 @@ export const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {dataLoading ? (
-          <LoadingSpinner />
-        ) : (
-          data &&
-          (view === 'orders' ? (
-            <OrderList orders={data.orders} />
-          ) : (
-            <LoanOrderList loanOrders={data.loan_orders} />
-          ))
-        )}
+        {view === 'orders' ? <OrderList /> : <LoanOrderList />}
       </Box>
       <Footer />
     </>

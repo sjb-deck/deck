@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
+from inventory.items.models import Item, Order
 
 
 class TestApiAddItemExpiryViews(TestCase):
@@ -57,6 +57,7 @@ class TestApiAddItemExpiryViews(TestCase):
 
     def clear_relevant_models(self):
         Item.objects.all().delete()
+        Order.objects.all().delete()
 
     def test_create_new_expiry(self):
         response = self.client.post(self.url, self.request, format="json")
@@ -73,6 +74,18 @@ class TestApiAddItemExpiryViews(TestCase):
         self.assertEqual(newly_created_item_expiry.quantity, 10)
         self.assertEqual(newly_created_item_expiry.item.id, self.item.id)
 
+        # check that order is created
+        self.assertEqual(Order.objects.count(), 1)
+        newly_created_order = Order.objects.get()
+        self.assertEqual(newly_created_order.action, "Deposit")
+        self.assertEqual(newly_created_order.reason, "item_restock")
+        self.assertEqual(newly_created_order.order_items.count(), 1)
+        self.assertEqual(
+            newly_created_order.order_items.get().item_expiry.id,
+            newly_created_item_expiry.id,
+        )
+        self.assertEqual(newly_created_order.order_items.get().ordered_quantity, 10)
+
     def test_create_new_expiry_with_invalid_expiry_date(self):
         request_with_invalid_expiry_date = self.request.copy()
         request_with_invalid_expiry_date["expiry_date"] = None
@@ -87,6 +100,9 @@ class TestApiAddItemExpiryViews(TestCase):
 
         # check that itemExpiry is not created
         self.assertEqual(self.item.expiry_dates.count(), 2)
+
+        # check that order is not created
+        self.assertEqual(Order.objects.count(), 0)
 
     def test_create_new_expiry_with_no_expiry_date(self):
         request_with_no_expiry_date = self.request.copy()
@@ -103,6 +119,9 @@ class TestApiAddItemExpiryViews(TestCase):
         # check that itemExpiry is not created
         self.assertEqual(self.item_no_expiry.expiry_dates.count(), 1)
 
+        # check that order is not created
+        self.assertEqual(Order.objects.count(), 0)
+
     def test_create_new_expiry_with_invalid_quantity(self):
         request_with_invalid_quantity = self.request.copy()
         request_with_invalid_quantity["quantity"] = -1
@@ -117,6 +136,9 @@ class TestApiAddItemExpiryViews(TestCase):
 
         # check that itemExpiry is not created
         self.assertEqual(self.item.expiry_dates.count(), 2)
+
+        # check that order is not created
+        self.assertEqual(Order.objects.count(), 0)
 
     def test_create_new_duplicate_expiry(self):
         request_with_duplicate_expiry = self.request.copy()
@@ -133,6 +155,9 @@ class TestApiAddItemExpiryViews(TestCase):
         # check that itemExpiry is not created
         self.assertEqual(self.item.expiry_dates.count(), 2)
 
+        # check that order is not created
+        self.assertEqual(Order.objects.count(), 0)
+
     def test_create_new_expiry_with_invalid_item_id(self):
         request_with_invalid_item_id = self.request.copy()
         request_with_invalid_item_id["item"] = -1
@@ -147,6 +172,9 @@ class TestApiAddItemExpiryViews(TestCase):
 
         # check that itemExpiry is not created
         self.assertEqual(self.item.expiry_dates.count(), 2)
+
+        # check that order is not created
+        self.assertEqual(Order.objects.count(), 0)
 
     def tearDown(self):
         self.clear_relevant_models()

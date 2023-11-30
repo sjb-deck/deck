@@ -1,4 +1,3 @@
-import { Sort } from '@mui/icons-material';
 import {
   Accordion,
   AccordionSummary,
@@ -12,22 +11,33 @@ import {
   TextField,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { ORDERS_PER_PAGE } from '../../globals';
 import { useRevertOrder } from '../../hooks/mutations';
+import { useOrders } from '../../hooks/queries';
+import { EmptyMessage } from '../EmptyMessage';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { OrderContent } from './OrderContent';
 
-export const OrderList = ({ orders }) => {
+export const OrderList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState('item');
   const [searchTerm, setSearchTerm] = useState('');
-  const [ordersToDisplay, setOrdersToDisplay] = useState(orders);
-  const [dateEarliest, setDateEarliest] = useState(false);
-  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-  const endIndex = startIndex + ORDERS_PER_PAGE;
+  const [searchTermInput, setSearchTermInput] = useState('');
+  // empty dependency array added to prevent repeated calls to API
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetSearchTerm = useCallback(
+    debounce((value) => setSearchTerm(value), 500),
+    [],
+  );
+  const [filter, setFilter] = useState('item');
+  const { data: orders, isLoading: dataLoading } = useOrders({
+    page: currentPage,
+    [filter]: searchTerm,
+  });
+  const [ordersToDisplay, setOrdersToDisplay] = useState(orders?.results);
   const handlePageChange = (_, value) => {
     setCurrentPage(value);
   };
@@ -36,31 +46,10 @@ export const OrderList = ({ orders }) => {
     mutate(id);
   };
 
-  const handleSortDate = () => {
-    const newOrders = ordersToDisplay.sort((o1, o2) =>
-      dateEarliest
-        ? new Date(o1.date) - new Date(o2.date)
-        : new Date(o2.date) - new Date(o1.date),
-    );
-    setOrdersToDisplay(newOrders);
-    setDateEarliest(!dateEarliest);
-  };
-
   useEffect(() => {
-    const newOrders = orders.filter(
-      (o) =>
-        !searchTerm ||
-        (filter === 'item' &&
-          o.order_items.some((i) =>
-            i.item_expiry.item.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-          )) ||
-        (filter === 'user' &&
-          o.user.username.toLowerCase().includes(searchTerm.toLowerCase())),
-    );
-    setOrdersToDisplay(newOrders);
-  }, [filter, searchTerm, orders]);
+    if (!orders) return;
+    setOrdersToDisplay(orders.results);
+  }, [orders]);
 
   return (
     <Box
@@ -81,8 +70,11 @@ export const OrderList = ({ orders }) => {
       >
         <TextField
           label='Search'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTermInput}
+          onChange={(e) => {
+            setSearchTermInput(e.target.value);
+            debouncedSetSearchTerm(e.target.value);
+          }}
           sx={{ width: 1 }}
         />
         <Select
@@ -91,7 +83,8 @@ export const OrderList = ({ orders }) => {
           onChange={(e) => setFilter(e.target.value)}
         >
           <MenuItem value='item'>Item</MenuItem>
-          <MenuItem value='user'>User</MenuItem>
+          <MenuItem value='username'>User</MenuItem>
+          <MenuItem value='reason'>Reason</MenuItem>
         </Select>
       </Box>
       <Accordion
@@ -121,7 +114,6 @@ export const OrderList = ({ orders }) => {
                 }}
               >
                 <span>Date</span>
-                <Sort onClick={() => handleSortDate()} />
               </Box>
             </Grid>
             {!isMobile && (
@@ -152,22 +144,30 @@ export const OrderList = ({ orders }) => {
             alignItems: 'center',
           }}
         >
-          {ordersToDisplay?.slice(startIndex, endIndex).map((order) => {
-            return (
-              <OrderContent
-                key={order.id}
-                order={order}
-                isMobile={isMobile}
-                isLoading={isLoading}
-                handleDeleteOrder={handleDeleteOrder}
-              />
-            );
-          })}
+          {!dataLoading && ordersToDisplay?.length === 0 && (
+            <EmptyMessage
+              message='There are no orders matching your search parameters'
+              fullscreen={false}
+            />
+          )}
+          {!dataLoading &&
+            ordersToDisplay?.length > 0 &&
+            ordersToDisplay?.map((order) => {
+              return (
+                <OrderContent
+                  key={order.id}
+                  order={order}
+                  isMobile={isMobile}
+                  isLoading={isLoading || dataLoading}
+                  handleDeleteOrder={handleDeleteOrder}
+                />
+              );
+            })}
         </Box>
         {orders ? (
           <Pagination
             page={currentPage}
-            count={Math.ceil(orders.length / ORDERS_PER_PAGE)}
+            count={orders.num_pages}
             onChange={handlePageChange}
           />
         ) : (
@@ -176,6 +176,7 @@ export const OrderList = ({ orders }) => {
           </Skeleton>
         )}
       </Stack>
+      {isLoading || dataLoading ? <LoadingSpinner /> : null}
     </Box>
   );
 };

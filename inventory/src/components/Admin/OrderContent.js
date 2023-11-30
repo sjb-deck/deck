@@ -5,9 +5,11 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Chip,
   Divider,
   Grid,
   Stack,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 
@@ -67,6 +69,16 @@ export const OrderContent = ({
                   alignItems: 'center',
                 }}
               >
+                <span>Ordered by:</span>
+                <span>{order.user.username}</span>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <span>Other info:</span>
                 <span>{order.other_info ?? '-'}</span>
               </Box>
@@ -107,7 +119,21 @@ export const OrderContent = ({
                       alignItems: 'center',
                     }}
                   >
-                    <span>{item.item_expiry.item.name}</span>
+                    <span>
+                      <Typography variant='body'>
+                        {item.item_expiry.item.name}
+                        {'  '}
+                      </Typography>
+                      <Chip
+                        size='small'
+                        label={
+                          item.item_expiry.expiry_date
+                            ? getReadableDate(item.item_expiry.expiry_date)
+                                .formattedDate
+                            : 'No Expiry'
+                        }
+                      />
+                    </span>
                     <span>{item.ordered_quantity}</span>
                   </Box>
                 );

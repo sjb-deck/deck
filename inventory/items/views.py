@@ -3,13 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError, transaction
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.urls import reverse
 
 from inventory.items.serializers import *
-from inventory.items.views_utils import manage_items_change
+from inventory.items.views_utils import *
 
 
 # Create your views here.
@@ -54,18 +56,66 @@ def api_items(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def api_orders(request, option="all", order_id=None):
+def api_orders(request):
     try:
+        option = request.query_params.get("option")
+        order_id = request.query_params.get("orderId")
+        page = request.query_params.get("page", 1)
+        page_size = request.query_params.get("pageSize", 10)
+
+        loanee_name = request.query_params.get("loaneeName")
+        item = request.query_params.get("item")
+        username = request.query_params.get("username")
+        reason = request.query_params.get("reason")
+
+        item_orders = (
+            Order.objects.exclude(reason="kit_create")
+            .exclude(reason="kit_restock")
+            .exclude(reason="kit_retire")
+            .prefetch_related("order_items__item_expiry__item")
+            .select_related("user")
+        )
+        item_loan_orders = (
+            LoanOrder.objects.all()
+            .prefetch_related("order_items__item_expiry__item")
+            .select_related("user")
+        )
+
         if option == "order":
-            data = OrderSerializer(Order.objects.exclude(reason="loan"), many=True).data
+            queryset = item_orders.exclude(reason="loan")
         elif option == "loan":
-            data = OrderSerializer(
-                LoanOrder.objects.filter(loan_active=True), many=True
-            ).data
-        elif option == "get":
-            data = OrderSerializer(Order.objects.get(id=order_id)).data
+            queryset = item_loan_orders
+        elif option == "loan_active":
+            queryset = item_loan_orders.filter(loan_active=True)
+        elif order_id:
+            queryset = (
+                Order.objects.filter(id=order_id)
+                .prefetch_related("order_items__item_expiry__item")
+                .select_related("user")
+            )
         else:
-            data = OrderSerializer(Order.objects.all(), many=True).data
+            queryset = item_orders
+
+        if loanee_name:
+            queryset = queryset.filter(loanee_name__icontains=loanee_name)
+        if item:
+            queryset = queryset.filter(
+                order_items__item_expiry__item__name__icontains=item
+            )
+        if username:
+            queryset = queryset.filter(user__username=username)
+        if reason:
+            queryset = queryset.filter(reason__icontains=reason)
+
+        queryset = queryset.order_by("-date")
+
+        paginator = Paginator(queryset, page_size)
+        page_obj = paginator.get_page(page)
+
+        data = {
+            "results": OrderSerializer(page_obj, many=True).data,
+            "num_pages": paginator.num_pages,
+        }
         return Response(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(
@@ -77,15 +127,8 @@ def api_orders(request, option="all", order_id=None):
 @permission_classes([IsAuthenticated])
 def api_submit_order(request):
     try:
-        data = request.data
-        serializer = OrderSerializer(data=data, context={"request": request})
-        if serializer.is_valid(raise_exception=True):
-            order = serializer.save()
-            manage_items_change(order)
-            return Response(
-                OrderSerializer(order).data,
-                status=status.HTTP_201_CREATED,
-            )
+        order = create_order(request.data, request)
+        return Response(OrderSerializer(order).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -110,10 +153,8 @@ def api_add_item(request):
 @permission_classes([IsAuthenticated])
 def create_new_expiry(request):
     try:
-        expiry_serializer = AddItemExpirySerializer(data=request.data)
-        if expiry_serializer.is_valid(raise_exception=True):
-            expiry = expiry_serializer.save()
-            return Response(ItemSerializer(expiry.item).data, status=201)
+        item_expiry, _ = create_new_item_expiry(request.data, request)
+        return Response(ItemExpirySerializer(item_expiry).data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -142,9 +183,15 @@ def revert_order(request):
     order_id = request.data
     try:
         if order_id is None:
-            return Response({"error": "Invalid request body"}, status=500)
+            return Response({"message": "Invalid request body"}, status=500)
         try:
             order = Order.objects.get(id=order_id)
+            if (
+                order.reason == "kit_create"
+                or order.reason == "kit_restock"
+                or order.reason == "kit_retire"
+            ):
+                raise Exception("Cannot revert kit creation/restock/retire")
             if order.reason == "loan":
                 loan_order = LoanOrder.objects.get(id=order_id)
                 loan_order.revert_order()
@@ -152,9 +199,9 @@ def revert_order(request):
                 order.revert_order()
             return Response({"message": "Successfully reverted order"}, status=200)
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"message": str(e)}, status=500)
     except:
-        return Response({"error": "Something went wrong"}, status=500)
+        return Response({"message": "Something went wrong"}, status=500)
 
 
 @api_view(["GET"])
@@ -187,6 +234,13 @@ def export_items_csv(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def import_items_csv(request):
+    # Check the size of the uploaded file
+    if request.FILES["file"].size > 5 * 1024 * 1024:
+        return Response(
+            {"message": "The uploaded file is too large. Maximum size is 5 MB."},
+            status=400,
+        )
+
     reader = csv.reader(request.FILES["file"].read().decode("utf-8-sig").splitlines())
     errors = []
     next(reader)
@@ -194,6 +248,17 @@ def import_items_csv(request):
         with transaction.atomic():
             for idx, row in enumerate(reader):
                 try:
+                    if len(row) != 8:
+                        errors.append(
+                            "Row {}: Expected 8 columns, found {}".format(
+                                idx + 1, len(row)
+                            )
+                        )
+                        continue
+                    is_valid, error_message = check_correct_csv_format(row, idx)
+                    if not is_valid:
+                        errors.append(error_message)
+                        continue
                     upl = {
                         "name": row[0],
                         "type": row[1],
@@ -204,7 +269,7 @@ def import_items_csv(request):
                             {
                                 "expiry_date": row[5],
                                 "quantity": row[6],
-                                "archived": row[7],
+                                "archived": row[7].lower() == "true",
                             }
                         ],
                     }
@@ -214,11 +279,9 @@ def import_items_csv(request):
                         new_expiry = {
                             "item": current_item.first().id,
                             "expiry_date": row[5],
-                            "quantity": row[3],
+                            "quantity": int(row[3]),
                         }
-                        expiry_serializer = AddItemExpirySerializer(data=new_expiry)
-                        if expiry_serializer.is_valid(raise_exception=True):
-                            expiry_serializer.save()
+                        create_new_item_expiry(new_expiry, request)
                     elif item.is_valid(raise_exception=True):
                         item.save()
                 except Exception as e:

@@ -8,5 +8,6 @@ export * from './NavBar';
 export * from './Receipt';
 export * from './Footer';
 export * from './LoadingSpinner';
-export * from './SnackBarAlerts';
+export * from './Alerts';
 export * from './Themes';
+export * from './EmptyMessage';
