@@ -215,7 +215,7 @@ export const AddItem = () => {
         });
         setAlert({
           severity: 'success',
-          message: 'Successfully added new expiry date!',
+          message: 'Successfully added new item!',
           autoHide: true,
         });
         setLoading(false);
