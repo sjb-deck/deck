@@ -66,6 +66,7 @@ def api_orders(request):
         loanee_name = request.query_params.get("loaneeName")
         item = request.query_params.get("item")
         username = request.query_params.get("username")
+        reason = request.query_params.get("reason")
 
         item_orders = (
             Order.objects.exclude(reason="kit_create")
@@ -103,6 +104,8 @@ def api_orders(request):
             )
         if username:
             queryset = queryset.filter(user__username=username)
+        if reason:
+            queryset = queryset.filter(reason__icontains=reason)
 
         queryset = queryset.order_by("-date")
 

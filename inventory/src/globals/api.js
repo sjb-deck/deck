@@ -7,7 +7,7 @@ export const Api = {
   addItem: `${INV_API_BASE_URL}/add_item`,
   returnLoan: `${INV_API_BASE_URL}/loan_return_post`,
   submitNewExpiryDate: `${INV_API_BASE_URL}/add_expiry`,
-  orders: `${INV_API_BASE_URL}/orders?option=order&page=:page&item=:item&username=:username`,
+  orders: `${INV_API_BASE_URL}/orders?option=order&page=:page&item=:item&username=:username&reason=:reason`,
   loans: `${INV_API_BASE_URL}/orders?option=loan&page=:page&loaneeName=:loaneeName&item=:item&username=:username`,
   loan_active: `${INV_API_BASE_URL}/orders?option=loan_active&page=:page`,
   order: `${INV_API_BASE_URL}/orders?orderId=:id`,

@@ -84,6 +84,7 @@ export const OrderList = () => {
         >
           <MenuItem value='item'>Item</MenuItem>
           <MenuItem value='username'>User</MenuItem>
+          <MenuItem value='reason'>Reason</MenuItem>
         </Select>
       </Box>
       <Accordion
