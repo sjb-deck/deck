@@ -1,21 +1,34 @@
 import datetime
 import json
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.db import transaction
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from .serializers import *
 from ..items.models import *
 from .views_utils import *
 
 
+@login_required(login_url="/r'^login/$'")
+def kit_info(request):
+    return render(request, "kit_info.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_kits(request):
     try:
+        kit_id = request.query_params.get("kitId")
+        if kit_id:
+            kits = Kit.objects.filter(id=kit_id).exclude(status="RETIRED")
+            kit_serializer = KitSerializer(kits, many=True)
+            return Response(kit_serializer.data[0], status=status.HTTP_200_OK)
         kits = Kit.objects.all().exclude(status="RETIRED")
         kit_serializer = KitSerializer(kits, many=True)
         blueprint = Blueprint.objects.filter(archived=False)
@@ -198,13 +211,23 @@ def add_blueprint(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def kit_history(request, kit_id):
+def kit_history(request):
     try:
-        kit = Kit.objects.get(id=kit_id)
-        histories = History.objects.filter(kit__id=kit_id).order_by("-id")
+        kit_id = request.query_params.get("kitId")
+        if not kit_id:
+            histories = History.objects.all().order_by("-id")
+        else:
+            histories = History.objects.filter(kit__id=kit_id).order_by("-id")
 
-        serializer = HistorySerializer(histories, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Create a paginator
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        # Apply pagination to the queryset
+        result_page = paginator.paginate_queryset(histories, request)
+
+        serializer = HistorySerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
