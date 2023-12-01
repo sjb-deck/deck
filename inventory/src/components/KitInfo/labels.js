@@ -12,6 +12,11 @@ export const options = {
   minute: '2-digit',
   second: '2-digit',
 };
+export const dateOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
 export const typeToIcon = {
   CREATION: <AddIcon />,
   RETIREMENT: <DeleteForeverIcon />,
@@ -137,7 +142,7 @@ export const typeToModalInfo = (history) => {
                 history.loan_info.due_date,
               ).toLocaleString(
                 'en-US',
-                options,
+                dateOptions,
               )}. The below snapshot is the state of the kit when it is loaned out.`}
         </span>
       );

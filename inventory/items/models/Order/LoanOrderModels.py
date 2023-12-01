@@ -22,7 +22,7 @@ from .OrderModels import Order
 class LoanOrder(Order):
     loanee_name = models.CharField(max_length=50)
     return_date = models.DateTimeField(null=True, blank=True)
-    due_date = models.DateTimeField(null=False, blank=False)
+    due_date = models.DateField(null=False, blank=False)
     loan_active = models.BooleanField(default=True)
 
     def revert_order(self):

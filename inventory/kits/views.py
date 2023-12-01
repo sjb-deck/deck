@@ -347,7 +347,7 @@ def return_kit_order(request):
                 )
 
         # Update loan history
-        loan_history.return_date = datetime.date.today()
+        loan_history.return_date = datetime.now()
         loan_history.snapshot = content
         loan_history.save()
 

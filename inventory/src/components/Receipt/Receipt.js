@@ -17,7 +17,7 @@ const getOrderInfo = (orderData) => {
   const orderInfoWithFriendlyDate = {
     ...orderInfo,
     ...(orderInfo.due_date && {
-      due_date: new Date(orderInfo.due_date).toLocaleString(),
+      due_date: new Date(orderInfo.due_date).toDateString(),
     }),
     ...(orderInfo.return_date && {
       return_date: new Date(orderInfo.return_date).toLocaleString(),
