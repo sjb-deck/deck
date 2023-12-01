@@ -26,7 +26,7 @@ def api_kits(request):
     try:
         kit_id = request.query_params.get("kitId")
         if kit_id:
-            kits = Kit.objects.filter(id=kit_id).exclude(status="RETIRED")
+            kits = Kit.objects.get(id=kit_id, status__ne="RETIRED")
             kit_serializer = KitSerializer(kits, many=True)
             return Response(kit_serializer.data[0], status=status.HTTP_200_OK)
         kits = Kit.objects.all().exclude(status="RETIRED")
@@ -217,7 +217,8 @@ def kit_history(request):
         if not kit_id:
             histories = History.objects.all().order_by("-id")
         else:
-            histories = History.objects.filter(kit__id=kit_id).order_by("-id")
+            kit = Kit.objects.get(id=kit_id)
+            histories = History.objects.filter(kit=kit).order_by("-id")
 
         # Create a paginator
         paginator = PageNumberPagination()
@@ -347,7 +348,7 @@ def return_kit_order(request):
                 )
 
         # Update loan history
-        loan_history.return_date = datetime.now()
+        loan_history.return_date = timezone.now()
         loan_history.snapshot = content
         loan_history.save()
 
