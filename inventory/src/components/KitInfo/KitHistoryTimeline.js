@@ -1,3 +1,4 @@
+import CancelIcon from '@mui/icons-material/Cancel';
 import {
   Timeline,
   TimelineConnector,
@@ -126,6 +127,17 @@ const HistoryModal = ({
         }}
         className='dynamic-width'
       >
+        <div
+          style={{
+            cursor: 'pointer',
+            float: 'right',
+            marginTop: '-10px',
+            marginRight: '-10px',
+          }}
+          onClick={onClose}
+        >
+          <CancelIcon color='error' />
+        </div>
         <Typography variant='h6' component='span'>
           History Details
         </Typography>
