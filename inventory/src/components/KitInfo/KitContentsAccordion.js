@@ -30,7 +30,7 @@ export const KitContentsAccordion = ({ kitContents, kitBlueprint }) => {
     ...getMissingItems(kitContents, kitBlueprint),
   ];
   return (
-    <Accordion className='dynamic-width' expanded={true}>
+    <Accordion className='dynamic-width' defaultExpanded={true}>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Stack>
           <Grid item xs={2}>

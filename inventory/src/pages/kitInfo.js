@@ -7,14 +7,16 @@ import { useKit, useUser } from '../hooks/queries';
 export const KitInfo = () => {
   const { data: userData } = useUser();
   const params = new URLSearchParams(window.location.search);
-  const { data: kitData, isLoading: kitLoading } = useKit({
+  const { data: kitData } = useKit({
     kitId: params.get('kitId'),
   });
 
   return (
     <>
       <NavBar user={userData} />
-      {kitLoading ? <LoadingSpinner /> : <KitInfoContent kitData={kitData} />}
+      <div style={{ minHeight: '100vh' }}>
+        {kitData ? <KitInfoContent kitData={kitData} /> : <LoadingSpinner />}
+      </div>
       <Footer />
     </>
   );

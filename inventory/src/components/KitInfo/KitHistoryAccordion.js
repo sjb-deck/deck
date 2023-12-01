@@ -23,7 +23,7 @@ export const KitHistoryAccordion = ({ kitId }) => {
     page: page,
   });
   return (
-    <Accordion className='dynamic-width' expanded={true}>
+    <Accordion className='dynamic-width' defaultExpanded={true}>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Stack>
           <Grid item xs={2}>
