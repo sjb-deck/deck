@@ -1,7 +1,13 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import { Footer, LoanOrderList, NavBar, OrderList } from '../components';
+import {
+  Footer,
+  KitHistoryList,
+  LoanOrderList,
+  NavBar,
+  OrderList,
+} from '../components';
 import { useUser } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 
@@ -52,6 +58,14 @@ export const AdminIndex = () => {
           >
             Loans
           </Button>
+          <Button
+            color={view === 'kits' ? 'success' : 'primary'}
+            variant={view === 'kits' ? 'contained' : 'outlined'}
+            onClick={() => setView('kits')}
+            sx={{ borderRadius: 0, marginBottom: 1 }}
+          >
+            Kits
+          </Button>
         </ButtonGroup>
       </Box>
       <Box
@@ -61,7 +75,13 @@ export const AdminIndex = () => {
           justifyContent: 'center',
         }}
       >
-        {view === 'orders' ? <OrderList /> : <LoanOrderList />}
+        {view === 'orders' ? (
+          <OrderList />
+        ) : view === 'loans' ? (
+          <LoanOrderList />
+        ) : (
+          <KitHistoryList />
+        )}
       </Box>
       <Footer />
     </>

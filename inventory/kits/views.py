@@ -219,11 +219,30 @@ def add_blueprint(request):
 def kit_history(request):
     try:
         kit_id = request.query_params.get("kitId")
-        if not kit_id:
-            histories = History.objects.all().order_by("-id")
-        else:
+        kit_name = request.query_params.get("kitName")
+        type = request.query_params.get("type")
+        loanee_name = request.query_params.get("loaneeName")
+        user = request.query_params.get("user")
+
+        if kit_name:
+            histories = History.objects.filter(kit__name__icontains=kit_name).order_by(
+                "-id"
+            )
+        elif kit_id:
             kit = Kit.objects.get(id=kit_id)
             histories = History.objects.filter(kit=kit).order_by("-id")
+        elif type:
+            histories = History.objects.filter(type=type).order_by("-id")
+        elif loanee_name:
+            histories = LoanHistory.objects.filter(
+                loanee_name__icontains=loanee_name
+            ).order_by("-id")
+        elif user:
+            histories = History.objects.filter(
+                person__username__icontains=user
+            ).order_by("-id")
+        else:
+            histories = History.objects.all().order_by("-id")
 
         # Create a paginator
         paginator = PageNumberPagination()

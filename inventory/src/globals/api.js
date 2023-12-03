@@ -15,7 +15,7 @@ export const Api = {
   importItems: `${INV_API_BASE_URL}/import_items`,
   exportItems: `${INV_API_BASE_URL}/export_items`,
   kit: `${INV_API_BASE_URL}/kits?kitId=:kitId`,
-  kitHistory: `${INV_API_BASE_URL}/kit_history?kitId=:kitId&page=:page`,
+  kitHistory: `${INV_API_BASE_URL}/kit_history?kitId=:kitId&page=:page&kitName=:kitName&type=:type&loaneeName=:loaneeName&user=:user`,
   revertHistory: `${INV_API_BASE_URL}/revert_kit/:id`,
   kitRecipe: `${INV_API_BASE_URL}/get_new_kit_recipe/:id`,
 };
