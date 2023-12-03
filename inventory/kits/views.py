@@ -224,13 +224,13 @@ def kit_history(request):
         loanee_name = request.query_params.get("loaneeName")
         user = request.query_params.get("user")
 
-        if kit_name:
+        if kit_id:
+            kit = Kit.objects.get(id=kit_id)
+            histories = History.objects.filter(kit=kit).order_by("-id")
+        elif kit_name:
             histories = History.objects.filter(kit__name__icontains=kit_name).order_by(
                 "-id"
             )
-        elif kit_id:
-            kit = Kit.objects.get(id=kit_id)
-            histories = History.objects.filter(kit=kit).order_by("-id")
         elif type:
             histories = History.objects.filter(type__icontains=type).order_by("-id")
         elif loanee_name:

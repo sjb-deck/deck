@@ -174,6 +174,30 @@ class TestApiKitHistoryViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Kit matching query does not exist.")
 
+    def test_kit_history_with_kit_name(self):
+        url = f"{reverse('kit_history')}?kitName=Test Kit"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 4)
+
+    def test_kit_history_with_type(self):
+        url = f"{reverse('kit_history')}?type=CREATION"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+
+    def test_kit_history_with_loanee_name(self):
+        url = f"{reverse('kit_history')}?loaneeName=test loanee"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+
+    def test_kit_history_with_user(self):
+        url = f"{reverse('kit_history')}?user=testuser"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 4)
+
     def tearDown(self):
         self.clear_relevant_models()
         return super().tearDown()
