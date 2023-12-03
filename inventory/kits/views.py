@@ -26,7 +26,7 @@ def api_kits(request):
     try:
         kit_id = request.query_params.get("kitId")
         if kit_id:
-            kits = Kit.objects.filter(id=kit_id).exclude(status="RETIRED")
+            kits = Kit.objects.filter(id=kit_id)
             kit_serializer = KitSerializer(kits, many=True)
             if not kit_serializer.data:
                 return Response(

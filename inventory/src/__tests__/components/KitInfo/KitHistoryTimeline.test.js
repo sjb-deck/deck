@@ -4,7 +4,11 @@ import React from 'react';
 
 import { KitHistoryTimeline } from '../../../components/KitInfo/KitHistoryTimeline';
 import { Api } from '../../../globals';
-import { exampleKitHistory, server } from '../../../mocks';
+import {
+  exampleKitHistory,
+  exampleRetireKitHistoryEntry,
+  server,
+} from '../../../mocks';
 import { render, userEvent } from '../../../testSetup';
 import { buildUrl } from '../../../utils';
 
@@ -131,5 +135,19 @@ describe('<KitHistoryTimeline />', () => {
 
     expect(screen.getByText('Nothing found!')).toBeInTheDocument();
     expect(screen.getByText('There are no histories')).toBeInTheDocument();
+  });
+  it('renders correctly when there is no snapshot', async () => {
+    render(<KitHistoryTimeline histories={[exampleRetireKitHistoryEntry]} />);
+
+    // open the modal
+    await userEvent.click(
+      screen.getByRole('listitem', {
+        name: `history ${exampleRetireKitHistoryEntry.id}`,
+      }),
+    );
+
+    // check that modal content is rendered correctly
+    expect(screen.getByText('History Details')).toBeInTheDocument();
+    expect(screen.queryByText('Snapshot')).not.toBeInTheDocument();
   });
 });

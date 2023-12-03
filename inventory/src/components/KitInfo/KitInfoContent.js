@@ -25,24 +25,26 @@ export const KitInfoContent = ({ kitData }) => {
       <Typography variant='overline'>
         {kitData?.status}, {kitData?.complete}
       </Typography>
-      <Stack spacing={2} marginTop={2} marginBottom={5}>
-        {kitData?.status == 'READY' ? (
-          <>
-            <Button variant='contained' color='error'>
-              Withdraw
-            </Button>
-            {kitData?.complete == 'incomplete' && (
-              <Button variant='contained' color='success'>
-                Restock
+      {kitData?.status !== 'RETIRED' && (
+        <Stack spacing={2} marginTop={2} marginBottom={5}>
+          {kitData?.status == 'READY' ? (
+            <>
+              <Button variant='contained' color='error'>
+                Withdraw
               </Button>
-            )}
-          </>
-        ) : (
-          <Button variant='contained' color='success'>
-            Return
-          </Button>
-        )}
-      </Stack>
+              {kitData?.complete == 'incomplete' && (
+                <Button variant='contained' color='success'>
+                  Restock
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button variant='contained' color='success'>
+              Return
+            </Button>
+          )}
+        </Stack>
+      )}
       <KitContentsAccordion
         kitContents={kitData.content}
         kitBlueprint={

@@ -102,12 +102,14 @@ const HistoryModal = ({
 }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   if (!Object.keys(selectedHistory).length) return null;
-  const snapshot = selectedHistory.snapshot.map((item) => ({
-    id: item.item_expiry_id,
-    quantity: item.quantity,
-    name: item.item_expiry.item.name,
-    expiry: item.item_expiry.expiry_date ?? 'No Expiry',
-  }));
+  const snapshot = selectedHistory.snapshot
+    ? selectedHistory.snapshot.map((item) => ({
+        id: item.item_expiry_id,
+        quantity: item.quantity,
+        name: item.item_expiry.item.name,
+        expiry: item.item_expiry.expiry_date ?? 'No Expiry',
+      }))
+    : [];
   const handleDelete = () => {
     if (
       window.confirm('Are you sure you want to delete this history?') &&
@@ -151,11 +153,11 @@ const HistoryModal = ({
         <Typography variant='caption'>
           {typeToModalInfo(selectedHistory)}
         </Typography>
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant='h6' component='span'>
-            Snapshot
-          </Typography>
-          {!!snapshot.length && (
+        {!!snapshot.length && (
+          <div style={{ marginTop: '20px' }}>
+            <Typography variant='h6' component='span'>
+              Snapshot
+            </Typography>
             <DataGrid
               rows={snapshot}
               columns={columns(isMobile)}
@@ -169,8 +171,8 @@ const HistoryModal = ({
               disableColumnMenu
               disableColumnSelector
             />
-          )}
-        </div>
+          </div>
+        )}
         {canDelete && (
           <div
             style={{

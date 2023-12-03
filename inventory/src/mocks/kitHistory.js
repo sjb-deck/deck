@@ -46,6 +46,7 @@ export const exampleKitHistory = {
       date: '2023-12-01T04:33:13.040370Z',
       order_id: null,
       kit: 30,
+      kit_name: 'Test kit',
     },
     {
       id: 59,
@@ -85,6 +86,7 @@ export const exampleKitHistory = {
       date: '2023-11-30T14:01:25.182286Z',
       order_id: 141,
       kit: 30,
+      kit_name: 'Test kit',
     },
     {
       id: 58,
@@ -149,6 +151,7 @@ export const exampleKitHistory = {
       date: '2023-11-30T13:58:05.437251Z',
       order_id: null,
       kit: 30,
+      kit_name: 'Test kit',
     },
     {
       id: 54,
@@ -208,6 +211,7 @@ export const exampleKitHistory = {
       date: '2023-11-15T16:46:02.061823Z',
       order_id: 135,
       kit: 30,
+      kit_name: 'Test kit',
     },
   ],
 };
@@ -269,6 +273,27 @@ const exampleHistory = {
   type: 'CREATION',
   date: '2023-11-15T16:46:02.061823Z',
   order_id: 135,
+  kit: 30,
+  kit_name: 'Test kit',
+};
+
+export const exampleRetireKitHistoryEntry = {
+  id: 70,
+  person: {
+    id: 5,
+    username: 'demo',
+    email: '',
+    extras: {
+      profile_pic: null,
+      role: 'Admin',
+      name: 'demo',
+    },
+  },
+  snapshot: null,
+  kit_name: 'Test Kit',
+  type: 'RETIREMENT',
+  date: '2023-12-03T13:54:30.589236Z',
+  order_id: 146,
   kit: 30,
 };
 

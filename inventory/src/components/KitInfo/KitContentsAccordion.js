@@ -19,14 +19,16 @@ export const KitContentsAccordion = ({ kitContents, kitBlueprint }) => {
   const isMobile = useMediaQuery('(max-width: 800px)');
 
   const rows = [
-    ...kitContents.map((item) => {
-      return {
-        id: item.item_expiry_id,
-        name: item.item_expiry.item.name,
-        expiry: item.item_expiry.expiry_date ?? 'No Expiry',
-        quantity: getFractionOfItem(item, kitBlueprint),
-      };
-    }),
+    ...(kitContents
+      ? kitContents.map((item) => {
+          return {
+            id: item.item_expiry_id,
+            name: item.item_expiry.item.name,
+            expiry: item.item_expiry.expiry_date ?? 'No Expiry',
+            quantity: getFractionOfItem(item, kitBlueprint),
+          };
+        })
+      : []),
     ...getMissingItems(kitContents, kitBlueprint),
   ];
   return (
@@ -73,6 +75,7 @@ const getFractionOfItem = (item, blueprint) => {
 
 const getMissingItems = (kitContents, kitBlueprint) => {
   if (!kitBlueprint) return [];
+  kitContents = kitContents ?? [];
   return kitBlueprint
     .filter((blueprintItem) => {
       const kitItem = kitContents.find((kitItem) => {

@@ -43,6 +43,8 @@ class KitSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_complete(obj):
+        if obj.content is None:
+            return "incomplete"
         kit_content = compress_content(obj.content)
         blueprint_content = obj.blueprint.complete_content
 

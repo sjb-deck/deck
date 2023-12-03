@@ -98,4 +98,31 @@ describe('<KitInfoContent />', () => {
     // check that the kit history accordion is rendered
     expect(screen.getByText('Kit History')).toBeInTheDocument();
   });
+  it('renders a retired kit correctly', () => {
+    render(
+      <KitInfoContent
+        kitData={{
+          ...exampleKit,
+          status: 'RETIRED',
+          content: null,
+          complete: 'retired',
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Test Kit')).toBeInTheDocument();
+    expect(screen.getByText('Test Blueprint')).toBeInTheDocument();
+    expect(screen.getByText(/RETIRED/i)).toBeInTheDocument();
+
+    // check that the correct buttons are rendered
+    expect(screen.queryByText('Restock')).not.toBeInTheDocument();
+    expect(screen.queryByText('Return')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdraw')).not.toBeInTheDocument();
+
+    // check that the kit contents accordion is rendered
+    expect(screen.queryByText('Kit Contents')).not.toBeInTheDocument();
+
+    // check that the kit history accordion is rendered
+    expect(screen.getByText('Kit History')).toBeInTheDocument();
+  });
 });

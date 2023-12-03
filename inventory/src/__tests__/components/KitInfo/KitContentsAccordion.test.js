@@ -93,4 +93,32 @@ describe('<KitContentsAccordion />', () => {
       screen.getByRole('row', { name: 'something new1 0 / 2 NIL' }),
     ).toBeInTheDocument();
   });
+  it('renders kit contents correctly when kit is empty', () => {
+    render(
+      <KitContentsAccordion
+        kitContents={null}
+        kitBlueprint={exampleKitBlueprint}
+      />,
+    );
+
+    expect(screen.getByText('Kit Contents')).toBeInTheDocument();
+    // check if headers are rendered
+    expect(
+      screen.getByRole('columnheader', { name: 'Item' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'Expiry' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'Qty' }),
+    ).toBeInTheDocument();
+
+    // check that items are rendered
+    expect(
+      screen.getByRole('row', { name: 'something new1 0 / 2 NIL' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('row', { name: 'test expiry 0 / 4 NIL' }),
+    ).toBeInTheDocument();
+  });
 });
