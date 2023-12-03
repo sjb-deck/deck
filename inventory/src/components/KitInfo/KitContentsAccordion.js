@@ -48,6 +48,7 @@ export const KitContentsAccordion = ({ kitContents, kitBlueprint }) => {
                 paginationModel: { page: 0, pageSize: 10 },
               },
             }}
+            pageSizeOptions={[10]}
             disableRowSelectionOnClick
             disableColumnMenu
             disableColumnSelector

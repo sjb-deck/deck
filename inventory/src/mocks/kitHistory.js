@@ -1,0 +1,285 @@
+export const exampleKitHistory = {
+  count: 4,
+  next: null,
+  previous: null,
+  results: [
+    {
+      id: 65,
+      loan_info: {
+        loanee_name: 'tester',
+        due_date: '2023-12-30T00:00:00',
+        return_date: null,
+      },
+      person: {
+        id: 5,
+        username: 'demo',
+        email: '',
+        extras: {
+          profile_pic: null,
+          role: 'Admin',
+          name: 'demo',
+        },
+      },
+      snapshot: [
+        {
+          item_expiry_id: 2,
+          quantity: 1,
+          item_expiry: {
+            id: 2,
+            expiry_date: '2023-07-23',
+            quantity: 25,
+            archived: false,
+            item: {
+              id: 2,
+              name: 'test expiry',
+              type: 'General',
+              unit: 'units',
+              imgpic: null,
+              total_quantity: 441,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+      ],
+      type: 'LOAN',
+      date: '2023-12-01T04:33:13.040370Z',
+      order_id: null,
+      kit: 30,
+    },
+    {
+      id: 59,
+      person: {
+        id: 5,
+        username: 'demo',
+        email: '',
+        extras: {
+          profile_pic: null,
+          role: 'Admin',
+          name: 'demo',
+        },
+      },
+      snapshot: [
+        {
+          item_expiry_id: 2,
+          quantity: 1,
+          item_expiry: {
+            id: 2,
+            expiry_date: '2023-07-23',
+            quantity: 25,
+            archived: false,
+            item: {
+              id: 2,
+              name: 'test expiry',
+              type: 'General',
+              unit: 'units',
+              imgpic: null,
+              total_quantity: 441,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+      ],
+      type: 'RESTOCK',
+      date: '2023-11-30T14:01:25.182286Z',
+      order_id: 141,
+      kit: 30,
+    },
+    {
+      id: 58,
+      loan_info: {
+        loanee_name: 'tester',
+        due_date: '2023-12-30T00:00:00',
+        return_date: '2023-11-30T00:00:00Z',
+      },
+      person: {
+        id: 5,
+        username: 'demo',
+        email: '',
+        extras: {
+          profile_pic: null,
+          role: 'Admin',
+          name: 'demo',
+        },
+      },
+      snapshot: [
+        {
+          item_expiry_id: 2,
+          quantity: 0,
+          item_expiry: {
+            id: 2,
+            expiry_date: '2023-07-23',
+            quantity: 25,
+            archived: false,
+            item: {
+              id: 2,
+              name: 'test expiry',
+              type: 'General',
+              unit: 'units',
+              imgpic: null,
+              total_quantity: 441,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+        {
+          item_expiry_id: 45,
+          quantity: 0,
+          item_expiry: {
+            id: 45,
+            expiry_date: '2024-08-19',
+            quantity: 47,
+            archived: false,
+            item: {
+              id: 4,
+              name: 'something new1',
+              type: 'General',
+              unit: '3',
+              imgpic: null,
+              total_quantity: 70,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+      ],
+      type: 'LOAN',
+      date: '2023-11-30T13:58:05.437251Z',
+      order_id: null,
+      kit: 30,
+    },
+    {
+      id: 54,
+      person: {
+        id: 1,
+        username: 'Jonas',
+        email: '',
+        extras: {
+          profile_pic: '/uploaded/user_dp/IMG_2936.JPG',
+          role: 'Developer',
+          name: 'Jonas',
+        },
+      },
+      snapshot: [
+        {
+          item_expiry_id: 2,
+          quantity: 4,
+          item_expiry: {
+            id: 2,
+            expiry_date: '2023-07-23',
+            quantity: 25,
+            archived: false,
+            item: {
+              id: 2,
+              name: 'test expiry',
+              type: 'General',
+              unit: 'units',
+              imgpic: null,
+              total_quantity: 441,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+        {
+          item_expiry_id: 45,
+          quantity: 2,
+          item_expiry: {
+            id: 45,
+            expiry_date: '2024-08-19',
+            quantity: 47,
+            archived: false,
+            item: {
+              id: 4,
+              name: 'something new1',
+              type: 'General',
+              unit: '3',
+              imgpic: null,
+              total_quantity: 70,
+              min_quantity: 0,
+              is_opened: false,
+            },
+          },
+        },
+      ],
+      type: 'CREATION',
+      date: '2023-11-15T16:46:02.061823Z',
+      order_id: 135,
+      kit: 30,
+    },
+  ],
+};
+
+const exampleHistory = {
+  id: 66,
+  person: {
+    id: 1,
+    username: 'Jonas',
+    email: '',
+    extras: {
+      profile_pic: '/uploaded/user_dp/IMG_2936.JPG',
+      role: 'Developer',
+      name: 'Jonas',
+    },
+  },
+  snapshot: [
+    {
+      item_expiry_id: 2,
+      quantity: 4,
+      item_expiry: {
+        id: 2,
+        expiry_date: '2023-07-23',
+        quantity: 25,
+        archived: false,
+        item: {
+          id: 2,
+          name: 'test expiry',
+          type: 'General',
+          unit: 'units',
+          imgpic: null,
+          total_quantity: 441,
+          min_quantity: 0,
+          is_opened: false,
+        },
+      },
+    },
+    {
+      item_expiry_id: 45,
+      quantity: 2,
+      item_expiry: {
+        id: 45,
+        expiry_date: '2024-08-19',
+        quantity: 47,
+        archived: false,
+        item: {
+          id: 4,
+          name: 'something new1',
+          type: 'General',
+          unit: '3',
+          imgpic: null,
+          total_quantity: 70,
+          min_quantity: 0,
+          is_opened: false,
+        },
+      },
+    },
+  ],
+  type: 'CREATION',
+  date: '2023-11-15T16:46:02.061823Z',
+  order_id: 135,
+  kit: 30,
+};
+
+export const extendedExampleKitHistory = {
+  ...exampleKitHistory,
+  count: 14,
+  results: [
+    ...exampleKitHistory.results,
+    ...Array.from({ length: 10 }, (_, i) => i + 66).map((id) => ({
+      ...exampleHistory,
+      id,
+    })),
+  ],
+};

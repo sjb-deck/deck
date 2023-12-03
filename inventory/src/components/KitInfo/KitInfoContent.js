@@ -31,9 +31,11 @@ export const KitInfoContent = ({ kitData }) => {
             <Button variant='contained' color='error'>
               Withdraw
             </Button>
-            <Button variant='contained' color='success'>
-              Restock
-            </Button>
+            {kitData?.complete == 'incomplete' && (
+              <Button variant='contained' color='success'>
+                Restock
+              </Button>
+            )}
           </>
         ) : (
           <Button variant='contained' color='success'>

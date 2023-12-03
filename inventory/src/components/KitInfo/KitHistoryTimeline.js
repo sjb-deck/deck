@@ -13,6 +13,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import React, { useState } from 'react';
 
 import { useRevertHistory } from '../../hooks/mutations';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 import {
@@ -28,13 +29,19 @@ import {
 export const KitHistoryTimeline = ({ histories }) => {
   const [selectedHistory, setSelectedHistory] = useState({});
   const [open, setOpen] = useState(false);
-  const firstHistoryId = histories[0].id;
+  const firstHistoryId = histories.length ? histories[0].id : null;
   const { mutate, isLoading } = useRevertHistory(firstHistoryId);
 
   const displayHistory = (history) => () => {
     setSelectedHistory(history);
     setOpen(true);
   };
+
+  if (histories.length === 0) {
+    return (
+      <EmptyMessage message={'There are no histories'} fullscreen={false} />
+    );
+  }
 
   return (
     <>
@@ -50,11 +57,13 @@ export const KitHistoryTimeline = ({ histories }) => {
       />
       <Timeline>
         {histories.map((history) => (
-          <TimelineItem key={history.id}>
-            <TimelineOppositeContent
-              sx={{ py: '12px', px: 2, cursor: 'pointer' }}
-              onClick={displayHistory(history)}
-            >
+          <TimelineItem
+            key={history.id}
+            aria-label={`history ${history.id}`}
+            onClick={displayHistory(history)}
+            style={{ cursor: 'pointer' }}
+          >
+            <TimelineOppositeContent sx={{ py: '12px', px: 2 }}>
               <Typography variant='h6' component='span'>
                 {history.type}
               </Typography>
@@ -63,21 +72,16 @@ export const KitHistoryTimeline = ({ histories }) => {
             </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineConnector sx={{ bgcolor: typeToColor[history.type] }} />
-              <TimelineDot
-                color={typeToDotColor[history.type]}
-                onClick={displayHistory(history)}
-                style={{ cursor: 'pointer' }}
-              >
+              <TimelineDot color={typeToDotColor[history.type]}>
                 {typeToIcon[history.type]}
               </TimelineDot>
               <TimelineConnector sx={{ bgcolor: typeToColor[history.type] }} />
             </TimelineSeparator>
             <TimelineContent
-              sx={{ m: 'auto 0', cursor: 'pointer' }}
+              sx={{ m: 'auto 0' }}
               align='right'
               variant='body2'
               color='text.secondary'
-              onClick={displayHistory(history)}
             >
               {new Date(history.date).toLocaleString('en-US', options)}
             </TimelineContent>
@@ -117,6 +121,7 @@ const HistoryModal = ({
       open={open}
       onClose={onClose}
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      role='history-modal'
     >
       <Box
         sx={{
@@ -135,6 +140,7 @@ const HistoryModal = ({
             marginRight: '-10px',
           }}
           onClick={onClose}
+          data-testid='close-history-modal-button'
         >
           <CancelIcon color='error' />
         </div>
@@ -158,6 +164,7 @@ const HistoryModal = ({
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
+              pageSizeOptions={[5]}
               disableRowSelectionOnClick
               disableColumnMenu
               disableColumnSelector
