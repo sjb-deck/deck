@@ -120,7 +120,7 @@ describe('<KitInfoContent />', () => {
     expect(screen.queryByText('Withdraw')).not.toBeInTheDocument();
 
     // check that the kit contents accordion is rendered
-    expect(screen.queryByText('Kit Contents')).not.toBeInTheDocument();
+    expect(screen.queryByText('Kit Contents')).toBeInTheDocument();
 
     // check that the kit history accordion is rendered
     expect(screen.getByText('Kit History')).toBeInTheDocument();

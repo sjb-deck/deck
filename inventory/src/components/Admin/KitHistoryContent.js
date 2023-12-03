@@ -155,45 +155,51 @@ export const KitHistoryContent = ({
           <Grid item xs={12} lg={0.5}>
             <Divider orientation='vertical' sx={{ borderRightWidth: 2 }} />
           </Grid>
-          <Grid item xs={12} lg={5.5}>
-            <Stack spacing={1}>
-              <Stack spacing={0}>
-                <Typography variant='button'>Snapshot:</Typography>
-                <Typography variant='caption' sx={{ opacity: 0.7 }}>
-                  Items in kit after this event
-                </Typography>
+          {history.snapshot && (
+            <Grid item xs={12} lg={5.5}>
+              <Stack spacing={1}>
+                <Stack spacing={0}>
+                  <Typography variant='button'>Snapshot:</Typography>
+                  <Typography variant='caption' sx={{ opacity: 0.7 }}>
+                    Items in kit after this event
+                  </Typography>
+                </Stack>
+                {history.snapshot.map((item) => {
+                  return (
+                    <Box
+                      key={item.item_expiry_id}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span>
+                        <Typography variant='body'>
+                          {item.item_expiry.item.name}
+                          {'  '}
+                        </Typography>
+                        <Chip
+                          size='small'
+                          role='expiry-date'
+                          aria-label={
+                            item.item_expiry.expiry_date ?? 'No Expiry'
+                          }
+                          label={
+                            item.item_expiry.expiry_date
+                              ? getReadableDate(item.item_expiry.expiry_date)
+                                  .formattedDate
+                              : 'No Expiry'
+                          }
+                        />
+                      </span>
+                      <span>{item.quantity}</span>
+                    </Box>
+                  );
+                })}
               </Stack>
-              {history.snapshot.map((item) => {
-                return (
-                  <Box
-                    key={item.item_expiry_id}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span>
-                      <Typography variant='body'>
-                        {item.item_expiry.item.name}
-                        {'  '}
-                      </Typography>
-                      <Chip
-                        size='small'
-                        label={
-                          item.item_expiry.expiry_date
-                            ? getReadableDate(item.item_expiry.expiry_date)
-                                .formattedDate
-                            : 'No Expiry'
-                        }
-                      />
-                    </span>
-                    <span>{item.quantity}</span>
-                  </Box>
-                );
-              })}
-            </Stack>
-          </Grid>
+            </Grid>
+          )}
         </Grid>
         <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
         <Box

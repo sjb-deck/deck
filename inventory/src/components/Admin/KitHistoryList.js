@@ -82,8 +82,7 @@ export const KitHistoryList = () => {
           sx={{ width: 1 }}
         />
         <Select
-          label='Filter by'
-          inputProps={{ 'data-testid': 'search-select' }}
+          role='search-select'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
