@@ -232,7 +232,7 @@ def kit_history(request):
             kit = Kit.objects.get(id=kit_id)
             histories = History.objects.filter(kit=kit).order_by("-id")
         elif type:
-            histories = History.objects.filter(type=type).order_by("-id")
+            histories = History.objects.filter(type__icontains=type).order_by("-id")
         elif loanee_name:
             histories = LoanHistory.objects.filter(
                 loanee_name__icontains=loanee_name

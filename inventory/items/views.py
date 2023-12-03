@@ -103,7 +103,7 @@ def api_orders(request):
                 order_items__item_expiry__item__name__icontains=item
             )
         if username:
-            queryset = queryset.filter(user__username=username)
+            queryset = queryset.filter(user__username__icontains=username)
         if reason:
             queryset = queryset.filter(reason__icontains=reason)
 
