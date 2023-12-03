@@ -5,16 +5,23 @@ import { Api } from '../../globals';
 import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils/getRequest';
 
-export const useRevertHistory = (historyId, options) => {
+export const useRevertHistory = (options) => {
   const key = 'revertHistory';
-  const url = Api[key].replace(':id', historyId);
   const request = getRequest();
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     onSuccess: async () => await queryClient.invalidateQueries('kitHistory'),
     onError: (error) => {
-      console.error(error);
+      if (
+        error.response?.data?.message ===
+        'This is not the latest operation of the kit and cannot be reverted.'
+      ) {
+        alert(
+          'This is not the latest operation of the kit and cannot be reverted.',
+        );
+        return;
+      }
       setAlert({
         severity: 'error',
         message: error.message,
@@ -25,8 +32,9 @@ export const useRevertHistory = (historyId, options) => {
   };
 
   return useMutation(
-    async (id) => {
-      const response = await request.get(url, id);
+    async (historyId) => {
+      const url = Api[key].replace(':id', historyId);
+      const response = await request.get(url);
       if (response.status != 200) throw new Error(response.statusText);
       return response.data;
     },

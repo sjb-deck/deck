@@ -30,7 +30,7 @@ export const KitHistoryTimeline = ({ histories }) => {
   const [selectedHistory, setSelectedHistory] = useState({});
   const [open, setOpen] = useState(false);
   const firstHistoryId = histories.length ? histories[0].id : null;
-  const { mutate, isLoading } = useRevertHistory(firstHistoryId);
+  const { mutate, isLoading } = useRevertHistory();
 
   const displayHistory = (history) => () => {
     setSelectedHistory(history);
@@ -51,7 +51,7 @@ export const KitHistoryTimeline = ({ histories }) => {
         selectedHistory={selectedHistory}
         canDelete={firstHistoryId === selectedHistory.id}
         deleteHistory={() => {
-          mutate();
+          mutate(firstHistoryId);
           setOpen(false);
         }}
       />
