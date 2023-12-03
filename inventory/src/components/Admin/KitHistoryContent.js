@@ -43,11 +43,14 @@ export const KitHistoryContent = ({
         aria-controls={`panel${history.id}-content`}
       >
         <Grid container>
-          <Grid item xs={2}>
-            {history.id}
-          </Grid>
-          <Grid item xs={3}>
-            {history.type}
+          {!isMobile && (
+            <Grid item xs={2}>
+              {history.id}
+            </Grid>
+          )}
+          <Grid item xs={isMobile ? 4 : 3}>
+            {history.type.charAt(0).toUpperCase() +
+              history.type.slice(1).toLowerCase()}
           </Grid>
           <Grid item xs={4}>
             {historyDateTime}

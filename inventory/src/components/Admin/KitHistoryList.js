@@ -103,10 +103,12 @@ export const KitHistoryList = () => {
       >
         <AccordionSummary>
           <Grid container>
-            <Grid item xs={2}>
-              ID
-            </Grid>
-            <Grid item xs={3}>
+            {!isMobile && (
+              <Grid item xs={2}>
+                ID
+              </Grid>
+            )}
+            <Grid item xs={isMobile ? 4 : 3}>
               Type
             </Grid>
             <Grid item xs={4}>
