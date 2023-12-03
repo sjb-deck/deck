@@ -24,6 +24,7 @@ import { KitHistoryContent } from './KitHistoryContent';
 export const KitHistoryList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
+  const [numPages, setNumPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchTermInput, setSearchTermInput] = useState('');
   // empty dependency array added to prevent repeated calls to API
@@ -49,6 +50,7 @@ export const KitHistoryList = () => {
 
   useEffect(() => {
     if (!kitHistory) return;
+    setNumPages(Math.ceil(parseInt(kitHistory.count) / 10));
     setHistoryToDisplay(kitHistory.results);
   }, [kitHistory]);
 
@@ -160,7 +162,7 @@ export const KitHistoryList = () => {
         {historyToDisplay ? (
           <Pagination
             page={currentPage}
-            count={Math.ceil(historyToDisplay.count / 10)}
+            count={numPages}
             onChange={handlePageChange}
           />
         ) : (
