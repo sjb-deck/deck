@@ -46,22 +46,22 @@ describe('<KitHistoryList />', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: '65 LOAN 1 Dec 2023 - 12:33 Test kit',
+        name: '65 Loan 1 Dec 2023 - 12:33 Test kit',
       }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: '59 RESTOCK 30 Nov 2023 - 22:01 Test kit',
+        name: '59 Restock 30 Nov 2023 - 22:01 Test kit',
       }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: '58 LOAN 30 Nov 2023 - 21:58 Test kit',
+        name: '58 Loan 30 Nov 2023 - 21:58 Test kit',
       }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: '54 CREATION 16 Nov 2023 - 00:46 Test kit',
+        name: '54 Creation 16 Nov 2023 - 00:46 Test kit',
       }),
     ).toBeInTheDocument();
 

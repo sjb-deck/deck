@@ -23,7 +23,7 @@ describe('<KitHistoryContent />', () => {
       // expand accordion
       await userEvent.click(
         screen.getByRole('button', {
-          name: '65 LOAN 1 Dec 2023 - 12:33 Test kit',
+          name: 'Loan 1 Dec 2023 - 12:33 Test kit',
         }),
       );
 
@@ -88,7 +88,7 @@ describe('<KitHistoryContent />', () => {
       // expand accordion
       await userEvent.click(
         screen.getByRole('button', {
-          name: '59 RESTOCK 30 Nov 2023 - 22:01 Test kit',
+          name: 'Restock 30 Nov 2023 - 22:01 Test kit',
         }),
       );
 
@@ -136,7 +136,7 @@ describe('<KitHistoryContent />', () => {
       // expand accordion
       await userEvent.click(
         screen.getByRole('button', {
-          name: '54 CREATION 16 Nov 2023 - 00:46 Test kit',
+          name: 'Creation 16 Nov 2023 - 00:46 Test kit',
         }),
       );
 
@@ -184,7 +184,7 @@ describe('<KitHistoryContent />', () => {
       // expand accordion
       await userEvent.click(
         screen.getByRole('button', {
-          name: '70 RETIREMENT 3 Dec 2023 - 21:54 Test Kit',
+          name: 'Retirement 3 Dec 2023 - 21:54 Test Kit',
         }),
       );
 
@@ -220,7 +220,7 @@ describe('<KitHistoryContent />', () => {
       // expand accordion
       await userEvent.click(
         screen.getByRole('button', {
-          name: '65 LOAN 1 Dec 2023 - 12:33 Test kit',
+          name: 'Loan 1 Dec 2023 - 12:33 Test kit',
         }),
       );
 
