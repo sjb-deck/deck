@@ -42,4 +42,7 @@ export const ORDER_REASONS = {
   unserviceable: 'Unserviceable',
   others: 'Others',
   loan: 'Loan',
+  kit_restock: 'Kit Restock',
+  kit_create: 'Kit Create',
+  kit_retire: 'Kit Retire',
 };

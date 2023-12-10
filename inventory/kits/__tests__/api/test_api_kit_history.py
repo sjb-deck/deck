@@ -137,26 +137,66 @@ class TestApiKitHistoryViews(TestCase):
         Item.objects.all().delete()
 
     def test_kit_history(self):
-        response = self.client.get(
-            reverse("kit_history", args=[self.kit_id]), None, format="json"
-        )
+        url = f"{reverse('kit_history')}?kitId={self.kit_id}"
+        response = self.client.get(url, None, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
-        self.assertEqual(response.data[0]["type"], "RETIREMENT")
-        self.assertEqual(response.data[0]["snapshot"], None)
-        self.assertEqual(response.data[1]["type"], "RESTOCK")
-        self.assertEqual(response.data[1]["snapshot"], self.kit_content)
-        self.assertEqual(response.data[2]["type"], "LOAN")
-        self.assertEqual(response.data[2]["snapshot"], self.return_content)
-        self.assertEqual(response.data[3]["type"], "CREATION")
-        self.assertEqual(response.data[3]["snapshot"], self.kit_content)
+        self.assertEqual(response.data["count"], 4)
+        self.assertEqual(response.data["results"][0]["type"], "RETIREMENT")
+        self.assertEqual(response.data["results"][0]["snapshot"], None)
+        self.assertEqual(response.data["results"][1]["type"], "RESTOCK")
+        self.assertEqual(
+            [
+                {"item_expiry_id": item["item_expiry_id"], "quantity": item["quantity"]}
+                for item in response.data["results"][1]["snapshot"]
+            ],
+            self.kit_content,
+        )
+        self.assertEqual(response.data["results"][2]["type"], "LOAN")
+        self.assertEqual(
+            [
+                {"item_expiry_id": item["item_expiry_id"], "quantity": item["quantity"]}
+                for item in response.data["results"][2]["snapshot"]
+            ],
+            self.return_content,
+        )
+        self.assertEqual(response.data["results"][3]["type"], "CREATION")
+        self.assertEqual(
+            [
+                {"item_expiry_id": item["item_expiry_id"], "quantity": item["quantity"]}
+                for item in response.data["results"][3]["snapshot"]
+            ],
+            self.kit_content,
+        )
 
     def test_kit_history_with_invalid_kit_id(self):
-        response = self.client.get(
-            reverse("kit_history", args=[self.kit_id + 1]), None, format="json"
-        )
+        url = f"{reverse('kit_history')}?kitId={self.kit_id+1}"
+        response = self.client.get(url, None, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Kit matching query does not exist.")
+
+    def test_kit_history_with_kit_name(self):
+        url = f"{reverse('kit_history')}?kitName=Test Kit"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 4)
+
+    def test_kit_history_with_type(self):
+        url = f"{reverse('kit_history')}?type=CREATION"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+
+    def test_kit_history_with_loanee_name(self):
+        url = f"{reverse('kit_history')}?loaneeName=test loanee"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+
+    def test_kit_history_with_user(self):
+        url = f"{reverse('kit_history')}?user=testuser"
+        response = self.client.get(url, None, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 4)
 
     def tearDown(self):
         self.clear_relevant_models()

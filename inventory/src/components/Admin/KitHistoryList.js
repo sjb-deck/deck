@@ -14,16 +14,17 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { debounce } from 'lodash';
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { useRevertOrder } from '../../hooks/mutations';
-import { useLoans } from '../../hooks/queries';
+import { useRevertHistory } from '../../hooks/mutations';
+import { useKitHistory } from '../../hooks/queries';
 import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 
-import { LoanOrderContent } from './LoanOrderContent';
+import { KitHistoryContent } from './KitHistoryContent';
 
-export const LoanOrderList = () => {
+export const KitHistoryList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [currentPage, setCurrentPage] = useState(1);
+  const [numPages, setNumPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchTermInput, setSearchTermInput] = useState('');
   // empty dependency array added to prevent repeated calls to API
@@ -32,15 +33,15 @@ export const LoanOrderList = () => {
     debounce((value) => setSearchTerm(value), 500),
     [],
   );
-  const [filter, setFilter] = useState('item');
-  const { data: loanOrders, isLoading: dataLoading } = useLoans({
+  const [filter, setFilter] = useState('kitName');
+  const { data: kitHistory, isLoading: dataLoading } = useKitHistory({
     page: currentPage,
     [filter]: searchTerm,
   });
-  const [ordersToDisplay, setOrdersToDisplay] = useState(loanOrders);
-  const { mutate, isLoading } = useRevertOrder();
+  const [historyToDisplay, setHistoryToDisplay] = useState(kitHistory);
+  const { mutate, isLoading } = useRevertHistory();
 
-  const handleDeleteOrder = async (id) => {
+  const handleDeleteHistory = async (id) => {
     mutate(id);
   };
   const handlePageChange = (_, value) => {
@@ -48,9 +49,10 @@ export const LoanOrderList = () => {
   };
 
   useEffect(() => {
-    if (!loanOrders) return;
-    setOrdersToDisplay(loanOrders.results);
-  }, [loanOrders]);
+    if (!kitHistory) return;
+    setNumPages(Math.ceil(parseInt(kitHistory.count) / 10));
+    setHistoryToDisplay(kitHistory.results);
+  }, [kitHistory]);
 
   return (
     <Box
@@ -80,13 +82,14 @@ export const LoanOrderList = () => {
           sx={{ width: 1 }}
         />
         <Select
-          inputProps={{ 'data-testid': 'search-select' }}
+          role='search-select'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
-          <MenuItem value='item'>Item</MenuItem>
+          <MenuItem value='kitName'>Kit</MenuItem>
+          <MenuItem value='type'>Type</MenuItem>
           <MenuItem value='loaneeName'>Loanee</MenuItem>
-          <MenuItem value='username'>User</MenuItem>
+          <MenuItem value='user'>User</MenuItem>
         </Select>
       </Box>
       <Accordion
@@ -100,20 +103,20 @@ export const LoanOrderList = () => {
       >
         <AccordionSummary>
           <Grid container>
-            <Grid item xs={2}>
-              ID
-            </Grid>
-            <Grid item xs={isMobile ? 5 : 3}>
-              Loanee
-            </Grid>
-            <Grid item xs={isMobile ? 5 : 4}>
-              Date
-            </Grid>
             {!isMobile && (
-              <Grid item xs={3}>
-                Return Deadline
+              <Grid item xs={2}>
+                ID
               </Grid>
             )}
+            <Grid item xs={isMobile ? 4 : 3}>
+              Type
+            </Grid>
+            <Grid item xs={4}>
+              Date
+            </Grid>
+            <Grid item xs={3}>
+              Kit
+            </Grid>
           </Grid>
         </AccordionSummary>
       </Accordion>
@@ -137,30 +140,30 @@ export const LoanOrderList = () => {
             alignItems: 'center',
           }}
         >
-          {!dataLoading && ordersToDisplay?.length === 0 && (
+          {!dataLoading && historyToDisplay?.length === 0 && (
             <EmptyMessage
-              message='There are no orders matching your search parameters'
+              message='There are no histories matching your search parameters'
               fullscreen={false}
             />
           )}
           {!dataLoading &&
-            ordersToDisplay?.length > 0 &&
-            ordersToDisplay?.map((order) => {
+            historyToDisplay?.length > 0 &&
+            historyToDisplay?.map((history) => {
               return (
-                <LoanOrderContent
-                  key={order.id}
-                  order={order}
+                <KitHistoryContent
+                  key={history.id}
+                  history={history}
                   isMobile={isMobile}
-                  isLoading={isLoading}
-                  handleDeleteOrder={handleDeleteOrder}
+                  isLoading={dataLoading || isLoading}
+                  handleDeleteHistory={handleDeleteHistory}
                 />
               );
             })}
         </Box>
-        {loanOrders ? (
+        {historyToDisplay ? (
           <Pagination
             page={currentPage}
-            count={loanOrders.num_pages}
+            count={numPages}
             onChange={handlePageChange}
           />
         ) : (
