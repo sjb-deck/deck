@@ -197,12 +197,23 @@ def add_blueprint(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Compress different expiry into one item
-        blueprint_content = compress_content(content)
+        # Check if content is valid
+        for item in content:
+            if item["quantity"] < 0:
+                return Response(
+                    {"message": "Quantity cannot be negative."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if not Item.objects.filter(id=item["item_id"]).exists():
+                return Response(
+                    {"message": "Item matching query does not exist."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
 
         blueprint = Blueprint.objects.create(
             name=name,
-            complete_content=blueprint_content,
+            complete_content=content,
         )
 
         return Response(
@@ -550,6 +561,30 @@ def revert_kit(request, history_id):
                 {"message": "Kit restock reverted successfully!", "kit_id": kit.id},
                 status=status.HTTP_200_OK,
             )
+
+        elif history_type == "RETIREMENT":
+            if kit.status != "RETIRED":
+                return Response(
+                    {
+                        "message": "Severe error detected. Kit is not in retired state and cannot be reverted. Please "
+                        "contact admin.",
+                        "kit_id": kit.id,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            Order.objects.get(id=history.order_id).revert_order()
+            previous_history = History.objects.filter(kit__id=kit.id).order_by("-id")[1]
+            kit.content = previous_history.snapshot
+            kit.status = "READY"
+            kit.save()
+            history.delete()
+
+            return Response(
+                {"message": "Kit retirement reverted successfully!", "kit_id": kit.id},
+                status=status.HTTP_200_OK,
+            )
+
         else:
             return Response(
                 {"message": "This operation cannot be reverted.", "kit_id": kit.id},
