@@ -150,4 +150,35 @@ describe('<KitHistoryTimeline />', () => {
     expect(screen.getByText('History Details')).toBeInTheDocument();
     expect(screen.queryByText('Snapshot')).not.toBeInTheDocument();
   });
+
+  it('displays delete button correctly', async () => {
+    render(<KitHistoryTimeline histories={exampleKitHistory.results} />);
+
+    // open the first modal
+    await userEvent.click(
+      screen.getByRole('listitem', {
+        name: `history ${exampleKitHistory.results[0].id}`,
+      }),
+    );
+
+    // check that delete button is displayed for the first history
+    expect(
+      screen.getByRole('button', { name: 'Delete History' }),
+    ).toBeInTheDocument();
+
+    // close the modal
+    await userEvent.click(screen.getByTestId('close-history-modal-button'));
+
+    // open the second modal
+    await userEvent.click(
+      screen.getByRole('listitem', {
+        name: `history ${exampleKitHistory.results[1].id}`,
+      }),
+    );
+
+    // check that delete button is not displayed for the second history
+    expect(
+      screen.queryByRole('button', { name: 'Delete History' }),
+    ).not.toBeInTheDocument();
+  });
 });
