@@ -8,12 +8,6 @@ from inventory import views
 item_api_urls = [
     path("items", item_views.api_items, name="api_items"),
     path("orders", item_views.api_orders, name="api_orders"),
-    path("orders/<str:option>", item_views.api_orders, name="api_orders_option"),
-    path(
-        "orders/<str:option>/<int:order_id>",
-        item_views.api_orders,
-        name="api_order_items",
-    ),
     path("submit_order", item_views.api_submit_order, name="submit_order"),
     path("add_item", item_views.api_add_item, name="api_add_item"),
     path("add_expiry", item_views.create_new_expiry, name="create_new_expiry"),
@@ -30,7 +24,7 @@ item_api_urls = [
     ),
     path("retire_kit/<int:kit_id>", kit_views.retire_kit, name="retire_kit"),
     path("add_blueprint", kit_views.add_blueprint, name="add_blueprint"),
-    path("kit_history/<int:kit_id>", kit_views.kit_history, name="kit_history"),
+    path("kit_history", kit_views.kit_history, name="kit_history"),
     path("submit_kit_order", kit_views.submit_kit_order, name="submit_kit_order"),
     path("return_kit_order", kit_views.return_kit_order, name="return_kit_order"),
     path(
@@ -40,17 +34,9 @@ item_api_urls = [
     ),
     path("restock_kit", kit_views.restock_kit, name="restock_kit"),
     path(
-        "revert_kit_order/<int:kit_id>",
-        kit_views.revert_kit_order,
-        name="revert_kit_order",
-    ),
-    path(
-        "revert_restock/<int:kit_id>", kit_views.revert_restock, name="revert_restock"
-    ),
-    path(
-        "revert_return_order/<int:kit_id>",
-        kit_views.revert_return_order,
-        name="revert_return_order",
+        "revert_kit/<int:history_id>",
+        kit_views.revert_kit,
+        name="revert_kit",
     ),
 ]
 

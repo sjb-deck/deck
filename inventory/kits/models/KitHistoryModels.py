@@ -40,7 +40,7 @@ class History(models.Model):
 class LoanHistory(History):
     loanee_name = models.CharField(max_length=50)
     due_date = models.DateField()
-    return_date = models.DateField(null=True, blank=True)
+    return_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.loanee_name} - {self.due_date}"

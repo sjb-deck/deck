@@ -15,7 +15,12 @@ export const useRevertOrder = (options) => {
     onSuccess: async () => await queryClient.invalidateQueries('orders'),
     onError: (error) => {
       console.error(error);
-      setAlert('error', error.message, false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 

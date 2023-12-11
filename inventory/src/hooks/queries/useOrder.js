@@ -13,7 +13,12 @@ export const useOrder = (id, options) => {
     refetchOnWindowFocus: false,
     onError: (error) => {
       console.error(error);
-      setAlert('error', error.message, false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 
@@ -21,7 +26,7 @@ export const useOrder = (id, options) => {
     [key, id],
     async () => {
       const response = await axios.get(url);
-      return response.data;
+      return response.data.results[0];
     },
     {
       ...defaultOptions,

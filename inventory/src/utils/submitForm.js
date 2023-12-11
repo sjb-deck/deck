@@ -168,7 +168,7 @@ const checkItemFormData = (
   }
 
   try {
-    itemFormData.min_quantityopen = parseInt(itemFormData.min_quantity);
+    itemFormData.min_quantity = parseInt(itemFormData.min_quantity);
   } catch {
     tempItemFormError.min_quantity = true;
   }

@@ -108,6 +108,16 @@ class TestApiRevertOrderView(TestCase):
             returned_quantity=1,
         )
 
+        self.kit_order = Order.objects.create(
+            action="Withdraw",
+            reason="kit_create",
+            user=self.user,
+        )
+        self.kit_order_item1 = self.kit_order.order_items.create(
+            item_expiry=self.itemExpiry1, ordered_quantity=10
+        )
+        self.kit_order.other_info = ""
+
     def test_revert_withdraw_order(self):
         response = self.client.post(self.url, self.withdraw_order.id, format="json")
         self.assertEqual(response.status_code, 200)
@@ -186,6 +196,30 @@ class TestApiRevertOrderView(TestCase):
     def test_revert_order_with_invalid_order_id(self):
         response = self.client.post(self.url, -1, format="json")
         self.assertEqual(response.status_code, 500)
+
+    def test_revert_order_with_kit_create_order(self):
+        response = self.client.post(self.url, self.kit_order.id, format="json")
+        self.assertEqual(response.status_code, 500)
+
+    def test_revert_order_with_kit_restock_order(self):
+        self.kit_order.reason = "kit_restock"
+        self.kit_order.save()
+        response = self.client.post(self.url, self.kit_order.id, format="json")
+        self.assertEqual(response.status_code, 500)
+
+    def test_revert_order_with_kit_retire_order(self):
+        self.kit_order.reason = "kit_retire"
+        self.kit_order.action = "Deposit"
+        self.kit_order.save()
+        response = self.client.post(self.url, self.kit_order.id, format="json")
+        self.assertEqual(response.status_code, 500)
+
+    def test_revert_deposit_order_with_insufficient_quantity(self):
+        self.deposit_order_item1.ordered_quantity = 100
+        self.deposit_order_item1.save()
+        response = self.client.post(self.url, self.deposit_order.id, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(self.itemExpiry1.quantity, 50)
 
     def tearDown(self) -> None:
         self.clear_relevant_models()

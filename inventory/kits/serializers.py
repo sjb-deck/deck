@@ -2,8 +2,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 from accounts.models import User, UserExtras
-from inventory.items.serializers import ItemExpiryWithItemSerializer
-
+from inventory.items.serializers import ItemExpiryWithItemSerializer, UserSerializer
 
 from .models import *
 from .views_utils import compress_content
@@ -44,6 +43,8 @@ class KitSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_complete(obj):
+        if obj.content is None:
+            return "incomplete"
         kit_content = compress_content(obj.content)
         blueprint_content = obj.blueprint.complete_content
 
@@ -85,6 +86,9 @@ class BlueprintSerializer(serializers.ModelSerializer):
 
 class HistorySerializer(serializers.ModelSerializer):
     loan_info = serializers.SerializerMethodField()
+    person = UserSerializer(read_only=True)
+    snapshot = KitContentSerializer(many=True)
+    kit_name = serializers.SerializerMethodField()
 
     class Meta:
         model = History
@@ -100,6 +104,9 @@ class HistorySerializer(serializers.ModelSerializer):
                 "return_date": loan_history.return_date,
             }
         return None
+
+    def get_kit_name(self, obj):
+        return obj.kit.name
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)

@@ -2,15 +2,23 @@ import datetime
 import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from .serializers import *
 from ..items.models import *
 from .views_utils import *
+
+
+@login_required(login_url="/r'^login/$'")
+def kit_info(request):
+    return render(request, "kit_info.html")
 
 
 @login_required(login_url="/r'^login/$'")
@@ -22,6 +30,16 @@ def kits(request):
 @permission_classes([IsAuthenticated])
 def api_kits(request):
     try:
+        kit_id = request.query_params.get("kitId")
+        if kit_id:
+            kits = Kit.objects.filter(id=kit_id)
+            kit_serializer = KitSerializer(kits, many=True)
+            if not kit_serializer.data:
+                return Response(
+                    {"message": "No such kit found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            return Response(kit_serializer.data[0], status=status.HTTP_200_OK)
         kits = Kit.objects.all().exclude(status="RETIRED")
         kit_serializer = KitSerializer(kits, many=True)
         blueprint = Blueprint.objects.filter(archived=False)
@@ -114,7 +132,11 @@ def add_kit(request):
             )
 
         return Response(
-            {"message": "Kit added successfully!", "kit_id": new_kit.id},
+            {
+                "message": "Kit added successfully!",
+                "kit_id": new_kit.id,
+                "order_id": order_id,
+            },
             status=status.HTTP_201_CREATED,
         )
 
@@ -150,7 +172,10 @@ def retire_kit(request, kit_id):
         kit.save()
 
         return Response(
-            {"message": "Kit retired and contents deposited successfully!"},
+            {
+                "message": "Kit retired and contents deposited successfully!",
+                "order_id": order_id,
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -197,17 +222,43 @@ def add_blueprint(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def kit_history(request, kit_id):
+def kit_history(request):
     try:
-        if not Kit.objects.filter(id=kit_id).exists():
-            return Response(
-                {"message": "No such kit found."}, status=status.HTTP_404_NOT_FOUND
+        kit_id = request.query_params.get("kitId")
+        kit_name = request.query_params.get("kitName")
+        type = request.query_params.get("type")
+        loanee_name = request.query_params.get("loaneeName")
+        user = request.query_params.get("user")
+
+        if kit_id:
+            kit = Kit.objects.get(id=kit_id)
+            histories = History.objects.filter(kit=kit).order_by("-id")
+        elif kit_name:
+            histories = History.objects.filter(kit__name__icontains=kit_name).order_by(
+                "-id"
             )
+        elif type:
+            histories = History.objects.filter(type__icontains=type).order_by("-id")
+        elif loanee_name:
+            histories = LoanHistory.objects.filter(
+                loanee_name__icontains=loanee_name
+            ).order_by("-id")
+        elif user:
+            histories = History.objects.filter(
+                person__username__icontains=user
+            ).order_by("-id")
+        else:
+            histories = History.objects.all().order_by("-id")
 
-        histories = History.objects.filter(kit__id=kit_id).order_by("-id")
+        # Create a paginator
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
 
-        serializer = HistorySerializer(histories, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Apply pagination to the queryset
+        result_page = paginator.paginate_queryset(histories, request)
+
+        serializer = HistorySerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -221,6 +272,27 @@ def submit_kit_order(request):
         force = request.data.get("force")
         loanee_name = request.data.get("loanee_name")
         due_date = request.data.get("due_date")
+
+        if not kit_id or not loanee_name or not due_date or force is None:
+            return Response(
+                {"message": "Required parameters are missing!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check date format
+        try:
+            datetime.date.fromisoformat(due_date)
+        except ValueError:
+            return Response(
+                {"message": "Invalid date format."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if datetime.date.fromisoformat(due_date) < datetime.date.today():
+            return Response(
+                {"message": "Due date cannot be in the past."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Check if kit is available
         kit = Kit.objects.get(id=kit_id)
@@ -265,6 +337,19 @@ def return_kit_order(request):
         kit_id = request.data.get("kit_id")
         content = request.data.get("content")
 
+        if not kit_id or not content:
+            return Response(
+                {"message": "Required parameters are missing!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        for item in content:
+            if item["quantity"] < 0:
+                return Response(
+                    {"message": "Quantity cannot be negative."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         # Check if kit is loaned
         kit = Kit.objects.get(id=kit_id)
 
@@ -293,7 +378,7 @@ def return_kit_order(request):
                 )
 
         # Update loan history
-        loan_history.return_date = datetime.date.today()
+        loan_history.return_date = timezone.now()
         loan_history.snapshot = content
         loan_history.save()
 
@@ -377,7 +462,8 @@ def restock_kit(request):
         )
 
         return Response(
-            {"message": "Kit restocked successfully!"}, status=status.HTTP_200_OK
+            {"message": "Kit restocked successfully!", "order_id": order_id},
+            status=status.HTTP_200_OK,
         )
 
     except Exception as e:
@@ -386,121 +472,95 @@ def restock_kit(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def revert_kit_order(request, kit_id):
+def revert_kit(request, history_id):
     try:
-        # Check if kit is loaned
-        kit = Kit.objects.get(id=kit_id)
-
-        if kit.status != "LOANED":
+        # Check if history is the latest of a kit and get its type
+        history = History.objects.get(id=history_id)
+        kit = history.kit
+        kit_latest_history = History.objects.filter(kit__id=kit.id).latest("id")
+        if history.id != kit_latest_history.id:
             return Response(
-                {"message": "Kit is not loaned and cannot be reverted."},
+                {
+                    "message": "This is not the latest operation of the kit and cannot be reverted.",
+                    "kit_id": kit.id,
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        history = History.objects.filter(kit__id=kit_id).latest("id")
-        if history.type != "LOAN":
+        history_type = history.type
+        if history_type == "LOAN":
+            loan_history = LoanHistory.objects.get(id=history_id)
+            if loan_history.return_date is None:
+                if kit.status != "LOANED":
+                    return Response(
+                        {
+                            "message": "Severe error detected. Kit is not in loaned state and cannot be reverted. Please "
+                            "contact admin.",
+                            "kit_id": kit.id,
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                loan_history.delete()
+                kit.status = "READY"
+                kit.save()
+
+                return Response(
+                    {"message": "Kit loan reverted successfully!", "kit_id": kit.id},
+                    status=status.HTTP_200_OK,
+                )
+            else:  # there is a return date indicating that the kit is returned
+                if kit.status != "READY":
+                    return Response(
+                        {
+                            "message": "Severe error detected. Kit is not in ready state and cannot be reverted. Please "
+                            "contact admin.",
+                            "kit_id": kit.id,
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+                previous_loan_history = History.objects.filter(kit__id=kit.id).order_by(
+                    "-id"
+                )[1]
+                loan_history.return_date = None
+                loan_history.snapshot = previous_loan_history.snapshot
+                loan_history.save()
+
+                kit.status = "LOANED"
+                kit.content = previous_loan_history.snapshot
+                kit.save()
+
+                return Response(
+                    {"message": "Kit return reverted successfully!", "kit_id": kit.id},
+                    status=status.HTTP_200_OK,
+                )
+
+        elif history_type == "RESTOCK":
+            if kit.status != "READY":
+                return Response(
+                    {
+                        "message": "Severe error detected. Kit is not in ready state and cannot be reverted. Please "
+                        "contact admin.",
+                        "kit_id": kit.id,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            Order.objects.get(id=history.order_id).revert_order()
+            previous_history = History.objects.filter(kit__id=kit.id).order_by("-id")[1]
+            kit.content = previous_history.snapshot  # status is still READY
+            kit.save()
+            history.delete()
+
             return Response(
-                {"message": "Kit is not loaned recently and cannot be reverted."},
+                {"message": "Kit restock reverted successfully!", "kit_id": kit.id},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"message": "This operation cannot be reverted.", "kit_id": kit.id},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        loan_history = LoanHistory.objects.get(id=history.id)
-        if loan_history.return_date is not None:
-            return Response(
-                {"message": "Kit is not loaned and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        loan_history.delete()
-
-        kit.status = "READY"
-        kit.save()
-
-        return Response(
-            {"message": "Kit loan reverted successfully!"}, status=status.HTTP_200_OK
-        )
-
-    except Exception as e:
-        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def revert_restock(request, kit_id):
-    try:
-        kit = Kit.objects.get(id=kit_id)
-
-        if kit.status != "READY":
-            return Response(
-                {"message": "Kit is not ready and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        history = History.objects.filter(kit__id=kit_id).latest("id")
-        if history.type != "RESTOCK":
-            return Response(
-                {"message": "Kit is not restocked recently and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        Order.objects.get(id=history.order_id).revert_order()
-
-        history.delete()
-
-        previous_history = History.objects.filter(kit__id=kit_id).order_by("-id")[1]
-        kit.content = previous_history.snapshot  # status is still READY
-        kit.save()
-
-        return Response(
-            {"message": "Kit restock reverted successfully!"}, status=status.HTTP_200_OK
-        )
-
-    except Exception as e:
-        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def revert_return_order(request, kit_id):
-    try:
-        # Check if kit has been returned
-        kit = Kit.objects.get(id=kit_id)
-
-        if kit.status != "READY":
-            return Response(
-                {"message": "Kit is not returned yet and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        history = History.objects.filter(kit__id=kit_id).latest("id")
-        if history.type != "LOAN":
-            return Response(
-                {"message": "Kit is not returned recently and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        loan_history = LoanHistory.objects.get(id=history.id)
-        if loan_history.return_date is None:
-            return Response(
-                {"message": "Kit is not returned yet and cannot be reverted."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        previous_loan_history = History.objects.filter(kit__id=kit_id).order_by("-id")[
-            1
-        ]
-
-        loan_history.return_date = None
-        loan_history.snapshot = previous_loan_history.snapshot
-        loan_history.save()
-
-        kit.status = "LOANED"
-        kit.content = previous_loan_history.snapshot
-        kit.save()
-
-        return Response(
-            {"message": "Kit return reverted successfully!"}, status=status.HTTP_200_OK
-        )
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

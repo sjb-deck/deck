@@ -1,10 +1,13 @@
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from inventory.kits import views
+from . import views
 
 urlpatterns = (
-    [path("", views.kits, name="kits")]
+    [
+        path("", views.kits, name="kits"),
+        path("kit_info", views.kit_info, name="kit_info")
+    ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )

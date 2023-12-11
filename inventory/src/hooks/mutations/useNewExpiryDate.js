@@ -13,12 +13,21 @@ export const useNewExpiryDate = (options) => {
   const queryClient = useQueryClient();
   const defaultOptions = {
     onSuccess: () => {
-      setAlert('success', 'Deposit successfully!', true);
+      setAlert({
+        severity: 'success',
+        message: 'Successfully added new expiry date!',
+        autoHide: true,
+      });
       queryClient.invalidateQueries('items');
     },
     onError: (error) => {
       console.error(error);
-      setAlert('error', 'Error! Please try again.', false);
+      setAlert({
+        severity: 'error',
+        message: error.message,
+        autoHide: false,
+        additionalInfo: error.response?.data?.message,
+      });
     },
   };
 

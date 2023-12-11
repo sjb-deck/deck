@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import sys
 from pathlib import Path
 import os
 from decouple import config
@@ -83,8 +83,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "deck.wsgi.application"
 
 
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,
+}
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
 
 DATABASES = {
     "default": {
@@ -94,7 +100,7 @@ DATABASES = {
         "PORT": "3306",
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PW"),
-    }
+    },
 }
 
 # uncomment this to use local db

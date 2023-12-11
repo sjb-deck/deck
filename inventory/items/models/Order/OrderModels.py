@@ -35,13 +35,9 @@ class Order(models.Model):
     other_info = models.CharField(max_length=100, null=True, blank=True)
 
     def revert_order(self):
-        try:
-            for item in self.order_items.all():
-                item.revert_order_item()
-            self.delete()
-        except Exception as e:
-            print("Error when reverting order")
-            raise e
+        for item in self.order_items.all():
+            item.revert_order_item()
+        self.delete()
 
     def __str__(self) -> str:
         return f"{self.action}, {self.reason}, {self.date}, {self.user}"

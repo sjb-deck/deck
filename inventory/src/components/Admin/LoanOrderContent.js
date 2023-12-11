@@ -5,9 +5,11 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Chip,
   Divider,
   Grid,
   Stack,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 
@@ -22,7 +24,8 @@ export const LoanOrderContent = ({
   handleDeleteOrder,
 }) => {
   const { formattedDateTime: orderDateTime } = getReadableDate(order.date);
-  const { formattedDate: returnDate } = getReadableDate(order.due_date);
+  const { formattedDate: dueDate } = getReadableDate(order.due_date);
+  const { formattedDate: returnedDate } = getReadableDate(order?.return_date);
 
   return (
     <Accordion
@@ -40,14 +43,14 @@ export const LoanOrderContent = ({
             {order.id}
           </Grid>
           <Grid item xs={isMobile ? 5 : 3}>
-            {order.action}
+            {order.loanee_name}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
             {orderDateTime}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
-              {returnDate}
+              {dueDate}
             </Grid>
           )}
         </Grid>
@@ -57,6 +60,16 @@ export const LoanOrderContent = ({
         <Grid container spacing={2} sx={{ marginTop: 0.5, marginBottom: 1 }}>
           <Grid item xs={12} lg={5.5}>
             <Stack spacing={1.5}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <span>Ordered by:</span>
+                <span>{order.user.username}</span>
+              </Box>
               <Box
                 sx={{
                   display: 'flex',
@@ -104,9 +117,21 @@ export const LoanOrderContent = ({
                   alignItems: 'center',
                 }}
               >
-                <span>Return Date:</span>
-                <span>{returnDate}</span>
+                <span>Return Deadline:</span>
+                <span>{dueDate}</span>
               </Box>
+              {returnedDate && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span>Date Returned:</span>
+                  <span>{returnedDate}</span>
+                </Box>
+              )}
             </Stack>
           </Grid>
           <Grid item xs={12} lg={0.5}>
@@ -117,14 +142,28 @@ export const LoanOrderContent = ({
               {order.order_items.map((item) => {
                 return (
                   <Box
-                    key={item.item_expiry.item.id}
+                    key={item.item_expiry.id}
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}
                   >
-                    <span>{item.item_expiry.item.name}</span>
+                    <span>
+                      <Typography variant='body'>
+                        {item.item_expiry.item.name}
+                        {'  '}
+                      </Typography>
+                      <Chip
+                        size='small'
+                        label={
+                          item.item_expiry.expiry_date
+                            ? getReadableDate(item.item_expiry.expiry_date)
+                                .formattedDate
+                            : 'No Expiry'
+                        }
+                      />
+                    </span>
                     <span>{item.ordered_quantity}</span>
                   </Box>
                 );

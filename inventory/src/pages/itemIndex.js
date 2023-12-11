@@ -1,9 +1,10 @@
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
 
 import {
+  EmptyMessage,
   FloatingCart,
   Footer,
   ItemContainer,
@@ -71,15 +72,10 @@ export const ItemIndex = () => {
         }}
       >
         {itemsToDisplay && itemsToDisplay.length === 0 && (
-          <Typography
-            variant='body1'
-            sx={{
-              marginTop: '16px',
-              fontStyle: 'italic',
-            }}
-          >
-            No results found.
-          </Typography>
+          <EmptyMessage
+            message='There are no items matching your search parameters'
+            fullscreen={false}
+          />
         )}
         {itemsToDisplay
           ? itemsToDisplay.slice(startIndex, endIndex).map((item) => {

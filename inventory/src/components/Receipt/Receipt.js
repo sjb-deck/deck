@@ -17,7 +17,7 @@ const getOrderInfo = (orderData) => {
   const orderInfoWithFriendlyDate = {
     ...orderInfo,
     ...(orderInfo.due_date && {
-      due_date: new Date(orderInfo.due_date).toLocaleString(),
+      due_date: new Date(orderInfo.due_date).toDateString(),
     }),
     ...(orderInfo.return_date && {
       return_date: new Date(orderInfo.return_date).toLocaleString(),
@@ -47,30 +47,35 @@ const getOrderInfo = (orderData) => {
 export function Receipt({ orderId }) {
   const { data, isLoading, isError } = useOrder(orderId);
 
-  return !isLoading && !isError ? (
+  return (
     <Stack
       className='nav-margin-compensate'
       spacing={2}
       sx={{
-        justifyContent: 'center',
+        justifyContent: 'start',
         alignItems: 'center',
         marginBottom: '100px',
+        minHeight: '100vh',
       }}
     >
-      <Box sx={{ mt: 20 }}>
-        <Typography variant='h4' align='center'>
-          Order {orderId} Confirmed!
-        </Typography>
-        <Typography variant='body1' align='center'>
-          View your order details below:
-        </Typography>
-      </Box>
-      <ReceiptDetails details={getOrderInfo(data)} />
-      {data.order_items.map((orderItem) => {
-        return <ReceiptItem key={orderItem.id} item={orderItem} />;
-      })}
+      {isLoading || isError ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <Box sx={{ mt: 20 }}>
+            <Typography variant='h4' align='center'>
+              Order {orderId} Confirmed!
+            </Typography>
+            <Typography variant='body1' align='center'>
+              View your order details below:
+            </Typography>
+          </Box>
+          <ReceiptDetails details={getOrderInfo(data)} />
+          {data.order_items.map((orderItem) => {
+            return <ReceiptItem key={orderItem.id} item={orderItem} />;
+          })}
+        </>
+      )}
     </Stack>
-  ) : (
-    <LoadingSpinner />
   );
 }

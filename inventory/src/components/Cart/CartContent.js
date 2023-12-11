@@ -10,12 +10,13 @@ import { CART_ITEM_TYPE_WITHDRAW, URL_ORDER_RECEIPT } from '../../globals';
 import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
 import { getDjangoFriendlyDate } from '../../utils';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Paper } from '../styled';
 
 import { CartItems } from './CartItems/CartItems';
-import { emptyCartMessage } from './labels';
 import { validationSchema } from './schema';
+
 import '../../globals/styles/inventoryBase.scss';
 
 export const CartContent = () => {
@@ -154,73 +155,78 @@ export const CartContent = () => {
 
   if (isEmpty) {
     return (
-      <Stack justifyContent='center' alignItems='center' minHeight={'100vh'}>
-        <div className='nav-margin-compensate'>
-          <Typography variant='h1'>{emptyCartMessage}</Typography>
-        </div>
-      </Stack>
+      <EmptyMessage message='The cart is empty, deposit/withdraw items and it will appear here' />
     );
   }
 
-  return !isLoading ? (
+  return (
     <Stack
       className='nav-margin-compensate'
       spacing={3}
       padding={1}
       sx={{
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'start',
         width: '100%',
         marginBottom: '50px',
+        minHeight: '100vh',
       }}
     >
-      <Paper className='dynamic-width' style={{ padding: 20 }} elevation={3}>
-        <Stack justifyContent='center' alignItems='center' spacing={2}>
-          <Typography variant='h4' alignSelf='start'>
-            {cartState} Cart
-          </Typography>
-          <TextField
-            select
-            label={`${cartState} Options`}
-            fullWidth
-            value={formik.values.selectedOption}
-            onChange={(event) => setSelectedOption(event.target.value)}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <Paper
+            className='dynamic-width'
+            style={{ padding: 20 }}
+            elevation={3}
           >
-            {isWithdraw
-              ? withdrawOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))
-              : depositOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-          </TextField>
-          {formik.values.selectedOption &&
-            (isWithdraw
-              ? withdrawOptions.find(
-                  (option) => option.value === formik.values.selectedOption,
-                ).fields
-              : depositOptions.find(
-                  (option) => option.value === formik.values.selectedOption,
-                ).fields)}
-        </Stack>
-      </Paper>
-      <CartItems />
-      <LoadingButton
-        className='dynamic-width'
-        variant='contained'
-        onClick={formik.handleSubmit}
-        endIcon={<SendIcon />}
-        color={cartState === CART_ITEM_TYPE_WITHDRAW ? 'error' : 'success'}
-        sx={{ marginBottom: '20px' }}
-      >
-        Submit
-      </LoadingButton>
+            <Stack justifyContent='center' alignItems='center' spacing={2}>
+              <Typography variant='h4' alignSelf='start'>
+                {cartState} Cart
+              </Typography>
+              <TextField
+                select
+                label={`${cartState} Options`}
+                fullWidth
+                value={formik.values.selectedOption}
+                onChange={(event) => setSelectedOption(event.target.value)}
+              >
+                {isWithdraw
+                  ? withdrawOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))
+                  : depositOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+              </TextField>
+              {formik.values.selectedOption &&
+                (isWithdraw
+                  ? withdrawOptions.find(
+                      (option) => option.value === formik.values.selectedOption,
+                    ).fields
+                  : depositOptions.find(
+                      (option) => option.value === formik.values.selectedOption,
+                    ).fields)}
+            </Stack>
+          </Paper>
+          <CartItems />
+          <LoadingButton
+            className='dynamic-width'
+            variant='contained'
+            onClick={formik.handleSubmit}
+            endIcon={<SendIcon />}
+            color={cartState === CART_ITEM_TYPE_WITHDRAW ? 'error' : 'success'}
+            sx={{ marginBottom: '20px' }}
+          >
+            Submit
+          </LoadingButton>
+        </>
+      )}
     </Stack>
-  ) : (
-    <LoadingSpinner />
   );
 };
