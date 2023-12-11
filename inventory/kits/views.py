@@ -210,7 +210,6 @@ def add_blueprint(request):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-
         blueprint = Blueprint.objects.create(
             name=name,
             complete_content=content,
@@ -273,64 +272,57 @@ def kit_history(request):
 @permission_classes([IsAuthenticated])
 def submit_kit_order(request):
     try:
-        kit_id = request.data.get("kit_id")
+        kit_ids = request.data.get("kit_ids")
         force = request.data.get("force")
         loanee_name = request.data.get("loanee_name")
         due_date = request.data.get("due_date")
 
-        if not kit_id or not loanee_name or not due_date or force is None:
-            return Response(
-                {"message": "Required parameters are missing!"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if not kit_ids or not loanee_name or not due_date or force is None:
+            raise ValueError("Required parameters are missing!")
+
+        if len(kit_ids) == 0:
+            raise ValueError("No kits selected, empty array.")
 
         # Check date format
-        try:
-            datetime.date.fromisoformat(due_date)
-        except ValueError:
-            return Response(
-                {"message": "Invalid date format."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        due_date_obj = datetime.datetime.strptime(due_date, "%Y-%m-%d").date()
 
-        if datetime.date.fromisoformat(due_date) < datetime.date.today():
-            return Response(
-                {"message": "Due date cannot be in the past."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if due_date_obj < datetime.date.today():
+            raise ValueError("Due date cannot be in the past.")
 
-        # Check if kit is available
-        kit = Kit.objects.get(id=kit_id)
-        if kit.status != "READY":
-            return Response(
-                {"message": "Kit is not ready and available."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        with transaction.atomic():
+            try:
+                for kit_id in kit_ids:
+                    # Check if kit is available
+                    kit = Kit.objects.get(id=kit_id)
+                    if kit.status != "READY":
+                        raise ValueError("Kit is not ready and available.")
 
-        # Check if kit is complete
-        if not kit_is_complete(kit_id) and not force:
-            return Response(
-                {"message": "Kit is not complete and normal loan if not possible."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                    if not kit_is_complete(kit_id) and not force:
+                        raise ValueError(
+                            f"Kit with id={kit_id} is not complete and cannot be loaned."
+                        )
 
-        LoanHistory.objects.create(
-            kit=kit,
-            type="LOAN",
-            person=request.user,
-            snapshot=kit.content,
-            loanee_name=loanee_name,
-            due_date=due_date,
-            return_date=None,
-        )
+                    LoanHistory.objects.create(
+                        kit=kit,
+                        type="LOAN",
+                        person=request.user,
+                        snapshot=kit.content,
+                        loanee_name=loanee_name,
+                        due_date=due_date,
+                        return_date=None,
+                    )
 
-        kit.status = "LOANED"
-        kit.save()
+                    kit.status = "LOANED"
+                    kit.save()
+            except (ValueError, Kit.DoesNotExist) as e:
+                raise ValueError(str(e))
 
         return Response(
-            {"message": "Kit loaned successfully!"}, status=status.HTTP_200_OK
+            {"message": "Kit(s) loaned successfully!"}, status=status.HTTP_200_OK
         )
 
+    except ValueError as e:
+        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

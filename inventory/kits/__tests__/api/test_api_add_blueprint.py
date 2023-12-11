@@ -120,9 +120,7 @@ class TestApiAddBlueprintViews(TestCase):
         self.request["content"][0]["quantity"] = -1
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.data["message"], "Quantity cannot be negative."
-        )
+        self.assertEqual(response.data["message"], "Quantity cannot be negative.")
         self.request["content"][0]["quantity"] = quantity
 
     def tearDown(self):
