@@ -1,41 +1,38 @@
-import { Stack } from '@mui/material';
 import React from 'react';
 
-import { NavBar, Footer, KitSimpleInfo, LoadingSpinner } from '../components';
-import { useKit, useKitRestockOptions, useUser } from '../hooks/queries';
-
-import '../globals/styles/inventoryBase.scss';
+import {
+  NavBar,
+  Footer,
+  LoadingSpinner,
+  KitRestockContent,
+  EmptyMessage,
+} from '../components';
+import { useKit, useUser } from '../hooks/queries';
 
 export const KitRestock = () => {
   const { data: userData } = useUser();
   const params = new URLSearchParams(window.location.search);
   const kitId = params.get('kitId');
-  const { data: kitData, isLoading: kitLoading } = useKit({ kitId: kitId });
-  const { data: kitRestockOptions, isLoading: kitRestockOptionsLoading } =
-    useKitRestockOptions(kitId);
+  const { data: kitData } = useKit({ kitId: kitId });
 
   return (
     <>
       <NavBar user={userData} />
-      <Stack
+      <div
         style={{
           minHeight: '100vh',
           display: 'flex',
-          alignItems: 'center',
+          justifyContent: 'center',
         }}
-        className='nav-margin-compensate'
       >
-        {kitLoading || kitRestockOptionsLoading ? (
+        {!kitData ? (
           <LoadingSpinner />
+        ) : kitData.status != 'READY' || kitData.complete != 'incomplete' ? (
+          <EmptyMessage message={'Kit cannot be restocked at this time'} />
         ) : (
-          <>
-            <KitSimpleInfo kitData={kitData} />
-            {kitRestockOptions.map((item) => {
-              return <p key={item.item_id}>test</p>;
-            })}
-          </>
+          <KitRestockContent kit={kitData} />
         )}
-      </Stack>
+      </div>
       <Footer />
     </>
   );

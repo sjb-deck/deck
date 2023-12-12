@@ -12,3 +12,5 @@ export * from './Alerts';
 export * from './Themes';
 export * from './EmptyMessage';
 export * from './KitInfo';
+export * from './KitRestock';
+export * from './NumberInput';
