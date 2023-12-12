@@ -126,7 +126,7 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data["message"],
-            "Kit with id=2 is not complete and cannot be loaned.",
+            "Kit with id=" + str(self.incomplete_kit_id) + " is not complete and cannot be loaned.",
         )
 
         # check that kits are not loaned
@@ -155,7 +155,7 @@ class TestApiSubmitKitOrderViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data["message"],
-            "Kit with id=2 is not complete and cannot be loaned.",
+            "Kit with id=" + str(self.incomplete_kit_id) + " is not complete and cannot be loaned.",
         )
 
         self.request["force"] = True
