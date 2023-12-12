@@ -43,6 +43,15 @@ class TestApiRevertReturnOrderViews(TestCase):
         self.return_kits()
         self.restock_kit()
 
+    def retire_kit(self):
+        response = self.client.get(
+            reverse("retire_kit", args=[self.kit_id[3]]), None, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["message"], "Kit retired and contents deposited successfully!"
+        )
+
     def restock_kit(self):
         request = {
             "kit_id": self.kit_id[0],
@@ -76,19 +85,19 @@ class TestApiRevertReturnOrderViews(TestCase):
 
     def loan_kits(self):
         request = {
-            "kit_id": 999,
+            "kit_ids": [999],
             "force": False,
             "loanee_name": "test loanee",
             "due_date": "2050-01-01",
         }
 
         for i in range(3):
-            request["kit_id"] = self.kit_id[i]
+            request["kit_ids"] = [self.kit_id[i]]
             response = self.client.post(
                 reverse("submit_kit_order"), request, format="json"
             )
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.data["message"], "Kit loaned successfully!")
+            self.assertEqual(response.data["message"], "Kit(s) loaned successfully!")
 
     def create_kits(self):
         self.kit_id = array("i", [0, 0, 0, 0])
@@ -199,6 +208,26 @@ class TestApiRevertReturnOrderViews(TestCase):
         kit = Kit.objects.get(id=self.kit_id[2])
         self.assertEqual(kit.status, "READY")
         history = History.objects.filter(kit__id=self.kit_id[2]).latest("id")
+        self.assertEqual(history.type, "CREATION")
+
+    def test_revert_retire(self):
+        self.retire_kit()
+        history = History.objects.filter(kit__id=self.kit_id[3]).latest("id")
+        self.assertEqual(history.type, "RETIREMENT")
+        kit = Kit.objects.get(id=self.kit_id[3])
+        self.assertEqual(kit.status, "RETIRED")
+
+        response = self.client.get(
+            reverse("revert_kit", args=[history.id]), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["message"], "Kit retirement reverted successfully!"
+        )
+
+        kit = Kit.objects.get(id=self.kit_id[3])
+        self.assertEqual(kit.status, "READY")
+        history = History.objects.filter(kit__id=self.kit_id[3]).latest("id")
         self.assertEqual(history.type, "CREATION")
 
     def test_revert_when_no_revertible_history(self):

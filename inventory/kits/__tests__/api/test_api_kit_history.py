@@ -54,14 +54,14 @@ class TestApiKitHistoryViews(TestCase):
 
         # Submit a kit order
         request = {
-            "kit_id": self.kit_id,
+            "kit_ids": [self.kit_id],
             "force": True,
             "loanee_name": "test loanee",
             "due_date": "2050-01-01",
         }
         response = self.client.post(reverse("submit_kit_order"), request, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit loaned successfully!")
+        self.assertEqual(response.data["message"], "Kit(s) loaned successfully!")
 
         # Return the kit
         self.return_content = [
