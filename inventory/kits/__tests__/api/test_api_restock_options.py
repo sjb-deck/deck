@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
+from inventory.items.models import Item, ItemExpiry
 from inventory.kits.models import Blueprint, Kit, History
 
 
@@ -133,6 +133,36 @@ class TestApiRestockOptionsViews(TestCase):
             self.itemExpiry_no_expiry.id,
         )
         self.assertEqual(response.data[1]["item_options"][0]["quantity"], 50)
+
+    def test_restock_options_archived(self):
+        item_no_expiry = ItemExpiry.objects.get(item=self.item_no_expiry)
+        item_no_expiry.archived = True
+        item_no_expiry.save()
+
+        response = self.client.get(
+            reverse("restock_options", args=[self.incomplete_kit_id]),
+            None,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["item_id"], self.item.id)
+        self.assertEqual(response.data[0]["missing_quantity"], 8)
+        self.assertEqual(response.data[0]["sufficient_stock"], True)
+        self.assertEqual(
+            response.data[0]["item_options"][0]["item_expiry_id"], self.itemExpiry1.id
+        )
+        self.assertEqual(response.data[0]["item_options"][0]["quantity"], 50)
+        self.assertEqual(
+            response.data[0]["item_options"][1]["item_expiry_id"], self.itemExpiry2.id
+        )
+        self.assertEqual(response.data[0]["item_options"][1]["quantity"], 50)
+
+        self.assertEqual(response.data[1]["item_id"], self.item_no_expiry.id)
+        self.assertEqual(response.data[1]["missing_quantity"], 4)
+        self.assertEqual(response.data[1]["sufficient_stock"], True)
+        self.assertEqual(
+            len(response.data[1]["item_options"]), 0
+        )  # No item options for archived items
 
     def tearDown(self):
         self.clear_relevant_models()

@@ -169,7 +169,11 @@ def get_restock_options(blueprint_id, given_content):
             main_item = Item.objects.get(id=current_item["item_id"])
             missing_quantity = blueprint_item["quantity"] - current_item["quantity"]
 
-            options = main_item.expiry_dates.all().order_by("expiry_date")
+            options = (
+                main_item.expiry_dates.all()
+                .filter(archived=False)
+                .order_by("expiry_date")
+            )
             item_options = []
 
             for option in options:

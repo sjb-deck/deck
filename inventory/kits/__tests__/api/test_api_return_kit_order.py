@@ -50,14 +50,14 @@ class TestApiReturnKitOrderViews(TestCase):
 
     def loan_kit(self):
         request = {
-            "kit_id": self.kit_id,
+            "kit_ids": [self.kit_id],
             "force": False,
             "loanee_name": "test loanee",
             "due_date": "2050-01-01",
         }
         response = self.client.post(reverse("submit_kit_order"), request, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["message"], "Kit loaned successfully!")
+        self.assertEqual(response.data["message"], "Kit(s) loaned successfully!")
 
     def create_kit(self):
         self.kit = Kit.objects.create(
@@ -184,7 +184,7 @@ class TestApiReturnKitOrderViews(TestCase):
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "Required parameters are missing!")
-        self.request["kit_id"] = self.kit_id
+        self.request["kit_ids"] = [self.kit_id]
 
         content = self.request.pop("content")
         response = self.client.post(self.url, self.request, format="json")
