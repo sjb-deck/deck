@@ -15,6 +15,16 @@ export const KitRestock = () => {
   const kitId = params.get('kitId');
   const { data: kitData } = useKit({ kitId: kitId });
 
+  if (!kitId) {
+    return (
+      <>
+        <NavBar user={userData} />
+        <EmptyMessage message={'Please specify a kitId in query parameters'} />
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <NavBar user={userData} />

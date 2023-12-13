@@ -101,6 +101,8 @@ const RestockOption = ({ option, setRestockValue }) => {
     <Stack
       direction='row'
       spacing={2}
+      role='restockOption'
+      aria-label={`Restock from ${option.item_expiry_id}`}
       sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -111,6 +113,7 @@ const RestockOption = ({ option, setRestockValue }) => {
       <NumberInput
         placeholder='Type a number…'
         value={value}
+        aria-label={`Restock from ${option.item_expiry_id}`}
         onChange={(event, val) => {
           setValue(val);
           setRestockValue(val);
@@ -118,6 +121,9 @@ const RestockOption = ({ option, setRestockValue }) => {
         min={0}
         max={option.quantity}
         color={value > 0 ? 'success' : 'default'}
+        inputProps={{
+          'aria-label': 'Search bar',
+        }}
       />
     </Stack>
   );
