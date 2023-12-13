@@ -18,4 +18,6 @@ export const Api = {
   kitHistory: `${INV_API_BASE_URL}/kit_history?kitId=:kitId&page=:page&kitName=:kitName&type=:type&loaneeName=:loaneeName&user=:user`,
   revertHistory: `${INV_API_BASE_URL}/revert_kit/:id`,
   kitRecipe: `${INV_API_BASE_URL}/get_new_kit_recipe/:id`,
+  kits: `${INV_API_BASE_URL}/kits`,
+  addBlueprint: `${INV_API_BASE_URL}/add_blueprint`,
 };

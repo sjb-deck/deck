@@ -6,7 +6,5 @@ from . import views
 urlpatterns = (
     [
         path("kit_info", views.kit_info, name="kit_info"),
-    ]
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-)
+        path("create_blueprint", views.create_blueprint, name="create_blueprint"),
+    ])

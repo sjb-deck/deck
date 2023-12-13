@@ -1,8 +1,8 @@
 import datetime
 import json
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.db import transaction
+from django.shortcuts import render
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -14,6 +14,9 @@ from .serializers import *
 from ..items.models import *
 from .views_utils import *
 
+@login_required(login_url="/r'^login/$'")
+def create_blueprint(request):
+    return render(request, "create_blueprint.html")
 
 @login_required(login_url="/r'^login/$'")
 def kit_info(request):
@@ -585,3 +588,4 @@ def revert_kit(request, history_id):
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+

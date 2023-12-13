@@ -7,3 +7,4 @@ export * from './useActiveLoans.js';
 export * from './useKit.js';
 export * from './useKitHistory.js';
 export * from './useKitRecipe.js';
+export * from './useBlueprint.js';
