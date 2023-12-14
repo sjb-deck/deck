@@ -8,9 +8,9 @@ import {
   BlueprintItemTable,
   EmptyMessage,
   BlueprintFilter,
+  ViewExistingBlueprintTable,
 } from '../components';
 import { CreateBlueprintModal } from '../components/ItemList';
-import { useAddBlueprint } from '../hooks/mutations';
 import { useItems, useBlueprint, useUser } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
@@ -19,7 +19,6 @@ export const CreateBlueprint = () => {
   const { data: user, isLoading: userLoading, error: userError } = useUser();
   const { data: items, isLoading: itemsLoading } = useItems();
   const { data: blueprints, isLoading: blueprintsLoading } = useBlueprint();
-  const { mutate } = useAddBlueprint();
   const [userData, setUserData] = useState(user);
   const [isCreateMode, setIsCreateMode] = useState(true);
   const [itemsToDisplay, setItemsToDisplay] = useState([]);
@@ -81,6 +80,12 @@ export const CreateBlueprint = () => {
       setSelectedItems((prevItems) => [...prevItems, i]);
     } else {
       selectedItems[index].quantity = quantity;
+      if (quantity === 0) {
+        setSelectedItems((prevItems) => {
+          const newItems = prevItems.filter((item) => item.id !== id);
+          return newItems;
+        });
+      }
     }
   };
 
@@ -92,6 +97,7 @@ export const CreateBlueprint = () => {
         open={openModal}
         setOpen={setOpenModal}
         blueprintItems={selectedItems}
+        resetBlueprintItems={handleResetBtnClick}
       />
       <Box
         className='nav-margin-compensate'
@@ -105,40 +111,42 @@ export const CreateBlueprint = () => {
       >
         <BlueprintFilter onFilterChange={handleModeChange} />
         {isCreateMode ? (
-          <CreateBlueprintComponent
-            itemsToDisplay={itemsToDisplay}
-            updateSelectedItems={updateSelectedItems}
-          />
+          <>
+            <CreateBlueprintComponent
+              itemsToDisplay={itemsToDisplay}
+              updateSelectedItems={updateSelectedItems}
+            />
+            <ButtonGroup style={{ marginTop: '2rem' }}>
+              <Button
+                color='error'
+                onClick={handleResetBtnClick}
+                style={{
+                  border: '0.5px solid',
+                  marginRight: '5px',
+                  borderRadius: '5px',
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                color='success'
+                onClick={handleCreateBtnClick}
+                style={{
+                  border: '0.5px solid',
+                  marginLeft: '5px',
+                  borderRadius: '5px',
+                }}
+              >
+                Create
+              </Button>
+            </ButtonGroup>
+          </>
         ) : (
           <ViewBlueprintsComponent
             blueprintsLoading={blueprintsLoading}
             blueprints={blueprints['blueprints']}
           />
         )}
-        <ButtonGroup style={{ marginTop: '2rem' }}>
-          <Button
-            color='error'
-            onClick={handleResetBtnClick}
-            style={{
-              border: '0.5px solid',
-              marginRight: '5px',
-              borderRadius: '5px',
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            color='success'
-            onClick={handleCreateBtnClick}
-            style={{
-              border: '0.5px solid',
-              marginLeft: '5px',
-              borderRadius: '5px',
-            }}
-          >
-            Create
-          </Button>
-        </ButtonGroup>
       </Box>
       <Footer />
     </>
@@ -160,7 +168,7 @@ const CreateBlueprintComponent = ({ itemsToDisplay, updateSelectedItems }) => {
 
 const ViewBlueprintsComponent = ({ blueprintsLoading, blueprints }) => {
   if (!blueprintsLoading && blueprints.length) {
-    return <BlueprintItemTable items={blueprints} />;
+    return <ViewExistingBlueprintTable items={blueprints} />;
   } else {
     return <EmptyMessage message='No blueprints found' fullscreen={false} />;
   }

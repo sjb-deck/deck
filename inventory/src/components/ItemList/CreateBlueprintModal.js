@@ -1,32 +1,52 @@
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Box, Button, Fade, Modal, Stack, TextField } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { useImportItems } from '../../hooks/mutations';
-import { AlertContext } from '../../providers';
-import { LoadingSpinner } from '../LoadingSpinner';
+import { useAddBlueprint } from '../../hooks/mutations';
 
 import { CreateBlueprintModalTable } from './CreateBlueprintModalTable';
 
-export const CreateBlueprintModal = ({ open, setOpen, blueprintItems }) => {
-  const { mutate, isLoading } = useImportItems();
-  const queryClient = useQueryClient();
-  const { setAlert } = useContext(AlertContext);
+export const CreateBlueprintModal = ({
+  open,
+  setOpen,
+  blueprintItems,
+  resetBlueprintItems,
+}) => {
+  const { mutate } = useAddBlueprint();
   const [blueprintName, setBlueprintName] = useState('');
+  const [isNameError, setIsNameError] = useState(false);
+  const [errorHelperText, setErrorHelperText] = useState(' ');
 
-  useEffect(() => {}, [blueprintItems]);
+  useEffect(() => {
+    setIsNameError(false);
+    setErrorHelperText(' ');
+  }, [blueprintItems, open]);
 
   const handleCreateBlueprint = async () => {
+    const data = blueprintItems.map((item) => {
+      return {
+        item_id: item.id,
+        quantity: item.quantity,
+      };
+    });
     const blueprint = {
       name: blueprintName,
-      items: blueprintItems,
+      content: data,
     };
-    await mutate(blueprint, {
-      onSuccess: () => {
-        setOpen(false);
-        queryClient.invalidateQueries('blueprints');
-      },
-    });
+    mutate(blueprint);
+    setOpen(false);
+    resetBlueprintItems();
+    setBlueprintName('');
+  };
+
+  const handleOnBlur = () => {
+    if (blueprintName === '') {
+      setIsNameError(true);
+      setErrorHelperText('Blueprint name cannot be empty');
+    } else {
+      setIsNameError(false);
+      setErrorHelperText(' ');
+    }
   };
 
   return (
@@ -52,35 +72,44 @@ export const CreateBlueprintModal = ({ open, setOpen, blueprintItems }) => {
             justifyContent: 'flex-start',
             alignItems: 'center',
             flexDirection: 'column',
+            boxShadow:
+              theme.palette.mode === 'light'
+                ? 'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px'
+                : 'rgb(255 255 255 / 25%) 0px 54px 55px, rgb(237 228 228 / 12%) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgb(221 205 205 / 17%) 0px 12px 13px, rgb(220 201 201 / 9%) 0px -3px 5px',
+            borderRadius: '6px',
+            border: 'none',
           })}
         >
-          {isLoading && <LoadingSpinner />}
           <Stack
             gap={3}
             textAlign={'center'}
-            style={{ paddingBottom: '15px', height: '100%' }}
+            style={{ paddingBottom: '25px', height: '100%' }}
           >
             <h2>Create Blueprint</h2>
             <TextField
               id='outlined-basic'
               placeholder='Enter Blueprint Name'
               value={blueprintName}
+              error={isNameError}
+              helperText={errorHelperText}
               onChange={(e) => {
                 setBlueprintName(e.target.value);
               }}
+              onBlur={handleOnBlur}
             />
-            {blueprintItems.length === 0 ? (
-              <h2>No items added!</h2>
-            ) : (
-              <CreateBlueprintModalTable items={blueprintItems} />
-            )}
+            <CreateBlueprintModalTable items={blueprintItems} />
             <Button
+              variant='contained'
+              role='submit-button'
+              color='success'
+              endIcon={<AddCircleIcon />}
+              disabled={blueprintName === '' || blueprintItems.length === 0}
+              onClick={handleCreateBlueprint}
               style={{
                 position: 'absolute',
-                bottom: '5px',
+                bottom: '10px',
                 alignSelf: 'center',
               }}
-              onClick={null}
             >
               Create
             </Button>

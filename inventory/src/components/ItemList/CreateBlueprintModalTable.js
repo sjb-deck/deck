@@ -20,12 +20,20 @@ export const CreateBlueprintModalTable = ({ items }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id} data-testid={`item-row-${item.id}`}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell align={'center'}>{item.quantity}</TableCell>
+          {items.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={2}>
+                <p style={{ textAlign: 'center' }}>No items added!</p>
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            items.map((item) => (
+              <TableRow key={item.id} data-testid={`item-row-${item.id}`}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell align={'center'}>{item.quantity}</TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

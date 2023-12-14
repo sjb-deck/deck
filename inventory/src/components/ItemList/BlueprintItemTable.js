@@ -42,7 +42,8 @@ export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
   useEffect(() => {
     const newItems = items.filter(
       (item) =>
-        (!searchTerm || item.name.includes(searchTerm.toLowerCase())) &&
+        (!searchTerm ||
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (currentType === 'All' || currentType === item.type),
     );
     setItemsToDisplay(newItems);
