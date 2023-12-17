@@ -38,6 +38,8 @@ export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
 export const INV_API_IMPORT_ITEMS_URL = `${INV_API_BASE_URL}/import_items`;
 export const INV_API_EXPORT_ITEMS_URL = `${INV_API_BASE_URL}/export_items`;
 export const INV_API_KITS_URL = `${INV_API_BASE_URL}/kits`;
+export const INV_API_KIT_RECIPE = `${INV_API_BASE_URL}/get_new_kit_recipe`;
+export const INV_API_CREATE_KIT = `${INV_API_BASE_URL}/add_kit`;
 
 export const ORDER_REASONS = {
   item_restock: 'Restock',

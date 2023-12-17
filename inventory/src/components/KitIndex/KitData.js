@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Divider,
   Grid,
   Stack,
@@ -17,7 +18,7 @@ const kitStatus = {
   RETIRED: 'Retired',
 };
 
-export const KitInfo = ({ kit, isMobile }) => {
+export const KitData = ({ kit, isMobile }) => {
   return (
     <Accordion
       data-testid={`kit-${kit.id}`}
@@ -67,6 +68,25 @@ export const KitInfo = ({ kit, isMobile }) => {
             );
           })}
         </Stack>
+        <Box
+          sx={{
+            width: 1,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: 2,
+            gap: 2,
+          }}
+        >
+          {kit.status === 'READY' && (
+            <Button variant='contained'>Withdraw</Button>
+          )}
+          {kit.status === 'ON_LOAN' && (
+            <Button variant='contained'>Return</Button>
+          )}
+          {kit.complete != 'complete' && (
+            <Button variant='contained'>Restock</Button>
+          )}
+        </Box>
       </AccordionDetails>
     </Accordion>
   );

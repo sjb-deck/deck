@@ -70,7 +70,7 @@ export const navItems = (notiCount, cartCount) => [
 ];
 export const actionItems = [
   {
-    title: 'View Loans',
+    title: 'View loans',
     icon: <KeyboardReturnIcon style={{ marginRight: 5 }} />,
     link: URL_INV_LOAN_RETURN,
   },
@@ -80,17 +80,17 @@ export const actionItems = [
     link: URL_INV_ADD_ITEM,
   },
   {
-    title: 'View orders & loans',
+    title: 'View transactions',
     icon: <LocalMallIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS_LOANS,
   },
   {
-    title: 'View Item List',
+    title: 'View item list',
     icon: <TextSnippet style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ITEM_LIST,
   },
   {
-    title: 'View Kits',
+    title: 'View kits',
     icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_KITS,
   },

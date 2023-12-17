@@ -24,6 +24,7 @@ export const useKitRecipe = (blueprintId, options) => {
   return useQuery(
     [key, blueprintId],
     async () => {
+      if (!blueprintId) return null;
       const response = await axios.get(url);
       return response.data;
     },

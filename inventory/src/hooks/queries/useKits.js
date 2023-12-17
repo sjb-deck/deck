@@ -21,7 +21,7 @@ export const useKits = (options) => {
     [key],
     async () => {
       const response = await axios.get(url);
-      return response.data.kits;
+      return response.data;
     },
     {
       ...defaultOptions,

@@ -8,8 +8,16 @@ import {
   INV_API_KITS_URL,
   INV_API_ORDERS_URL,
   INV_API_USER_URL,
+  INV_API_KIT_RECIPE,
+  INV_API_CREATE_KIT,
 } from '../../globals';
-import { mockItemList, mockKitsList, mockOrders, mockUser } from '../index';
+import {
+  mockItemList,
+  mockKitsList,
+  mockOrders,
+  mockUser,
+  mockKitRecipeData,
+} from '../index';
 
 export const handlers = [
   rest.get(INV_API_USER_URL, (req, res, ctx) => {
@@ -43,5 +51,15 @@ export const handlers = [
 
   rest.get(INV_API_KITS_URL, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json({ kits: mockKitsList }));
+  }),
+
+  rest.get(`${INV_API_KIT_RECIPE}/10`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(mockKitRecipeData));
+  }),
+  rest.get(`${INV_API_KIT_RECIPE}/`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json([]));
+  }),
+  rest.post(INV_API_CREATE_KIT, (req, res, ctx) => {
+    return res(ctx.status(201), ctx.json({}));
   }),
 ];
