@@ -8,7 +8,7 @@ describe('KitIndex Search', () => {
   it('should filter by blueprint name', async () => {
     render(<KitIndex />);
     await waitFor(() => {
-      expect(screen.getAllByText('Status')[0]).toBeInTheDocument();
+      expect(screen.getAllByText('Ready')[0]).toBeInTheDocument();
     });
     const searchInput = screen.getByLabelText('Search by Blueprint');
     expect(searchInput).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('KitIndex Search', () => {
   it('should filter by complete status', async () => {
     render(<KitIndex />);
     await waitFor(() => {
-      expect(screen.getAllByText('Status')[0]).toBeInTheDocument();
+      expect(screen.getAllByText('Ready')[0]).toBeInTheDocument();
     });
     const selectInput = screen.getByTestId('kit-select');
     expect(selectInput).toBeInTheDocument();

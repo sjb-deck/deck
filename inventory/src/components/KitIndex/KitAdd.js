@@ -53,8 +53,6 @@ export const KitAdd = ({ blueprints }) => {
       });
     },
   });
-  console.log(formik.errors);
-  console.log(formik.values);
   const getTotalQuantity = (itemId, kitContent) => {
     if (!kitContent.hasOwnProperty(itemId)) return 0;
     let sum = 0;

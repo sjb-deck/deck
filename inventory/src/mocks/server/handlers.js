@@ -17,6 +17,7 @@ import {
   mockOrders,
   mockUser,
   mockKitRecipeData,
+  mockBlueprints,
 } from '../index';
 
 export const handlers = [
@@ -50,7 +51,10 @@ export const handlers = [
   }),
 
   rest.get(INV_API_KITS_URL, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ kits: mockKitsList }));
+    return res(
+      ctx.status(200),
+      ctx.json({ kits: mockKitsList, blueprints: mockBlueprints }),
+    );
   }),
 
   rest.get(`${INV_API_KIT_RECIPE}/10`, (req, res, ctx) => {
