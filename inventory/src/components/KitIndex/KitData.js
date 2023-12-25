@@ -78,13 +78,19 @@ export const KitData = ({ kit, isMobile }) => {
           }}
         >
           {kit.status === 'READY' && (
-            <Button variant='contained'>Withdraw</Button>
+            <Button color='error' variant='contained'>
+              Withdraw
+            </Button>
           )}
           {kit.status === 'ON_LOAN' && (
-            <Button variant='contained'>Return</Button>
+            <Button color='success' variant='contained'>
+              Return
+            </Button>
           )}
           {kit.complete != 'complete' && (
-            <Button variant='contained'>Restock</Button>
+            <Button color='success' variant='contained'>
+              Restock
+            </Button>
           )}
         </Box>
       </AccordionDetails>

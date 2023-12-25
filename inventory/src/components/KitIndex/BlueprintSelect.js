@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 export const BlueprintSelect = ({
   kitRecipeData,
@@ -19,6 +20,7 @@ export const BlueprintSelect = ({
   itemTotalQty,
   kitContentErrors,
   itemQuantityErrors,
+  blueprintLoading,
 }) => {
   const getExpiryQuantity = (itemId, expiryId) => {
     if (
@@ -51,7 +53,10 @@ export const BlueprintSelect = ({
       }}
     >
       <Stack>
-        {kitRecipeData &&
+        {blueprintLoading ? (
+          <LoadingSpinner />
+        ) : (
+          kitRecipeData &&
           kitRecipeData.map((item) => {
             return (
               <Accordion
@@ -100,6 +105,7 @@ export const BlueprintSelect = ({
                               display: 'flex',
                               justifyContent: 'space-between',
                               alignItems: 'center',
+                              gap: 2,
                             }}
                           >
                             <span>Quantity:</span>
@@ -160,6 +166,7 @@ export const BlueprintSelect = ({
                         width: 1,
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        gap: 2,
                       }}
                     >
                       <span>Required Quantity:</span>
@@ -189,7 +196,8 @@ export const BlueprintSelect = ({
                 </AccordionDetails>
               </Accordion>
             );
-          })}
+          })
+        )}
       </Stack>
     </Box>
   );

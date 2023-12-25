@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useCreateKit } from '../../hooks/mutations/useCreateKit';
 import { useKitRecipe } from '../../hooks/queries/useKitRecipe';
@@ -25,8 +25,9 @@ import { kitAddValidation } from './schema';
 export const KitAdd = ({ blueprints }) => {
   const [open, setOpen] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState('');
-  const { data: kitRecipeData } = useKitRecipe(selectedBlueprint);
-  const { mutate, isLoading } = useCreateKit({});
+  const { data: kitRecipeData, isLoading: blueprintLoading } =
+    useKitRecipe(selectedBlueprint);
+  const { mutate, isLoading: createKitLoading } = useCreateKit({});
 
   const formik = useFormik({
     initialValues: {
@@ -53,6 +54,24 @@ export const KitAdd = ({ blueprints }) => {
       });
     },
   });
+
+  useEffect(() => {
+    if (!kitRecipeData) return;
+    const newKitContent = {};
+    for (const item of kitRecipeData) {
+      for (const expiry of item.item_options) {
+        if (!newKitContent[item.item_id]) newKitContent[item.item_id] = {};
+        newKitContent[item.item_id][expiry.item_expiry_id] = {
+          item_expiry_id: expiry.item_expiry_id,
+          quantity: 0,
+          expiryTotalQty: expiry.quantity,
+          itemTotalQty: item.required_quantity,
+        };
+      }
+    }
+    formik.setFieldValue('kitContent', newKitContent);
+  }, [kitRecipeData]);
+
   const getTotalQuantity = (itemId, kitContent) => {
     if (!kitContent.hasOwnProperty(itemId)) return 0;
     let sum = 0;
@@ -195,11 +214,12 @@ export const KitAdd = ({ blueprints }) => {
               itemTotalQty={formik.values.itemTotalQty}
               kitContentErrors={formik.errors.kitContent}
               itemQuantityErrors={formik.errors.itemTotalQty}
+              blueprintLoading={blueprintLoading}
             />
             <Box sx={{ display: 'flex', width: 1, justifyContent: 'flex-end' }}>
               <LoadingButton
                 data-testid='blueprint-submit-btn'
-                loading={isLoading}
+                loading={createKitLoading}
                 variant='contained'
                 endIcon={<SendIcon />}
                 sx={{ marginBottom: '20px' }}

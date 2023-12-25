@@ -2,13 +2,16 @@ import {
   Accordion,
   AccordionSummary,
   Box,
+  FormControl,
   Grid,
   MenuItem,
   Pagination,
+  InputAdornment,
   Select,
   Skeleton,
   Stack,
   TextField,
+  InputLabel,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useEffect, useState } from 'react';
@@ -25,21 +28,30 @@ export const KitList = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const { data: kitsData, isLoading: dataLoading } = useKits();
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState('all');
+  const [completeFilter, setCompleteFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchType, setSearchType] = useState('kit');
   const [searchTerm, setSearchTerm] = useState('');
   const [kitsToDisplay, setKitsToDisplay] = useState([]);
   const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
   const endIndex = startIndex + ORDERS_PER_PAGE;
+
   useEffect(() => {
     if (!kitsData) return;
     const newKits = kitsData.kits.filter(
       (k) =>
         (!searchTerm ||
-          k.blueprint_name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filter === 'all' || k.complete === filter),
+          (searchType === 'kit' &&
+            k.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (searchType === 'blueprint' &&
+            k.blueprint_name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()))) &&
+        (completeFilter === 'all' || k.complete === completeFilter) &&
+        (statusFilter === 'all' || k.status === statusFilter),
     );
     setKitsToDisplay(newKits);
-  }, [kitsData, searchTerm, filter]);
+  }, [kitsData, searchType, searchTerm, completeFilter, statusFilter]);
 
   const handlePageChange = (_, value) => {
     setCurrentPage(value);
@@ -58,6 +70,45 @@ export const KitList = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
+          marginBottom: 1,
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ width: 1 }}>
+          <InputLabel id='filter-status'>Status</InputLabel>
+          <Select
+            labelId='filter-status'
+            label='Status'
+            inputProps={{ 'data-testid': 'kit-select-status' }}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value='all'>All</MenuItem>
+            <MenuItem value='ON_LOAN'>On Loan</MenuItem>
+            <MenuItem value='READY'>Ready</MenuItem>
+            <MenuItem value='SERVICING'>Servicing</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ width: 1 }}>
+          <InputLabel id='filter-complete'>Complete</InputLabel>
+          <Select
+            labelId='filter-complete'
+            label='Complete'
+            inputProps={{ 'data-testid': 'kit-select-complete' }}
+            value={completeFilter}
+            onChange={(e) => setCompleteFilter(e.target.value)}
+          >
+            <MenuItem value='all'>All</MenuItem>
+            <MenuItem value='complete'>Complete</MenuItem>
+            <MenuItem value='incomplete'>Incomplete</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <Box
+        className='dynamic-width'
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
           marginBottom: 2,
           justifyContent: 'space-between',
           gap: 3,
@@ -65,21 +116,26 @@ export const KitList = () => {
       >
         <Box sx={{ display: 'flex', width: 1 }}>
           <TextField
-            label='Search by Blueprint'
+            label='Search by'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ width: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <Select
+                    size='small'
+                    value={searchType}
+                    inputProps={{ 'data-testid': 'kit-select-name' }}
+                    onChange={(e) => setSearchType(e.target.value)}
+                  >
+                    <MenuItem value='kit'>Kit</MenuItem>
+                    <MenuItem value='blueprint'>Blueprint</MenuItem>
+                  </Select>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Select
-            inputProps={{ 'data-testid': 'kit-select' }}
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            sx={{ width: 0.3 }}
-          >
-            <MenuItem value='all'>All</MenuItem>
-            <MenuItem value='complete'>Complete</MenuItem>
-            <MenuItem value='incomplete'>Incomplete</MenuItem>
-          </Select>
         </Box>
         <KitAdd blueprints={kitsData ? kitsData.blueprints : []} />
       </Box>

@@ -102,7 +102,7 @@ export const mockKitsList = [
   {
     id: 32,
     name: 'Something1',
-    status: 'READY',
+    status: 'SERVICING',
     content: [
       {
         item_expiry_id: 2,
