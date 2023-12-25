@@ -70,7 +70,7 @@ export const KitAdd = ({ blueprints }) => {
       }
     }
     formik.setFieldValue('kitContent', newKitContent);
-  }, [kitRecipeData]);
+  }, [kitRecipeData, formik]);
 
   const getTotalQuantity = (itemId, kitContent) => {
     if (!kitContent.hasOwnProperty(itemId)) return 0;
