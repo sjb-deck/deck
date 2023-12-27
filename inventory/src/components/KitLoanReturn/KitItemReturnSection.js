@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Typography, Slider } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
   Table,
   TableContainer,
@@ -11,21 +11,7 @@ import {
 } from '@mui/material';
 import { ItemReturnSlider } from './ItemReturnSlider';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export const KitItemReturnSection = () => {
+export const KitItemReturnSection = ({ kitContents, kitBlueprint }) => {
   return (
     <Box
       sx={{
@@ -36,14 +22,7 @@ export const KitItemReturnSection = () => {
       }}
     >
       <Typography variant='h5'>Kit Content</Typography>
-      <TableContainer
-        sx={{
-          display: 'flex',
-          minHeight: '100%',
-          width: '100%',
-          flexGrow: 1,
-        }}
-      >
+      <TableContainer>
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
@@ -56,18 +35,20 @@ export const KitItemReturnSection = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {kitContents.map((item) => (
               <TableRow
-                key={row.name}
+                key={item.item_expiry_id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component='th' scope='row'>
-                  {row.name}
+                  {item.item_expiry.item.name}
                 </TableCell>
-                <TableCell>{row.calories}</TableCell>
-                <TableCell>{row.fat}</TableCell>
+                <TableCell>{getFractionOfItem(item, kitBlueprint)}</TableCell>
                 <TableCell>
-                  <ItemReturnSlider />
+                  {item.item_expiry.expiry_date ?? 'No Expiry'}
+                </TableCell>
+                <TableCell>
+                  <ItemReturnSlider quantity={item.quantity} />
                 </TableCell>
               </TableRow>
             ))}
@@ -76,4 +57,16 @@ export const KitItemReturnSection = () => {
       </TableContainer>
     </Box>
   );
+};
+
+const getFractionOfItem = (item, blueprint) => {
+  if (!blueprint) return item.quantity;
+
+  const blueprintItem = blueprint.find((blueprintItem) => {
+    return blueprintItem.id == item.item_expiry.item.id;
+  });
+
+  return blueprintItem?.required_quantity
+    ? `${item.quantity} / ${blueprintItem.required_quantity}`
+    : item.quantity;
 };

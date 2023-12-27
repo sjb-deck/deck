@@ -3,8 +3,8 @@ import React from 'react';
 import { NavBar, Footer, LoadingSpinner } from '../components';
 import { KitInfoSection, KitItemReturnSection } from '../components';
 
-import { useUser, useKit } from '../hooks/queries';
-import { Box, Stack, Fab, Typography, Divider } from '@mui/material';
+import { useUser, useKit, useKitRecipe } from '../hooks/queries';
+import { Box, Fab, Divider } from '@mui/material';
 
 export const KitLoanReturn = () => {
   const { data: userData } = useUser();
@@ -34,6 +34,8 @@ export const KitLoanReturn = () => {
 };
 
 const KitLoanReturnContent = ({ kitData }) => {
+  const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
+
   return (
     <Box
       sx={{
@@ -54,7 +56,12 @@ const KitLoanReturnContent = ({ kitData }) => {
               : theme.palette,
         }}
       />
-      <KitItemReturnSection />
+      <KitItemReturnSection
+        kitContents={kitData ? kitData.content : []}
+        kitBlueprint={
+          kitRecipeData ? getBlueprintFromRecipe(kitRecipeData) : null
+        }
+      />
       <Fab
         variant='extended'
         color='primary'
@@ -65,4 +72,14 @@ const KitLoanReturnContent = ({ kitData }) => {
       </Fab>
     </Box>
   );
+};
+
+const getBlueprintFromRecipe = (recipe) => {
+  return recipe.map((item) => {
+    return {
+      id: item.item_id,
+      name: item.item_name,
+      required_quantity: item.required_quantity,
+    };
+  });
 };
