@@ -4,7 +4,7 @@ import { NavBar, Footer, LoadingSpinner } from '../components';
 import { KitInfoSection, KitItemReturnSection } from '../components';
 
 import { useUser, useKit, useKitRecipe } from '../hooks/queries';
-import { Box, Fab, Divider } from '@mui/material';
+import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
 
 export const KitLoanReturn = () => {
   const { data: userData } = useUser();
@@ -34,19 +34,27 @@ export const KitLoanReturn = () => {
 };
 
 const KitLoanReturnContent = ({ kitData }) => {
+  const theme = useTheme();
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
 
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         display: 'flex',
         flexDirection: 'row',
         flex: 1,
-      }}
+        [theme.breakpoints.down('sm')]: {
+          flexDirection: 'column',
+        },
+      })}
     >
       <KitInfoSection kitData={kitData} />
       <Divider
-        orientation='vertical'
+        orientation={
+          useMediaQuery(theme.breakpoints.down('sm'))
+            ? 'horizontal'
+            : 'vertical'
+        }
         variant='middle'
         flexItem
         sx={{
