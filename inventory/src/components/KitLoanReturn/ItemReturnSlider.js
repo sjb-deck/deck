@@ -1,9 +1,13 @@
 import React from 'react';
 
-import { Box, Grid, Slider, Input } from '@mui/material';
+import { Box, Grid, Slider, TextField } from '@mui/material';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 export const ItemReturnSlider = ({ quantity }) => {
   const [value, setValue] = React.useState(quantity);
+
+  const theme = useTheme();
+  const shouldShowSlider = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleSliderChange = (_, newValue) => {
     setValue(newValue);
@@ -29,11 +33,8 @@ export const ItemReturnSlider = ({ quantity }) => {
   };
 
   return (
-    <Box sx={{ width: '80%', height: '100%', margin: 'auto' }}>
-      <Grid container spacing={4} alignItems='center'>
-        {/* <Grid item>
-          <VolumeUp />
-        </Grid> */}
+    <Grid container spacing={4} justifyContent='center'>
+      {shouldShowSlider && (
         <Grid item xs>
           <Slider
             marks
@@ -46,23 +47,24 @@ export const ItemReturnSlider = ({ quantity }) => {
             aria-labelledby='input-slider'
           />
         </Grid>
-        <Grid item>
-          <Input
-            value={value}
-            size='small'
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            onInput={handleLimitInputLength}
-            inputProps={{
-              step: 1,
-              min: 0,
-              max: quantity,
-              type: 'number',
-              'aria-labelledby': 'input-slider',
-            }}
-          />
-        </Grid>
+      )}
+      <Grid item>
+        <TextField
+          value={value}
+          size='small'
+          variant='outlined'
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          onInput={handleLimitInputLength}
+          inputProps={{
+            step: 1,
+            min: 0,
+            max: quantity,
+            type: 'number',
+            'aria-labelledby': 'input-slider',
+          }}
+        />
       </Grid>
-    </Box>
+    </Grid>
   );
 };

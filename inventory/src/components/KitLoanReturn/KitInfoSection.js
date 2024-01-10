@@ -10,18 +10,16 @@ export const KitInfoSection = ({ kitData }) => {
 
   return (
     <Stack
-      direction={{ xs: 'row', sm: 'column' }}
+      direction={'column'}
       alignItems={'center'}
       sx={{ padding: isMobile ? 2 : 8 }}
     >
       <Avatar {...stringAvatar(kitData?.name)} />
-      <Stack>
-        <Typography variant='h3'>{kitData?.name}</Typography>
-        <Typography variant='h6'>{kitData?.blueprint_name}</Typography>
-        <Typography variant='overline'>
-          {kitData?.status}, {kitData?.complete}
-        </Typography>
-      </Stack>
+      <Typography variant='h3'>{kitData?.name}</Typography>
+      <Typography variant='h6'>{kitData?.blueprint_name}</Typography>
+      <Typography variant='overline'>
+        {kitData?.status}, {kitData?.complete}
+      </Typography>
     </Stack>
   );
 };
