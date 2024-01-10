@@ -1,7 +1,11 @@
 import React from 'react';
 
 import { NavBar, Footer, LoadingSpinner } from '../components';
-import { KitInfoSection, KitItemReturnSection } from '../components';
+import {
+  KitInfoSection,
+  KitItemReturnSection,
+  ConfirmationModal,
+} from '../components';
 
 import { useUser, useKit, useKitRecipe } from '../hooks/queries';
 import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
@@ -34,6 +38,8 @@ export const KitLoanReturn = () => {
 };
 
 const KitLoanReturnContent = ({ kitData }) => {
+  const [openConfirm, setOpenConfirm] = React.useState(false);
+
   const theme = useTheme();
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
 
@@ -74,20 +80,23 @@ const KitLoanReturnContent = ({ kitData }) => {
         variant='extended'
         color='primary'
         size='large'
+        onClick={() => setOpenConfirm(true)}
         sx={{ position: 'fixed', bottom: 24, right: 24 }}
       >
         Submit
       </Fab>
+      <ConfirmationModal
+        openConfirm={openConfirm}
+        closeDialog={() => setOpenConfirm(false)}
+      />
     </Box>
   );
 };
 
 const getBlueprintFromRecipe = (recipe) => {
-  return recipe.map((item) => {
-    return {
-      id: item.item_id,
-      name: item.item_name,
-      required_quantity: item.required_quantity,
-    };
-  });
+  return recipe.map((item) => ({
+    id: item.item_id,
+    name: item.item_name,
+    required_quantity: item.required_quantity,
+  }));
 };
