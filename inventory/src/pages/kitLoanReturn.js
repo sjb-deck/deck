@@ -43,6 +43,9 @@ const KitLoanReturnContent = ({ kitData }) => {
   const theme = useTheme();
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
 
+  const shownKitData = populateShownData(kitData, kitRecipeData);
+  console.log(shownKitData);
+
   return (
     <Box
       sx={(theme) => ({
@@ -70,12 +73,7 @@ const KitLoanReturnContent = ({ kitData }) => {
               : theme.palette,
         }}
       />
-      <KitItemReturnSection
-        kitContents={kitData ? kitData.content : []}
-        kitBlueprint={
-          kitRecipeData ? getBlueprintFromRecipe(kitRecipeData) : null
-        }
-      />
+      <KitItemReturnSection kitData={shownKitData} />
       <Fab
         variant='extended'
         color='primary'
@@ -93,10 +91,41 @@ const KitLoanReturnContent = ({ kitData }) => {
   );
 };
 
-const getBlueprintFromRecipe = (recipe) => {
-  return recipe.map((item) => ({
-    id: item.item_id,
-    name: item.item_name,
-    required_quantity: item.required_quantity,
-  }));
+/**
+ * Combines `kitData` and `kitRecipeData` into array of kit contents which follows this format:
+ * - **id**
+ * - **name**
+ * - **quantity**: Original quantity present in the kit (Used to track how many items used)
+ * - **new_quantity**: Same as quantity, modified by slider/textfield
+ * - **blueprint_quantity**: Maximum blueprint quantity of that item allocated to the kit.
+ * If undefined, no blueprint quantity set for the item
+ * - **expiry_date**
+ *
+ * @param kitData
+ * @param kitRecipeData
+ * @returns Array of kit content formatted to be shown in UI
+ */
+const populateShownData = (kitData, kitRecipeData) => {
+  if (kitData == null) return [];
+
+  return kitData.content.map((kitItemContent) => {
+    // For each kit item, find matching blueprint ids
+    let blueprint_quantity = undefined; // Follow find function undefined returned when not found
+    if (kitRecipeData != null) {
+      blueprint_quantity = kitRecipeData.find(
+        (blueprintItem) =>
+          blueprintItem.item_id == kitItemContent.item_expiry.item.id,
+      );
+      blueprint_quantity = blueprint_quantity?.required_quantity;
+    }
+
+    return {
+      id: kitItemContent.item_expiry_id,
+      name: kitItemContent.item_expiry.item.name,
+      quantity: kitItemContent.quantity,
+      new_quantity: kitItemContent.quantity,
+      blueprint_quantity: blueprint_quantity,
+      expiry_date: kitItemContent.item_expiry.expiry_date,
+    };
+  });
 };

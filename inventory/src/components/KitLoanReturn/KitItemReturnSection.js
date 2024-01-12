@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { ItemReturnSlider } from './ItemReturnSlider';
 
-export const KitItemReturnSection = ({ kitContents, kitBlueprint }) => {
+export const KitItemReturnSection = ({ kitData }) => {
   return (
     <Box
       sx={{
@@ -35,20 +35,23 @@ export const KitItemReturnSection = ({ kitContents, kitBlueprint }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {kitContents.map((item) => (
+            {kitData.map((item, index) => (
               <TableRow
-                key={item.item_expiry_id}
+                key={item.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component='th' scope='row'>
-                  {item.item_expiry.item.name}
-                </TableCell>
-                <TableCell>{getFractionOfItem(item, kitBlueprint)}</TableCell>
-                <TableCell>
-                  {item.item_expiry.expiry_date ?? 'No Expiry'}
+                  {item.name}
                 </TableCell>
                 <TableCell>
-                  <ItemReturnSlider quantity={item.quantity} />
+                  {getFractionOfItem(item.quantity, item.blueprint_quantity)}
+                </TableCell>
+                <TableCell>{item.expiry_date ?? 'No Expiry'}</TableCell>
+                <TableCell>
+                  <ItemReturnSlider
+                    original_quantity={item.quantity}
+                    update={update(kitData, index)}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -59,14 +62,11 @@ export const KitItemReturnSection = ({ kitContents, kitBlueprint }) => {
   );
 };
 
-const getFractionOfItem = (item, blueprint) => {
-  if (!blueprint) return item.quantity;
+const update = (kitData, index) => (new_quantity) => {
+  kitData[index].new_quantity = new_quantity;
+};
 
-  const blueprintItem = blueprint.find((blueprintItem) => {
-    return blueprintItem.id == item.item_expiry.item.id;
-  });
-
-  return blueprintItem?.required_quantity
-    ? `${item.quantity} / ${blueprintItem.required_quantity}`
-    : item.quantity;
+const getFractionOfItem = (quantity, blueprint_quantity) => {
+  if (!blueprint_quantity) return quantity;
+  return `${quantity} / ${blueprint_quantity}`;
 };
