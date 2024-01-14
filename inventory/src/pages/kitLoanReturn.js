@@ -43,7 +43,8 @@ const KitLoanReturnContent = ({ kitData }) => {
   const theme = useTheme();
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
 
-  const shownKitData = populateShownData(kitData, kitRecipeData);
+  const initialShownData = populateShownData(kitData, kitRecipeData);
+  const [shownKitData, updateShownKitData] = React.useState(initialShownData);
   console.log(shownKitData);
 
   return (
@@ -73,7 +74,10 @@ const KitLoanReturnContent = ({ kitData }) => {
               : theme.palette,
         }}
       />
-      <KitItemReturnSection kitData={shownKitData} />
+      <KitItemReturnSection
+        kitData={shownKitData}
+        updateKitData={update(updateShownKitData)}
+      />
       <Fab
         variant='extended'
         color='primary'
@@ -84,6 +88,7 @@ const KitLoanReturnContent = ({ kitData }) => {
         Submit
       </Fab>
       <ConfirmationModal
+        data={shownKitData}
         openConfirm={openConfirm}
         closeDialog={() => setOpenConfirm(false)}
       />
@@ -97,9 +102,10 @@ const KitLoanReturnContent = ({ kitData }) => {
  * - **name**
  * - **quantity**: Original quantity present in the kit (Used to track how many items used)
  * - **new_quantity**: Same as quantity, modified by slider/textfield
+ * - **shown_quantity**: Displayed quantity string out of blueprint quantity (if applicable)
  * - **blueprint_quantity**: Maximum blueprint quantity of that item allocated to the kit.
  * If undefined, no blueprint quantity set for the item
- * - **expiry_date**
+ * - **expiry_date**: "No expiry" if not applicable
  *
  * @param kitData
  * @param kitRecipeData
@@ -109,23 +115,58 @@ const populateShownData = (kitData, kitRecipeData) => {
   if (kitData == null) return [];
 
   return kitData.content.map((kitItemContent) => {
-    // For each kit item, find matching blueprint ids
-    let blueprint_quantity = undefined; // Follow find function undefined returned when not found
-    if (kitRecipeData != null) {
-      blueprint_quantity = kitRecipeData.find(
-        (blueprintItem) =>
-          blueprintItem.item_id == kitItemContent.item_expiry.item.id,
-      );
-      blueprint_quantity = blueprint_quantity?.required_quantity;
-    }
+    const blueprint_quantity = getBlueprintQuantity(
+      kitItemContent,
+      kitRecipeData,
+    );
+    const shown_quantity = getShownQuantity(
+      kitItemContent.quantity,
+      blueprint_quantity,
+    );
 
     return {
       id: kitItemContent.item_expiry_id,
       name: kitItemContent.item_expiry.item.name,
       quantity: kitItemContent.quantity,
       new_quantity: kitItemContent.quantity,
+      shown_quantity: shown_quantity,
       blueprint_quantity: blueprint_quantity,
-      expiry_date: kitItemContent.item_expiry.expiry_date,
+      expiry_date: kitItemContent.item_expiry.expiry_date ?? 'No Expiry',
     };
   });
+};
+
+/**
+ * Returns the displayed quantity as original quantity out blueprint quantity.
+ * e.g. Original / Blueprint: 3/5
+ * @param quantity
+ * @param blueprint_quantity
+ * @returns
+ */
+const getShownQuantity = (quantity, blueprint_quantity) => {
+  if (!blueprint_quantity) return quantity;
+  return `${quantity} / ${blueprint_quantity}`;
+};
+
+/**
+ * For each kit item, find matching blueprint ids. Return undefined if
+ * recipe data not available or no blueprint found for an item
+ */
+const getBlueprintQuantity = ({ kitItemContent, kitRecipeData }) => {
+  // Follow find function undefined returned when not found
+  if (!kitRecipeData) {
+    return undefined;
+  }
+
+  const blueprint_quantity = kitRecipeData.find(
+    (blueprintItem) =>
+      blueprintItem.item_id == kitItemContent.item_expiry.item.id,
+  );
+
+  return blueprint_quantity?.required_quantity;
+};
+
+const update = (updateFn) => (kitData, index) => (new_quantity) => {
+  kitData[index].new_quantity = new_quantity;
+  updateFn([...kitData]);
 };

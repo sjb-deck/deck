@@ -5,11 +5,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
 } from '@mui/material';
+import { ConfirmationTable } from './ConfirmationTable';
 
-export const ConfirmationModal = ({ openConfirm, closeDialog }) => {
+export const ConfirmationModal = ({ data, openConfirm, closeDialog }) => {
+  console.log('MODAL BUILD', data);
   const headerText = 'Confirm Loan Return';
   return (
     <Dialog
@@ -21,12 +22,7 @@ export const ConfirmationModal = ({ openConfirm, closeDialog }) => {
     >
       <DialogTitle id='scroll-dialog-title'>{headerText}</DialogTitle>
       <DialogContent dividers>
-        <DialogContentText>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel
-          scelerisque nisl consectetur et.
-        </DialogContentText>
+        <ConfirmationTable dataShown={data} />
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog}>Cancel</Button>

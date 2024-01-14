@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { ItemReturnSlider } from './ItemReturnSlider';
 
-export const KitItemReturnSection = ({ kitData }) => {
+export const KitItemReturnSection = ({ kitData, updateKitData }) => {
   return (
     <Box
       sx={{
@@ -43,14 +43,12 @@ export const KitItemReturnSection = ({ kitData }) => {
                 <TableCell component='th' scope='row'>
                   {item.name}
                 </TableCell>
-                <TableCell>
-                  {getFractionOfItem(item.quantity, item.blueprint_quantity)}
-                </TableCell>
-                <TableCell>{item.expiry_date ?? 'No Expiry'}</TableCell>
+                <TableCell>{item.expiry_date}</TableCell>
+                <TableCell>{item.shown_quantity}</TableCell>
                 <TableCell>
                   <ItemReturnSlider
                     original_quantity={item.quantity}
-                    update={update(kitData, index)}
+                    update={updateKitData(kitData, index)}
                   />
                 </TableCell>
               </TableRow>
@@ -60,13 +58,4 @@ export const KitItemReturnSection = ({ kitData }) => {
       </TableContainer>
     </Box>
   );
-};
-
-const update = (kitData, index) => (new_quantity) => {
-  kitData[index].new_quantity = new_quantity;
-};
-
-const getFractionOfItem = (quantity, blueprint_quantity) => {
-  if (!blueprint_quantity) return quantity;
-  return `${quantity} / ${blueprint_quantity}`;
 };
