@@ -28,7 +28,10 @@ export const ViewExistingBlueprintTable = ({ items }) => {
           </TableHead>
           <TableBody>
             {items.map((item) => (
-              <Accordion key={item.id} className='view-existing-blueprints'>
+              <Accordion
+                key={`Blueprint ${item.id}`}
+                className='view-existing-blueprints'
+              >
                 <AccordionSummary
                   data-testid='item_accordion'
                   expandIcon={<ExpandMoreIcon />}
@@ -47,7 +50,7 @@ export const ViewExistingBlueprintTable = ({ items }) => {
                   >
                     <Table>
                       <TableHead>
-                        <TableRow key={item.id}>
+                        <TableRow key={`Blueprint items header ${item.id}`}>
                           <TableCell>Item Name</TableCell>
                           <TableCell align={'center'}>Qty</TableCell>
                         </TableRow>
@@ -55,8 +58,8 @@ export const ViewExistingBlueprintTable = ({ items }) => {
                       <TableBody>
                         {item.complete_content.map((blueprintItem) => (
                           <TableRow
-                            key={blueprintItem.id}
-                            data-testid={`item-row-${blueprintItem.id}`}
+                            key={`Blueprint item ${blueprintItem.item_id}`}
+                            data-testid={`item-row-${blueprintItem.item_id}`}
                           >
                             <TableCell data-testid='blueprint_item'>
                               {blueprintItem.name}
