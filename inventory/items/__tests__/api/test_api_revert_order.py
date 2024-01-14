@@ -14,12 +14,6 @@ class TestApiRevertOrderView(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        UserExtras.objects.create(
-            user=self.user,
-            profile_pic="test_pic.jpg",
-            role="test_role",
-            name="test_name",
-        )
         self.url = reverse("revert_order")
         self.clear_relevant_models()
         self.create_items()
