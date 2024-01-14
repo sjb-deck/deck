@@ -48,32 +48,4 @@ describe('<CreateBlueprintModal />', () => {
     });
     expect(screen.getByTestId('create_blueprint_button')).toBeDisabled();
   });
-
-//   it('renders blueprint content correctly upon clicking', async () => {
-//     render(
-//       <CreateBlueprintModal
-//         open={false}
-//         setOpen={null}
-//         blueprintItems={exampleCreateNewBlueprint}
-//         resetBlueprintItems={null}
-//       />,
-//     );
-//     const blueprints = screen.queryAllByTestId('item_accordion');
-//     // check that none of the blueprint content is rendered
-//     expect(
-//       blueprints.every((ele) => ele.getAttribute('aria-expanded') == 'false'),
-//     ).toBe(true);
-//     // check that blueprint content is rendered upon clicking
-//     await userEvent.click(blueprints[0]);
-//     expect(
-//       blueprints.some((ele) => ele.getAttribute('aria-expanded') == 'true'),
-//     ).toBe(true);
-//     expect(screen.getByText('Bandage Test')).toBeVisible();
-//     expect(screen.getByText('Tape Test')).toBeVisible();
-//     expect(screen.getByText('Test Fail Paper')).not.toBeVisible();
-//     expect(screen.getByText('Test Fail Scissors')).not.toBeVisible();
-//     const contentQty = screen.queryAllByTestId('blueprint_item_qty');
-//     expect(contentQty.some((ele) => ele.textContent == 'test5')).toBe(true);
-//     expect(contentQty.some((ele) => ele.textContent == 'test2')).toBe(true);
-//   });
 });

@@ -21,7 +21,7 @@ export const CreateBlueprintModalTable = ({ items }) => {
         </TableHead>
         <TableBody>
           {items.length === 0 ? (
-            <TableRow>
+            <TableRow key='No_items_added'>
               <TableCell colSpan={2}>
                 <p style={{ textAlign: 'center' }}>No items added!</p>
               </TableCell>
