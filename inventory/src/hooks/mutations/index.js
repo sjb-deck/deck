@@ -6,3 +6,4 @@ export * from './useReturnLoan';
 export * from './useImportItems';
 export * from './useExportItems';
 export * from './useRevertHistory';
+export * from './useRestockKit';
