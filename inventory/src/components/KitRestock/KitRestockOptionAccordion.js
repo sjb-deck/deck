@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Chip,
+  InputAdornment,
   Stack,
   Typography,
 } from '@mui/material';
@@ -124,6 +125,22 @@ const RestockOption = ({ option, setRestockValue }) => {
         inputProps={{
           'aria-label': 'Search bar',
         }}
+        endAdornment={
+          <InputAdornment
+            position='end'
+            sx={{
+              display: 'grid',
+              gridColumn: '2/2',
+              alignSelf: 'center',
+              fontSize: '0.875rem',
+              fontFamily: 'inherit',
+              fontWeight: 400,
+              lineHeight: 1.5,
+            }}
+          >
+            / {option.quantity}
+          </InputAdornment>
+        }
       />
     </Stack>
   );

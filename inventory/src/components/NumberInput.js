@@ -80,7 +80,7 @@ const StyledInputRoot = styled('div')(
       theme.palette.mode === 'dark' ? grey[900] : grey[50]
     };
     display: grid;
-    grid-template-columns: 1fr 19px;
+    grid-template-columns: 67.5% 35px 10%;
     grid-template-rows: 1fr 1fr;
     overflow: hidden;
     column-gap: 8px;
@@ -145,7 +145,7 @@ const StyledButton = styled('button')(
     }
   
     &.${numberInputClasses.incrementButton} {
-      grid-column: 2/3;
+      grid-column: 3/3;
       grid-row: 1/2;
       border-top-left-radius: 4px;
       border-top-right-radius: 4px;
@@ -163,7 +163,7 @@ const StyledButton = styled('button')(
     }
   
     &.${numberInputClasses.decrementButton} {
-      grid-column: 2/3;
+      grid-column: 3/3;
       grid-row: 2/3;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;

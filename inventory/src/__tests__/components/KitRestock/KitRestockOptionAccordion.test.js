@@ -38,6 +38,8 @@ describe('KitRestockOptionAccordion', () => {
         name: `Restock from ${option.item_expiry_id}`,
       });
       expect(optionContainer).toBeInTheDocument();
+      // check that total quantity is rendered
+      expect(within(optionContainer).getByText(`/ ${option.quantity}`));
       expect(within(optionContainer).getByRole('textbox')).toBeInTheDocument();
       expect(
         within(optionContainer).getByText(
