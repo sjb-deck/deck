@@ -39,12 +39,9 @@ export const CreateBlueprint = () => {
         type: item.type,
         name: item.name,
         unit: item.unit,
-        quantity: 0,
+        total_quantity: item.total_quantity,
         selectedQty: 0,
       };
-      item.expiry_dates.map((expiry) => {
-        i.quantity += expiry.quantity;
-      });
       setItemsToDisplay((prevItems) => [...prevItems, i]);
     });
   }, [items, itemsLoading]);
@@ -80,74 +77,79 @@ export const CreateBlueprint = () => {
       setSelectedItems((prevItems) => [...prevItems, i]);
     } else {
       selectedItems[index].quantity = quantity;
-      if (quantity === 0) {
-        setSelectedItems((prevItems) => {
-          const newItems = prevItems.filter((item) => item.id !== id);
-          return newItems;
-        });
-      }
+    }
+    if (quantity === 0 || quantity === '') {
+      setSelectedItems((prevItems) => {
+        const newItems = prevItems.filter((item) => item.id !== id);
+        return newItems;
+      });
     }
   };
 
   return (
     <>
       <NavBar user={userData} />
-      {itemsLoading && <LoadingSpinner />}
-      <CreateBlueprintModal
-        open={openModal}
-        setOpen={setOpenModal}
-        blueprintItems={selectedItems}
-        resetBlueprintItems={handleResetBtnClick}
-      />
-      <Box
-        className='nav-margin-compensate'
-        sx={{
-          width: 1,
-          minHeight: 0.8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <BlueprintFilter onFilterChange={handleModeChange} />
-        {isCreateMode ? (
-          <>
-            <CreateBlueprintComponent
-              itemsToDisplay={itemsToDisplay}
-              updateSelectedItems={updateSelectedItems}
-            />
-            <ButtonGroup style={{ marginTop: '2rem' }}>
-              <Button
-                color='error'
-                onClick={handleResetBtnClick}
-                style={{
-                  border: '0.5px solid',
-                  marginRight: '5px',
-                  borderRadius: '5px',
-                }}
-              >
-                Reset
-              </Button>
-              <Button
-                color='success'
-                onClick={handleCreateBtnClick}
-                style={{
-                  border: '0.5px solid',
-                  marginLeft: '5px',
-                  borderRadius: '5px',
-                }}
-              >
-                Create
-              </Button>
-            </ButtonGroup>
-          </>
-        ) : (
-          <ViewBlueprintsComponent
-            blueprintsLoading={blueprintsLoading}
-            blueprints={blueprints['blueprints']}
+      {itemsLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <CreateBlueprintModal
+            open={openModal}
+            setOpen={setOpenModal}
+            blueprintItems={selectedItems}
+            resetBlueprintItems={handleResetBtnClick}
           />
-        )}
-      </Box>
+          <Box
+            className='nav-margin-compensate'
+            sx={{
+              width: 1,
+              minHeight: 0.8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <BlueprintFilter onFilterChange={handleModeChange} />
+            {isCreateMode ? (
+              <>
+                <CreateBlueprintComponent
+                  itemsToDisplay={itemsToDisplay}
+                  updateSelectedItems={updateSelectedItems}
+                />
+                <ButtonGroup style={{ marginTop: '2rem' }}>
+                  <Button
+                    color='error'
+                    onClick={handleResetBtnClick}
+                    style={{
+                      border: '0.5px solid',
+                      marginRight: '5px',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    color='success'
+                    onClick={handleCreateBtnClick}
+                    style={{
+                      border: '0.5px solid',
+                      marginLeft: '5px',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    Create
+                  </Button>
+                </ButtonGroup>
+              </>
+            ) : (
+              <ViewBlueprintsComponent
+                blueprintsLoading={blueprintsLoading}
+                blueprints={blueprints['blueprints']}
+              />
+            )}
+          </Box>
+        </>
+      )}
       <Footer />
     </>
   );

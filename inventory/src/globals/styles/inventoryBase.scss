@@ -15,15 +15,57 @@ body {
   margin-top: 80px;
 }
 
+.view-existing-blueprints {
+  box-shadow: none !important;
+}
+
+.create-blueprint-btn {
+  display: none !important;
+  border: 0.5px solid !important;
+  min-width: 30px !important;
+}
+
+.create-blueprint-indicator {
+  padding-left: 0px !important;
+  padding-right: 8px !important;
+}
+
+.create-blueprint-qty-input {
+  width: 80% !important; 
+  min-width: 50px !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.create-blueprint-input-container {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
 @media screen and (min-width: v.$sm) {
   .dynamic-width {
     width: 70%;
+  }
+  .create-blueprint-btn {
+    display: flex !important;
+  }
+  .create-blueprint-qty-input {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+  }
+  .create-blueprint-indicator {
+    padding-left: 4px !important;
+    padding-right: 12px !important;
   }
 }
 
 @media screen and (min-width: v.$md) {
   .dynamic-width {
     width: 55%;
+  }
+  .create-blueprint-qty-input {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
   }
 }
 

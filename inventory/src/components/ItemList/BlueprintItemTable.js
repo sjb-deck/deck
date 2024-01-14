@@ -22,6 +22,7 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { ORDERS_PER_PAGE } from '../../globals';
+import { EmptyMessage } from '../EmptyMessage';
 
 export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
@@ -110,17 +111,20 @@ export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
         }
       });
     } else {
-      // error handling
+      items.forEach((item) => {
+        if (item.id === id) {
+          item.selectedQty = quantity;
+          updateSelectedItems(item.id, item.name, 0);
+          return item;
+        }
+      });
     }
   };
-
-  const handleOnBlur = (id) => {
+  const handleOnFocus = (id) => {
     setItemsToDisplay((prevItems) =>
       prevItems.map((item) => {
-        if (item.id === id && item.selectedQty === '') {
-          return { ...item, selectedQty: 0 };
-        } else if (item.id === id && item.selectedQty > item.quantity) {
-          return { ...item, selectedQty: item.quantity };
+        if (item.id === id && item.selectedQty === 0) {
+          return { ...item, selectedQty: '' };
         }
         return item;
       }),
@@ -128,22 +132,32 @@ export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
     items.forEach((item) => {
       if (item.id === id && item.selectedQty === '') {
         item.selectedQty = 0;
-      } else if (item.id === id && item.selectedQty > item.quantity) {
-        item.selectedQty = item.quantity;
+      }
+    });
+  };
+  const handleOnBlur = (id) => {
+    setItemsToDisplay((prevItems) =>
+      prevItems.map((item) => {
+        if (item.id === id && item.selectedQty === '') {
+          updateSelectedItems(item.id, item.name, 0);
+          return { ...item, selectedQty: 0 };
+        } else if (item.id === id && item.selectedQty > item.total_quantity) {
+          return { ...item, selectedQty: item.total_quantity };
+        }
+        return item;
+      }),
+    );
+    items.forEach((item) => {
+      if (item.id === id && item.selectedQty === '') {
+        item.selectedQty = 0;
+      } else if (item.id === id && item.selectedQty > item.total_quantity) {
+        item.selectedQty = item.total_quantity;
       }
     });
   };
 
   return (
-    <Box
-      sx={{
-        width: {
-          xs: '95%',
-          sm: '90%',
-          md: '70%',
-        },
-      }}
-    >
+    <Box className='dynamic-width'>
       <Stack spacing={3} alignItems={'center'}>
         <Box
           sx={{
@@ -173,77 +187,84 @@ export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
         </Box>
         <TableContainer component={Paper}>
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Item Name</TableCell>
-                <TableCell align={'center'}>Unit</TableCell>
-                <TableCell align={'center'}>Total Qty</TableCell>
-                <TableCell align={'center'}>
-                  Qty To Add (Capped Between 0 & Total Qty)
-                </TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {itemsToDisplay.slice(startIndex, endIndex).map((item) => (
-                <TableRow key={item.id} data-testid={`item-row-${item.id}`}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell align={'center'}>{item.unit}</TableCell>
-                  <TableCell align={'center'}>{item.quantity}</TableCell>
-                  <TableCell>
-                    <Box display={'flex'} justifyContent={'center'}>
-                      <Button
-                        style={{ border: '0.5px solid' }}
-                        disabled={
-                          item.selectedQty <= 0 || item.selectedQty === ''
-                        }
-                        onClick={() => handleMinusButtonClick(item.id)}
-                      >
-                        <RemoveIcon />
-                      </Button>
-                      <TextField
-                        id='outlined-basic'
-                        label='Qty'
-                        type='number'
-                        sx={{ width: '30%' }}
-                        value={item.selectedQty}
-                        onChange={(e) => {
-                          handleInputChange(
-                            item.id,
-                            e.target.value,
-                            item.quantity,
-                          );
-                        }}
-                        onBlur={(e) => {
-                          handleOnBlur(item.id);
-                        }}
-                        style={{
-                          marginLeft: '5px',
-                          marginRight: '5px',
-                        }}
-                      />
-                      <Button
-                        style={{ border: '0.5px solid' }}
-                        disabled={
-                          item.selectedQty >= item.quantity ||
-                          item.selectedQty === ''
-                        }
-                        onClick={() => handleAddButtonClick(item.id)}
-                      >
-                        <AddIcon />
-                      </Button>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {item.selectedQty === 0 || item.selectedQty === '' ? (
-                      <RadioButtonUncheckedIcon />
-                    ) : (
-                      <RadioButtonCheckedIcon />
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            {itemsToDisplay.length > 0 ? (
+              <>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Item Name</TableCell>
+                    <TableCell align={'center'}>Unit</TableCell>
+                    <TableCell align={'center'}>Total Qty</TableCell>
+                    <TableCell align={'center'}>Qty To Add</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {itemsToDisplay.slice(startIndex, endIndex).map((item) => (
+                    <TableRow key={item.id} data-testid={`item-row-${item.id}`}>
+                      <TableCell data-testid='item_name'>{item.name}</TableCell>
+                      <TableCell data-testid='item_unit' align={'center'}>
+                        {item.unit}
+                      </TableCell>
+                      <TableCell data-testid='item_qty' align={'center'}>
+                        {item.total_quantity}
+                      </TableCell>
+                      <TableCell className='create-blueprint-input-container'>
+                        <Box display={'flex'} justifyContent={'center'}>
+                          <Button
+                            className='create-blueprint-btn'
+                            disabled={
+                              item.selectedQty <= 0 || item.selectedQty === ''
+                            }
+                            onClick={() => handleMinusButtonClick(item.id)}
+                          >
+                            <RemoveIcon />
+                          </Button>
+                          <TextField
+                            id='outlined-basic'
+                            label='Qty'
+                            type='number'
+                            className='create-blueprint-qty-input'
+                            value={item.selectedQty}
+                            onChange={(e) => {
+                              handleInputChange(
+                                item.id,
+                                e.target.value,
+                                item.total_quantity,
+                              );
+                            }}
+                            onFocus={(e) => {
+                              handleOnFocus(item.id);
+                            }}
+                            onBlur={(e) => {
+                              handleOnBlur(item.id);
+                            }}
+                          />
+                          <Button
+                            className='create-blueprint-btn'
+                            disabled={
+                              item.selectedQty >= item.total_quantity ||
+                              item.selectedQty === ''
+                            }
+                            onClick={() => handleAddButtonClick(item.id)}
+                          >
+                            <AddIcon />
+                          </Button>
+                        </Box>
+                      </TableCell>
+                      <TableCell className='create-blueprint-indicator'>
+                        {item.selectedQty === 0 || item.selectedQty === '' ? (
+                          <RadioButtonUncheckedIcon />
+                        ) : (
+                          <RadioButtonCheckedIcon />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </>
+            ) : (
+              <EmptyMessage message={'No matching items found'} />
+            )}
           </Table>
         </TableContainer>
         {items ? (

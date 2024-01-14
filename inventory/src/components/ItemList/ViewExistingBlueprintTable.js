@@ -16,16 +16,7 @@ import {
 import React from 'react';
 export const ViewExistingBlueprintTable = ({ items }) => {
   return (
-    <Box
-      className='nav-margin-compensate'
-      sx={{
-        width: {
-          xs: '95%',
-          sm: '90%',
-          md: '70%',
-        },
-      }}
-    >
+    <Box className='dynamic-width'>
       <TableContainer component={Paper} style={{ overflow: 'scroll' }}>
         <Table>
           <TableHead>
@@ -37,10 +28,15 @@ export const ViewExistingBlueprintTable = ({ items }) => {
           </TableHead>
           <TableBody>
             {items.map((item) => (
-              <Accordion key={item.id} style={{ marginBottom: '1rem' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Accordion key={item.id} className='view-existing-blueprints'>
+                <AccordionSummary
+                  data-testid='item_accordion'
+                  expandIcon={<ExpandMoreIcon />}
+                >
                   <TableCell>
-                    <Typography variant={'h6'}>{item.name}</Typography>
+                    <Typography data-testid='item_name' variant={'h6'}>
+                      {item.name}
+                    </Typography>
                   </TableCell>
                   <TableCell align={'center'}>{item.quantity}</TableCell>
                 </AccordionSummary>
@@ -62,8 +58,13 @@ export const ViewExistingBlueprintTable = ({ items }) => {
                             key={blueprintItem.id}
                             data-testid={`item-row-${blueprintItem.id}`}
                           >
-                            <TableCell>{blueprintItem.name}</TableCell>
-                            <TableCell align={'center'}>
+                            <TableCell data-testid='blueprint_item'>
+                              {blueprintItem.name}
+                            </TableCell>
+                            <TableCell
+                              data-testid='blueprint_item_qty'
+                              align={'center'}
+                            >
                               {blueprintItem.quantity}
                             </TableCell>
                           </TableRow>

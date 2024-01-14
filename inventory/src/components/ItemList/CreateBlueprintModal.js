@@ -99,6 +99,7 @@ export const CreateBlueprintModal = ({
             />
             <CreateBlueprintModalTable items={blueprintItems} />
             <Button
+              data-testid='create_blueprint_button'
               variant='contained'
               role='submit-button'
               color='success'
