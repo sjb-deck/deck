@@ -82,7 +82,7 @@ export const KitRestockContent = ({ kit }) => {
         },
         0,
       );
-      if (totalQuantity > itemRestockOptions.required_quantity) {
+      if (totalQuantity > itemRestockOptions.missing_quantity) {
         newErrors.push({
           item_id: itemRestockOptions.item_id,
           message: 'Quantity more than required',

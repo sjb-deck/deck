@@ -157,7 +157,7 @@ describe('<KitRestockContent />', () => {
       const optionField = within(optionContainer).getByRole('textbox');
       await userEvent.type(
         optionField,
-        (exampleKitRestockOptions[0].required_quantity + 1).toString(),
+        (exampleKitRestockOptions[0].missing_quantity + 1).toString(),
       );
       await userEvent.click(document.body); // move the focus away
 
