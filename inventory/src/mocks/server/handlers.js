@@ -2,13 +2,21 @@
 import { rest } from 'msw';
 
 import {
+  Api,
   INV_API_EXPORT_ITEMS_URL,
   INV_API_IMPORT_ITEMS_URL,
   INV_API_ITEMS_URL,
   INV_API_ORDERS_URL,
   INV_API_USER_URL,
 } from '../../globals';
-import { mockItemList, mockOrders, mockUser } from '../index';
+import { getUrlWithoutParams } from '../../utils';
+import {
+  exampleKit,
+  exampleKitRestockOptions,
+  mockItemList,
+  mockOrders,
+  mockUser,
+} from '../index';
 
 export const handlers = [
   rest.get(INV_API_USER_URL, (req, res, ctx) => {
@@ -38,5 +46,11 @@ export const handlers = [
       ctx.set('Content-Type', 'text/csv'),
       ctx.json([]),
     );
+  }),
+  rest.get(getUrlWithoutParams(Api['kit']), (req, res, ctx) => {
+    return res(ctx.json(exampleKit));
+  }),
+  rest.get(Api['kitRestockOptions'], (req, res, ctx) => {
+    return res(ctx.json(exampleKitRestockOptions));
   }),
 ];

@@ -22,6 +22,11 @@ def kit_info(request):
     return render(request, "kit_info.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def kit_restock(request):
+    return render(request, "kit_restock.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_kits(request):

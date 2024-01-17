@@ -17,6 +17,7 @@ module.exports = {
     itemList: ['./inventory/src/pages/render/itemList.js'],
     kitInfo: ['./inventory/src/pages/render/kitInfo.js'],
     createBlueprint: ['./inventory/src/pages/render/createBlueprint.js'],
+    kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

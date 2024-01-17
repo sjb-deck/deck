@@ -7,3 +7,4 @@ export * from './useImportItems';
 export * from './useExportItems';
 export * from './useRevertHistory';
 export * from './useAddBlueprint';
+export * from './useRestockKit';
