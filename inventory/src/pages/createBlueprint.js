@@ -90,7 +90,9 @@ export const CreateBlueprint = () => {
     <>
       <NavBar user={userData} />
       {itemsLoading ? (
-        <LoadingSpinner />
+        <div style={{ minHeight: '100vh' }}>
+          <LoadingSpinner />
+        </div>
       ) : (
         <>
           <CreateBlueprintModal
