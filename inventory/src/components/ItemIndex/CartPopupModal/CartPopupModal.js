@@ -29,7 +29,7 @@ import { PopupStack } from './styled';
 
 export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const hasExpiry = !!item.expiry_dates[0].expiry_date;
-  const showDropdown = hasExpiry && item.expiry_dates.length > 1;
+  const showDropdown = hasExpiry && item.expiry_dates.length >= 1;
   const canAddExpiry = type == CART_ITEM_TYPE_DEPOSIT && hasExpiry;
   const disableExpirySelection = !canAddExpiry && !showDropdown;
   const preselectedExpiryId =
@@ -51,14 +51,20 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
     if (date) {
       setTempSelectedDate(date);
       if (
-        item.expiry_dates.find((itemExpiry) => itemExpiry.expiry_date == date)
+        item.expiry_dates.find(
+          (itemExpiry) =>
+            itemExpiry.expiry_date == date && itemExpiry.id !== 'newDate',
+        )
       ) {
         alert('Expiry date already exists!');
-        setSelectedDate('');
         return;
       } else {
         setSelectedDate(date);
         setSelectedExpiryId('newDate');
+        item.expiry_dates.push({
+          id: 'newDate',
+          expiry_date: date,
+        });
       }
     } else {
       setTempSelectedDate('');
@@ -143,6 +149,9 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
     setSelectedDate('');
     setSelectedExpiryId(preselectedExpiryId);
     setTempSelectedDate('');
+    item.expiry_dates = item.expiry_dates.filter(
+      (itemExpiry) => itemExpiry.id !== 'newDate',
+    );
     formik.resetForm();
   };
 
@@ -192,8 +201,8 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
             </Typography>
             <TextField
               id='filled-select-expiry-date'
-              select={showDropdown && !tempSelectedDate}
-              disabled={disableExpirySelection || !!tempSelectedDate}
+              select={showDropdown && (!tempSelectedDate || canAddExpiry)}
+              disabled={disableExpirySelection}
               label='Expiry Date'
               value={getExpiryFromId(selectedExpiryId)}
               variant='filled'
@@ -207,9 +216,14 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
                     setSelectedExpiryId(itemExp.id);
                   }}
                 >
-                  <Typography variant='h8'>
-                    {itemExp.expiry_date ?? 'No Expiry'}
+                  <Typography variant='h8' marginRight={'5px'}>
+                    {`${itemExp.expiry_date}` ?? 'No Expiry'}
                   </Typography>
+                  {itemExp.id === 'newDate' && (
+                    <Typography variant='h8' color='red'>
+                      (New)
+                    </Typography>
+                  )}
                 </MenuItem>
               ))}
               {type == CART_ITEM_TYPE_DEPOSIT && (
