@@ -7,6 +7,7 @@ urlpatterns = (
     [
         path("", views.kits, name="kits"),
         path("kit_info", views.kit_info, name="kit_info"),
+        path("kit_restock", views.kit_restock, name="kit_restock"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

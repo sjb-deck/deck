@@ -24,6 +24,8 @@ def kit_info(request):
 @login_required(login_url="/r'^login/$'")
 def kits(request):
     return render(request, "kits.html")
+def kit_restock(request):
+    return render(request, "kit_restock.html")
 
 
 @api_view(["GET"])

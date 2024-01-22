@@ -58,10 +58,7 @@ export const handlers = [
   }),
 
   rest.get(`${INV_API_KIT_RECIPE}/10`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(mockKitRecipeData));
-  }),
-  rest.get(`${INV_API_KIT_RECIPE}/`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json([]));
+    return res(ctx.json(mockKitRecipeData));
   }),
   rest.post(INV_API_CREATE_KIT, (req, res, ctx) => {
     return res(ctx.status(201), ctx.json({}));
