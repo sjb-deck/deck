@@ -159,58 +159,63 @@ def get_restock_options(blueprint_id, given_content):
 
     blueprint_content = Blueprint.objects.get(id=blueprint_id).complete_content
 
+    # Check that there is no unexpected item in current_content that is not in blueprint_content
+    for item in current_content:
+        if item["item_id"] not in [item["item_id"] for item in blueprint_content]:
+            raise Exception(
+                "Unexpected item in current content that is not defined in kit blueprint!"
+            )
+
     restock_options = []
+    current_content_dict = {item["item_id"]: item for item in current_content}
 
-    for current_item, blueprint_item in zip(current_content, blueprint_content):
-        if current_item["item_id"] != blueprint_item["item_id"]:
-            raise Exception("Blueprint content does not match current content.")
+    for item in blueprint_content:
+        main_item = Item.objects.get(id=item["item_id"])
+        curr_quantity = (
+            current_content_dict[item["item_id"]]["quantity"]
+            if item["item_id"] in current_content_dict
+            else 0
+        )
+        missing_quantity = None
 
-        if current_item["quantity"] < blueprint_item["quantity"]:
-            main_item = Item.objects.get(id=current_item["item_id"])
-            missing_quantity = blueprint_item["quantity"] - current_item["quantity"]
-
-            options = (
-                main_item.expiry_dates.all()
-                .filter(archived=False)
-                .order_by("expiry_date")
+        if item["item_id"] not in current_content_dict:
+            missing_quantity = item["quantity"]
+        elif curr_quantity < item["quantity"]:
+            missing_quantity = item["quantity"] - curr_quantity
+        elif current_content_dict[item["item_id"]]["quantity"] > item["quantity"]:
+            raise Exception(
+                "Current content has more than expected quantity of an item!"
             )
-            item_options = []
+        else:  # current_content_dict[item["item_id"]]["quantity"] == item["quantity"]
+            continue
 
-            for option in options:
-                item_options.append(
-                    {
-                        "item_expiry_id": option.id,
-                        "expiry_date": option.expiry_date,
-                        "quantity": option.quantity,
-                    }
-                )
+        options = (
+            main_item.expiry_dates.all().filter(archived=False).order_by("expiry_date")
+        )
+        item_options = []
 
-            restock_options.append(
+        for option in options:
+            item_options.append(
                 {
-                    "item_id": main_item.id,
-                    "item_name": main_item.name,
-                    "current_quantity": current_item["quantity"],
-                    "required_quantity": blueprint_item["quantity"],
-                    "missing_quantity": missing_quantity,
-                    "item_options": item_options,
-                    "sufficient_stock": False
-                    if main_item.total_quantity < missing_quantity
-                    else True,
+                    "item_expiry_id": option.id,
+                    "expiry_date": option.expiry_date,
+                    "quantity": option.quantity,
                 }
             )
-        elif current_item["quantity"] > blueprint_item["quantity"]:
-            main_item = Item.objects.get(id=current_item["item_id"])
-            missing_quantity = blueprint_item["quantity"] - current_item["quantity"]
-            restock_options.append(
-                {
-                    "item_id": main_item.id,
-                    "item_name": main_item.name,
-                    "current_quantity": current_item["quantity"],
-                    "required_quantity": blueprint_item["quantity"],
-                    "missing_quantity": missing_quantity,  # Negative value
-                    "sufficient_stock": None,
-                }
-            )
+
+        restock_options.append(
+            {
+                "item_id": main_item.id,
+                "item_name": main_item.name,
+                "current_quantity": curr_quantity,
+                "required_quantity": item["quantity"],
+                "missing_quantity": missing_quantity,
+                "item_options": item_options,
+                "sufficient_stock": False
+                if main_item.total_quantity < missing_quantity
+                else True,
+            }
+        )
 
     return restock_options
 

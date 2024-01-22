@@ -381,6 +381,9 @@ def return_kit_order(request):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+        # Remove 0 quantities
+        content = [item for item in content if item["quantity"] != 0]
+
         # Update loan history
         loan_history.return_date = timezone.now()
         loan_history.snapshot = content
