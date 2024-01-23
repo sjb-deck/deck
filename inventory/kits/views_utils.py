@@ -8,6 +8,11 @@ from ..items.models import *
 from ..items.views_utils import create_order
 
 
+# @description: This function compresses a json containing item_expiry_id and quantities into a json containing item_id
+#               and quantities. The resulting quantity is the sum of all quantities of the same item_id. The function
+#               also sorts the json by item_id for zip comparison later.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: compressed_content - a json containing item_id and quantities
 def compress_content(content):
     content_dict = {}
     for item_expiry in content:
@@ -34,6 +39,11 @@ def compress_content(content):
     return compressed_content
 
 
+# @description: This function checks if items in the content provided are withdraw-able (enough quantity in stock),
+#               then proceeds to withdraw the items.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: True, None - if all items are withdraw-able
+#          False, item_name - if any item is not withdraw-able
 def attempt_items_withdrawal(content):
     for item in content:
         item_id = item.get("item_expiry_id")
@@ -51,6 +61,11 @@ def attempt_items_withdrawal(content):
     return True, None
 
 
+# @description: This function checks if items in the content provided are deposit-able (quantity is not negative),
+#               then proceeds to deposit the items.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: True - if all items are deposit-able
+#          False - if any item is not deposit-able
 def attempt_items_deposit(content):
     for item in content:
         item_id = item.get("item_expiry_id")
@@ -78,7 +93,13 @@ def attempt_items_deposit(content):
     return True
 
 
-# Builds payload to call create_order which returns a order_id
+# @description: This function builds the payload to call create_order which returns an order_id
+# @param: content - a json containing item_expiry_id and quantities
+#         request - the request object
+#         kit - the kit object
+#         is_withdraw - a boolean indicating if the order to restock or to retire the kit
+#         is_create_kit - a boolean indicating if the order is to create a kit, default is False
+# @return: order_id - the id of the order created
 def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     order_items = [
         {"item_expiry_id": item["item_expiry_id"], "ordered_quantity": item["quantity"]}
@@ -100,13 +121,24 @@ def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     return order.id
 
 
+# @description: This function checks if the kit is complete, but does not check for overloads, since handling overloads
+#               is not part of the responsibility of this apis using this function.
+# @param: kit_id - the id of the kit
+# @return: True - if the kit is complete
+#          False - if the kit is not complete
 def kit_is_complete(kit_id):
     kit = Kit.objects.get(id=kit_id)
-    kit_content = compress_content(kit.content)
-    blueprint_content = kit.blueprint.complete_content
+    kit_content = compress_content(kit.content)  # sorted by item_id
+    blueprint_content = sorted(
+        kit.blueprint.complete_content, key=lambda x: x["item_id"]
+    )
 
+    if len(kit_content) < len(blueprint_content):
+        return False
+
+    # assume now there are equal number of items in kit and blueprint and they are sorted
     for kit_item, blueprint_item in zip(kit_content, blueprint_content):
-        if kit_item["item_id"] != blueprint_item["item_id"]:
+        if kit_item["quantity"] > blueprint_item["quantity"]:
             return False
         if kit_item["quantity"] < blueprint_item["quantity"]:
             return False
@@ -114,7 +146,14 @@ def kit_is_complete(kit_id):
     return True
 
 
+# @description: This function is a subset of kit_is_complete. It only checks if each expected item in the blueprint is
+#               in the kit.
+# @param: compressed_content - the compressed content of the kit
+#         blueprint_content - the expected content of the blueprint
+# @return: True - if the kit content matches, regardless of quantity
+#          False - if the kit content does not match
 def content_matches(compressed_content, blueprint_content):
+    blueprint_content = sorted(blueprint_content, key=lambda x: x["item_id"])
     for item, blueprint_item in zip(compressed_content, blueprint_content):
         if item["item_id"] != blueprint_item["item_id"]:
             return False
@@ -122,6 +161,10 @@ def content_matches(compressed_content, blueprint_content):
     return True
 
 
+# @description: This function checks if the returning content matches the original content of the kit, which does not
+#               need to be necessarily complete if force loan was initiated.
+# @param: content - the returning content of the kit
+#         original_content - the original content of the kit
 def order_return_matches(content, original_content):
     for item, original_item in zip(content, original_content):
         if item["item_expiry_id"] != original_item["item_expiry_id"]:
@@ -150,6 +193,10 @@ def build_empty_compressed_kit(blueprint_id):
     return content
 
 
+# @description: This function gets options to stock up a kit from its current state, which might be empty if creating a
+#               new kit.
+# @param: blueprint_id - the id of the blueprint of the kit
+#         given_content - the current content of the kit, if any
 def get_restock_options(blueprint_id, given_content):
     current_content = (
         compress_content(given_content)
@@ -220,6 +267,11 @@ def get_restock_options(blueprint_id, given_content):
     return restock_options
 
 
+# @description: This function merges the content of a kit and the restocking content, and returns the merged content.
+# @param: kit_content - the current content of the kit
+#         restock_content - the restocking content of the kit
+# @return: merged_content - the merged content of the kit, which is the predicted new kit that will then be checked for
+#                           validity separately.
 def merge_contents(kit_content, restock_content):
     merged_content = {}
 
@@ -247,6 +299,11 @@ def merge_contents(kit_content, restock_content):
     ]
 
 
+# @description: This function checks for what items are used in the kit following a return of the kit, by comparing the
+#               current content with the previous snapshot.
+# @param: current_content - the current content of the kit
+#         previous_content - the previous snapshot content of the kit
+# @return: stock_change - a list of items that are used in the kit, with their quantity used
 def get_stock_change(current_content, previous_content):
     curr = {}
     for item in current_content:

@@ -436,6 +436,22 @@ def restock_kit(request):
         blueprint = Blueprint.objects.get(id=Kit.objects.get(id=kit_id).blueprint.id)
 
         kit = Kit.objects.get(id=kit_id)
+
+        # Check if kit is "READY"
+        if kit.status != "READY":
+            return Response(
+                {"message": "Kit is not ready and cannot be restocked."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check if any quantity is zero
+        for item in restock_expiries:
+            if item["quantity"] == 0:
+                return Response(
+                    {"message": "Quantity cannot be zero."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         projected_content = merge_contents(kit.content, restock_expiries)
         compressed_projected_content = compress_content(projected_content)
 
