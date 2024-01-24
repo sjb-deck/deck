@@ -31,6 +31,7 @@ export const FloatingCart = () => {
         background:
           'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,232,255,1) 0%, rgba(72,116,197,1) 100%, rgba(30,155,173,1) 100%, rgba(93,97,209,1) 100%, rgba(2,3,6,1) 100%)',
         color: 'black',
+        boxShadow: '0px 0px 10px rgba(255, 183, 0, 0.8)',
       }}
     >
       <Badge
