@@ -73,3 +73,56 @@ export const exampleKitBlueprint = [
     required_quantity: 2,
   },
 ];
+
+export const mockKitRecipeData = [
+  {
+    item_id: 1,
+    item_name: 'test item',
+    current_quantity: 0,
+    required_quantity: 2,
+    missing_quantity: 2,
+    item_options: [
+      {
+        item_expiry_id: 1,
+        expiry_date: null,
+        quantity: 54,
+      },
+    ],
+    sufficient_stock: true,
+  },
+  {
+    item_id: 5,
+    item_name: 'something new 3',
+    current_quantity: 0,
+    required_quantity: 7,
+    missing_quantity: 7,
+    item_options: [
+      {
+        item_expiry_id: 46,
+        expiry_date: '2023-09-06',
+        quantity: 1,
+      },
+      {
+        item_expiry_id: 47,
+        expiry_date: '2023-09-28',
+        quantity: 1,
+      },
+    ],
+    sufficient_stock: false,
+  },
+  {
+    item_id: 10,
+    item_name: 'wdqwd',
+    current_quantity: 0,
+    required_quantity: 9,
+    missing_quantity: 9,
+    item_options: [
+      {
+        item_expiry_id: 52,
+        expiry_date: null,
+        quantity: 219,
+      },
+    ],
+    sufficient_stock: true,
+  },
+];

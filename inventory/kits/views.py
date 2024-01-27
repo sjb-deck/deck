@@ -1,7 +1,9 @@
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -23,6 +25,10 @@ def kit_info(request):
 
 
 @login_required(login_url="/r'^login/$'")
+def kits(request):
+    return render(request, "kits.html")
+
+
 def kit_restock(request):
     return render(request, "kit_restock.html")
 

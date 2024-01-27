@@ -6,16 +6,22 @@ import {
   INV_API_EXPORT_ITEMS_URL,
   INV_API_IMPORT_ITEMS_URL,
   INV_API_ITEMS_URL,
+  INV_API_KITS_URL,
   INV_API_ORDERS_URL,
   INV_API_USER_URL,
+  INV_API_KIT_RECIPE,
+  INV_API_CREATE_KIT,
 } from '../../globals';
 import { getUrlWithoutParams } from '../../utils';
 import {
   exampleKit,
   exampleKitRestockOptions,
   mockItemList,
+  mockKitsList,
   mockOrders,
   mockUser,
+  mockKitRecipeData,
+  mockBlueprints,
 } from '../index';
 
 export const handlers = [
@@ -47,9 +53,25 @@ export const handlers = [
       ctx.json([]),
     );
   }),
+
+  rest.get(INV_API_KITS_URL, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({ kits: mockKitsList, blueprints: mockBlueprints }),
+    );
+  }),
+
+  rest.get(`${INV_API_KIT_RECIPE}/10`, (req, res, ctx) => {
+    return res(ctx.json(mockKitRecipeData));
+  }),
+  rest.post(INV_API_CREATE_KIT, (req, res, ctx) => {
+    return res(ctx.status(201), ctx.json({}));
+  }),
+
   rest.get(getUrlWithoutParams(Api['kit']), (req, res, ctx) => {
     return res(ctx.json(exampleKit));
   }),
+
   rest.get(Api['kitRestockOptions'], (req, res, ctx) => {
     return res(ctx.json(exampleKitRestockOptions));
   }),
