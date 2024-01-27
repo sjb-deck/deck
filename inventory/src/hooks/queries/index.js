@@ -8,4 +8,5 @@ export * from './useKit.js';
 export * from './useKitHistory.js';
 export * from './useKitRecipe.js';
 export * from './useKits.js';
+export * from './useBlueprint.js';
 export * from './useKitRestockOptions.js';

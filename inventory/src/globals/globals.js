@@ -40,6 +40,7 @@ export const INV_API_EXPORT_ITEMS_URL = `${INV_API_BASE_URL}/export_items`;
 export const INV_API_KITS_URL = `${INV_API_BASE_URL}/kits`;
 export const INV_API_KIT_RECIPE = `${INV_API_BASE_URL}/get_new_kit_recipe`;
 export const INV_API_CREATE_KIT = `${INV_API_BASE_URL}/add_kit`;
+export const INV_API_ADD_BLUEPRINT_URL = `${INV_API_BASE_URL}/add_blueprint`;
 
 export const ORDER_REASONS = {
   item_restock: 'Restock',

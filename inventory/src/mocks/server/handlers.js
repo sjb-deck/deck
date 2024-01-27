@@ -2,6 +2,7 @@
 import { rest } from 'msw';
 
 import {
+  Api,
   INV_API_EXPORT_ITEMS_URL,
   INV_API_IMPORT_ITEMS_URL,
   INV_API_ITEMS_URL,
@@ -11,7 +12,10 @@ import {
   INV_API_KIT_RECIPE,
   INV_API_CREATE_KIT,
 } from '../../globals';
+import { getUrlWithoutParams } from '../../utils';
 import {
+  exampleKit,
+  exampleKitRestockOptions,
   mockItemList,
   mockKitsList,
   mockOrders,
@@ -62,5 +66,13 @@ export const handlers = [
   }),
   rest.post(INV_API_CREATE_KIT, (req, res, ctx) => {
     return res(ctx.status(201), ctx.json({}));
+  }),
+
+  rest.get(getUrlWithoutParams(Api['kit']), (req, res, ctx) => {
+    return res(ctx.json(exampleKit));
+  }),
+
+  rest.get(Api['kitRestockOptions'], (req, res, ctx) => {
+    return res(ctx.json(exampleKitRestockOptions));
   }),
 ];

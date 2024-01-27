@@ -70,6 +70,8 @@ export const KitAdd = ({ blueprints }) => {
       }
     }
     formik.setFieldValue('kitContent', newKitContent);
+    // adding formik into dependency array causes state update issues in jest
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kitRecipeData]);
 
   const getTotalQuantity = (itemId, kitContent) => {

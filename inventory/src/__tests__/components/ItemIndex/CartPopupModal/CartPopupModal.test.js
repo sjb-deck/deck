@@ -165,8 +165,8 @@ describe('CartPopupModal', () => {
     const mockItemWithDates = {
       ...exampleItem,
       expiry_dates: [
-        { expiry_date: '2024-06-11', id: 1 },
-        { expiry_date: '2024-06-12', id: 2 },
+        { expiry_date: '2023-06-11', id: 1 },
+        { expiry_date: '2023-06-12', id: 2 },
       ],
     };
     render(
@@ -185,6 +185,7 @@ describe('CartPopupModal', () => {
         name: `Expiry Date ${mockItemWithDates.expiry_dates[0].expiry_date}`,
       }),
     );
+    expect(screen.queryByText('Pick a new expiry date')).toBeNull();
     const addExpiryOption = screen.getByRole('option', { name: 'Add Expiry' });
     await userEvent.click(addExpiryOption);
     expect(
@@ -199,9 +200,13 @@ describe('CartPopupModal', () => {
     await waitForElementToBeRemoved(() =>
       screen.getByText('Pick a new expiry date'),
     );
-    const expirySelector = screen.getByRole('textbox', { name: 'Expiry Date' });
-    expect(expirySelector).toHaveValue(dayjs().format('YYYY-MM-DD'));
-    expect(expirySelector).toBeDisabled();
+    expect(screen.queryByText('Pick a new expiry date')).toBeNull();
+    const date = dayjs().format('YYYY-MM-DD');
+    expect(screen.queryByText(date)).toBeInTheDocument();
+    const expirySelector = screen.getByRole('button', {
+      name: `Expiry Date ${dayjs().format('YYYY-MM-DD')} (New)`,
+    });
+    expect(expirySelector).toBeInTheDocument();
   });
 
   it('renders the text fields with the correct labels', async () => {
