@@ -13,30 +13,17 @@ class TestApiAddBlueprintViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        UserExtras.objects.create(
-            user=self.user,
-            profile_pic="test_pic.jpg",
-            role="test_role",
-            name="test_name",
-        )
         self.url = reverse("add_blueprint")
         self.clear_relevant_models()
         self.create_items()
-        self.item_expiry1_id = self.itemExpiry1.id
-        self.item_expiry2_id = self.itemExpiry2.id
-        self.item_no_expiry_id = self.itemExpiry_no_expiry.id
-        self.request = {
-            "name": "Test Blueprint",
-            "content": [
-                {"item_expiry_id": self.item_expiry1_id, "quantity": 5},
-                {"item_expiry_id": self.item_expiry2_id, "quantity": 5},
-                {"item_expiry_id": self.item_no_expiry_id, "quantity": 5},
-            ],
-        }
-        self.compressed_blueprint_content = [
+        self.content = [
             {"item_id": self.item.id, "quantity": 10},
             {"item_id": self.item_no_expiry.id, "quantity": 5},
         ]
+        self.request = {
+            "name": "Test Blueprint",
+            "content": self.content,
+        }
 
     def create_items(self):
         self.item = Item.objects.create(
@@ -80,7 +67,7 @@ class TestApiAddBlueprintViews(TestCase):
         self.assertEqual(blueprint.name, "Test Blueprint")
 
         # check that blueprint content is created with correct compression
-        self.assertEqual(blueprint.complete_content, self.compressed_blueprint_content)
+        self.assertEqual(blueprint.complete_content, self.content)
 
     def test_create_new_blueprint_with_same_name(self):
         response = self.client.post(self.url, self.request, format="json")
@@ -113,13 +100,22 @@ class TestApiAddBlueprintViews(TestCase):
         self.assertEqual(response.data["message"], "Required parameters are missing!")
         self.request["content"] = content
 
-    def test_create_new_blueprint_with_invalid_item_expiry_id(self):
-        self.request["content"][0]["item_expiry_id"] = 0
+    def test_create_new_blueprint_with_invalid_item_id(self):
+        self.request["content"][0]["item_id"] = 999
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            response.data["message"], "ItemExpiry matching query does not exist."
+            response.data["message"], "Item matching query does not exist."
         )
+        self.request["content"][0]["item_id"] = self.item.id
+
+    def test_create_new_blueprint_with_invalid_quantity(self):
+        quantity = self.request["content"][0]["quantity"]
+        self.request["content"][0]["quantity"] = -1
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["message"], "Quantity cannot be negative.")
+        self.request["content"][0]["quantity"] = quantity
 
     def tearDown(self):
         self.clear_relevant_models()

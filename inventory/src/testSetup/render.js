@@ -1,24 +1,25 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render } from '@testing-library/react';
+import { render as rtlRender } from '@testing-library/react';
 import React from 'react';
 
 import { Theme } from '../components';
 import { AlertProvider, CartProvider } from '../providers';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
+export const customRender = (ui, options = {}) => {
+  const { cartContext } = options;
 
-export const customRender = (node, options) => {
-  const { cartContext, ...opts } = options ?? {};
-  return render(node, {
-    wrapper: ({ children }) => (
+  const Wrapper = ({ children }) => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    return (
       <Theme>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <QueryClientProvider client={queryClient}>
@@ -28,7 +29,8 @@ export const customRender = (node, options) => {
           </QueryClientProvider>
         </LocalizationProvider>
       </Theme>
-    ),
-    ...opts,
-  });
+    );
+  };
+
+  return rtlRender(ui, { wrapper: Wrapper, ...options });
 };
