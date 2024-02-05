@@ -15,7 +15,7 @@ export const useReturnKit = (options) => {
   const defaultOptions = {
     onSuccess: () => {
       window.location.href = '/inventory/kits';
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries('kits');
 
       setAlert({
         severity: 'success',
