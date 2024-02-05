@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, Typography } from '@mui/material';
 import {
   Table,
@@ -9,6 +7,8 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
+import React from 'react';
+
 import { ItemReturnSlider } from './ItemReturnSlider';
 
 export const KitItemReturnSection = ({ kitData, updateKitData }) => {

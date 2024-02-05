@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Button,
   Dialog,
@@ -8,10 +6,16 @@ import {
   DialogActions,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import React from 'react';
 
 import { useReturnKit } from '../../hooks/mutations/useReturnKit';
 
-export const ConfirmationModal = ({ kitId, data, openConfirm, closeDialog }) => {
+export const ConfirmationModal = ({
+  kitId,
+  data,
+  openConfirm,
+  closeDialog,
+}) => {
   const { mutate } = useReturnKit();
 
   const handleSubmit = () => {
@@ -30,10 +34,12 @@ export const ConfirmationModal = ({ kitId, data, openConfirm, closeDialog }) => 
       aria-labelledby='scroll-dialog-title'
       aria-describedby='scroll-dialog-description'
     >
-      <DialogTitle id='scroll-dialog-title'>{'Confirm Loan Return'}</DialogTitle>
+      <DialogTitle id='scroll-dialog-title'>
+        {'Confirm Loan Return'}
+      </DialogTitle>
       <DialogContent dividers>
         <DataGrid
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
           rows={formatKitData(data)}
           columns={columns}
           disableColumnFilter
@@ -76,8 +82,8 @@ const columns = [
  * Formats the given kitData to be shown on the confirmation table. This is similar to
  * the data shown previously with the addition of displaying the quantity used for each
  * item.
- * @param data 
- * @returns 
+ * @param {*} data
+ * @return {*}
  */
 const formatKitData = (data) => {
   if (!data) return [];
@@ -100,14 +106,14 @@ const formatKitData = (data) => {
  *    kit_id: number,
  *    content: array of kit items
  * }
- * Each item has the following format: 
+ * Each item has the following format:
  * {
  *    item_expiry_id: number,
  *    quantity: number
  * }
- * @param kitId 
- * @param kitData 
- * @returns 
+ * @param {*} kitId
+ * @param {*} kitData
+ * @return {*}
  */
 const mapSubmissionKitData = (kitId, kitData) => {
   const kitContent = kitData.map((kitItem) => ({
@@ -117,6 +123,6 @@ const mapSubmissionKitData = (kitId, kitData) => {
 
   return {
     kit_id: kitId,
-    content: kitContent
+    content: kitContent,
   };
 };

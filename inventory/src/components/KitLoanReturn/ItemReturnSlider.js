@@ -1,10 +1,9 @@
+import { Grid, Slider, TextField } from '@mui/material';
+import { useTheme, useMediaQuery } from '@mui/material';
 import React from 'react';
 
-import { Box, Grid, Slider, TextField } from '@mui/material';
-import { useTheme, useMediaQuery } from '@mui/material';
-
-export const ItemReturnSlider = ({ original_quantity, update }) => {
-  const [value, setValue] = React.useState(original_quantity);
+export const ItemReturnSlider = ({ originalQuantity, update }) => {
+  const [value, setValue] = React.useState(originalQuantity);
 
   const theme = useTheme();
   const shouldShowSlider = useMediaQuery(theme.breakpoints.up('md'));
@@ -25,13 +24,13 @@ export const ItemReturnSlider = ({ original_quantity, update }) => {
     if (value < 0) {
       setValue(0);
       update(0);
-    } else if (value > original_quantity) {
-      setValue(original_quantity);
-      update(original_quantity);
+    } else if (value > originalQuantity) {
+      setValue(originalQuantity);
+      update(originalQuantity);
     }
   };
 
-  /** Limits number input to length of 2 */
+  // Limits number input to length of 2
   const handleLimitInputLength = (e) => {
     e.target.value = Math.max(0, parseInt(e.target.value))
       .toString()
@@ -46,7 +45,7 @@ export const ItemReturnSlider = ({ original_quantity, update }) => {
             marks
             min={0}
             step={1}
-            max={original_quantity}
+            max={originalQuantity}
             valueLabelDisplay='auto'
             value={typeof value === 'number' ? value : 0}
             onChange={handleSliderChange}
@@ -65,7 +64,7 @@ export const ItemReturnSlider = ({ original_quantity, update }) => {
           inputProps={{
             step: 1,
             min: 0,
-            max: original_quantity,
+            max: originalQuantity,
             type: 'number',
             'aria-labelledby': 'input-slider',
           }}
