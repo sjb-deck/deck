@@ -100,13 +100,17 @@ def add_kit(request):
         blueprint = Blueprint.objects.get(id=blueprint_id, archived=False)
         compressed_content = compress_content(content)
 
-        if not content_matches(compressed_content, blueprint.complete_content):
+        content_match, not_overloaded = check_valid_kit_content(
+            compressed_content, blueprint.complete_content
+        )
+
+        if not content_match:
             return Response(
                 {"message": "Content does not match blueprint!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if add_more_than_expected(compressed_content, blueprint.complete_content):
+        if not not_overloaded:
             return Response(
                 {"message": "Added content is more than expected."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -455,17 +459,17 @@ def restock_kit(request):
         projected_content = merge_contents(kit.content, restock_expiries)
         compressed_projected_content = compress_content(projected_content)
 
-        if not content_matches(
+        content_match, not_overloaded = check_valid_kit_content(
             compressed_projected_content, blueprint.complete_content
-        ):
+        )
+
+        if not content_match:
             return Response(
                 {"message": "Content does not match blueprint!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if add_more_than_expected(
-            compressed_projected_content, blueprint.complete_content
-        ):
+        if not not_overloaded:
             return Response(
                 {"message": "Added content is more than expected."},
                 status=status.HTTP_400_BAD_REQUEST,

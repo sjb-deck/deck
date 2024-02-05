@@ -146,19 +146,26 @@ def kit_is_complete(kit_id):
     return True
 
 
-# @description: This function is a subset of kit_is_complete. It only checks if each expected item in the blueprint is
-#               in the kit.
-# @param: compressed_content - the compressed content of the kit
-#         blueprint_content - the expected content of the blueprint
-# @return: True - if the kit content matches, regardless of quantity
-#          False - if the kit content does not match
-def content_matches(compressed_content, blueprint_content):
+# @description: This function checks if the content of the kit is at least valid; Does not need to be complete, but must
+#               not be overloaded.
+# @param: content - the content of the kit
+#         blueprint_content - the original content of the kit
+# @return: True, True - if the kit content is valid and not overloaded
+#          True, False - if the kit content is valid but overloaded
+#          False, None - if the kit content is not valid, content does not match blueprint
+def check_valid_kit_content(compressed_content, blueprint_content):
     blueprint_content = sorted(blueprint_content, key=lambda x: x["item_id"])
-    for item, blueprint_item in zip(compressed_content, blueprint_content):
-        if item["item_id"] != blueprint_item["item_id"]:
-            return False
+    blueprint_content_dict = {item["item_id"]: item for item in blueprint_content}
 
-    return True
+    for item in compressed_content:
+        if item["item_id"] not in blueprint_content_dict:
+            return False, None
+
+    for item in compressed_content:
+        if item["quantity"] > blueprint_content_dict[item["item_id"]]["quantity"]:
+            return True, False
+
+    return True, True
 
 
 # @description: This function checks if the returning content matches the original content of the kit, which does not
@@ -173,14 +180,6 @@ def order_return_matches(content, original_content):
             return False, False
 
     return True, None
-
-
-def add_more_than_expected(compressed_content, blueprint_content):
-    for item, blueprint_item in zip(compressed_content, blueprint_content):
-        if item["quantity"] > blueprint_item["quantity"]:
-            return True
-
-    return False
 
 
 def build_empty_compressed_kit(blueprint_id):
