@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { NavBar, Footer, LoadingSpinner } from '../components';
 import {
@@ -12,10 +12,10 @@ import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
 
 export const KitLoanReturn = () => {
   const { data: userData } = useUser();
+
   const params = new URLSearchParams(window.location.search);
-  const { data: kitData } = useKit({
-    kitId: params.get('kitId'),
-  });
+  const kitId = params.get('kitId');
+  const { data: kitData } = useKit({ kitId: kitId });
 
   console.log(userData, kitData);
   return (
@@ -27,7 +27,7 @@ export const KitLoanReturn = () => {
         {/* Account for nav bar height */}
         <Box sx={{ height: '64px' }} />
         {kitData ? (
-          <KitLoanReturnContent kitData={kitData} />
+          <KitLoanReturnContent kitId={kitId} kitData={kitData} />
         ) : (
           <LoadingSpinner />
         )}
@@ -37,8 +37,8 @@ export const KitLoanReturn = () => {
   );
 };
 
-const KitLoanReturnContent = ({ kitData }) => {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+const KitLoanReturnContent = ({ kitId, kitData }) => {
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const theme = useTheme();
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
@@ -76,7 +76,7 @@ const KitLoanReturnContent = ({ kitData }) => {
       />
       <KitItemReturnSection
         kitData={shownKitData}
-        updateKitData={update(updateShownKitData)}
+        updateKitData={update(updateShownKitData, shownKitData)}
       />
       <Fab
         variant='extended'
@@ -88,6 +88,7 @@ const KitLoanReturnContent = ({ kitData }) => {
         Submit
       </Fab>
       <ConfirmationModal
+        kitId={kitId}
         data={shownKitData}
         openConfirm={openConfirm}
         closeDialog={() => setOpenConfirm(false)}
@@ -149,10 +150,12 @@ const getShownQuantity = (quantity, blueprint_quantity) => {
 };
 
 /**
- * For each kit item, find matching blueprint ids. Return undefined if
- * recipe data not available or no blueprint found for an item
+ * For each kit item, find matching blueprint ids and retreive the required quantity for the item. 
+ * @param kitItemContent An item from kit data
+ * @param kitRecipeData Data related to a kit recipe which contains the blueprint information
+ * @returns undefined if recipe data not available or no blueprint found for an item
  */
-const getBlueprintQuantity = ({ kitItemContent, kitRecipeData }) => {
+const getBlueprintQuantity = (kitItemContent, kitRecipeData) => {
   // Follow find function undefined returned when not found
   if (!kitRecipeData) {
     return undefined;
@@ -166,7 +169,16 @@ const getBlueprintQuantity = ({ kitItemContent, kitRecipeData }) => {
   return blueprint_quantity?.required_quantity;
 };
 
-const update = (updateFn) => (kitData, index) => (new_quantity) => {
+/**
+ * High-level function to be used by children components to update 
+ * shownKitData object within kitLoanReturn page
+ * @param updateFn React useState callback function to update shownKitData variable
+ * @param kitData Stores all the shown kit contents 
+ * @param index Index of kit content in the array of kit items to be changed
+ * @param new_quantity Data from slider/text field
+ * @returns 
+ */
+const update = (updateFn, kitData) => (index) => (new_quantity) => {
   kitData[index].new_quantity = new_quantity;
   updateFn([...kitData]);
 };

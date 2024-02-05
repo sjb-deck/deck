@@ -27,8 +27,8 @@ export const KitItemReturnSection = ({ kitData, updateKitData }) => {
           <TableHead>
             <TableRow>
               <TableCell width='30%'>Item</TableCell>
-              <TableCell width='15%'>Quantity</TableCell>
               <TableCell width='15%'>Expiry Date</TableCell>
+              <TableCell width='15%'>Quantity</TableCell>
               <TableCell width='40%' align='center'>
                 Remaining
               </TableCell>
@@ -48,7 +48,7 @@ export const KitItemReturnSection = ({ kitData, updateKitData }) => {
                 <TableCell>
                   <ItemReturnSlider
                     original_quantity={item.quantity}
-                    update={updateKitData(kitData, index)}
+                    update={updateKitData(index)}
                   />
                 </TableCell>
               </TableRow>
