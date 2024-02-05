@@ -15,8 +15,10 @@ module.exports = {
     loanReturn: ['./inventory/src/pages/render/loanReturn.js'],
     orderReceipt: ['./inventory/src/pages/render/orderReceipt.js'],
     itemList: ['./inventory/src/pages/render/itemList.js'],
+    kitIndex: ['./inventory/src/pages/render/kitIndex.js'],
     kitInfo: ['./inventory/src/pages/render/kitInfo.js'],
     kitLoanReturn: ['./inventory/src/pages/render/kitLoanReturn.js'],
+    createBlueprint: ['./inventory/src/pages/render/createBlueprint.js'],
     kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
   },
   output: {

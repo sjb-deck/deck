@@ -40,7 +40,9 @@
       width: 120px;
       justify-content: center;
       background: white;
-      box-shadow: 0 6px 12px rgb(0 0 0 / 23%), 0 10px 40px rgb(0 0 0 / 19%);
+      box-shadow:
+        0 6px 12px rgb(0 0 0 / 23%),
+        0 10px 40px rgb(0 0 0 / 19%);
       padding: 5px 15px;
     "
     id="appdeck"
@@ -77,7 +79,9 @@
       width: 40vw;
       justify-content: center;
       background: white;
-      box-shadow: 0 6px 12px rgb(0 0 0 / 23%), 0 10px 40px rgb(0 0 0 / 19%);
+      box-shadow:
+        0 6px 12px rgb(0 0 0 / 23%),
+        0 10px 40px rgb(0 0 0 / 19%);
       padding: 5px 15px;
     "
     id="appdeck_mobile"
@@ -159,7 +163,7 @@
       Loans
     </button>
   </a>
-  <a href="#">
+  <a href="{% url 'kits'%}">
     <!--Remove disabled state when development starts-->
     <button
       type="button"
@@ -172,12 +176,10 @@
         animation: fadeinexpandbutton 1s forwards;
         overflow: hidden;
       "
-      disabled
     >
       Kits
     </button>
   </a>
- 
 </div>
 <script>
   function appdeck() {

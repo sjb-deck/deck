@@ -3,6 +3,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -29,6 +30,7 @@ import {
   URL_LOGOUT,
   URL_PROFILE,
   URL_INV_LOAN_RETURN,
+  URL_INV_VIEW_KITS,
 } from '../../globals';
 import { CartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
@@ -68,7 +70,7 @@ export const navItems = (notiCount, cartCount) => [
 ];
 export const actionItems = [
   {
-    title: 'View Loans',
+    title: 'View loans',
     icon: <KeyboardReturnIcon style={{ marginRight: 5 }} />,
     link: URL_INV_LOAN_RETURN,
   },
@@ -78,14 +80,19 @@ export const actionItems = [
     link: URL_INV_ADD_ITEM,
   },
   {
-    title: 'View orders & loans',
+    title: 'View transactions',
     icon: <LocalMallIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS_LOANS,
   },
   {
-    title: 'View Item List',
+    title: 'View item list',
     icon: <TextSnippet style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ITEM_LIST,
+  },
+  {
+    title: 'View kits',
+    icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_KITS,
   },
 ];
 

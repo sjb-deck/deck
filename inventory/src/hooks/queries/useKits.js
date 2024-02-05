@@ -5,26 +5,21 @@ import { useContext } from 'react';
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
 
-export const useKitRecipe = (blueprintId, options) => {
-  const key = 'kitRecipe';
-  const url = Api[key].replace(':id', blueprintId);
+export const useKits = (options) => {
+  const key = 'kits';
+  const url = Api[key];
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     refetchOnWindowFocus: false,
     onError: (error) => {
-      setAlert({
-        severity: 'error',
-        message: error.message,
-        autoHide: false,
-        additionalInfo: error.response?.data?.message,
-      });
+      console.error(error);
+      setAlert('error', error.message, false);
     },
   };
 
   return useQuery(
-    [key, blueprintId],
+    [key],
     async () => {
-      if (!blueprintId) return null;
       const response = await axios.get(url);
       return response.data;
     },
