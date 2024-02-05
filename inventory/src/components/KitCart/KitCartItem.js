@@ -1,18 +1,9 @@
-import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import {
-  Avatar,
-  Button,
-  Chip,
-  Divider,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Chip, Divider, IconButton, Stack, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 
-import { Paper } from '../styled';
 import { KitCartContext } from '../../providers';
+import { Paper } from '../styled';
 
 export const KitCartItem = ({ kitCartItem }) => {
   const { removeItemFromKitCart } = useContext(KitCartContext);

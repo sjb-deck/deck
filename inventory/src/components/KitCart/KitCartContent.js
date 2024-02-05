@@ -1,19 +1,20 @@
-import { useFormik } from 'formik';
 import SendIcon from '@mui/icons-material/Send';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import React, { useContext, useMemo } from 'react';
-import { KitCartItems } from './KitCartItems';
-import { Paper } from '../styled';
+import { useFormik } from 'formik';
+import React, { useContext } from 'react';
+
+import { useSubmitKitOrder } from '../../hooks/mutations';
+import { KitCartContext } from '../../providers';
 import { getDjangoFriendlyDate } from '../../utils';
+import { EmptyMessage } from '../EmptyMessage';
+import { Paper } from '../styled';
 
 import '../../globals/styles/inventoryBase.scss';
-import { EmptyMessage } from '../EmptyMessage';
 
-import { KitCartContext } from '../../providers';
-import { useSubmitKitOrder } from '../../hooks/mutations';
+import { KitCartItems } from './KitCartItems';
 import { validationSchema } from './schema';
 export const KitCartContent = () => {
   const { kitCartItems, clearCart } = useContext(KitCartContext);
