@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { AlertContext } from '../../providers';
+import React from 'react';
 
 import {
   Button,
@@ -10,12 +9,15 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
+import { useReturnKit } from '../../hooks/mutations/useReturnKit';
+
 export const ConfirmationModal = ({ kitId, data, openConfirm, closeDialog }) => {
-  const { setAlert } = useContext(AlertContext);
+  const { mutate } = useReturnKit();
 
   const handleSubmit = () => {
     const submissionData = mapSubmissionKitData(kitId, data);
     console.log(submissionData);
+    mutate(submissionData);
     closeDialog();
   };
 
@@ -70,6 +72,13 @@ const columns = [
   },
 ];
 
+/**
+ * Formats the given kitData to be shown on the confirmation table. This is similar to
+ * the data shown previously with the addition of displaying the quantity used for each
+ * item.
+ * @param data 
+ * @returns 
+ */
 const formatKitData = (data) => {
   if (!data) return [];
 
@@ -85,6 +94,21 @@ const formatKitData = (data) => {
   });
 };
 
+/**
+ * Maps the given kitData for submission to return_kit_order API endpoint. Format:
+ * {
+ *    kit_id: number,
+ *    content: array of kit items
+ * }
+ * Each item has the following format: 
+ * {
+ *    item_expiry_id: number,
+ *    quantity: number
+ * }
+ * @param kitId 
+ * @param kitData 
+ * @returns 
+ */
 const mapSubmissionKitData = (kitId, kitData) => {
   const kitContent = kitData.map((kitItem) => ({
     quantity: kitItem.new_quantity,
