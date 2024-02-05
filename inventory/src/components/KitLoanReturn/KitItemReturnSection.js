@@ -47,7 +47,7 @@ export const KitItemReturnSection = ({ kitData, updateKitData }) => {
                 <TableCell>{item.shown_quantity}</TableCell>
                 <TableCell>
                   <ItemReturnSlider
-                    original_quantity={item.quantity}
+                    originalQuantity={item.quantity}
                     update={updateKitData(index)}
                   />
                 </TableCell>
