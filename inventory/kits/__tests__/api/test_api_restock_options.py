@@ -87,6 +87,11 @@ class TestApiRestockOptionsViews(TestCase):
             quantity=50, archived=False
         )
 
+    def loan_kit(self):
+        incomplete_kit = Kit.objects.get(id=self.incomplete_kit_id)
+        incomplete_kit.status = "ON_LOAN"
+        incomplete_kit.save()
+
     def clear_relevant_models(self):
         History.objects.all().delete()
         Kit.objects.all().delete()
@@ -157,6 +162,18 @@ class TestApiRestockOptionsViews(TestCase):
         self.assertEqual(
             len(response.data[1]["item_options"]), 0
         )  # No item options for archived items
+
+    def test_restock_kit_on_loan(self):
+        self.loan_kit()
+        response = self.client.get(
+            reverse("restock_options", args=[self.incomplete_kit_id]),
+            None,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["message"], "Kit is not ready and cannot be restocked."
+        )
 
     def tearDown(self):
         self.clear_relevant_models()
