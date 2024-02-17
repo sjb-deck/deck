@@ -19,6 +19,7 @@ export const Api = {
   revertHistory: `${INV_API_BASE_URL}/revert_kit/:id`,
   kitRecipe: `${INV_API_BASE_URL}/get_new_kit_recipe/:id`,
   kits: `${INV_API_BASE_URL}/kits`,
+  createKit: `${INV_API_BASE_URL}/add_kit`,
   addBlueprint: `${INV_API_BASE_URL}/add_blueprint`,
   kitRestockOptions: `${INV_API_BASE_URL}/restock_options/:id`,
   kitRestock: `${INV_API_BASE_URL}/restock_kit`,
