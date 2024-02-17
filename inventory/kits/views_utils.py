@@ -8,6 +8,11 @@ from ..items.models import *
 from ..items.views_utils import create_order
 
 
+# @description: This function compresses a json containing item_expiry_id and quantities into a json containing item_id
+#               and quantities. The resulting quantity is the sum of all quantities of the same item_id. The function
+#               also sorts the json by item_id for zip comparison later.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: compressed_content - a json containing item_id and quantities
 def compress_content(content):
     content_dict = {}
     for item_expiry in content:
@@ -34,6 +39,11 @@ def compress_content(content):
     return compressed_content
 
 
+# @description: This function checks if items in the content provided are withdraw-able (enough quantity in stock),
+#               then proceeds to withdraw the items.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: True, None - if all items are withdraw-able
+#          False, item_name - if any item is not withdraw-able
 def attempt_items_withdrawal(content):
     for item in content:
         item_id = item.get("item_expiry_id")
@@ -51,6 +61,11 @@ def attempt_items_withdrawal(content):
     return True, None
 
 
+# @description: This function checks if items in the content provided are deposit-able (quantity is not negative),
+#               then proceeds to deposit the items.
+# @param: content - a json containing item_expiry_id and quantities
+# @return: True - if all items are deposit-able
+#          False - if any item is not deposit-able
 def attempt_items_deposit(content):
     for item in content:
         item_id = item.get("item_expiry_id")
@@ -78,7 +93,13 @@ def attempt_items_deposit(content):
     return True
 
 
-# Builds payload to call create_order which returns a order_id
+# @description: This function builds the payload to call create_order which returns an order_id
+# @param: content - a json containing item_expiry_id and quantities
+#         request - the request object
+#         kit - the kit object
+#         is_withdraw - a boolean indicating if the order to restock or to retire the kit
+#         is_create_kit - a boolean indicating if the order is to create a kit, default is False
+# @return: order_id - the id of the order created
 def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     order_items = [
         {"item_expiry_id": item["item_expiry_id"], "ordered_quantity": item["quantity"]}
@@ -100,13 +121,24 @@ def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     return order.id
 
 
+# @description: This function checks if the kit is complete, but does not check for overloads, since handling overloads
+#               is not part of the responsibility of this apis using this function.
+# @param: kit_id - the id of the kit
+# @return: True - if the kit is complete
+#          False - if the kit is not complete
 def kit_is_complete(kit_id):
     kit = Kit.objects.get(id=kit_id)
-    kit_content = compress_content(kit.content)
-    blueprint_content = kit.blueprint.complete_content
+    kit_content = compress_content(kit.content)  # sorted by item_id
+    blueprint_content = sorted(
+        kit.blueprint.complete_content, key=lambda x: x["item_id"]
+    )
 
+    if len(kit_content) < len(blueprint_content):
+        return False
+
+    # assume now there are equal number of items in kit and blueprint and they are sorted
     for kit_item, blueprint_item in zip(kit_content, blueprint_content):
-        if kit_item["item_id"] != blueprint_item["item_id"]:
+        if kit_item["quantity"] > blueprint_item["quantity"]:
             return False
         if kit_item["quantity"] < blueprint_item["quantity"]:
             return False
@@ -114,14 +146,32 @@ def kit_is_complete(kit_id):
     return True
 
 
-def content_matches(compressed_content, blueprint_content):
-    for item, blueprint_item in zip(compressed_content, blueprint_content):
-        if item["item_id"] != blueprint_item["item_id"]:
-            return False
+# @description: This function checks if the content of the kit is at least valid; Does not need to be complete, but must
+#               not be overloaded.
+# @param: content - the content of the kit
+#         blueprint_content - the original content of the kit
+# @return: True, True - if the kit content is valid and not overloaded
+#          True, False - if the kit content is valid but overloaded
+#          False, None - if the kit content is not valid, content does not match blueprint
+def check_valid_kit_content(compressed_content, blueprint_content):
+    blueprint_content = sorted(blueprint_content, key=lambda x: x["item_id"])
+    blueprint_content_dict = {item["item_id"]: item for item in blueprint_content}
 
-    return True
+    for item in compressed_content:
+        if item["item_id"] not in blueprint_content_dict:
+            return False, None
+
+    for item in compressed_content:
+        if item["quantity"] > blueprint_content_dict[item["item_id"]]["quantity"]:
+            return True, False
+
+    return True, True
 
 
+# @description: This function checks if the returning content matches the original content of the kit, which does not
+#               need to be necessarily complete if force loan was initiated.
+# @param: content - the returning content of the kit
+#         original_content - the original content of the kit
 def order_return_matches(content, original_content):
     for item, original_item in zip(content, original_content):
         if item["item_expiry_id"] != original_item["item_expiry_id"]:
@@ -130,14 +180,6 @@ def order_return_matches(content, original_content):
             return False, False
 
     return True, None
-
-
-def add_more_than_expected(compressed_content, blueprint_content):
-    for item, blueprint_item in zip(compressed_content, blueprint_content):
-        if item["quantity"] > blueprint_item["quantity"]:
-            return True
-
-    return False
 
 
 def build_empty_compressed_kit(blueprint_id):
@@ -150,6 +192,10 @@ def build_empty_compressed_kit(blueprint_id):
     return content
 
 
+# @description: This function gets options to stock up a kit from its current state, which might be empty if creating a
+#               new kit.
+# @param: blueprint_id - the id of the blueprint of the kit
+#         given_content - the current content of the kit, if any
 def get_restock_options(blueprint_id, given_content):
     current_content = (
         compress_content(given_content)
@@ -159,62 +205,72 @@ def get_restock_options(blueprint_id, given_content):
 
     blueprint_content = Blueprint.objects.get(id=blueprint_id).complete_content
 
+    # Check that there is no unexpected item in current_content that is not in blueprint_content
+    for item in current_content:
+        if item["item_id"] not in [item["item_id"] for item in blueprint_content]:
+            raise Exception(
+                "Unexpected item in current content that is not defined in kit blueprint!"
+            )
+
     restock_options = []
+    current_content_dict = {item["item_id"]: item for item in current_content}
 
-    for current_item, blueprint_item in zip(current_content, blueprint_content):
-        if current_item["item_id"] != blueprint_item["item_id"]:
-            raise Exception("Blueprint content does not match current content.")
+    for item in blueprint_content:
+        main_item = Item.objects.get(id=item["item_id"])
+        curr_quantity = (
+            current_content_dict[item["item_id"]]["quantity"]
+            if item["item_id"] in current_content_dict
+            else 0
+        )
+        missing_quantity = None
 
-        if current_item["quantity"] < blueprint_item["quantity"]:
-            main_item = Item.objects.get(id=current_item["item_id"])
-            missing_quantity = blueprint_item["quantity"] - current_item["quantity"]
-
-            options = (
-                main_item.expiry_dates.all()
-                .filter(archived=False)
-                .order_by("expiry_date")
+        if item["item_id"] not in current_content_dict:
+            missing_quantity = item["quantity"]
+        elif curr_quantity < item["quantity"]:
+            missing_quantity = item["quantity"] - curr_quantity
+        elif current_content_dict[item["item_id"]]["quantity"] > item["quantity"]:
+            raise Exception(
+                "Current content has more than expected quantity of an item!"
             )
-            item_options = []
+        else:  # current_content_dict[item["item_id"]]["quantity"] == item["quantity"]
+            continue
 
-            for option in options:
-                item_options.append(
-                    {
-                        "item_expiry_id": option.id,
-                        "expiry_date": option.expiry_date,
-                        "quantity": option.quantity,
-                    }
-                )
+        options = (
+            main_item.expiry_dates.all().filter(archived=False).order_by("expiry_date")
+        )
+        item_options = []
 
-            restock_options.append(
+        for option in options:
+            item_options.append(
                 {
-                    "item_id": main_item.id,
-                    "item_name": main_item.name,
-                    "current_quantity": current_item["quantity"],
-                    "required_quantity": blueprint_item["quantity"],
-                    "missing_quantity": missing_quantity,
-                    "item_options": item_options,
-                    "sufficient_stock": False
-                    if main_item.total_quantity < missing_quantity
-                    else True,
+                    "item_expiry_id": option.id,
+                    "expiry_date": option.expiry_date,
+                    "quantity": option.quantity,
                 }
             )
-        elif current_item["quantity"] > blueprint_item["quantity"]:
-            main_item = Item.objects.get(id=current_item["item_id"])
-            missing_quantity = blueprint_item["quantity"] - current_item["quantity"]
-            restock_options.append(
-                {
-                    "item_id": main_item.id,
-                    "item_name": main_item.name,
-                    "current_quantity": current_item["quantity"],
-                    "required_quantity": blueprint_item["quantity"],
-                    "missing_quantity": missing_quantity,  # Negative value
-                    "sufficient_stock": None,
-                }
-            )
+
+        restock_options.append(
+            {
+                "item_id": main_item.id,
+                "item_name": main_item.name,
+                "current_quantity": curr_quantity,
+                "required_quantity": item["quantity"],
+                "missing_quantity": missing_quantity,
+                "item_options": item_options,
+                "sufficient_stock": False
+                if main_item.total_quantity < missing_quantity
+                else True,
+            }
+        )
 
     return restock_options
 
 
+# @description: This function merges the content of a kit and the restocking content, and returns the merged content.
+# @param: kit_content - the current content of the kit
+#         restock_content - the restocking content of the kit
+# @return: merged_content - the merged content of the kit, which is the predicted new kit that will then be checked for
+#                           validity separately.
 def merge_contents(kit_content, restock_content):
     merged_content = {}
 
@@ -242,6 +298,11 @@ def merge_contents(kit_content, restock_content):
     ]
 
 
+# @description: This function checks for what items are used in the kit following a return of the kit, by comparing the
+#               current content with the previous snapshot.
+# @param: current_content - the current content of the kit
+#         previous_content - the previous snapshot content of the kit
+# @return: stock_change - a list of items that are used in the kit, with their quantity used
 def get_stock_change(current_content, previous_content):
     curr = {}
     for item in current_content:
