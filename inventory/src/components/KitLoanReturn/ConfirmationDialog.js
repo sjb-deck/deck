@@ -48,6 +48,7 @@ export const ConfirmationModal = ({
           disableDensitySelector
           hideFooterPagination
           hideFooterSelectedRowCount
+          disableVirtualization // to allow jest tests to view all columns
         />
       </DialogContent>
       <DialogActions>
@@ -94,8 +95,8 @@ const formatKitData = (data) => {
       name: kitContent.name,
       expiry_date: kitContent.expiry_date,
       quantity: kitContent.shown_quantity,
-      remaining: kitContent.new_quantity,
-      used: kitContent.quantity - kitContent.new_quantity,
+      remaining: kitContent.newQuantity,
+      used: Number(kitContent.quantity) - Number(kitContent.newQuantity),
     };
   });
 };
