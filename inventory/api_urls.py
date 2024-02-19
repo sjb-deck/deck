@@ -38,7 +38,7 @@ item_api_urls = [
         kit_views.revert_kit,
         name="revert_kit",
     ),
-    path("check_for_alerts", item_views.check_for_alerts, name = "check_for_alerts"),
+    path("check_for_alerts", item_views.check_for_alerts, name="check_for_alerts"),
 ]
 
 urlpatterns = [
