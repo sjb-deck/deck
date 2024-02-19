@@ -48,6 +48,7 @@ export const KitCartItem = ({ kitCartItem }) => {
           </Stack>
 
           <IconButton
+            data-testid={`${kitCartItem.id}-delete-btn`}
             aria-label='delete'
             size='medium'
             onClick={handleDeleteCartItem}

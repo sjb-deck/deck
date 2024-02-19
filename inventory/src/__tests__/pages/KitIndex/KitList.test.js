@@ -55,4 +55,25 @@ describe('Kit List', () => {
       expect(info).toBeInTheDocument();
     }
   });
+
+  it('should have the correct action buttons', async () => {
+    act(() => {
+      render(<KitIndex />);
+    });
+    await waitFor(() => {
+      expect(screen.getAllByText('Ready')[0]).toBeInTheDocument();
+    });
+    const accordion = screen.getAllByTestId('details-30')[0];
+    const kit = screen.getAllByText('30')[0];
+    fireEvent.click(kit);
+
+    expect(within(accordion).getAllByText('Return')[0]).toBeInTheDocument();
+
+    const accordion2 = screen.getAllByTestId('details-31')[0];
+    const kit2 = screen.getAllByText('31')[0];
+    fireEvent.click(kit2);
+
+    expect(within(accordion2).getAllByText('Withdraw')[0]).toBeInTheDocument();
+    expect(within(accordion2).getAllByText('Restock')[0]).toBeInTheDocument();
+  });
 });

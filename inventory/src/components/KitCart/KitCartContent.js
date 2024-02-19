@@ -98,6 +98,7 @@ export const KitCartContent = () => {
         </Paper>
         <KitCartItems />
         <LoadingButton
+          role='submit-button'
           className='dynamic-width'
           variant='contained'
           onClick={formik.handleSubmit}

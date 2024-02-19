@@ -1,7 +1,7 @@
 export const exampleKit = {
   id: 30,
   name: 'Test Kit',
-  status: 'LOANED',
+  status: 'READY',
   content: [
     {
       item_expiry_id: 2,

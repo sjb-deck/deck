@@ -2,7 +2,7 @@ export const mockKitsList = [
   {
     id: 30,
     name: 'Test Kit',
-    status: 'READY',
+    status: 'LOANED',
     content: [
       {
         item_expiry_id: 2,
@@ -97,7 +97,7 @@ export const mockKitsList = [
     ],
     blueprint_name: 'Something',
     blueprint_id: 10,
-    complete: 'complete',
+    complete: 'incomplete',
   },
   {
     id: 32,
