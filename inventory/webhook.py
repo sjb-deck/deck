@@ -24,7 +24,6 @@ def telebot_send_text(text, photo, topic):
         raise ValueError(
             f"Invalid topic: {topic}. Topic must be one of {list(TOPICS.keys())}"
         )
-    
+
     response = requests.get(message)
     return response.json()
-        
