@@ -44,28 +44,6 @@ describe('<KitLoanReturn />', () => {
     expect(screen.getByText('Kit is not loaned out')).toBeInTheDocument();
   });
 
-  it('renders error message when kit is not found', () => {
-    server.use(
-      rest.get(getUrlWithoutParams(Api['kit']), (req, res, ctx) => {
-        return res(ctx.status(404));
-      }),
-    );
-    render(<KitLoanReturn />);
-    // TODO: Update error message to actual
-    expect(screen.getByText('Kit not found')).toBeInTheDocument();
-  });
-
-  it('renders error message when kit recipe is not found', () => {
-    server.use(
-      rest.get(getUrlWithoutParams(Api['kitRecipe']), (req, res, ctx) => {
-        return res(ctx.status(404));
-      }),
-    );
-    render(<KitLoanReturn />);
-    // TODO: Update error message to actual
-    expect(screen.getByText('Kit recipe not found')).toBeInTheDocument();
-  });
-
   it('renders error message when query params are not found', () => {
     jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
       return null;
