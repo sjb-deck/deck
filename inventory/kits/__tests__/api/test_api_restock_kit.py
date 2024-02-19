@@ -100,6 +100,11 @@ class TestApiRestockKitViews(TestCase):
             quantity=50, archived=False
         )
 
+    def loan_kit(self):
+        incomplete_kit = Kit.objects.get(id=self.incomplete_kit_id)
+        incomplete_kit.status = "ON_LOAN"
+        incomplete_kit.save()
+
     def clear_relevant_models(self):
         History.objects.all().delete()
         Kit.objects.all().delete()
@@ -259,14 +264,27 @@ class TestApiRestockKitViews(TestCase):
         self.request["content"] = content
 
     def test_restock_kit_missing_content_fields(self):
-        content = self.request["content"]
+        original_quantities = [
+            self.request["content"][0]["quantity"],
+            self.request["content"][1]["quantity"],
+            self.request["content"][2]["quantity"],
+        ]
+        original_item_expiry_ids = [
+            self.request["content"][0]["item_expiry_id"],
+            self.request["content"][1]["item_expiry_id"],
+            self.request["content"][2]["item_expiry_id"],
+        ]
+
         self.request["content"][0].pop("quantity")
         self.request["content"][1].pop("quantity")
         self.request["content"][2].pop("quantity")
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "'quantity'")
-        self.request["content"] = content
+
+        self.request["content"][0]["quantity"] = original_quantities[0]
+        self.request["content"][1]["quantity"] = original_quantities[1]
+        self.request["content"][2]["quantity"] = original_quantities[2]
 
         self.request["content"][0].pop("item_expiry_id")
         self.request["content"][1].pop("item_expiry_id")
@@ -274,7 +292,10 @@ class TestApiRestockKitViews(TestCase):
         response = self.client.post(self.url, self.request, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "'item_expiry_id'")
-        self.request["content"] = content
+
+        self.request["content"][0]["item_expiry_id"] = original_item_expiry_ids[0]
+        self.request["content"][1]["item_expiry_id"] = original_item_expiry_ids[1]
+        self.request["content"][2]["item_expiry_id"] = original_item_expiry_ids[2]
 
     def test_restock_kit_missing_fields(self):
         self.request.pop("kit_id")
@@ -288,6 +309,34 @@ class TestApiRestockKitViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["message"], "'NoneType' object is not iterable")
         self.request["content"] = content
+
+    def restock_kit_on_loan(self):
+        self.loan_kit()
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["message"], "Kit is not ready and cannot be restocked."
+        )
+
+    def test_restock_with_zero_quantity(self):
+        quantity = self.request["content"][0]["quantity"]
+        self.request["content"][0]["quantity"] = 0
+        response = self.client.post(self.url, self.request, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["message"], "Quantity cannot be zero.")
+        self.request["content"][0]["quantity"] = quantity
+
+    def test_restock_while_on_loan(self):
+        self.loan_kit()
+        response = self.client.get(
+            reverse("restock_options", args=[self.incomplete_kit_id]),
+            None,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["message"], "Kit is not ready and cannot be restocked."
+        )
 
     def tearDown(self):
         self.clear_relevant_models()

@@ -45,12 +45,21 @@ class KitSerializer(serializers.ModelSerializer):
     def get_complete(obj):
         if obj.content is None:
             return "incomplete"
-        kit_content = compress_content(obj.content)
-        blueprint_content = obj.blueprint.complete_content
+        kit_content = compress_content(obj.content)  # sorted by item_id
+        blueprint_content = sorted(
+            obj.blueprint.complete_content, key=lambda x: x["item_id"]
+        )
 
+        if len(kit_content) > len(blueprint_content):
+            return "overloaded"
+
+        if len(kit_content) < len(blueprint_content):
+            return "incomplete"
+
+        # assume now there are equal number of items in kit and blueprint and they are sorted
         for kit_item, blueprint_item in zip(kit_content, blueprint_content):
             if kit_item["item_id"] != blueprint_item["item_id"]:
-                return "item-mismatch"
+                return "item-mismatch"  # should never happen since we sorted by item_id and checked length
             if kit_item["quantity"] > blueprint_item["quantity"]:
                 return "overloaded"
             if kit_item["quantity"] < blueprint_item["quantity"]:
