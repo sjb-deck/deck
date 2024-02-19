@@ -2,7 +2,7 @@ export const mockKitsList = [
   {
     id: 30,
     name: 'Test Kit',
-    status: 'LOANED',
+    status: 'READY',
     content: [
       {
         item_expiry_id: 2,
@@ -97,12 +97,62 @@ export const mockKitsList = [
     ],
     blueprint_name: 'Something',
     blueprint_id: 10,
-    complete: 'incomplete',
+    complete: 'complete',
   },
   {
     id: 32,
     name: 'Something1',
     status: 'SERVICING',
+    content: [
+      {
+        item_expiry_id: 2,
+        quantity: 4,
+        item_expiry: {
+          id: 2,
+          expiry_date: '2023-07-23',
+          quantity: 21,
+          archived: false,
+          item: {
+            id: 2,
+            name: 'test expiry',
+            type: 'General',
+            unit: 'units',
+            imgpic: null,
+            total_quantity: 104,
+            min_quantity: 0,
+            is_opened: false,
+          },
+        },
+      },
+      {
+        item_expiry_id: 45,
+        quantity: 2,
+        item_expiry: {
+          id: 45,
+          expiry_date: '2024-08-19',
+          quantity: 47,
+          archived: false,
+          item: {
+            id: 4,
+            name: 'something new1',
+            type: 'General',
+            unit: '3',
+            imgpic: null,
+            total_quantity: 70,
+            min_quantity: 0,
+            is_opened: false,
+          },
+        },
+      },
+    ],
+    blueprint_name: 'Another',
+    blueprint_id: 9,
+    complete: 'incomplete',
+  },
+  {
+    id: 33,
+    name: 'Something1',
+    status: 'LOANED',
     content: [
       {
         item_expiry_id: 2,
