@@ -43,9 +43,7 @@ describe('Kit List', () => {
 
     expect(accordion).toBeVisible();
     const withdrawButton = within(accordion).getAllByText('Withdraw')[0];
-    await userEvent.click(withdrawButton, {
-      advanceTimers: () => jest.advanceTimersByTime(0),
-    });
+    await userEvent.click(withdrawButton);
 
     expect(withdrawButton).toBeDisabled();
   });
@@ -117,13 +115,21 @@ describe('Kit List', () => {
       expect(screen.getAllByText('Mock Kit')[0]).toBeInTheDocument();
     });
 
+    const details = screen.getAllByText('Mock Kit')[0];
+    const noItems =
+      'The cart is empty, deposit/withdraw items and it will appear here';
+
     const loaneeInput = screen.getByLabelText('Loanee Name');
     await userEvent.type(loaneeInput, 'Hi');
 
-    await userEvent.click(screen.getByRole('submit-button'), {
-      advanceTimers: () => jest.advanceTimersByTime(0),
-    });
+    await userEvent.click(screen.getByRole('submit-button'));
 
-    // submit_kit_order is called but screen isn't updating
+    await waitFor(() => {
+      expect(
+        screen.getAllByText('Successfully withdrew kit(s)!')[0],
+      ).toBeInTheDocument();
+      expect(details).not.toBeInTheDocument();
+      expect(screen.getAllByText(noItems)[0]).toBeInTheDocument();
+    });
   });
 });
