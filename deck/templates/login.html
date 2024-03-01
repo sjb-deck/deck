@@ -1,12 +1,7 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 
-<body>
-  <script>
-    const CSRF_TOKEN = '{{csrf_token}}';
-    const toRedirect = '{{to_redirect}}';
-  </script>
-
-  <div id="root"></div>
+<body style="height: 100vh; width: 100vw;">
+  <div id="root" style="height: 100vh; width: 100vw;"></div>
   <script src="{% static 'webpack/login.js' %}"></script>
 </body>
 

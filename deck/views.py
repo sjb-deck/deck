@@ -29,8 +29,9 @@ def login_view(request):
                 status=401,
             )
     else:
-        to_redirect = request.GET.get("next")
-        return render(request, "login.html", {"to_redirect": to_redirect})
+        response = render(request, "login.html")
+        response.set_cookie(key="next", value=request.GET.get("next"))
+        return response
 
 
 def logout_view(request):

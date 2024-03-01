@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { getCookie } from '../../../inventory/src/utils';
+
 const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,8 +18,8 @@ const App = () => {
       data: {
         username: username,
         password: password,
-        to_redirect: toRedirect,
-        csrfmiddlewaretoken: CSRF_TOKEN,
+        to_redirect: getCookie('next'),
+        csrfmiddlewaretoken: getCookie('csrftoken'),
       },
       success: function (data) {
         window.location.href =
