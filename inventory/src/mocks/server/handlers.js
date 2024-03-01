@@ -75,4 +75,8 @@ export const handlers = [
   rest.get(Api['kitRestockOptions'], (req, res, ctx) => {
     return res(ctx.json(exampleKitRestockOptions));
   }),
+
+  rest.post(Api['submitKitOrder'], (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({}));
+  }),
 ];
