@@ -18,12 +18,11 @@ const App = () => {
       data: {
         username: username,
         password: password,
-        to_redirect: getCookie('next'),
+        next: getCookie('next'),
         csrfmiddlewaretoken: getCookie('csrftoken'),
       },
       success: function (data) {
-        window.location.href =
-          toRedirect == undefined || toRedirect == 'None' ? '/' : toRedirect;
+        window.location.href = data.toRedirect;
       },
       error: function (xhr, status, error) {
         console.log('Login failed:', error);

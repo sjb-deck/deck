@@ -6,6 +6,7 @@ export function getCookie(name) {
       const cookie = jQuery.trim(cookies[i]);
       if (cookie.substring(0, name.length + 1) === name + '=') {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        cookieValue = cookieValue.replace(/"/g, '');
         break;
       }
     }
