@@ -134,8 +134,9 @@ const RestockOption = ({ option, setRestockValue }) => {
               alignSelf: 'center',
               fontSize: '0.875rem',
               fontFamily: 'inherit',
-              fontWeight: 400,
+              fontWeight: 600,
               lineHeight: 1.5,
+              color: 'inherit',
             }}
           >
             / {option.quantity}
