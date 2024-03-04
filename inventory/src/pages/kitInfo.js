@@ -11,6 +11,7 @@ export const KitInfo = () => {
     kitId: params.get('kitId'),
   });
 
+  console.log('Kit INFO: ', userData, kitData);
   return (
     <>
       <NavBar user={userData} />
