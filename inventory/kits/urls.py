@@ -7,6 +7,7 @@ urlpatterns = (
     [
         path("", views.kits, name="kits"),
         path("kit_info", views.kit_info, name="kit_info"),
+        path("return", views.kit_loan_return, name="kit_loan_return"),
         path("kit_restock", views.kit_restock, name="kit_restock"),
         path("create_blueprint", views.create_blueprint, name="create_blueprint"),
         path("cart", views.cart, name="cart"),
