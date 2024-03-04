@@ -1,7 +1,7 @@
 import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 
-import { NavBar, Footer, LoadingSpinner } from '../components';
+import { NavBar, Footer, LoadingSpinner, EmptyMessage } from '../components';
 import {
   KitInfoSection,
   KitItemReturnSection,
@@ -14,21 +14,35 @@ export const KitLoanReturn = () => {
 
   const params = new URLSearchParams(window.location.search);
   const kitId = params.get('kitId');
-  const { data: kitData } = useKit({ kitId: kitId });
+  const { data: kitData, isError, isLoading } = useKit({ kitId: kitId });
 
-  console.log(userData, kitData);
+  if (!kitId) {
+    return (
+      <>
+        <NavBar user={userData} />
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+          className='nav-margin-compensate'
+        >
+          <EmptyMessage message='No Kit Id is passed!' />
+        </Box>
+      </>
+    );
+  }
+
   return (
     <>
       <NavBar user={userData} />
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+        className='nav-margin-compensate'
       >
-        {/* Account for nav bar height */}
-        <Box sx={{ height: '64px' }} />
-        {kitData ? (
+        {isLoading && <LoadingSpinner />}
+        {isError && <EmptyMessage message='Kit not found' />}
+        {!isLoading && !isError && kitData && kitData.status == 'LOANED' ? (
           <KitLoanReturnContent kitId={kitId} kitData={kitData} />
         ) : (
-          <LoadingSpinner />
+          <EmptyMessage message='Kit is not loaned out' />
         )}
       </Box>
       <Footer />
@@ -44,7 +58,6 @@ const KitLoanReturnContent = ({ kitId, kitData }) => {
 
   const initialShownData = populateShownData(kitData, kitRecipeData);
   const [shownKitData, updateShownKitData] = React.useState(initialShownData);
-  console.log(shownKitData);
 
   return (
     <Box

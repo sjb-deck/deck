@@ -40,7 +40,6 @@ describe('<KitLoanReturn />', () => {
       }),
     );
     render(<KitLoanReturn />);
-    // TODO: Update error message to actual
     expect(screen.getByText('Kit is not loaned out')).toBeInTheDocument();
   });
 
@@ -49,7 +48,6 @@ describe('<KitLoanReturn />', () => {
       return null;
     });
     render(<KitLoanReturn />);
-    // TODO: Update error message to actual
-    expect(screen.getByText('Kit not found')).toBeInTheDocument();
+    expect(screen.getByText('No Kit Id is passed!')).toBeInTheDocument();
   });
 });

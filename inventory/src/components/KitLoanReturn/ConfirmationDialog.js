@@ -20,7 +20,6 @@ export const ConfirmationModal = ({
 
   const handleSubmit = () => {
     const submissionData = mapSubmissionKitData(kitId, data);
-    console.log(submissionData);
     mutate(submissionData);
     closeDialog();
   };

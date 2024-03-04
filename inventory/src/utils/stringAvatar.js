@@ -18,6 +18,10 @@ function stringToColor(string) {
   return color;
 }
 export function stringAvatar(name) {
+  const words = name.split(' ');
+  const initials =
+    words.length > 1 ? `${words[0][0]}${words[1][0]}` : words[0][0];
+
   return {
     sx: {
       bgcolor: stringToColor(name),
@@ -25,6 +29,6 @@ export function stringAvatar(name) {
       width: 100,
       marginBottom: 2,
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    children: initials,
   };
 }
