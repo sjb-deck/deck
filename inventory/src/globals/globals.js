@@ -22,6 +22,7 @@ export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
 export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
 export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
+export const LOCAL_STORAGE_KIT_CART_KEY = 'kit_cart';
 
 // API Endpoints
 export const INV_API_BASE_URL = '/inventory/api';

@@ -38,6 +38,10 @@ def kit_loan_return(request):
     return render(request, "kit_loan_return.html")
 
 
+def cart(request):
+    return render(request, "kit_cart.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_kits(request):

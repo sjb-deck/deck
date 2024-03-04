@@ -9,16 +9,35 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
+
+import { AlertContext, KitCartContext } from '../../providers';
 
 const kitStatus = {
-  ON_LOAN: 'On Loan',
+  LOANED: 'On Loan',
   READY: 'Ready',
   SERVICING: 'Servicing',
   RETIRED: 'Retired',
 };
 
 export const KitData = ({ kit, isMobile }) => {
+  const { kitCartItems, addToCart } = useContext(KitCartContext);
+  const isInCart = kitCartItems.some((item) => item.id === kit.id);
+  const { setAlert } = useContext(AlertContext);
+  const withdrawHandler = () => {
+    if (isInCart) return;
+    addToCart({
+      id: kit.id,
+      blueprint_name: kit.blueprint_name,
+      name: kit.name,
+      complete: kit.complete,
+    });
+    setAlert({
+      severity: 'success',
+      message: `${kit.name} added to cart!`,
+      autoHide: true,
+    });
+  };
   return (
     <Accordion
       data-testid={`kit-${kit.id}`}
@@ -78,11 +97,16 @@ export const KitData = ({ kit, isMobile }) => {
           }}
         >
           {kit.status === 'READY' && (
-            <Button color='error' variant='contained'>
+            <Button
+              color='error'
+              variant='contained'
+              disabled={isInCart}
+              onClick={withdrawHandler}
+            >
               Withdraw
             </Button>
           )}
-          {kit.status === 'ON_LOAN' && (
+          {kit.status === 'LOANED' && (
             <Button color='success' variant='contained'>
               Return
             </Button>
