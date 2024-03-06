@@ -6,9 +6,10 @@ import LocalMallIcon from '@mui/icons-material/LocalMall';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import TextSnippet from '@mui/icons-material/TextSnippet';
-import { Typography } from '@mui/material';
+import { Divider } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,24 +19,25 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
-import React from 'react';
+import React, { useContext, useState } from 'react';
 
 import {
   URL_INV_ADD_ITEM,
   URL_INV_CART,
-  URL_INV_INDEX,
-  URL_INV_ITEMS,
   URL_INV_VIEW_ITEM_LIST,
   URL_INV_VIEW_ORDERS_LOANS,
   URL_LOGOUT,
   URL_PROFILE,
   URL_INV_LOAN_RETURN,
   URL_INV_VIEW_KITS,
+  URL_INV_KITS_CART,
+  URL_INV_KITS_ADD_BLUEPRINT,
 } from '../../globals';
-import { CartContext } from '../../providers';
+import { CartContext, KitCartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
 
 import { NavDrawer } from './NavDrawer';
+import { NavIcon } from './NavIcon';
 import { StyledBadge } from './styled';
 import { UserAvatar } from './UserAvatar';
 
@@ -48,7 +50,7 @@ import { UserAvatar } from './UserAvatar';
 
 const drawerWidth = 240;
 
-export const navItems = (notiCount, cartCount) => [
+export const mobileNavItems = (notiCount, itemCartCount, kitCartCount) => [
   {
     title: 'Alerts',
     icon: (
@@ -59,13 +61,46 @@ export const navItems = (notiCount, cartCount) => [
     link: '#',
   },
   {
-    title: 'Cart',
+    title: 'Items Cart',
     icon: (
-      <StyledBadge badgeContent={cartCount} color='error'>
+      <StyledBadge badgeContent={itemCartCount} color='error'>
         <ShoppingCartIcon style={{ marginRight: 5 }} />
       </StyledBadge>
     ),
     link: URL_INV_CART,
+  },
+  {
+    title: 'Kits Cart',
+    icon: (
+      <StyledBadge badgeContent={kitCartCount} color='error'>
+        <ShoppingBasketIcon style={{ marginRight: 5 }} />
+      </StyledBadge>
+    ),
+    link: URL_INV_KITS_CART,
+  },
+];
+export const itemsNavItems = [
+  {
+    title: 'Add new item',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_ADD_ITEM,
+  },
+  {
+    title: 'View item list',
+    icon: <TextSnippet style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_ITEM_LIST,
+  },
+];
+export const kitNavItems = [
+  {
+    title: 'Create Kit Blueprint',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_KITS_ADD_BLUEPRINT,
+  },
+  {
+    title: 'View kits',
+    icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_VIEW_KITS,
   },
 ];
 export const actionItems = [
@@ -75,34 +110,24 @@ export const actionItems = [
     link: URL_INV_LOAN_RETURN,
   },
   {
-    title: 'Add new item',
-    icon: <AddIcon style={{ marginRight: 5 }} />,
-    link: URL_INV_ADD_ITEM,
-  },
-  {
     title: 'View transactions',
     icon: <LocalMallIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS_LOANS,
-  },
-  {
-    title: 'View item list',
-    icon: <TextSnippet style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_ITEM_LIST,
-  },
-  {
-    title: 'View kits',
-    icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
-    link: URL_INV_VIEW_KITS,
   },
 ];
 
 export const NavBar = ({ user }) => {
   const theme = useTheme();
-  const { cartItems } = React.useContext(CartContext);
-  const colorMode = React.useContext(ColorModeContext);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [actionMenu, setActionMenu] = React.useState(null);
+  const currentUrl = window.location.pathname.split('/').filter((x) => x);
+  const isItemsPage = currentUrl[1] == 'items';
+  const isKitsPage = currentUrl[1] == 'kits';
+  const { cartItems } = useContext(CartContext);
+  const { kitCartItems } = useContext(KitCartContext);
+  const colorMode = useContext(ColorModeContext);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [actionMenu, setActionMenu] = useState(null);
+  const [cartMenu, setCartMenu] = useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -116,35 +141,15 @@ export const NavBar = ({ user }) => {
     setAnchorEl(null);
   };
 
-  const getIconClickUrl = () => {
-    const currentUrl = window.location.pathname;
-    let target = URL_INV_ITEMS;
-    if (currentUrl == URL_INV_ITEMS || currentUrl == URL_INV_LOAN_RETURN) {
-      target = URL_INV_INDEX;
-    }
-    return target;
+  const handleCartSelection = (e) => {
+    setCartMenu(e.currentTarget);
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar component='nav'>
         <Toolbar>
-          <img
-            height={35}
-            style={{ marginRight: 10, cursor: 'pointer' }}
-            src='/static/inventory/img/logo.png'
-            alt='logo'
-            onClick={() => (window.location.href = getIconClickUrl())}
-          />
-          <Typography
-            style={{ cursor: 'pointer' }}
-            variant='h6'
-            component='div'
-            sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
-            onClick={() => (window.location.href = getIconClickUrl())}
-          >
-            IMS
-          </Typography>
+          <NavIcon />
 
           <IconButton
             color='inherit'
@@ -163,18 +168,93 @@ export const NavBar = ({ user }) => {
               spacing: 2,
             }}
           >
-            {navItems(0, cartItems.length).map((item, index) => (
-              <Button
-                color='inherit'
-                aria-label={item.title}
-                key={index}
-                variant='text'
-                onClick={() => (location.href = item.link)}
+            <Button
+              color='inherit'
+              aria-label='Alerts'
+              variant='text'
+              onClick={() => console.log('alert')}
+            >
+              <StyledBadge badgeContent={0} color='error'>
+                <NotificationsIcon style={{ marginRight: 5 }} />
+              </StyledBadge>
+              Alerts
+            </Button>
+            <Button
+              color='inherit'
+              aria-label='Cart'
+              variant='text'
+              onClick={(e) =>
+                isItemsPage
+                  ? (window.location.href = URL_INV_CART)
+                  : isKitsPage
+                  ? (window.location.href = URL_INV_KITS_CART)
+                  : handleCartSelection(e)
+              }
+            >
+              <>
+                {isItemsPage ? (
+                  <StyledBadge badgeContent={cartItems.length} color='error'>
+                    <ShoppingCartIcon style={{ marginRight: 5 }} />
+                  </StyledBadge>
+                ) : isKitsPage ? (
+                  <StyledBadge badgeContent={kitCartItems.length} color='error'>
+                    <ShoppingBasketIcon style={{ marginRight: 5 }} />
+                  </StyledBadge>
+                ) : (
+                  <span
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: '5px',
+                      position: 'relative',
+                    }}
+                  >
+                    <ShoppingCartIcon
+                      style={{
+                        position: 'absolute',
+                        transform: 'translate(-5px, -5px)',
+                        fontSize: 20,
+                      }}
+                    />
+                    <ShoppingBasketIcon
+                      style={{
+                        position: 'absolute',
+                        transform: 'translate(5px, 5px)',
+                        fontSize: 20,
+                      }}
+                    />
+                    <div style={{ paddingRight: '25px' }} />
+                  </span>
+                )}
+              </>
+              Cart
+            </Button>
+            <Menu
+              anchorEl={cartMenu}
+              open={Boolean(cartMenu)}
+              onClose={() => setCartMenu(null)}
+            >
+              <MenuItem
+                sx={{ paddingY: 1, paddingX: 1 }}
+                onClick={() => (window.location.href = URL_INV_CART)}
               >
-                {item.icon}
-                {item.title}
-              </Button>
-            ))}
+                <StyledBadge badgeContent={cartItems.length} color='error'>
+                  <ShoppingCartIcon style={{ marginRight: 5 }} />
+                </StyledBadge>
+                Items Cart
+              </MenuItem>
+              <MenuItem
+                sx={{ paddingY: 1, paddingX: 1 }}
+                onClick={() => (window.location.href = URL_INV_KITS_CART)}
+              >
+                <StyledBadge badgeContent={kitCartItems.length} color='error'>
+                  <ShoppingBasketIcon style={{ marginRight: 5 }} />
+                </StyledBadge>
+                Kits Cart
+              </MenuItem>
+            </Menu>
             <IconButton
               onClick={(e) => setActionMenu(e.currentTarget)}
               color='inherit'
@@ -196,6 +276,32 @@ export const NavBar = ({ user }) => {
               open={Boolean(actionMenu)}
               onClose={() => setActionMenu(null)}
             >
+              {itemsNavItems.map((item) => {
+                return (
+                  <MenuItem
+                    key={item.link}
+                    sx={{ paddingY: 1, paddingX: 1 }}
+                    onClick={() => (window.location.href = item.link)}
+                  >
+                    {item.icon}
+                    {item.title}
+                  </MenuItem>
+                );
+              })}
+              <Divider />
+              {kitNavItems.map((item) => {
+                return (
+                  <MenuItem
+                    key={item.link}
+                    sx={{ paddingY: 1, paddingX: 1 }}
+                    onClick={() => (window.location.href = item.link)}
+                  >
+                    {item.icon}
+                    {item.title}
+                  </MenuItem>
+                );
+              })}
+              <Divider />
               {actionItems.map((item) => {
                 return (
                   <MenuItem
