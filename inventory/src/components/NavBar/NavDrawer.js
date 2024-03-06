@@ -16,7 +16,12 @@ import { URL_LOGOUT, URL_PROFILE } from '../../globals/globals';
 import { CartContext, KitCartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
 
-import { actionItems, mobileNavItems } from './NavBar';
+import {
+  actionItems,
+  itemsActionItems,
+  kitActionItems,
+  mobileNavItems,
+} from './NavBar';
 import { UserAvatar } from './UserAvatar';
 
 /**
@@ -107,20 +112,23 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {actionItems.map((item) => {
-          return (
-            <ListItem key={item.link} disablePadding>
-              <Button
-                fullWidth
-                sx={{ justifyContent: 'center', textTransform: 'none' }}
-                startIcon={item.icon}
-                onClick={() => (location.href = item.link)}
-              >
-                {item.title}
-              </Button>
-            </ListItem>
-          );
-        })}
+        {itemsActionItems
+          .concat(kitActionItems)
+          .concat(actionItems)
+          .map((item) => {
+            return (
+              <ListItem key={item.link} disablePadding>
+                <Button
+                  fullWidth
+                  sx={{ justifyContent: 'center', textTransform: 'none' }}
+                  startIcon={item.icon}
+                  onClick={() => (location.href = item.link)}
+                >
+                  {item.title}
+                </Button>
+              </ListItem>
+            );
+          })}
       </List>
       <Divider />
       <List>

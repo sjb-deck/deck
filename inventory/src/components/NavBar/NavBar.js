@@ -79,7 +79,7 @@ export const mobileNavItems = (notiCount, itemCartCount, kitCartCount) => [
     link: URL_INV_KITS_CART,
   },
 ];
-export const itemsNavItems = [
+export const itemsActionItems = [
   {
     title: 'Add new item',
     icon: <AddIcon style={{ marginRight: 5 }} />,
@@ -91,7 +91,7 @@ export const itemsNavItems = [
     link: URL_INV_VIEW_ITEM_LIST,
   },
 ];
-export const kitNavItems = [
+export const kitActionItems = [
   {
     title: 'Create Kit Blueprint',
     icon: <AddIcon style={{ marginRight: 5 }} />,
@@ -276,7 +276,7 @@ export const NavBar = ({ user }) => {
               open={Boolean(actionMenu)}
               onClose={() => setActionMenu(null)}
             >
-              {itemsNavItems.map((item) => {
+              {itemsActionItems.map((item) => {
                 return (
                   <MenuItem
                     key={item.link}
@@ -289,7 +289,7 @@ export const NavBar = ({ user }) => {
                 );
               })}
               <Divider />
-              {kitNavItems.map((item) => {
+              {kitActionItems.map((item) => {
                 return (
                   <MenuItem
                     key={item.link}
