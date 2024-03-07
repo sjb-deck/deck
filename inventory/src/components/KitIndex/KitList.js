@@ -84,7 +84,7 @@ export const KitList = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value='all'>All</MenuItem>
-            <MenuItem value='ON_LOAN'>On Loan</MenuItem>
+            <MenuItem value='LOANED'>On Loan</MenuItem>
             <MenuItem value='READY'>Ready</MenuItem>
             <MenuItem value='SERVICING'>Servicing</MenuItem>
           </Select>
