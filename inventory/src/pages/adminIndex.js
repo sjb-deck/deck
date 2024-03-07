@@ -83,6 +83,7 @@ export const AdminIndex = () => {
           <KitHistoryList />
         )}
       </Box>
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );
