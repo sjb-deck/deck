@@ -122,7 +122,7 @@ export const KitData = ({ kit, isMobile }) => {
               Return
             </Button>
           )}
-          {kit.complete != 'complete' && (
+          {kit.complete != 'complete' && kit.status !== 'LOANED' && (
             <Button
               color='success'
               variant='contained'

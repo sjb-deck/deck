@@ -110,7 +110,10 @@ const RestockOption = ({ option, setRestockValue }) => {
         marginBottom: '50px',
       }}
     >
-      <Chip label={formattedDate} color={value > 0 ? 'success' : 'default'} />
+      <Chip
+        label={formattedDate.length ? formattedDate : 'No Expiry'}
+        color={value > 0 ? 'success' : 'default'}
+      />
       <NumberInput
         placeholder='Type a number…'
         value={value}
