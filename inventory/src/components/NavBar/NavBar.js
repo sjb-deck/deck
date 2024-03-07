@@ -1,8 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import CategoryIcon from '@mui/icons-material/Category';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -32,6 +33,7 @@ import {
   URL_INV_VIEW_KITS,
   URL_INV_KITS_CART,
   URL_INV_KITS_ADD_BLUEPRINT,
+  URL_INV_ITEMS,
 } from '../../globals';
 import { CartContext, KitCartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
@@ -50,16 +52,7 @@ import { UserAvatar } from './UserAvatar';
 
 const drawerWidth = 240;
 
-export const mobileNavItems = (notiCount, itemCartCount, kitCartCount) => [
-  {
-    title: 'Alerts',
-    icon: (
-      <StyledBadge badgeContent={notiCount} color='error'>
-        <NotificationsIcon style={{ marginRight: 5 }} />
-      </StyledBadge>
-    ),
-    link: '#',
-  },
+export const mobileCartNavItems = (itemCartCount, kitCartCount) => [
   {
     title: 'Items Cart',
     icon: (
@@ -79,7 +72,23 @@ export const mobileNavItems = (notiCount, itemCartCount, kitCartCount) => [
     link: URL_INV_KITS_CART,
   },
 ];
+export const alertNavItems = (notiCount) => [
+  {
+    title: 'Alerts',
+    icon: (
+      <StyledBadge badgeContent={notiCount} color='error'>
+        <NotificationsIcon style={{ marginRight: 5 }} />
+      </StyledBadge>
+    ),
+    link: '#',
+  },
+];
 export const itemsActionItems = [
+  {
+    title: 'Items',
+    icon: <CategoryIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_ITEMS,
+  },
   {
     title: 'Add new item',
     icon: <AddIcon style={{ marginRight: 5 }} />,
@@ -93,25 +102,25 @@ export const itemsActionItems = [
 ];
 export const kitActionItems = [
   {
-    title: 'Create Kit Blueprint',
-    icon: <AddIcon style={{ marginRight: 5 }} />,
-    link: URL_INV_KITS_ADD_BLUEPRINT,
-  },
-  {
-    title: 'View kits',
+    title: 'Kits',
     icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_KITS,
+  },
+  {
+    title: 'Create Blueprint',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_KITS_ADD_BLUEPRINT,
   },
 ];
 export const actionItems = [
   {
-    title: 'View loans',
+    title: 'Loans',
     icon: <KeyboardReturnIcon style={{ marginRight: 5 }} />,
     link: URL_INV_LOAN_RETURN,
   },
   {
-    title: 'View transactions',
-    icon: <LocalMallIcon style={{ marginRight: 5 }} />,
+    title: 'Transactions',
+    icon: <DashboardIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_ORDERS_LOANS,
   },
 ];

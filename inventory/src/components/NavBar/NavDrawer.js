@@ -18,9 +18,10 @@ import { ColorModeContext } from '../Themes';
 
 import {
   actionItems,
+  alertNavItems,
   itemsActionItems,
   kitActionItems,
-  mobileNavItems,
+  mobileCartNavItems,
 } from './NavBar';
 import { UserAvatar } from './UserAvatar';
 
@@ -95,7 +96,7 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {mobileNavItems(0, cartItems.length, kitCartItems.length).map(
+        {mobileCartNavItems(cartItems.length, kitCartItems.length).map(
           (item, index) => (
             <ListItem key={index} disablePadding>
               <Button
@@ -112,23 +113,64 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {itemsActionItems
-          .concat(kitActionItems)
-          .concat(actionItems)
-          .map((item) => {
-            return (
-              <ListItem key={item.link} disablePadding>
-                <Button
-                  fullWidth
-                  sx={{ justifyContent: 'center', textTransform: 'none' }}
-                  startIcon={item.icon}
-                  onClick={() => (location.href = item.link)}
-                >
-                  {item.title}
-                </Button>
-              </ListItem>
-            );
-          })}
+        {alertNavItems(0).map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <Button
+              fullWidth
+              sx={{ justifyContent: 'center', textTransform: 'none' }}
+              startIcon={item.icon}
+              onClick={() => (window.location.href = item.link)}
+            >
+              {item.title}
+            </Button>
+          </ListItem>
+        ))}
+        {actionItems.map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <Button
+              fullWidth
+              sx={{ justifyContent: 'center', textTransform: 'none' }}
+              startIcon={item.icon}
+              onClick={() => (window.location.href = item.link)}
+            >
+              {item.title}
+            </Button>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {itemsActionItems.map((item) => {
+          return (
+            <ListItem key={item.link} disablePadding>
+              <Button
+                fullWidth
+                sx={{ justifyContent: 'center', textTransform: 'none' }}
+                startIcon={item.icon}
+                onClick={() => (location.href = item.link)}
+              >
+                {item.title}
+              </Button>
+            </ListItem>
+          );
+        })}
+      </List>
+      <Divider />
+      <List>
+        {kitActionItems.map((item) => {
+          return (
+            <ListItem key={item.link} disablePadding>
+              <Button
+                fullWidth
+                sx={{ justifyContent: 'center', textTransform: 'none' }}
+                startIcon={item.icon}
+                onClick={() => (location.href = item.link)}
+              >
+                {item.title}
+              </Button>
+            </ListItem>
+          );
+        })}
       </List>
       <Divider />
       <List>
@@ -138,6 +180,7 @@ export const NavDrawer = ({ user }) => {
             sx={{ justifyContent: 'center', textTransform: 'none' }}
             startIcon={<LogoutIcon />}
             onClick={() => (window.location.href = URL_LOGOUT)}
+            color='error'
           >
             Logout
           </Button>
