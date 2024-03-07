@@ -6,7 +6,7 @@ const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 
 module.exports = {
   entry: {
-    login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
+    login: ['./deck/src/js/login.js'],
     inventoryBase: ['./inventory/src/globals/styles/inventoryBase.scss'],
     inventoryIndex: ['./inventory/src/pages/render/inventoryIndex.js'],
     itemIndex: ['./inventory/src/pages/render/itemIndex.js'],

@@ -105,7 +105,10 @@ const App = () => {
           alignItems: 'center',
         }}
       >
-        <img src='/static/inventory/img/StJohn SG logo.png'></img>
+        <img
+          src='/static/inventory/img/StJohn SG logo.png'
+          style={{ maxHeight: '250px', mb: '5%' }}
+        />
         <FormControl
           error={error}
           sx={{ m: 1, width: '25ch' }}
