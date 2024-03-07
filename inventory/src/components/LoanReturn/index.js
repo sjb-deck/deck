@@ -1,1 +1,2 @@
-export * from './FullAccordion';
+export * from './item';
+export * from './kit';

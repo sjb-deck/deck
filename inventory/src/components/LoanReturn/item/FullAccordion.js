@@ -11,7 +11,7 @@ import { AccordionItem } from './AccordionItem';
 import { AccordionSummaryContent } from './AccordionSummaryContent';
 import { ReturnForm } from './ReturnForm';
 
-import '../../globals/styles/inventoryBase.scss';
+import '../../../globals/styles/inventoryBase.scss';
 
 export const FullAccordion = ({ index, loan }) => {
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog

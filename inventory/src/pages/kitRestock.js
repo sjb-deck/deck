@@ -43,6 +43,7 @@ export const KitRestock = () => {
           <KitRestockContent kit={kitData} />
         )}
       </div>
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );

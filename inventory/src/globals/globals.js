@@ -14,34 +14,17 @@ export const URL_INV_LOAN_RETURN = '/inventory/loan_return';
 export const URL_INV_VIEW_ITEM_LIST = '/inventory/items/item_list';
 export const URL_ORDER_RECEIPT = '/inventory/items/receipt';
 export const URL_INV_VIEW_KITS = '/inventory/kits';
+export const URL_INV_KITS_CART = '/inventory/kits/cart';
+export const URL_INV_KITS_ADD_BLUEPRINT = '/inventory/kits/create_blueprint';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
-export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
 
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
 export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
 export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
 export const LOCAL_STORAGE_KIT_CART_KEY = 'kit_cart';
-
-// API Endpoints
-export const INV_API_BASE_URL = '/inventory/api';
-export const INV_API_ITEMS_URL = `${INV_API_BASE_URL}/items`;
-export const INV_API_USER_URL = `${INV_API_BASE_URL}/user`;
-export const INV_API_SUBMIT_ORDER_URL = `${INV_API_BASE_URL}/submit_order`;
-export const INV_API_EXPIRY_POST_URL = `${INV_API_BASE_URL}/add_expiry_post`;
-export const INV_API_CREATE_NEW_EXPIRY_URL = `${INV_API_BASE_URL}/add_expiry`;
-export const INV_API_ORDERS_URL = `${INV_API_BASE_URL}/orders/all`;
-export const INV_API_ORDER_URL = `${INV_API_BASE_URL}/orders/get/:id`;
-export const INV_API_REVERT_ORDER = `${INV_API_BASE_URL}/revert_order`;
-export const INV_API_LOANS_URL = `${INV_API_BASE_URL}/loans`;
-export const INV_API_LOAN_RETURN_URL = `${INV_API_BASE_URL}/loan_return_post`;
-export const INV_API_IMPORT_ITEMS_URL = `${INV_API_BASE_URL}/import_items`;
-export const INV_API_EXPORT_ITEMS_URL = `${INV_API_BASE_URL}/export_items`;
-export const INV_API_KITS_URL = `${INV_API_BASE_URL}/kits`;
-export const INV_API_KIT_RECIPE = `${INV_API_BASE_URL}/get_new_kit_recipe`;
-export const INV_API_CREATE_KIT = `${INV_API_BASE_URL}/add_kit`;
-export const INV_API_ADD_BLUEPRINT_URL = `${INV_API_BASE_URL}/add_blueprint`;
+export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
 
 export const ORDER_REASONS = {
   item_restock: 'Restock',

@@ -1,15 +1,33 @@
 import { Avatar, Button, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import '../../globals/styles/inventoryBase.scss';
 import { useKitRecipe } from '../../hooks/queries';
+import { AlertContext, KitCartContext } from '../../providers';
 import { stringAvatar } from '../../utils';
 
 import { KitContentsAccordion } from './KitContentsAccordion';
 import { KitHistoryAccordion } from './KitHistoryAccordion';
 
 export const KitInfoContent = ({ kitData }) => {
+  const { kitCartItems, addToCart } = useContext(KitCartContext);
+  const isInCart = kitCartItems.some((item) => item.id === kitData.id);
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
+  const { setAlert } = useContext(AlertContext);
+  const withdrawHandler = () => {
+    if (isInCart) return;
+    addToCart({
+      id: kitData.id,
+      blueprint_name: kitData.blueprint_name,
+      name: kitData.name,
+      complete: kitData.complete,
+    });
+    setAlert({
+      severity: 'success',
+      message: `${kitData.name} added to cart!`,
+      autoHide: true,
+    });
+  };
   return (
     <Stack
       sx={{
@@ -29,17 +47,34 @@ export const KitInfoContent = ({ kitData }) => {
         <Stack spacing={2} marginTop={2} marginBottom={5}>
           {kitData?.status == 'READY' ? (
             <>
-              <Button variant='contained' color='error'>
+              <Button
+                variant='contained'
+                color='error'
+                disabled={isInCart}
+                onClick={withdrawHandler}
+              >
                 Withdraw
               </Button>
               {kitData?.complete == 'incomplete' && (
-                <Button variant='contained' color='success'>
+                <Button
+                  variant='contained'
+                  color='success'
+                  onClick={() =>
+                    (window.location.href = `/inventory/kits/kit_restock?kitId=${kitData.id}`)
+                  }
+                >
                   Restock
                 </Button>
               )}
             </>
           ) : (
-            <Button variant='contained' color='success'>
+            <Button
+              variant='contained'
+              color='success'
+              onClick={() =>
+                (window.location.href = `/inventory/kits/return?kitId=${kitData.id}`)
+              }
+            >
               Return
             </Button>
           )}

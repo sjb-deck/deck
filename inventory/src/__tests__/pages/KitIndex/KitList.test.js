@@ -68,7 +68,6 @@ describe('Kit List', () => {
     fireEvent.click(kit);
 
     expect(within(accordion).getAllByText('Return')[0]).toBeInTheDocument();
-    expect(within(accordion).getAllByText('Restock')[0]).toBeInTheDocument();
 
     const accordion2 = screen.getAllByTestId('details-31')[0];
     const kit2 = screen.getAllByText('31')[0];

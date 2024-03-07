@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.middleware.csrf import get_token
 from django.http import JsonResponse
 
 
@@ -15,22 +16,22 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        to_redirect = request.POST["to_redirect"]
+        toRedirect = request.POST.get("next", "/")
         user = authenticate(request, username=username, password=password)
 
         if user != None:
             login(request, user)
-            return JsonResponse(
-                data={"success": True, "to_redirect": to_redirect}, status=200
-            )
+            return JsonResponse(data={"toRedirect": toRedirect}, status=200)
         else:
             return JsonResponse(
                 data={"success": False, "responseText": "Invalid Credentials"},
                 status=401,
             )
     else:
-        to_redirect = request.GET.get("next")
-        return render(request, "login.html", {"to_redirect": to_redirect})
+        response = render(request, "login.html")
+        response.set_cookie(key="csrftoken", value=get_token(request))
+        response.set_cookie(key="next", value=request.GET.get("next", "/"))
+        return response
 
 
 def logout_view(request):

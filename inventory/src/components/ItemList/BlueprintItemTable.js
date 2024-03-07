@@ -270,7 +270,7 @@ export const BlueprintItemTable = ({ items, updateSelectedItems }) => {
         {items ? (
           <Pagination
             page={currentPage}
-            count={Math.ceil(items.length / ORDERS_PER_PAGE)}
+            count={Math.ceil(itemsToDisplay.length / ORDERS_PER_PAGE)}
             onChange={handlePageChange}
           />
         ) : (
