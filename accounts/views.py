@@ -8,6 +8,8 @@ from django.urls import reverse
 from .forms import CustomUserCreationForm
 from .models import UserExtras
 
+from deck.utils import upload_file
+
 
 class ImageUploadForm(forms.Form):
     """Image upload form."""
@@ -37,15 +39,12 @@ def edit(request):
         f = request.FILES.get("image", None)
         request.user.username = new_username
         if f != None:
-            form = ImageUploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                m = UserExtras.objects.get(user=request.user)
-                if bool(m.profile_pic) is not False:
-                    image_path = m.profile_pic.path
-                    if os.path.exists(image_path):
-                        os.remove(image_path)
-                m.profile_pic = form.cleaned_data["image"]
-                m.save()
+            _, file_extension = os.path.splitext(f.name)
+            img_url = upload_file(
+                f"user_dp/{request.user.id}{file_extension}", f.read()
+            )
+            request.user.extras.profile_pic = img_url
+        request.user.save()
         return redirect(reverse("main_index"))
     else:
         return render(request, "user_info.html", {"user": request.user})
