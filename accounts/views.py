@@ -11,12 +11,6 @@ from .models import UserExtras
 from deck.utils import upload_file
 
 
-class ImageUploadForm(forms.Form):
-    """Image upload form."""
-
-    image = forms.ImageField()
-
-
 # Create your views here.
 @login_required(login_url="/r'^login/$'")
 def register(request):

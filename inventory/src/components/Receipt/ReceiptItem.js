@@ -1,6 +1,7 @@
-import { Avatar, Chip, Stack, Typography } from '@mui/material';
+import { Chip, Stack, Typography } from '@mui/material';
 import React from 'react';
 
+import { ImageAvatar } from '../ImageAvatar';
 import { Paper } from '../styled';
 
 export const ReceiptItem = ({ item }) => {
@@ -20,10 +21,10 @@ export const ReceiptItem = ({ item }) => {
         spacing={1}
       >
         {itemExpiry.item.imgpic ? (
-          <Avatar
+          <ImageAvatar
             alt={`${itemExpiry.item.name}`}
-            src={`${itemExpiry.item.imgpic}`}
-            sx={{ width: 90, height: 90 }}
+            src={`/get_image/${encodeURIComponent(itemExpiry.item.imgpic)}`}
+            size={90}
           />
         ) : (
           <img src='/static/inventory/img/logo.png' width={90} height={90} />

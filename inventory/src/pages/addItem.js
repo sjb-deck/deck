@@ -48,7 +48,7 @@ export const AddItem = () => {
     name: '',
     type: 'General',
     unit: '',
-    imgpic: '',
+    imgpic: {},
     total_quantity: 0,
     min_quantity: 0,
     is_opened: false,
@@ -58,7 +58,7 @@ export const AddItem = () => {
     name: '',
     type: 'General',
     unit: '',
-    imgpic: '',
+    imgpic: {},
     expiry: [
       {
         expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -100,7 +100,7 @@ export const AddItem = () => {
       name: itemFormData.name,
       type: itemFormData.type,
       unit: itemFormData.unit,
-      imgpic: null,
+      imgpic: itemFormData.imgpic,
       total_quantity: itemFormData.total_quantity,
       min_quantity: itemFormData.min_quantity,
       is_opened: itemFormData.is_opened,
@@ -121,7 +121,7 @@ export const AddItem = () => {
           name: '',
           type: 'General',
           unit: '',
-          imgpic: '',
+          imgpic: {},
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -141,7 +141,7 @@ export const AddItem = () => {
           name: '',
           type: 'General',
           unit: '',
-          imgpic: '',
+          imgpic: {},
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -174,7 +174,7 @@ export const AddItem = () => {
       name: expiryFormData.name,
       type: expiryFormData.type,
       unit: expiryFormData.unit,
-      imgpic: null,
+      imgpic: expiryFormData.imgpic,
       total_quantity: totalQuantity,
       min_quantity: expiryFormData.min_quantity,
       is_opened: expiryFormData.is_opened,
@@ -188,7 +188,7 @@ export const AddItem = () => {
           name: '',
           type: 'General',
           unit: '',
-          imgpic: '',
+          imgpic: {},
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -228,7 +228,7 @@ export const AddItem = () => {
           name: '',
           type: 'General',
           unit: '',
-          imgpic: '',
+          imgpic: {},
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -329,6 +329,10 @@ export const AddItem = () => {
       value = !itemFormData.is_opened;
     }
 
+    if (name === 'imgpic') {
+      value = event.target.files[0];
+    }
+
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -345,6 +349,10 @@ export const AddItem = () => {
 
     if (name === 'is_opened') {
       value = !expiryFormData.is_opened;
+    }
+
+    if (name === 'imgpic') {
+      value = event.target.files[0];
     }
 
     setExpiryFormData((prevFormData) => ({

@@ -36,7 +36,7 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=50, choices=typechoices, default="General")
     unit = models.CharField(max_length=50, default="units")
-    imgpic = models.ImageField(null=True, blank=True, upload_to="item_img")
+    imgpic = models.CharField(max_length=200, blank=True, null=True)
     total_quantity = models.IntegerField(null=False, blank=False, default=0)
     min_quantity = models.IntegerField(null=True, blank=True, default=0)
     is_opened = models.BooleanField(default=False)

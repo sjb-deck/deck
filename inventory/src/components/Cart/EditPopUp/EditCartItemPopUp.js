@@ -1,6 +1,5 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
-  Avatar,
   Backdrop,
   Button,
   Fade,
@@ -14,6 +13,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 
 import { CartContext } from '../../../providers';
+import { ImageAvatar } from '../../ImageAvatar';
 
 import { getValidationSchema } from './getValidationSchema';
 import { PopupStack } from './styled';
@@ -57,10 +57,10 @@ export const EditCartItemPopUp = ({ cartItem, open, handleClose }) => {
       <Fade in={open}>
         <PopupStack spacing={2}>
           {cartItem.imgpic ? (
-            <Avatar
-              alt={`${cartItem.name}`}
-              src={`${cartItem.imgpic}`}
-              sx={{ width: 90, height: 90 }}
+            <ImageAvatar
+              alt={cartItem.name}
+              src={`/get_image/${encodeURIComponent(cartItem.imgpic)}`}
+              size={90}
             />
           ) : (
             <img src='/static/inventory/img/logo.png' width={90} height={90} />
