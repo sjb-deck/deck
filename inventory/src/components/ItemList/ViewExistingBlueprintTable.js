@@ -3,13 +3,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Divider,
+  Grid,
+  Stack,
   Box,
   Typography,
 } from '@mui/material';
@@ -17,70 +13,75 @@ import React from 'react';
 export const ViewExistingBlueprintTable = ({ items }) => {
   return (
     <Box className='dynamic-width'>
-      <TableContainer component={Paper} style={{ overflow: 'scroll' }}>
-        <Table>
-          <TableHead>
-            <TableRow key='View_Blueprint_Header'>
-              <TableCell align='center'>
-                <h3>Blueprints</h3>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item) => (
-              <Accordion
-                key={`Blueprint ${item.id}`}
-                className='view-existing-blueprints'
-              >
-                <AccordionSummary
-                  data-testid='item_accordion'
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  <TableCell>
-                    <Typography data-testid='item_name' variant={'h6'}>
-                      {item.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align={'center'}>{item.quantity}</TableCell>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TableContainer
-                    component={Paper}
-                    style={{ overflow: 'scroll' }}
+      <Accordion expanded={false} className='view-existing-blueprints-header'>
+        <Box className='view-existing-blueprints-subheader'>
+          <Typography variant='h6'>Blueprints</Typography>
+        </Box>
+      </Accordion>
+      <Accordion
+        expanded={false}
+        className='view-existing-blueprints-header'
+        sx={{ marginBottom: 1 }}
+      >
+        <Box className='view-existing-blueprints-subheader'>
+          <Grid container>
+            <Grid item xs={2}>
+              <Typography data-testid='item_id' variant={'h8'}>
+                ID
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography data-testid='item_name' variant={'h8'}>
+                Name
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      </Accordion>
+      {items.map((item) => (
+        <Accordion
+          key={`Blueprint ${item.id}`}
+          className='view-existing-blueprints'
+        >
+          <AccordionSummary
+            data-testid='item_accordion'
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Grid container>
+              <Grid item xs={2}>
+                <Typography data-testid='item_id' variant={'h8'}>
+                  {item.id}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography data-testid='item_name' variant={'h8'}>
+                  {item.name}
+                </Typography>
+              </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
+            <Stack spacing={1} sx={{ marginTop: 2, marginBottom: 1 }}>
+              {item.complete_content.map((blueprintItem) => {
+                return (
+                  <Box
+                    key={item.id}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
                   >
-                    <Table>
-                      <TableHead>
-                        <TableRow key={`Blueprint items header ${item.id}`}>
-                          <TableCell>Item Name</TableCell>
-                          <TableCell align={'center'}>Qty</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {item.complete_content.map((blueprintItem) => (
-                          <TableRow
-                            key={`Blueprint item ${blueprintItem.item_id}`}
-                            data-testid={`item-row-${blueprintItem.item_id}`}
-                          >
-                            <TableCell data-testid='blueprint_item'>
-                              {blueprintItem.name}
-                            </TableCell>
-                            <TableCell
-                              data-testid='blueprint_item_qty'
-                              align={'center'}
-                            >
-                              {blueprintItem.quantity}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    <span>{blueprintItem.name}</span>
+                    <span>{blueprintItem.quantity}</span>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </Box>
   );
 };
