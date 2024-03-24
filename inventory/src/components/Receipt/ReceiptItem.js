@@ -23,7 +23,7 @@ export const ReceiptItem = ({ item }) => {
         {itemExpiry.item.imgpic ? (
           <ImageAvatar
             alt={`${itemExpiry.item.name}`}
-            src={`/get_image/${encodeURIComponent(itemExpiry.item.imgpic)}`}
+            src={`/get_image/${itemExpiry.item.imgpic}`}
             size={90}
           />
         ) : (

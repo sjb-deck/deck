@@ -58,7 +58,7 @@ export const CartItem = ({ cartItem }) => {
             {cartItem.imgpic ? (
               <ImageAvatar
                 alt={cartItem.name}
-                src={`/get_image/${encodeURIComponent(cartItem.imgpic)}`}
+                src={`/get_image/${cartItem.imgpic}`}
                 size={90}
               />
             ) : (

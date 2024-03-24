@@ -29,7 +29,7 @@ export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
         >
           <ImageAvatar
             alt='new-item'
-            src={`get_image/${encodeURIComponent(item.imgpic)}`}
+            src={`get_image/${item.imgpic}`}
             size={'70px'}
           />
         </div>

@@ -8,7 +8,7 @@ export const UserAvatar = ({ user, size }) => {
     <Tooltip title={`${user.extras.name}`}>
       <ImageAvatar
         alt={`${user.extras.name}`}
-        src={`/get_image/${encodeURIComponent(user.extras.profile_pic)}`}
+        src={`/get_image/${user.extras.profile_pic}`}
         size={size}
       />
     </Tooltip>

@@ -37,7 +37,7 @@ export const AddItemReview = ({ itemFormData }) => {
         >
           <ImageAvatar
             alt='new-item'
-            src={`/get_image/${encodeURIComponent(itemFormData.image)}`}
+            src={`/get_image/${itemFormData.image}`}
           />
         </div>
         <div

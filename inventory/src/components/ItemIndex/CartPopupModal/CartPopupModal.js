@@ -186,7 +186,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
             {item.imgpic ? (
               <ImageAvatar
                 alt={item.name}
-                src={`/get_image/${encodeURIComponent(item.imgpic)}`}
+                src={`/get_image/${item.imgpic}`}
                 size={90}
               />
             ) : (
