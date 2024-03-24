@@ -21,7 +21,9 @@ def upload_file(file_path, file_content):
         full_url, data=file_content, auth=HTTPBasicAuth(username, password)
     )
 
-    if response.status_code == 201:
+    if (
+        response.status_code == 201 or response.status_code == 204
+    ):  # 201 Created or 204 Replace existing file
         return file_path
     else:
         raise Exception(f"Failed to upload file. Status code: {response.status_code}")
