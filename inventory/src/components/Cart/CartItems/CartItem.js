@@ -1,7 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {
-  Avatar,
   Button,
   Chip,
   Divider,
@@ -12,6 +11,7 @@ import {
 import React, { useContext } from 'react';
 
 import { CartContext } from '../../../providers';
+import { ImageAvatar } from '../../ImageAvatar';
 import { Paper } from '../../styled';
 import { EditCartItemPopUp } from '../EditPopUp/EditCartItemPopUp';
 
@@ -56,10 +56,10 @@ export const CartItem = ({ cartItem }) => {
             spacing={1}
           >
             {cartItem.imgpic ? (
-              <Avatar
-                alt={`${cartItem.name}`}
-                src={`${cartItem.imgpic}`}
-                sx={{ width: 90, height: 90 }}
+              <ImageAvatar
+                alt={cartItem.name}
+                src={`/get_image/${encodeURIComponent(cartItem.imgpic)}`}
+                size={90}
               />
             ) : (
               <img

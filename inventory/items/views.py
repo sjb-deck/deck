@@ -1,4 +1,6 @@
 import csv
+import json
+import os
 from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError, transaction
 from django.http import HttpResponse
@@ -13,6 +15,7 @@ from django.urls import reverse
 
 from inventory.items.serializers import *
 from inventory.items.views_utils import *
+from deck.utils import upload_file
 
 
 # Create your views here.
@@ -140,8 +143,22 @@ def api_submit_order(request):
 @permission_classes([IsAuthenticated])
 def api_add_item(request):
     try:
-        expiry_serializer = ItemSerializer(data=request.data)
+        data = {
+            **request.POST.dict(),
+            "imgpic": None,
+            "expiry_dates": json.loads(request.POST.get("expiry_dates")),
+        }
+        image = request.FILES.get("imgpic", None)
+        expiry_serializer = ItemSerializer(data=data)
         if expiry_serializer.is_valid(raise_exception=True):
+            if image:
+                _, file_extension = os.path.splitext(image.name)
+                file_path = (
+                    f'items/{expiry_serializer.validated_data["name"]}{file_extension}'
+                )
+                expiry_serializer.validated_data["imgpic"] = upload_file(
+                    file_path, image
+                )
             item = expiry_serializer.save()
             return Response(ItemSerializer(item).data, status=201)
     except Exception as e:

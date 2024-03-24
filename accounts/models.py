@@ -4,7 +4,7 @@ from django.db import models
 
 class UserExtras(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="extras")
-    profile_pic = models.ImageField(null=True, blank=True, upload_to="user_dp")
+    profile_pic = models.CharField(max_length=200, blank=True, null=True)
     role = models.CharField(max_length=50, default="User")
     name = models.CharField(max_length=50, blank=True)
 
