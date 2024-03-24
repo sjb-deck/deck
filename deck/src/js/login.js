@@ -39,6 +39,12 @@ const App = () => {
   const lightTheme = createTheme({
     palette: {
       mode: 'light',
+      primary: {
+        main: '#1e1e1e',
+        light: '#484848',
+        dark: '#000000',
+        contrastText: '#fff',
+      },
     },
   });
 

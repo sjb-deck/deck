@@ -45,6 +45,12 @@ export const Theme = ({ children }) => {
       createTheme({
         palette: {
           mode: mode,
+          primary: {
+            main: mode == 'dark' ? '#90caf9' : '#1e1e1e',
+            light: mode == 'dark' ? '#e3f2fd' : '#484848',
+            dark: mode == 'dark' ? '#42a5f5' : '#000000',
+            contrastText: mode == 'dark' ? 'rgba(0, 0, 0, 0.87)' : '#fff',
+          },
         },
       }),
     );
