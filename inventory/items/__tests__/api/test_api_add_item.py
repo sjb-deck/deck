@@ -36,6 +36,7 @@ class TestApiAddItemViews(TestCase):
 
     def test_create_item(self):
         response = self.client.post(self.url, self.item_data, format="multipart")
+        print(response.data)
         self.assertEqual(response.status_code, 201)
 
         # Check if the item exists in the database
