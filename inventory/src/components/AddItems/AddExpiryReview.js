@@ -38,7 +38,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
         >
           <ImageAvatar
             alt='new-item'
-            src={`/get_image/${encodeURIComponent(expiryFormData.image)}`}
+            src={`/get_image/${expiryFormData.image}`}
           />
         </div>
         <div

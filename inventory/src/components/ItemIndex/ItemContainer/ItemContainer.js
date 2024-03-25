@@ -97,7 +97,7 @@ export const ItemContainer = ({ item }) => {
         >
           {item.imgpic ? (
             <ImageAvatar
-              src={`/get_image/${encodeURIComponent(item.imgpic)}`}
+              src={`/get_image/${item.imgpic}`}
               size={90}
               alt={item.name}
             />
