@@ -11,7 +11,7 @@ urlpatterns = (
         path("kit_restock", views.kit_restock, name="kit_restock"),
         path("create_blueprint", views.create_blueprint, name="create_blueprint"),
         path("cart", views.cart, name="cart"),
-        path("create", views.kit_create, name="create"),
+        path("create_kit", views.kit_create, name="create"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
