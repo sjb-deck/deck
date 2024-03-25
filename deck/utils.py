@@ -27,3 +27,20 @@ def upload_file(file_path, file_content):
         return file_path
     else:
         raise Exception(f"Failed to upload file. Status code: {response.status_code}")
+
+
+def delete_file(file_path):
+    username = config("NEXTCLOUD_USERNAME")
+    password = config("NEXTCLOUD_APP_PASSWORD")
+    nextcloud_url = (
+        f"https://nextcloud.nhhs-sjb.org/remote.php/dav/files/{username}/Shared/deck/"
+    )
+
+    full_url = nextcloud_url + file_path
+
+    response = requests.delete(full_url, auth=HTTPBasicAuth(username, password))
+
+    if response.status_code == 204:  # 204 No Content
+        return file_path
+    else:
+        raise Exception(f"Failed to delete file. Status code: {response.status_code}")
