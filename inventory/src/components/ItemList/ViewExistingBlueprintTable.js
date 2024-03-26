@@ -13,11 +13,6 @@ import React from 'react';
 export const ViewExistingBlueprintTable = ({ items }) => {
   return (
     <Box className='dynamic-width'>
-      <Accordion expanded={false} className='view-existing-blueprints-header'>
-        <Box className='view-existing-blueprints-subheader'>
-          <Typography variant='h6'>Blueprints</Typography>
-        </Box>
-      </Accordion>
       <Accordion
         expanded={false}
         className='view-existing-blueprints-header'
