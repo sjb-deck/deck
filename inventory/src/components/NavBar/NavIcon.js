@@ -77,7 +77,10 @@ const NavBreadcrumbs = ({
   });
   return (
     <>
-      <Breadcrumbs aria-label='breadcrumb' style={{ flexGrow: 1 }}>
+      <Breadcrumbs
+        aria-label='breadcrumb'
+        style={{ flexGrow: 1, color: 'white' }}
+      >
         <StyledBreadcrumb
           component='a'
           href={URL_INV_INDEX}

@@ -1,7 +1,11 @@
 import {
   Box,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
+  Input,
+  InputLabel,
   MenuItem,
   Select,
   Switch,
@@ -9,7 +13,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useState } from 'react';
+
+import { ImageAvatar } from '../ImageAvatar';
 
 const types = [
   'General',
@@ -25,6 +31,25 @@ export const AddItemForm = ({
   itemFormError,
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
+  const renderImagePreview = () => {
+    const reader = new FileReader();
+    const file = document.getElementById('imgpic').files[0];
+    reader.onloadend = () => {
+      setImagePreviewUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const checkFileType = (e) => {
+    const file = e.target.files[0];
+    const fileType = file.type.split('/')[0];
+    if (fileType !== 'image') {
+      alert('Please upload an image file');
+      e.target.value = '';
+    }
+  };
 
   return (
     <form>
@@ -42,6 +67,16 @@ export const AddItemForm = ({
           marginRight: '15px',
         }}
       >
+        {imagePreviewUrl ? (
+          <ImageAvatar src={imagePreviewUrl} alt='Image preview' size={90} />
+        ) : (
+          <ImageAvatar
+            src={'/static/inventory/img/logo.png'}
+            alt='Image preview'
+            size={90}
+          />
+        )}
+
         <TextField
           label='Name'
           name='name'
@@ -116,18 +151,21 @@ export const AddItemForm = ({
           }}
         />
 
-        <TextField
-          label='Image'
-          name='imgpic'
-          value={itemFormData.imgpic}
-          onChange={handleFormChange}
-          helperText='Image URL'
-          variant='standard'
-          sx={{
-            '& .MuiInputLabel-root': { fontSize: '14px' },
-            '& .MuiFormHelperText-root': { color: 'gray', fontSize: '12px' },
-          }}
-        />
+        <FormControl variant='standard'>
+          <InputLabel htmlFor='imgpic'>Image</InputLabel>
+          <Input
+            id='imgpic'
+            name='imgpic'
+            type='file'
+            accept='image/*'
+            onChange={(e) => {
+              checkFileType(e);
+              renderImagePreview();
+              handleFormChange(e);
+            }}
+          />
+          <FormHelperText>Upload Image</FormHelperText>
+        </FormControl>
 
         <Grid container spacing={3}>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>

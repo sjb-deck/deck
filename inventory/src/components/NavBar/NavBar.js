@@ -278,7 +278,7 @@ export const NavBar = ({ user }) => {
               )}
             </IconButton>
             <IconButton onClick={handleClick} color='inherit'>
-              <UserAvatar user={user} style={{ marginLeft: 10 }} />
+              <UserAvatar user={user} size={40} style={{ marginLeft: 10 }} />
             </IconButton>
             <Menu
               anchorEl={actionMenu}

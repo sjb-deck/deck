@@ -13,7 +13,6 @@ function getCSRFToken() {
 export const getRequest = () => {
   const request = axios.create({
     headers: {
-      'Content-Type': 'application/json',
       'X-CSRFToken': getCSRFToken(),
     },
   });
