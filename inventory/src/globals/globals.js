@@ -16,6 +16,7 @@ export const URL_ORDER_RECEIPT = '/inventory/items/receipt';
 export const URL_INV_VIEW_KITS = '/inventory/kits';
 export const URL_INV_KITS_CART = '/inventory/kits/cart';
 export const URL_INV_KITS_ADD_BLUEPRINT = '/inventory/kits/create_blueprint';
+export const URL_INV_KITS_ADD_KIT = '/inventory/kits/create_kit';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
 

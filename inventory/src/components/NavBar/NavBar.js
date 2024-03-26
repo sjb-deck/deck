@@ -34,6 +34,7 @@ import {
   URL_INV_KITS_CART,
   URL_INV_KITS_ADD_BLUEPRINT,
   URL_INV_ITEMS,
+  URL_INV_KITS_ADD_KIT,
 } from '../../globals';
 import { CartContext, KitCartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
@@ -105,6 +106,11 @@ export const kitActionItems = [
     title: 'Kits',
     icon: <MedicalServicesIcon style={{ marginRight: 5 }} />,
     link: URL_INV_VIEW_KITS,
+  },
+  {
+    title: 'Create Kit',
+    icon: <AddIcon style={{ marginRight: 5 }} />,
+    link: URL_INV_KITS_ADD_KIT,
   },
   {
     title: 'Create Blueprint',

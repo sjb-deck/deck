@@ -22,6 +22,7 @@ module.exports = {
     createBlueprint: ['./inventory/src/pages/render/createBlueprint.js'],
     kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
     kitCart: ['./inventory/src/pages/render/kitCart.js'],
+    kitAdd: ['./inventory/src/pages/render/kitAdd.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
