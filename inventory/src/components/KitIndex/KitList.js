@@ -141,6 +141,7 @@ export const KitList = () => {
       </Box>
       <Accordion
         expanded={false}
+        className='view-table-header'
         sx={{
           maxWidth: '750px',
           minWidth: isMobile ? '95%' : '70%',
