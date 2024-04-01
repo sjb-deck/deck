@@ -21,7 +21,6 @@ import { ORDERS_PER_PAGE } from '../../globals';
 import '../../globals/styles/inventoryBase.scss';
 import { useKits } from '../../hooks/queries';
 
-import { KitAdd } from './KitAdd';
 import { KitData } from './KitData';
 
 export const KitList = () => {
@@ -137,7 +136,6 @@ export const KitList = () => {
             }}
           />
         </Box>
-        <KitAdd blueprints={kitsData ? kitsData.blueprints : []} />
       </Box>
       <Accordion
         expanded={false}

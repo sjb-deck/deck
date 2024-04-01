@@ -9,29 +9,16 @@ import {
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { KitAdd } from '../../../components/KitIndex/KitAdd';
-import { mockBlueprints } from '../../../mocks';
+import { KitCreate } from '../../../components/KitAdd/KitCreate';
 import { render } from '../../../testSetup';
 
 describe('Kit Add', () => {
-  it('should show Kit Add Modal onclick', async () => {
-    render(<KitAdd blueprints={mockBlueprints} />);
-    const modalButton = screen.getByTestId('add-button');
-    expect(modalButton).toBeInTheDocument();
-
-    fireEvent.click(modalButton);
-    await waitFor(() =>
-      expect(screen.getByTestId('add-kit-modal')).toBeInTheDocument(),
-    );
-  });
   it('should render blueprint details on selection', async () => {
     act(() => {
-      render(<KitAdd blueprints={mockBlueprints} />);
+      render(<KitCreate />);
     });
-    const modalButton = screen.getByTestId('add-button');
-    fireEvent.click(modalButton);
     await waitFor(() =>
-      expect(screen.getByTestId('add-kit-modal')).toBeInTheDocument(),
+      expect(screen.getAllByText('Create Kit')[0]).toBeInTheDocument(),
     );
     const blueprintForm = screen.getByTestId('blueprint-form');
     const button = within(blueprintForm).getByRole('button');
@@ -66,11 +53,11 @@ describe('Kit Add', () => {
 
   it('should restrict form submission when validation fails', async () => {
     act(() => {
-      render(<KitAdd blueprints={mockBlueprints} />);
+      render(<KitCreate />);
     });
-    const modalButton = screen.getByTestId('add-button');
-    fireEvent.click(modalButton);
-    await waitFor(() => screen.getByTestId('add-kit-modal'));
+    await waitFor(() =>
+      expect(screen.getAllByText('Create Kit')[0]).toBeInTheDocument(),
+    );
     const blueprintForm = screen.getByTestId('blueprint-form');
     const button = within(blueprintForm).getByRole('button');
     fireEvent.mouseDown(button);
@@ -153,11 +140,11 @@ describe('Kit Add', () => {
   });
   it('should display correct message when kit creation succeeds', async () => {
     act(() => {
-      render(<KitAdd blueprints={mockBlueprints} />);
+      render(<KitCreate />);
     });
-    const modalButton = screen.getByTestId('add-button');
-    fireEvent.click(modalButton);
-    await waitFor(() => screen.getByTestId('add-kit-modal'));
+    await waitFor(() =>
+      expect(screen.getAllByText('Create Kit')[0]).toBeInTheDocument(),
+    );
     const blueprintForm = screen.getByTestId('blueprint-form');
     const button = within(blueprintForm).getByRole('button');
     fireEvent.mouseDown(button);
