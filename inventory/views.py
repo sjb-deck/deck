@@ -19,6 +19,10 @@ def admin(request):
 def loan_return(request):
     return render(request, "loan_return.html")
 
+@login_required(login_url="/r'^login/$'")
+def alerts(request):
+    return render(request, "alerts.html")
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

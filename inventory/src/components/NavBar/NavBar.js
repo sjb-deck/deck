@@ -31,6 +31,7 @@ import {
   URL_PROFILE,
   URL_INV_LOAN_RETURN,
   URL_INV_VIEW_KITS,
+  URL_ALERTS,
 } from '../../globals';
 import { CartContext } from '../../providers';
 import { ColorModeContext } from '../Themes';
@@ -56,7 +57,7 @@ export const navItems = (notiCount, cartCount) => [
         <NotificationsIcon style={{ marginRight: 5 }} />
       </StyledBadge>
     ),
-    link: '#',
+    link: URL_ALERTS,
   },
   {
     title: 'Cart',

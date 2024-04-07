@@ -17,7 +17,7 @@ export const URL_INV_VIEW_KITS = '/inventory/kits';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
 export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
-
+export const URL_ALERTS = '/alerts';
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';
 export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
