@@ -60,23 +60,9 @@ def check_history(log):
         if history.type and history.type == LOAN:
             loan_history = LoanHistory.objects.get(id=history.id)
             if check_loan_history_not_none(log, loan_history, history.id):
-                check_field_name(
-                    log,
-                    HISTORY,
-                    loan_history.loanee_name,
-                    loan_history.id,
-                    "Loanee name",
-                )
-                check_field_date(
-                    log, HISTORY, loan_history.due_date, loan_history.id, "Due date"
-                )
-                check_field_date(
-                    log,
-                    HISTORY,
-                    loan_history.return_date,
-                    loan_history.id,
-                    "Return date",
-                )
+                check_field_name(log, HISTORY, loan_history.loanee_name, loan_history.id, "Loanee name")
+                check_field_date(log, HISTORY, loan_history.due_date, loan_history.id, "Due date")
+                check_field_date(log, HISTORY, loan_history.return_date, loan_history.id, "Return date")
 
     log["isChecked"]["history"] = True
 

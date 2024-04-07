@@ -630,3 +630,62 @@ def revert_kit(request, history_id):
 
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_kits_expiry(request):
+    expiry_kits = []
+
+    all_kits = Kit.objects.all()
+
+    for kit in all_kits:
+        expiring_items = []
+        expired_items = []
+        items = kit.content
+        for item_expiry in items:
+            item_id = item_expiry["item_expiry_id"]
+            quantity = item_expiry["quantity"]
+            item_expiry_object = ItemExpiry.objects.get(id=item_id)
+            expiry_date = item_expiry_object.expiry_date
+            item_object = item_expiry_object.item
+            if expiry_date is not None:
+                if expiry_date <= datetime.date.today():
+                    expired_items.append(
+                        {
+                            "item_expiry_id": item_id,
+                            "item_name": item_object.name,
+                            "expiry_date": expiry_date,
+                            "quantity": quantity,
+                            "days_expired_for": (datetime.date.today() - expiry_date).days,
+                        }
+                    )
+                elif expiry_date <= datetime.date.today() + datetime.timedelta(days=30):
+                    expiring_items.append(
+                        {
+                            "item_expiry_id": item_id,
+                            "item_name": item_object.name,
+                            "expiry_date": expiry_date,
+                            "quantity": quantity,
+                            "days_expires_in": (expiry_date - datetime.date.today()).days,
+                        }
+                    )
+
+        if expiring_items:
+            expiring_items.sort(key=lambda x: x["expiry_date"])
+
+        # Sort the expired_items list
+        if expired_items:
+            expired_items.sort(key=lambda x: x["expiry_date"])
+
+        if expiring_items or expired_items:
+            expiry_kits.append(
+                {
+                    "kit_id": kit.id,
+                    "kit_name": kit.name,
+                    "expiring_items": expiring_items if expiring_items else None,
+                    "expired_items": expired_items if expired_items else None,
+                }
+            )
+
+    return Response(expiry_kits)
