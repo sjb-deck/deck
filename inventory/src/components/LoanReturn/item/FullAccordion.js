@@ -71,9 +71,7 @@ export const FullAccordion = ({ index, loan, isMobile }) => {
               color='success'
               onClick={handleDialogOpen} // Open the dialog on button click
             >
-              {'Return ' +
-                loan.order_items.length +
-                (loan.order_items.length === 1 ? ' item' : ' items')}
+              Return
             </Button>
           </Box>
         </AccordionDetails>
