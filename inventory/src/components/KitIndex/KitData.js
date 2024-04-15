@@ -99,7 +99,11 @@ export const KitData = ({ kit, isMobile }) => {
           <Button
             color='info'
             variant='contained'
-            onClick={() => (window.location.href = `kit_info?kitId=${kit.id}`)}
+            onClick={() =>
+              window.location.replace(
+                `/inventory/kits/kit_info?kitId=${kit.id}`,
+              )
+            }
           >
             View Kit
           </Button>
@@ -117,7 +121,11 @@ export const KitData = ({ kit, isMobile }) => {
             <Button
               color='success'
               variant='contained'
-              onClick={() => (window.location.href = `return?kitId=${kit.id}`)}
+              onClick={() =>
+                window.location.replace(
+                  `/inventory/kits/return?kitId=${kit.id}`,
+                )
+              }
             >
               Return
             </Button>

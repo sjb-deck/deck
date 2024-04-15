@@ -61,7 +61,11 @@ def api_kits(request):
                     status=status.HTTP_404_NOT_FOUND,
                 )
             return Response(kit_serializer.data[0], status=status.HTTP_200_OK)
-        kits = Kit.objects.all().exclude(status="RETIRED")
+        status = request.query_params.get("status")
+        if status:
+            kits = Kit.objects.filter(status=status.upper())
+        else:
+            kits = Kit.objects.all().exclude(status="RETIRED")
         kit_serializer = KitSerializer(kits, many=True)
         blueprint = Blueprint.objects.filter(archived=False)
         blueprint_serializer = BlueprintSerializer(blueprint, many=True)
