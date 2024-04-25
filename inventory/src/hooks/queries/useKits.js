@@ -5,13 +5,11 @@ import { useContext } from 'react';
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers';
 
-export const useKits = (options, status) => {
+export const useKits = (options) => {
   const key = 'kits';
-  let url = Api[key];
-  if (status) {
-    url += `?status=${status}`;
-  }
+  const url = Api[key];
   const { setAlert } = useContext(AlertContext);
+
   const defaultOptions = {
     refetchOnWindowFocus: false,
     onError: (error) => {

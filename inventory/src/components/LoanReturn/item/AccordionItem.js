@@ -1,5 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, Drawer, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Drawer, IconButton } from '@mui/material';
 import React, { useState } from 'react';
 
 import { DrawerContent } from './DrawerContent';

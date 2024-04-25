@@ -1,58 +1,62 @@
-import { useKits } from '../../../hooks/queries/';
 import {
   Accordion,
   AccordionSummary,
   Box,
-  FormControl,
   Grid,
+  InputAdornment,
   MenuItem,
   Pagination,
-  InputAdornment,
   Select,
   Skeleton,
   Stack,
   TextField,
-  InputLabel,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useEffect, useState } from 'react';
 
 import { LoadingSpinner } from '../../';
-import { ORDERS_PER_PAGE } from '../../../globals';
+import { useKitHistory } from '../../../hooks/queries';
 import '../../../globals/styles/inventoryBase.scss';
 
-import { KitData } from '../../KitIndex/KitData';
+import { KitData } from './KitData';
 
 export const KitReturn = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { data: kitsData, isLoading: dataLoading } = useKits({}, 'loaned');
   const [currentPage, setCurrentPage] = useState(1);
-  const [completeFilter, setCompleteFilter] = useState('all');
+  const [numPages, setNumPages] = useState(1);
+  const { data: kitsData, isLoading: dataLoading } = useKitHistory({
+    page: currentPage,
+    type: 'LOAN',
+  });
+
   const [searchType, setSearchType] = useState('kit');
   const [searchTerm, setSearchTerm] = useState('');
   const [kitsToDisplay, setKitsToDisplay] = useState([]);
-  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-  const endIndex = startIndex + ORDERS_PER_PAGE;
 
   useEffect(() => {
     if (!kitsData) return;
-    const newKits = kitsData.kits.filter(
+    setNumPages(Math.ceil(parseInt(kitsData.count) / 10));
+  }, [kitsData]);
+
+  useEffect(() => {
+    if (!kitsData) return;
+    const newKits = kitsData.results.filter(
       (k) =>
-        (!searchTerm ||
-          (searchType === 'kit' &&
-            k.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (searchType === 'blueprint' &&
-            k.blueprint_name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()))) &&
-        (completeFilter === 'all' || k.complete === completeFilter),
+        !searchTerm ||
+        (searchType === 'kit' &&
+          k.kit_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (searchType === 'loanee' &&
+          k.loan_info.loanee_name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())),
     );
     setKitsToDisplay(newKits);
-  }, [kitsData, searchType, searchTerm, completeFilter]);
+  }, [kitsData, searchType, searchTerm]);
 
   const handlePageChange = (_, value) => {
     setCurrentPage(value);
   };
+
   return (
     <Box
       sx={{
@@ -62,30 +66,6 @@ export const KitReturn = () => {
         alignItems: 'center',
       }}
     >
-      <Box
-        className='dynamic-width'
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: 1,
-          gap: 2,
-        }}
-      >
-        <FormControl sx={{ width: 1 }}>
-          <InputLabel id='filter-complete'>Complete</InputLabel>
-          <Select
-            labelId='filter-complete'
-            label='Complete'
-            inputProps={{ 'data-testid': 'kit-select-complete' }}
-            value={completeFilter}
-            onChange={(e) => setCompleteFilter(e.target.value)}
-          >
-            <MenuItem value='all'>All</MenuItem>
-            <MenuItem value='complete'>Complete</MenuItem>
-            <MenuItem value='incomplete'>Incomplete</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
       <Box
         className='dynamic-width'
         sx={{
@@ -112,7 +92,7 @@ export const KitReturn = () => {
                     onChange={(e) => setSearchType(e.target.value)}
                   >
                     <MenuItem value='kit'>Kit</MenuItem>
-                    <MenuItem value='blueprint'>Blueprint</MenuItem>
+                    <MenuItem value='loanee'>Loanee</MenuItem>
                   </Select>
                 </InputAdornment>
               ),
@@ -168,14 +148,14 @@ export const KitReturn = () => {
             alignItems: 'center',
           }}
         >
-          {kitsToDisplay?.slice(startIndex, endIndex).map((kit) => {
+          {kitsToDisplay.map((kit) => {
             return <KitData key={kit.id} isMobile={isMobile} kit={kit} />;
           })}
         </Box>
         {kitsToDisplay ? (
           <Pagination
             page={currentPage}
-            count={Math.ceil(kitsToDisplay?.length / ORDERS_PER_PAGE)}
+            count={numPages}
             onChange={handlePageChange}
           />
         ) : (

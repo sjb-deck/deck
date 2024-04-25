@@ -2,19 +2,17 @@ import {
   Accordion,
   AccordionSummary,
   Box,
-  FormControl,
   Grid,
+  InputAdornment,
   MenuItem,
   Pagination,
-  InputAdornment,
   Select,
   Skeleton,
   Stack,
   TextField,
-  InputLabel,
 } from '@mui/material';
-import React, { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import React, { useEffect, useState } from 'react';
 
 import { useActiveLoans } from '../../../hooks/queries';
 import { EmptyMessage } from '../../EmptyMessage';
@@ -26,6 +24,10 @@ export const ItemLoanReturn = () => {
   const isMobile = useMediaQuery('(max-width: 800px)');
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchType, setSearchType] = useState('item');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loansToDisplay, setLoansToDisplay] = useState([]);
+
   const {
     data: loans,
     isLoading: loansLoading,
@@ -35,20 +37,26 @@ export const ItemLoanReturn = () => {
     setCurrentPage(value);
   };
 
-  if (loansLoading) {
-    return <LoadingSpinner />;
-  }
+  useEffect(() => {
+    if (!loans) return;
+    const newKits = loans.results.filter(
+      (k) =>
+        !searchTerm ||
+        (searchType === 'item' &&
+          k.order_items.some((expiry) =>
+            expiry.item_expiry.item.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()),
+          )) ||
+        (searchType === 'loanee' &&
+          k.loanee_name.toLowerCase().includes(searchTerm.toLowerCase())),
+    );
+    setLoansToDisplay(newKits);
+  }, [loans, searchType, searchTerm]);
 
   if (!loansLoading && !loans && !loansError) {
     return <EmptyMessage message='There are currently no active loans' />;
   }
-
-  if (!loans)
-    return (
-      <Skeleton>
-        <Pagination />
-      </Skeleton>
-    );
 
   return (
     <>
@@ -57,10 +65,34 @@ export const ItemLoanReturn = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          marginBottom: 1,
-          gap: 2,
+          marginBottom: 2,
+          gap: 3,
         }}
-      ></Box>
+      >
+        <Box sx={{ display: 'flex', width: 1 }}>
+          <TextField
+            label='Search by'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <Select
+                    size='small'
+                    value={searchType}
+                    inputProps={{ 'data-testid': 'item-select-name' }}
+                    onChange={(e) => setSearchType(e.target.value)}
+                  >
+                    <MenuItem value='item'>Item</MenuItem>
+                    <MenuItem value='loanee'>Loanee</MenuItem>
+                  </Select>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      </Box>
       <Accordion
         expanded={false}
         className='view-table-header'
@@ -109,7 +141,7 @@ export const ItemLoanReturn = () => {
             alignItems: 'center',
           }}
         >
-          {loans.results.map((loan, index) => (
+          {loansToDisplay.map((loan, index) => (
             <FullAccordion
               key={index}
               index={(index + 1).toString() + '.'}
@@ -118,13 +150,20 @@ export const ItemLoanReturn = () => {
             />
           ))}
         </Box>
-        <Pagination
-          page={currentPage}
-          count={loans.num_pages}
-          onChange={handlePageChange}
-          sx={{ paddingTop: 2 }}
-        />
+        {loansToDisplay ? (
+          <Pagination
+            page={currentPage}
+            count={loans.num_pages}
+            onChange={handlePageChange}
+            sx={{ paddingTop: 2 }}
+          />
+        ) : (
+          <Skeleton>
+            <Pagination />
+          </Skeleton>
+        )}
       </Stack>
+      {loansLoading ? <LoadingSpinner /> : null}
     </>
   );
 };

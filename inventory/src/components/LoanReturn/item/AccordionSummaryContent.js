@@ -1,6 +1,4 @@
-import { Grid, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Grid } from '@mui/material';
 import React from 'react';
 
 export const AccordionSummaryContent = ({
