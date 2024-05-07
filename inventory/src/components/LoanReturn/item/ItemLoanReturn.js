@@ -150,7 +150,7 @@ export const ItemLoanReturn = () => {
             />
           ))}
         </Box>
-        {loansToDisplay ? (
+        {loans ? (
           <Pagination
             page={currentPage}
             count={loans.num_pages}

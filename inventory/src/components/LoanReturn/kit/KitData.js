@@ -9,6 +9,8 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
+import { getReadableDate } from '../../../utils';
+
 import React from 'react';
 
 // TODO: This is the exact same as KitData from the KitIndex folder but since the kit object here is the KitHistory object instead of the Kit object, some fields are different. Change in the future to reuse the same component.
@@ -35,11 +37,11 @@ export const KitData = ({ kit, isMobile }) => {
             {kit.kit_name}
           </Grid>
           <Grid item xs={isMobile ? 5 : 4}>
-            On Loan
+            {kit.loan_info.loanee_name}
           </Grid>
           {!isMobile && (
             <Grid item xs={3}>
-              {kit.complete === 'complete' ? 'Complete' : 'Incomplete'}
+              {getReadableDate(kit.loan_info.due_date).formattedDate}
             </Grid>
           )}
         </Grid>

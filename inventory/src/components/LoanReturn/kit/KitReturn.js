@@ -119,11 +119,11 @@ export const KitReturn = () => {
               Name
             </Grid>
             <Grid item xs={isMobile ? 5 : 4}>
-              Status
+              Loanee Name
             </Grid>
             {!isMobile && (
               <Grid item xs={3}>
-                Complete
+                Due Date
               </Grid>
             )}
           </Grid>
