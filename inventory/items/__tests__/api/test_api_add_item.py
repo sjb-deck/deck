@@ -5,6 +5,7 @@ from django.test import TestCase
 from accounts.models import User, UserExtras
 from inventory.items.models import Item
 from django.core.files.uploadedfile import SimpleUploadedFile
+from unittest.mock import patch
 
 
 class TestApiAddItemViews(TestCase):
@@ -34,8 +35,13 @@ class TestApiAddItemViews(TestCase):
         }
         self.url = reverse("api_add_item")
 
-    def test_create_item(self):
+    @patch("inventory.items.views.upload_file", return_value="items/test_img.jpg")
+    def test_create_item(self, mock_upload_file):
         response = self.client.post(self.url, self.item_data, format="multipart")
+
+        # Check if the file was uploaded
+        mock_upload_file.assert_called_once()
+
         self.assertEqual(response.status_code, 201)
 
         # Check if the item exists in the database
@@ -88,6 +94,7 @@ class TestApiAddItemViews(TestCase):
         response = self.client.post(self.url, self.item_data, format="json")
         self.assertEqual(response.status_code, 500)
 
-    def tearDown(self):
+    @patch("inventory.items.models.Item.ItemModels.delete_file")
+    def tearDown(self, mock_delete_file):
         Item.objects.all().delete()
         self.user.delete()
