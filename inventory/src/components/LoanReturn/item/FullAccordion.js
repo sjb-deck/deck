@@ -31,6 +31,7 @@ export const FullAccordion = ({ index, loan, isMobile }) => {
     <>
       <Accordion
         key={loan.id}
+        data-testid={`item-${loan.id}`}
         sx={{
           width: isMobile ? '95%' : '70%',
         }}
@@ -41,14 +42,17 @@ export const FullAccordion = ({ index, loan, isMobile }) => {
           id='panel1a-header'
         >
           <AccordionSummaryContent
-            index={index}
+            index={loan.id}
             orderDate={loan.date}
             returnDate={loan.due_date ? loan.due_date : 'N/A'}
             loaneeName={loan.loanee_name}
             isMobile={isMobile}
           />
         </AccordionSummary>
-        <AccordionDetails sx={{ marginTop: '-10px', marginBottom: '-10px' }}>
+        <AccordionDetails
+          sx={{ marginTop: '-10px', marginBottom: '-10px' }}
+          data-testid={`details-${loan.id}`}
+        >
           <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
           <Stack spacing={1} sx={{ marginTop: 2, marginBottom: 1 }}>
             {loan.order_items.map((orderItem, index) => (
