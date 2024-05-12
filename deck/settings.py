@@ -96,7 +96,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "deck_staging",
+        "NAME": "deck",
         "HOST": config("DB_HOST"),
         "PORT": "3306",
         "USER": config("DB_USER"),
