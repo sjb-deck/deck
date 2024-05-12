@@ -13,7 +13,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: test_deck_staging
+          MYSQL_DATABASE: deck
           MYSQL_ROOT_PASSWORD: testrootpassword
         ports:
           - 3306:3306
@@ -41,6 +41,16 @@ jobs:
         run: |
           black . --check
           npx eslint .
+      - name: Apply Database Migrations
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          DEBUG: ${{ secrets.DEBUG }}
+          DB_USER: root
+          DB_PW: testrootpassword
+          DB_HOST: 127.0.0.1
+        run: |
+          python manage.py migrate --noinput
       - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
