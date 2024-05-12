@@ -94,7 +94,7 @@ class TestApiAddItemViews(TestCase):
         response = self.client.post(self.url, self.item_data, format="json")
         self.assertEqual(response.status_code, 500)
 
-    @patch("inventory.items.models.Item.ItemModels.delete_file")
+    @patch("inventory.items.models.ItemModels.delete_file")
     def tearDown(self, mock_delete_file):
         Item.objects.all().delete()
         self.user.delete()

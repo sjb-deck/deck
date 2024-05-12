@@ -24,7 +24,7 @@ class TestTriggerDeleteItem(TestCase):
             imgpic="items/test_img.jpg",
         )
 
-    @patch("inventory.items.models.Item.ItemModels.delete_file")
+    @patch("inventory.items.models.ItemModels.delete_file")
     def test_trigger_delete_item(self, mock_delete_file):
         self.item.delete()
         mock_delete_file.assert_called_once_with("items/test_img.jpg")
