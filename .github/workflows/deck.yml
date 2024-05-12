@@ -41,9 +41,6 @@ jobs:
         run: |
           black . --check
           npx eslint .
-      - name: Apply Database Migrations
-        run: |
-          python manage.py migrate --noinput
       - name: Run Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -55,6 +52,7 @@ jobs:
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
         run: |
+          python manage.py migrate --noinput
           coverage run manage.py test --noinput
           coverage xml -o coverage.xml
           npm run test:coverage
