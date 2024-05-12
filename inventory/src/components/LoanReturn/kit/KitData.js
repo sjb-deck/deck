@@ -9,9 +9,9 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
-import { getReadableDate } from '../../../utils';
-
 import React from 'react';
+
+import { getReadableDate } from '../../../utils';
 
 // TODO: This is the exact same as KitData from the KitIndex folder but since the kit object here is the KitHistory object instead of the Kit object, some fields are different. Change in the future to reuse the same component.
 
