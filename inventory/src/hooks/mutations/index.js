@@ -8,3 +8,4 @@ export * from './useExportItems';
 export * from './useRevertHistory';
 export * from './useAddBlueprint';
 export * from './useRestockKit';
+export * from './useSubmitKitOrder';

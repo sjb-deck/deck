@@ -33,6 +33,20 @@ def kit_restock(request):
     return render(request, "kit_restock.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def kit_loan_return(request):
+    return render(request, "kit_loan_return.html")
+
+
+def cart(request):
+    return render(request, "kit_cart.html")
+
+
+@login_required(login_url="/r'^login/$'")
+def kit_create(request):
+    return render(request, "kit_create.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_kits(request):

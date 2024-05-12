@@ -13,9 +13,9 @@ import {
 } from '@mui/material';
 import React, { useContext, useState } from 'react';
 
-import { URL_INV_LOAN_RETURN } from '../../globals';
-import { useReturnLoan } from '../../hooks/mutations';
-import { AlertContext } from '../../providers';
+import { URL_INV_LOAN_RETURN } from '../../../globals';
+import { useReturnLoan } from '../../../hooks/mutations';
+import { AlertContext } from '../../../providers';
 
 import { checkLoanReturnForm } from './validation';
 

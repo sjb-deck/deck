@@ -152,6 +152,7 @@ export const CreateBlueprint = () => {
           </Box>
         </>
       )}
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );

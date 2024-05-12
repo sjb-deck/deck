@@ -9,7 +9,17 @@ export const useAddItem = (options) => {
   const request = getRequest();
 
   return useMutation(async (order) => {
-    const response = await request.post(url, order);
+    const formData = new FormData();
+    for (const key in order) {
+      if (order.hasOwnProperty(key)) {
+        if (key === 'expiry_dates') {
+          formData.append(key, JSON.stringify(order[key]));
+          continue;
+        }
+        formData.append(key, order[key]);
+      }
+    }
+    const response = await request.post(url, formData);
     return response.data;
   });
 };

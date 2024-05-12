@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+
 import sys
 from pathlib import Path
 import os
@@ -95,11 +96,17 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "deck_staging",
+        "NAME": "deck",
         "HOST": config("DB_HOST"),
         "PORT": "3306",
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PW"),
+        "TEST": {
+            "NAME": "test_deck",
+        },
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     },
 }
 

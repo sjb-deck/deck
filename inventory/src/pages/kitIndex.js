@@ -23,7 +23,7 @@ export const KitIndex = () => {
       >
         <KitList />
       </Box>
-
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );

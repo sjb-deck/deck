@@ -110,7 +110,10 @@ const RestockOption = ({ option, setRestockValue }) => {
         marginBottom: '50px',
       }}
     >
-      <Chip label={formattedDate} color={value > 0 ? 'success' : 'default'} />
+      <Chip
+        label={formattedDate.length ? formattedDate : 'No Expiry'}
+        color={value > 0 ? 'success' : 'default'}
+      />
       <NumberInput
         placeholder='Type a number…'
         value={value}
@@ -134,8 +137,9 @@ const RestockOption = ({ option, setRestockValue }) => {
               alignSelf: 'center',
               fontSize: '0.875rem',
               fontFamily: 'inherit',
-              fontWeight: 400,
+              fontWeight: 600,
               lineHeight: 1.5,
+              color: 'inherit',
             }}
           >
             / {option.quantity}

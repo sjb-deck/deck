@@ -14,3 +14,5 @@ export * from './EmptyMessage';
 export * from './KitInfo';
 export * from './KitRestock';
 export * from './NumberInput';
+export * from './KitLoanReturn';
+export * from './ImageAvatar';
