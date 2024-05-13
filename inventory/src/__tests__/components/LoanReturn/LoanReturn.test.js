@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
 
@@ -27,9 +27,7 @@ describe('Loan Return', () => {
   });
 
   it('should switch between item/kit loan view', async () => {
-    act(() => {
-      render(<LoanReturn />);
-    });
+    render(<LoanReturn />);
     await waitFor(() => {
       expect(screen.getAllByText('test')[0]).toBeInTheDocument();
     });

@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import React from 'react';
 
@@ -20,9 +20,7 @@ describe('Item Loan Return', () => {
         return res(ctx.status(200), ctx.json(activeItemLoans));
       }),
     );
-    act(() => {
-      render(<ItemLoanReturn />);
-    });
+    render(<ItemLoanReturn />);
     await waitFor(() => {
       expect(screen.getAllByText('test')[0]).toBeInTheDocument();
     });
