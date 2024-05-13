@@ -6,12 +6,12 @@ import { getUrlWithoutParams } from '../../utils';
 import {
   exampleKit,
   exampleKitRestockOptions,
+  mockBlueprints,
   mockItemList,
+  mockKitRecipeData,
   mockKitsList,
   mockOrders,
   mockUser,
-  mockKitRecipeData,
-  mockBlueprints,
 } from '../index';
 
 export const handlers = [
