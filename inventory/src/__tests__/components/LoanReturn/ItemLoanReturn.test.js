@@ -10,7 +10,7 @@ import { activeItemLoans, activeKitLoans } from '../../../mocks/loanActive';
 import { render } from '../../../testSetup';
 import { getUrlWithoutParams } from '../../../utils';
 
-describe('Kit Loan Return', () => {
+describe('Item Loan Return', () => {
   beforeEach(async () => {
     server.use(
       rest.get(getUrlWithoutParams(Api['kitHistory']), (req, res, ctx) => {
@@ -41,7 +41,7 @@ describe('Kit Loan Return', () => {
   });
 
   it('should display loan information correctly', async () => {
-    const details = ['125', '17/11/2023', '15/11/2023', 'test'];
+    const details = ['125', '17 Nov 2023', '15 Nov 2023', 'test'];
 
     for (const detail of details) {
       expect(screen.getAllByText(detail)[0]).toBeInTheDocument();

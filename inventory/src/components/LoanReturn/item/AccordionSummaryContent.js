@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material';
 import React from 'react';
+import { getReadableDate } from '../../../utils';
 
 export const AccordionSummaryContent = ({
   index,
@@ -8,18 +9,16 @@ export const AccordionSummaryContent = ({
   loaneeName,
   isMobile,
 }) => {
-  const displayReturnDate = new Date(returnDate).toLocaleDateString();
-  const displayOrderDate = new Date(orderDate).toLocaleDateString();
   return (
     <Grid container>
       <Grid item xs={2}>
         {index}
       </Grid>
       <Grid item xs={isMobile ? 5 : 3}>
-        {displayReturnDate}
+        {getReadableDate(returnDate).formattedDate}
       </Grid>
       <Grid item xs={isMobile ? 5 : 4}>
-        {displayOrderDate}
+        {getReadableDate(orderDate).formattedDate}
       </Grid>
       {!isMobile && (
         <Grid item xs={3}>

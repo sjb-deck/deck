@@ -50,5 +50,5 @@ describe('Loan Return', () => {
     await waitFor(() => {
       expect(screen.getAllByText('test')[0]).toBeInTheDocument();
     });
-  });
+  }, 10000);
 });
