@@ -107,9 +107,11 @@ def transact_items(content, request, kit, is_withdraw, is_create_kit=False):
     ]
     payload = {
         "action": "Withdraw" if is_withdraw else "Deposit",
-        "reason": "kit_create"
-        if is_create_kit
-        else ("kit_restock" if is_withdraw else "kit_retire"),
+        "reason": (
+            "kit_create"
+            if is_create_kit
+            else ("kit_restock" if is_withdraw else "kit_retire")
+        ),
         "order_items": order_items,
     }
 
@@ -257,9 +259,9 @@ def get_restock_options(blueprint_id, given_content):
                 "required_quantity": item["quantity"],
                 "missing_quantity": missing_quantity,
                 "item_options": item_options,
-                "sufficient_stock": False
-                if main_item.total_quantity < missing_quantity
-                else True,
+                "sufficient_stock": (
+                    False if main_item.total_quantity < missing_quantity else True
+                ),
             }
         )
 

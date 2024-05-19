@@ -50,13 +50,13 @@ export const Footer = () => {
     <Box component='footer' position={'absolute'}>
       <Paper
         sx={{
-          mt: 3,
           width: '100vw',
           backgroundColor: (theme) =>
             theme.palette.mode === 'light'
               ? theme.palette.grey[200]
               : theme.palette,
           p: footerPadding,
+          pt: footerPadding + sectionPadding,
         }}
       >
         <Box

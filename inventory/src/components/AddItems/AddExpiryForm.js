@@ -1,8 +1,12 @@
 import {
   Box,
   Button,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
+  Input,
+  InputLabel,
   MenuItem,
   Select,
   Switch,
@@ -11,7 +15,9 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useState } from 'react';
+
+import { ImageAvatar } from '../ImageAvatar';
 
 import { DateAndQuantity } from './DateAndQuantity';
 
@@ -33,6 +39,26 @@ export const AddExpiryForm = ({
   setExpiryFormError,
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
+  const renderImagePreview = () => {
+    const reader = new FileReader();
+    const file = document.getElementById('imgpic').files[0];
+    reader.onloadend = () => {
+      setImagePreviewUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const checkFileType = (e) => {
+    const file = e.target.files[0];
+    const fileType = file.type.split('/')[0];
+    if (fileType !== 'image') {
+      alert('Please upload an image file');
+      e.target.value = '';
+    }
+  };
 
   const handleAddExpiry = () => {
     const exp = expiryFormData.expiry;
@@ -71,6 +97,15 @@ export const AddExpiryForm = ({
           marginRight: '15px',
         }}
       >
+        {imagePreviewUrl ? (
+          <ImageAvatar src={imagePreviewUrl} alt='Image preview' size={90} />
+        ) : (
+          <ImageAvatar
+            src={'/static/inventory/img/logo.png'}
+            alt='Image preview'
+            size={90}
+          />
+        )}
         <TextField
           label='Name'
           name='name'
@@ -177,18 +212,22 @@ export const AddExpiryForm = ({
           )}
         </div>
 
-        <TextField
-          label='Image'
-          name='imgpic'
-          value={expiryFormData.imgpic}
-          onChange={handleFormChange}
-          helperText='Image URL'
-          variant='standard'
-          sx={{
-            '& .MuiInputLabel-root': { fontSize: '14px' },
-            '& .MuiFormHelperText-root': { color: 'gray', fontSize: '12px' },
-          }}
-        />
+        <FormControl variant='standard'>
+          <InputLabel htmlFor='imgpic'>Image</InputLabel>
+          <Input
+            id='imgpic'
+            name='imgpic'
+            type='file'
+            accept='image/*'
+            onChange={(e) => {
+              checkFileType(e);
+              renderImagePreview();
+              handleFormChange(e);
+            }}
+          />
+          <FormHelperText>Upload Image</FormHelperText>
+        </FormControl>
+
         <Grid container spacing={3}>
           <Grid item xs={isSmallScreen ? 12 : 6} sm={6}>
             <TextField

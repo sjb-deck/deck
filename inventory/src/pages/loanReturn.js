@@ -1,43 +1,23 @@
-import { Pagination, Skeleton } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
 
 import {
-  EmptyMessage,
   Footer,
-  FullAccordion,
-  LoadingSpinner,
   NavBar,
   Theme,
+  KitReturn,
+  ItemLoanReturn,
 } from '../components';
-import { useUser, useActiveLoans } from '../hooks/queries';
+import { useUser } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
 
 export const LoanReturn = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data: user, isLoading: userLoading } = useUser();
-  const { data: loans, isLoading: loansLoading } = useActiveLoans(currentPage);
-
-  const handlePageChange = (_, value) => {
-    setCurrentPage(value);
-  };
-
-  if (userLoading || loansLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!loans || loans.results.length === 0) {
-    return (
-      <Theme>
-        <NavBar user={user} />
-        <EmptyMessage message='There are currently no active loans' />
-        <Footer />
-      </Theme>
-    );
-  }
+  const { data: user } = useUser();
+  const [view, setView] = useState('items');
 
   return (
     <Theme>
@@ -51,30 +31,49 @@ export const LoanReturn = () => {
       >
         <Typography variant='h4'>Loan Return</Typography>
         <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: 10,
+            width: '100%',
+          }}
+        >
+          <ButtonGroup
+            variant='text'
+            aria-label='text button group'
+            className='dynamic-width'
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            <Button
+              color={view === 'items' ? 'success' : 'primary'}
+              variant={view === 'items' ? 'contained' : 'outlined'}
+              onClick={() => setView('items')}
+              sx={{ borderRadius: 0, marginBottom: 1 }}
+            >
+              Items
+            </Button>
+            <Button
+              color={view === 'kits' ? 'success' : 'primary'}
+              variant={view === 'kits' ? 'contained' : 'outlined'}
+              onClick={() => setView('kits')}
+              sx={{ borderRadius: 0, marginBottom: 1 }}
+            >
+              Kits
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <Box
           display='flex'
           flexDirection='column'
           alignItems='center'
           width='100%'
         >
-          {loans.results.map((loan, index) => (
-            <FullAccordion
-              key={index}
-              index={(index + 1).toString() + '.'}
-              loan={loan}
-            />
-          ))}
+          {view == 'items' ? <ItemLoanReturn /> : <KitReturn />}
         </Box>
-        {loans ? (
-          <Pagination
-            page={currentPage}
-            count={loans.num_pages}
-            onChange={handlePageChange}
-          />
-        ) : (
-          <Skeleton>
-            <Pagination />
-          </Skeleton>
-        )}
       </Stack>
       <Footer />
     </Theme>

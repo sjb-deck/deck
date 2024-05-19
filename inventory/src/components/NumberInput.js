@@ -57,7 +57,7 @@ const grey = {
 const StyledInputRoot = styled('div')(
   ({ theme, color }) => `
     font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 400;
+    font-weight: 600;
     border-radius: 8px;
     background: ${
       color === 'success'
@@ -104,7 +104,7 @@ const StyledInputElement = styled('input')(
   ({ theme }) => `
     font-size: 0.875rem;
     font-family: inherit;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.5;
     grid-column: 1/2;
     grid-row: 1/3;

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip } from '@mui/material';
+import { Box, Button, Chip } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -10,6 +10,7 @@ import {
   CART_ITEM_TYPE_WITHDRAW,
 } from '../../../globals';
 import { CartContext } from '../../../providers';
+import { ImageAvatar } from '../../ImageAvatar';
 import { Paper } from '../../styled';
 import { CartPopupModal } from '../CartPopupModal';
 
@@ -95,10 +96,10 @@ export const ItemContainer = ({ item }) => {
           spacing={{ xs: 1, sm: 2, md: 4 }}
         >
           {item.imgpic ? (
-            <Avatar
-              alt={`${item.name}`}
-              src={`${item.imgpic}`}
-              sx={{ width: 90, height: 90 }}
+            <ImageAvatar
+              src={`/get_image/${item.imgpic}`}
+              size={90}
+              alt={item.name}
             />
           ) : (
             <img src='/static/inventory/img/logo.png' width={90} height={90} />

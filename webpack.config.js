@@ -6,8 +6,9 @@ const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 
 module.exports = {
   entry: {
-    login: ['./deck/src/js/login.js', './deck/src/scss/login.scss'],
+    login: ['./deck/src/js/login.js'],
     inventoryBase: ['./inventory/src/globals/styles/inventoryBase.scss'],
+    inventoryIndex: ['./inventory/src/pages/render/inventoryIndex.js'],
     itemIndex: ['./inventory/src/pages/render/itemIndex.js'],
     cartIndex: ['./inventory/src/pages/render/cartIndex.js'],
     adminIndex: ['./inventory/src/pages/render/adminIndex.js'],
@@ -17,8 +18,11 @@ module.exports = {
     itemList: ['./inventory/src/pages/render/itemList.js'],
     kitIndex: ['./inventory/src/pages/render/kitIndex.js'],
     kitInfo: ['./inventory/src/pages/render/kitInfo.js'],
+    kitLoanReturn: ['./inventory/src/pages/render/kitLoanReturn.js'],
     createBlueprint: ['./inventory/src/pages/render/createBlueprint.js'],
     kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
+    kitCart: ['./inventory/src/pages/render/kitCart.js'],
+    kitAdd: ['./inventory/src/pages/render/kitAdd.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),

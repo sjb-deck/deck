@@ -23,4 +23,6 @@ export const Api = {
   addBlueprint: `${INV_API_BASE_URL}/add_blueprint`,
   kitRestockOptions: `${INV_API_BASE_URL}/restock_options/:id`,
   kitRestock: `${INV_API_BASE_URL}/restock_kit`,
+  returnKit: `${INV_API_BASE_URL}/return_kit_order`,
+  submitKitOrder: `${INV_API_BASE_URL}/submit_kit_order`,
 };

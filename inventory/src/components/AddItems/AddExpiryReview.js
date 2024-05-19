@@ -1,7 +1,8 @@
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import React from 'react';
+
+import { ImageAvatar } from '../ImageAvatar';
 
 /**
  * Component for reviewing and confirming the new item details.
@@ -35,7 +36,10 @@ export const AddExpiryReview = ({ expiryFormData }) => {
             marginTop: '10px',
           }}
         >
-          <Avatar alt='new-item' src={expiryFormData.image} />
+          <ImageAvatar
+            alt='new-item'
+            src={`/get_image/${expiryFormData.image}`}
+          />
         </div>
         <div
           style={{

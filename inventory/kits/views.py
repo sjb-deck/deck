@@ -33,6 +33,20 @@ def kit_restock(request):
     return render(request, "kit_restock.html")
 
 
+@login_required(login_url="/r'^login/$'")
+def kit_loan_return(request):
+    return render(request, "kit_loan_return.html")
+
+
+def cart(request):
+    return render(request, "kit_cart.html")
+
+
+@login_required(login_url="/r'^login/$'")
+def kit_create(request):
+    return render(request, "kit_create.html")
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def api_kits(request):
@@ -47,6 +61,7 @@ def api_kits(request):
                     status=status.HTTP_404_NOT_FOUND,
                 )
             return Response(kit_serializer.data[0], status=status.HTTP_200_OK)
+
         kits = Kit.objects.all().exclude(status="RETIRED")
         kit_serializer = KitSerializer(kits, many=True)
         blueprint = Blueprint.objects.filter(archived=False)
@@ -259,7 +274,12 @@ def kit_history(request):
                 "-id"
             )
         elif type:
-            histories = History.objects.filter(type__icontains=type).order_by("-id")
+            if type.lower() == "loan":
+                histories = LoanHistory.objects.filter(
+                    type__icontains=type, return_date__isnull=True
+                ).order_by("-id")
+            else:
+                histories = History.objects.filter(type__icontains=type).order_by("-id")
         elif loanee_name:
             histories = LoanHistory.objects.filter(
                 loanee_name__icontains=loanee_name

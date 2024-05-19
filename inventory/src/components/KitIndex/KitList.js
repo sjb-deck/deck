@@ -21,7 +21,6 @@ import { ORDERS_PER_PAGE } from '../../globals';
 import '../../globals/styles/inventoryBase.scss';
 import { useKits } from '../../hooks/queries';
 
-import { KitAdd } from './KitAdd';
 import { KitData } from './KitData';
 
 export const KitList = () => {
@@ -84,7 +83,7 @@ export const KitList = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value='all'>All</MenuItem>
-            <MenuItem value='ON_LOAN'>On Loan</MenuItem>
+            <MenuItem value='LOANED'>On Loan</MenuItem>
             <MenuItem value='READY'>Ready</MenuItem>
             <MenuItem value='SERVICING'>Servicing</MenuItem>
           </Select>
@@ -137,10 +136,10 @@ export const KitList = () => {
             }}
           />
         </Box>
-        <KitAdd blueprints={kitsData ? kitsData.blueprints : []} />
       </Box>
       <Accordion
         expanded={false}
+        className='view-table-header'
         sx={{
           maxWidth: '750px',
           minWidth: isMobile ? '95%' : '70%',

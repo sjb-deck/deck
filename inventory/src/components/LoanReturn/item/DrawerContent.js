@@ -1,6 +1,8 @@
-import { Avatar, Grid, Paper, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
+
+import { ImageAvatar } from '../../ImageAvatar';
 
 export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
@@ -25,10 +27,10 @@ export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
             marginTop: '15px',
           }}
         >
-          <Avatar
+          <ImageAvatar
             alt='new-item'
-            src={item.imgpic}
-            style={{ width: '70px', height: '70px' }} // Increase the size
+            src={`get_image/${item.imgpic}`}
+            size={'70px'}
           />
         </div>
       </Paper>

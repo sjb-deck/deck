@@ -32,6 +32,17 @@ export const KitHistoryTimeline = ({ histories }) => {
   const firstHistoryId = histories.length ? histories[0].id : null;
   const { mutate, isLoading } = useRevertHistory();
 
+  const displayHistoryType = (history) => {
+    if (history.type == 'LOAN' && history.loan_info.return_date) {
+      return 'Loan Returned';
+    } else {
+      return (
+        history.type.charAt(0).toUpperCase() +
+        history.type.slice(1).toLowerCase()
+      );
+    }
+  };
+
   const displayHistory = (history) => () => {
     setSelectedHistory(history);
     setOpen(true);
@@ -65,7 +76,7 @@ export const KitHistoryTimeline = ({ histories }) => {
           >
             <TimelineOppositeContent sx={{ py: '12px', px: 2 }}>
               <Typography variant='h6' component='span'>
-                {history.type}
+                {displayHistoryType(history)}
               </Typography>
               <br />
               <Typography variant='caption'>{typeToInfo(history)}</Typography>

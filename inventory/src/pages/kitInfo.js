@@ -11,12 +11,14 @@ export const KitInfo = () => {
     kitId: params.get('kitId'),
   });
 
+  console.log('Kit INFO: ', userData, kitData);
   return (
     <>
       <NavBar user={userData} />
       <div style={{ minHeight: '100vh' }}>
         {kitData ? <KitInfoContent kitData={kitData} /> : <LoadingSpinner />}
       </div>
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );
