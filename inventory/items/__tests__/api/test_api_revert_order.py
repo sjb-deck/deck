@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, Order, LoanOrder, ItemExpiry
+from inventory.items.models import Item, Order, LoanOrder, ItemExpiry, OrderItem
 import datetime
 from django.utils import timezone
 
@@ -15,12 +15,7 @@ class TestApiRevertOrderView(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("revert_order")
-        self.clear_relevant_models()
         self.create_items()
-
-    def clear_relevant_models(self):
-        Item.objects.all().delete()
-        Order.objects.all().delete()
 
     def create_items(self):
         self.item = Item.objects.create(
@@ -37,6 +32,21 @@ class TestApiRevertOrderView(TestCase):
         self.itemExpiry2 = self.item.expiry_dates.create(
             expiry_date="2024-12-31", quantity=50, archived=False
         )
+        self.item_create_order = Order.objects.create(
+            action="Deposit",
+            reason="item_creation",
+            user=self.user,
+        )
+        self.item_create_order_item1 = self.item_create_order.order_items.create(
+            item_expiry=self.itemExpiry1,
+            ordered_quantity=50,
+            order=self.item_create_order,
+        )
+        self.item_create_order_item2 = self.item_create_order.order_items.create(
+            item_expiry=self.itemExpiry2,
+            ordered_quantity=50,
+            order=self.item_create_order,
+        )
 
         self.item_no_expiry = Item.objects.create(
             name="No Expiry Item",
@@ -48,6 +58,18 @@ class TestApiRevertOrderView(TestCase):
         )
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             quantity=50, archived=False
+        )
+        self.item_no_expiry_create_order = Order.objects.create(
+            action="Deposit",
+            reason="item_creation",
+            user=self.user,
+        )
+        self.item_no_expiry_create_order_item1 = (
+            self.item_no_expiry_create_order.order_items.create(
+                item_expiry=self.itemExpiry_no_expiry,
+                ordered_quantity=50,
+                order=self.item_no_expiry_create_order,
+            )
         )
 
         self.withdraw_order = Order.objects.create(
@@ -112,8 +134,43 @@ class TestApiRevertOrderView(TestCase):
         )
         self.kit_order.other_info = ""
 
+        self.newly_created_item = Item.objects.create(
+            name="Newly Created Item",
+            type="General",
+            unit="units",
+            total_quantity=50,
+            min_quantity=10,
+            is_opened=False,
+        )
+        self.newly_created_item_expiry1 = self.newly_created_item.expiry_dates.create(
+            quantity=50, archived=False, expiry_date="2023-12-31"
+        )
+        self.newly_created_item_expiry2 = self.newly_created_item.expiry_dates.create(
+            quantity=50, archived=False, expiry_date="2025-12-31"
+        )
+        self.newly_created_item_create_order = Order.objects.create(
+            action="Deposit",
+            reason="item_creation",
+            user=self.user,
+        )
+        self.newly_created_item_create_order_item1 = OrderItem.objects.create(
+            item_expiry=self.newly_created_item_expiry1,
+            ordered_quantity=50,
+            order=self.newly_created_item_create_order,
+        )
+        self.newly_created_item_create_order_item2 = OrderItem.objects.create(
+            item_expiry=self.newly_created_item_expiry2,
+            ordered_quantity=50,
+            order=self.newly_created_item_create_order,
+        )
+
+    def create_request_body(self, order_id):
+        return {"id": order_id}
+
     def test_revert_withdraw_order(self):
-        response = self.client.post(self.url, self.withdraw_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.withdraw_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 200)
 
         # check that item total_quantity is updated
@@ -128,7 +185,9 @@ class TestApiRevertOrderView(TestCase):
         self.assertFalse(Order.objects.filter(id=self.withdraw_order.id).exists())
 
     def test_revert_deposit_order(self):
-        response = self.client.post(self.url, self.deposit_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.deposit_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 200)
 
         # check that item total_quantity is updated
@@ -143,7 +202,9 @@ class TestApiRevertOrderView(TestCase):
         self.assertFalse(Order.objects.filter(id=self.deposit_order.id).exists())
 
     def test_revert_loan_order_that_is_active(self):
-        response = self.client.post(self.url, self.outstanding_loan.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.outstanding_loan.id), format="json"
+        )
         self.assertEqual(response.status_code, 200)
 
         # check that itemExpiry is updated
@@ -158,7 +219,9 @@ class TestApiRevertOrderView(TestCase):
         self.assertFalse(Order.objects.filter(id=self.outstanding_loan.id).exists())
 
     def test_revert_loan_order_that_is_not_active(self):
-        response = self.client.post(self.url, self.returned_loan.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.returned_loan.id), format="json"
+        )
         self.assertEqual(response.status_code, 200)
 
         # check that itemExpiry is updated
@@ -187,34 +250,84 @@ class TestApiRevertOrderView(TestCase):
         self.assertEqual(updated_order_item1.returned_quantity, None)
         self.assertEqual(updated_order_item2.returned_quantity, None)
 
+    def test_revert_item_create_order(self):
+        response = self.client.post(
+            self.url,
+            self.create_request_body(self.newly_created_item_create_order.id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # check that item is deleted
+        self.assertFalse(Item.objects.filter(id=self.newly_created_item.id).exists())
+
+        # check that itemExpiry is deleted
+        self.assertFalse(
+            ItemExpiry.objects.filter(id=self.newly_created_item_expiry1.id).exists()
+        )
+        self.assertFalse(
+            ItemExpiry.objects.filter(id=self.newly_created_item_expiry2.id).exists()
+        )
+
+        # check that order is deleted
+        self.assertFalse(
+            Order.objects.filter(id=self.newly_created_item_create_order.id).exists()
+        )
+
+        # check that order items are deleted
+        self.assertFalse(
+            OrderItem.objects.filter(
+                id=self.newly_created_item_create_order_item1.id
+            ).exists()
+        )
+        self.assertFalse(
+            OrderItem.objects.filter(
+                id=self.newly_created_item_create_order_item2.id
+            ).exists()
+        )
+
     def test_revert_order_with_invalid_order_id(self):
-        response = self.client.post(self.url, -1, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(-1), format="json"
+        )
         self.assertEqual(response.status_code, 500)
 
     def test_revert_order_with_kit_create_order(self):
-        response = self.client.post(self.url, self.kit_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.kit_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 500)
 
     def test_revert_order_with_kit_restock_order(self):
         self.kit_order.reason = "kit_restock"
         self.kit_order.save()
-        response = self.client.post(self.url, self.kit_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.kit_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 500)
 
     def test_revert_order_with_kit_retire_order(self):
         self.kit_order.reason = "kit_retire"
         self.kit_order.action = "Deposit"
         self.kit_order.save()
-        response = self.client.post(self.url, self.kit_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.kit_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 500)
 
     def test_revert_deposit_order_with_insufficient_quantity(self):
         self.deposit_order_item1.ordered_quantity = 100
         self.deposit_order_item1.save()
-        response = self.client.post(self.url, self.deposit_order.id, format="json")
+        response = self.client.post(
+            self.url, self.create_request_body(self.deposit_order.id), format="json"
+        )
         self.assertEqual(response.status_code, 500)
         self.assertEqual(self.itemExpiry1.quantity, 50)
 
-    def tearDown(self) -> None:
-        self.clear_relevant_models()
+    def tearDown(self):
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
+
         return super().tearDown()

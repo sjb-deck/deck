@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import transaction
 
 from .OrderModels import Order
 
@@ -26,14 +27,27 @@ class LoanOrder(Order):
     loan_active = models.BooleanField(default=True)
 
     def revert_order(self):
-        for item in self.order_items.all():
-            item.revert_order_item()
-        if self.loan_active:
-            self.delete()
-        else:
-            self.loan_active = True
-            self.return_date = None
-            self.save()
+        with transaction.atomic():
+            for item in self.order_items.all():
+                item.revert_order_item()
+            if self.loan_active:
+                self.order_items.all().delete()
+                self.delete()
+            else:
+                self.loan_active = True
+                self.return_date = None
+                self.save()
+
+    def check_valid_state(self):
+        """
+        Checks that current instance of LoanOrder is in one of the valid states:
+        1. Loan is active and return_date is None
+        2. Loan is not active and return_date is not None
+        """
+        if self.loan_active and self.return_date is not None:
+            raise Exception("Loan is active but return date is not None")
+        if not self.loan_active and self.return_date is None:
+            raise Exception("Loan is not active but return date is None")
 
     def __str__(self) -> str:
         return f"LoanOrder #{self.pk}"

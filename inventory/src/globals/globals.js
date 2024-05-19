@@ -35,4 +35,5 @@ export const ORDER_REASONS = {
   kit_restock: 'Kit Restock',
   kit_create: 'Kit Create',
   kit_retire: 'Kit Retire',
+  item_creation: 'Item Create',
 };
