@@ -32,7 +32,8 @@ class LoanOrder(Order):
                 item.revert_order_item()
             if self.loan_active:
                 self.order_items.all().delete()
-                self.delete()
+                self.is_reverted = True
+                self.save()
             else:
                 self.loan_active = True
                 self.return_date = None

@@ -156,9 +156,8 @@ class TestApiRevertReturnOrderViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Kit restock reverted successfully!")
 
-        # Check that order is deleted and history is deleted
-        with self.assertRaises(Order.DoesNotExist):
-            Order.objects.get(id=order_id)
+        # Check that order is reverted and history is deleted
+        self.assertTrue(Order.objects.get(id=order_id).is_reverted)
         new_history = History.objects.filter(kit__id=self.kit_id[0]).latest("id")
         self.assertEqual(new_history.type, "LOAN")
 

@@ -73,7 +73,8 @@ def api_orders(request):
         reason = request.query_params.get("reason")
 
         item_orders = (
-            Order.objects.exclude(reason="kit_create")
+            Order.objects.filter(is_reverted=False)
+            .exclude(reason="kit_create")
             .exclude(reason="kit_restock")
             .exclude(reason="kit_retire")
             .prefetch_related("order_items__item_expiry__item")
@@ -81,6 +82,7 @@ def api_orders(request):
         )
         item_loan_orders = (
             LoanOrder.objects.all()
+            .filter(is_reverted=False)
             .prefetch_related("order_items__item_expiry__item")
             .select_related("user")
         )

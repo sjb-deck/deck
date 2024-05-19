@@ -34,12 +34,18 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="orders")
     other_info = models.CharField(max_length=100, null=True, blank=True)
+    is_reverted = models.BooleanField(default=False)
 
     def revert_order(self):
         with transaction.atomic():
             for item in self.order_items.all():
                 item.revert_order_item()
-            self.delete()
+            self.is_reverted = True
+            self.save()
+
+            # delete order if not linked to any order items
+            if self.order_items.count() == 0:
+                self.delete()
 
     def check_valid_state(self):
         """

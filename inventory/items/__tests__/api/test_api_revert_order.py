@@ -181,8 +181,8 @@ class TestApiRevertOrderView(TestCase):
         updated_item_expiry = ItemExpiry.objects.get(id=self.itemExpiry1.id)
         self.assertEqual(updated_item_expiry.quantity, 60)
 
-        # check that order is deleted
-        self.assertFalse(Order.objects.filter(id=self.withdraw_order.id).exists())
+        # check that order is set to reverted
+        self.assertTrue(Order.objects.get(id=self.withdraw_order.id).is_reverted)
 
     def test_revert_deposit_order(self):
         response = self.client.post(
@@ -198,8 +198,8 @@ class TestApiRevertOrderView(TestCase):
         updated_item_expiry = ItemExpiry.objects.get(id=self.itemExpiry1.id)
         self.assertEqual(updated_item_expiry.quantity, 40)
 
-        # check that order is deleted
-        self.assertFalse(Order.objects.filter(id=self.deposit_order.id).exists())
+        # check that order is set to reverted
+        self.assertTrue(Order.objects.get(id=self.deposit_order.id).is_reverted)
 
     def test_revert_loan_order_that_is_active(self):
         response = self.client.post(
@@ -215,8 +215,8 @@ class TestApiRevertOrderView(TestCase):
         self.assertEqual(updated_item_expiry1.quantity, 55)
         self.assertEqual(updated_item_expiry_no_expiry.quantity, 53)
 
-        # check that order is deleted
-        self.assertFalse(Order.objects.filter(id=self.outstanding_loan.id).exists())
+        # check that order is set to reverted
+        self.assertTrue(Order.objects.get(id=self.outstanding_loan.id).is_reverted)
 
     def test_revert_loan_order_that_is_not_active(self):
         response = self.client.post(
@@ -232,8 +232,9 @@ class TestApiRevertOrderView(TestCase):
         self.assertEqual(updated_item_expiry1.quantity, 48)
         self.assertEqual(updated_item_expiry_no_expiry.quantity, 49)
 
-        # check that order exists
+        # check that order exists and is not set to reverted
         self.assertTrue(Order.objects.filter(id=self.returned_loan.id).exists())
+        self.assertFalse(Order.objects.get(id=self.returned_loan.id).is_reverted)
 
         # check that the loan is active
         updated_loan = LoanOrder.objects.get(id=self.returned_loan.id)

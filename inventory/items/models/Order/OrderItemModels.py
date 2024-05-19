@@ -38,9 +38,9 @@ class OrderItem(models.Model):
             item_expiry.withdraw(self.ordered_quantity)
         elif self.order.action == "Withdraw":
             item_expiry.deposit(self.ordered_quantity)
-        self.delete()
         # Special case: If the order is to create an item, then delete the item
         if self.order.reason == "item_creation":
+            self.delete()
             item_expiry.delete()
             if item_expiry.item.expiry_dates.count() == 0:
                 item_expiry.item.delete()
