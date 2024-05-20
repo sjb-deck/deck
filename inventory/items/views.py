@@ -324,9 +324,7 @@ def check_for_alerts(request):
     # Get item expiries that are expiring within 1 month or expired, and not archived
     current_date = timezone.now()
     one_month_later = current_date + timedelta(days=30)
-    expired_items = ItemExpiry.objects.filter(
-        Q(expiry_date__lte=current_date)
-    )
+    expired_items = ItemExpiry.objects.filter(Q(expiry_date__lte=current_date))
     expiring_items = ItemExpiry.objects.filter(
         Q(expiry_date__lte=one_month_later) & Q(expiry_date__gte=current_date)
     )
