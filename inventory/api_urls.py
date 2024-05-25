@@ -38,6 +38,7 @@ item_api_urls = [
         kit_views.revert_kit,
         name="revert_kit",
     ),
+    path("check_kits_expiry", kit_views.check_kits_expiry, name="check_kits_expiry"),
     path("check_for_alerts", item_views.check_for_alerts, name="check_for_alerts"),
 ]
 
