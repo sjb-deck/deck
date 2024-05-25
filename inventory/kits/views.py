@@ -662,7 +662,9 @@ def check_kits_expiry(request):
                             "item_name": item_object.name,
                             "expiry_date": expiry_date,
                             "quantity": quantity,
-                            "days_expired_for": (datetime.date.today() - expiry_date).days,
+                            "days_expired_for": (
+                                datetime.date.today() - expiry_date
+                            ).days,
                         }
                     )
                 elif expiry_date <= datetime.date.today() + datetime.timedelta(days=30):
@@ -672,7 +674,9 @@ def check_kits_expiry(request):
                             "item_name": item_object.name,
                             "expiry_date": expiry_date,
                             "quantity": quantity,
-                            "days_expires_in": (expiry_date - datetime.date.today()).days,
+                            "days_expires_in": (
+                                expiry_date - datetime.date.today()
+                            ).days,
                         }
                     )
 
