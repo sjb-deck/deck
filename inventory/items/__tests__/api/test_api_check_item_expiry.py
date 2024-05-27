@@ -42,8 +42,12 @@ class CheckForAlertsTestCase(TestCase):
             item=self.item4, expiry_date=current_date - timedelta(days=1), quantity=5
         )
 
+    def clear_database(self):
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
+
     def test_no_alerts(self):
-        # Clear all items to ensure no alerts
+        ItemExpiry.objects.all().delete()
         Item.objects.all().delete()
         response = self.client.get(reverse("check_for_alerts"))
         self.assertEqual(response.status_code, 200)
@@ -176,11 +180,6 @@ class CheckForAlertsTestCase(TestCase):
             expiring_items,
         )
 
-    def clear_database(self):
-        """Clears the database of all Items and ItemExpiry records."""
-        ItemExpiry.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_no_alerts_with_items(self):
         # Set up items that do not trigger any alerts
         self.clear_database()
@@ -231,3 +230,7 @@ class CheckForAlertsTestCase(TestCase):
         self.assertEqual(len(data["expiring_items"]), 1)
         self.assertEqual(data["expired_items"][0]["name"], "Item8")
         self.assertEqual(data["expiring_items"][0]["name"], "Item9")
+
+    def tearDown(self):
+        self.clear_database()
+        return super().tearDown()
