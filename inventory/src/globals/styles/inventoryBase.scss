@@ -16,7 +16,8 @@ body {
 }
 
 .view-existing-blueprints {
-  box-shadow: none !important;
+  border-top: 0.05px solid !important;
+  border-top-style: inset !important;
 }
 
 .view-existing-blueprints-header :hover, .view-table-header :hover {
