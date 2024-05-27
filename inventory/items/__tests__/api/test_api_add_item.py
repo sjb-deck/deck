@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
+from inventory.items.models import Item, Order, OrderItem, ItemExpiry
 from django.core.files.uploadedfile import SimpleUploadedFile
 from unittest.mock import patch
 
@@ -65,6 +65,23 @@ class TestApiAddItemViews(TestCase):
         self.assertEqual(second_expiry.quantity, 50)
         self.assertEqual(second_expiry.archived, False)
 
+        # check that order and order items is created
+        self.assertEqual(first_expiry.items_ordered.count(), 1)
+        first_order_item = first_expiry.items_ordered.first()
+        first_item_create_order = first_order_item.order
+        self.assertEqual(first_item_create_order.action, "Deposit")
+        self.assertEqual(first_item_create_order.reason, "item_creation")
+        self.assertEqual(first_order_item.item_expiry, first_expiry)
+        self.assertEqual(first_order_item.ordered_quantity, 50)
+
+        self.assertEqual(second_expiry.items_ordered.count(), 1)
+        second_order_item = second_expiry.items_ordered.first()
+        second_item_create_order = second_order_item.order
+        self.assertEqual(second_item_create_order.action, "Deposit")
+        self.assertEqual(second_item_create_order.reason, "item_creation")
+        self.assertEqual(second_order_item.item_expiry, second_expiry)
+        self.assertEqual(second_order_item.ordered_quantity, 50)
+
     def test_create_item_with_invalid_expiry_date(self):
         item_data_with_no_expiry_date = self.item_data.copy()
         item_data_with_no_expiry_date["expiry_dates"] = []
@@ -95,6 +112,9 @@ class TestApiAddItemViews(TestCase):
         self.assertEqual(response.status_code, 500)
 
     @patch("inventory.items.models.ItemModels.delete_file")
-    def tearDown(self, mock_delete_file):
+    def tearDown(self, _):
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
         Item.objects.all().delete()
         self.user.delete()

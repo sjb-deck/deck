@@ -203,4 +203,8 @@ xdescribe('Receipt', () => {
       ).toBeInTheDocument();
     }
   });
+
+  it.todo(
+    'should render the component with correct data when order is reverted, and alert the user',
+  );
 });

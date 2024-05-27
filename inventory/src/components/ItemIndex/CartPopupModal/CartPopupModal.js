@@ -33,7 +33,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const canAddExpiry = type == CART_ITEM_TYPE_DEPOSIT && hasExpiry;
   const disableExpirySelection = !canAddExpiry && !showDropdown;
   const preselectedExpiryId =
-    selector == 'All' ? item.expiry_dates[0].id : selector;
+    selector == 'All' ? item.expiry_dates[0]?.id : selector;
   const { cartItems, cartState, addToCart } = useContext(CartContext);
 
   const [openConfirmation, setOpenConfirmation] = useState(false);

@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User
-from inventory.items.models import Item
+from inventory.items.models import Item, ItemExpiry
 from inventory.kits.models import Blueprint, Kit
 from datetime import timedelta, datetime
 from django.utils import timezone
@@ -15,7 +15,6 @@ class TestApiCheckKitExpiryViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
         self.url = reverse("check_kits_expiry")
         self.create_items()
         self.compressed_blueprint_content = [
@@ -131,11 +130,6 @@ class TestApiCheckKitExpiryViews(TestCase):
             quantity=50, archived=False
         )
 
-    def clear_relevant_models(self):
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_kit_history(self):
         response = self.client.get(self.url, format="json")
         self.assertEqual(response.status_code, 200)
@@ -199,5 +193,8 @@ class TestApiCheckKitExpiryViews(TestCase):
         )
 
     def tearDown(self):
-        self.clear_relevant_models()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

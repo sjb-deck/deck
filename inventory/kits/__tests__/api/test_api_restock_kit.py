@@ -13,7 +13,6 @@ class TestApiRestockKitViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -104,12 +103,6 @@ class TestApiRestockKitViews(TestCase):
         incomplete_kit = Kit.objects.get(id=self.incomplete_kit_id)
         incomplete_kit.status = "ON_LOAN"
         incomplete_kit.save()
-
-    def clear_relevant_models(self):
-        History.objects.all().delete()
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
 
     def test_restock_kit_complete_kit(self):
         order_count = Order.objects.count()
@@ -339,5 +332,11 @@ class TestApiRestockKitViews(TestCase):
         )
 
     def tearDown(self):
-        self.clear_relevant_models()
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

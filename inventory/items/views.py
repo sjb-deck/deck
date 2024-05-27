@@ -75,7 +75,8 @@ def api_orders(request):
         reason = request.query_params.get("reason")
 
         item_orders = (
-            Order.objects.exclude(reason="kit_create")
+            Order.objects.filter(is_reverted=False)
+            .exclude(reason="kit_create")
             .exclude(reason="kit_restock")
             .exclude(reason="kit_retire")
             .prefetch_related("order_items__item_expiry__item")
@@ -83,6 +84,7 @@ def api_orders(request):
         )
         item_loan_orders = (
             LoanOrder.objects.all()
+            .filter(is_reverted=False)
             .prefetch_related("order_items__item_expiry__item")
             .select_related("user")
         )
@@ -151,7 +153,7 @@ def api_add_item(request):
             "expiry_dates": json.loads(request.POST.get("expiry_dates")),
         }
         image = request.FILES.get("imgpic", None)
-        expiry_serializer = ItemSerializer(data=data)
+        expiry_serializer = ItemSerializer(data=data, context={"user": request.user})
         if expiry_serializer.is_valid(raise_exception=True):
             if image:
                 _, file_extension = os.path.splitext(image.name)
@@ -200,7 +202,7 @@ def loan_return_post(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def revert_order(request):
-    order_id = request.data
+    order_id = request.data["id"]
     try:
         if order_id is None:
             return Response({"message": "Invalid request body"}, status=500)
@@ -293,7 +295,7 @@ def import_items_csv(request):
                             }
                         ],
                     }
-                    item = ItemSerializer(data=upl)
+                    item = ItemSerializer(data=upl, context={"user": request.user})
                     current_item = Item.objects.filter(name=upl["name"])
                     if current_item.exists():
                         new_expiry = {

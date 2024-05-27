@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, Order
+from inventory.items.models import Item, Order, OrderItem, ItemExpiry
 
 
 class TestApiAddItemExpiryViews(TestCase):
@@ -13,7 +13,6 @@ class TestApiAddItemExpiryViews(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("create_new_expiry")
-        self.clear_relevant_models()
         self.create_items()
         self.request = {
             "item": self.item.id,
@@ -48,10 +47,6 @@ class TestApiAddItemExpiryViews(TestCase):
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             quantity=50, archived=False
         )
-
-    def clear_relevant_models(self):
-        Item.objects.all().delete()
-        Order.objects.all().delete()
 
     def test_create_new_expiry(self):
         response = self.client.post(self.url, self.request, format="json")
@@ -171,5 +166,8 @@ class TestApiAddItemExpiryViews(TestCase):
         self.assertEqual(Order.objects.count(), 0)
 
     def tearDown(self):
-        self.clear_relevant_models()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

@@ -2,8 +2,8 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
-from inventory.kits.models import Blueprint, Kit
+from inventory.items.models import Item, ItemExpiry
+from inventory.kits.models import Blueprint
 
 
 class TestApiGetNewKitRecipeViews(TestCase):
@@ -13,7 +13,6 @@ class TestApiGetNewKitRecipeViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -59,10 +58,6 @@ class TestApiGetNewKitRecipeViews(TestCase):
             quantity=50, archived=False
         )
 
-    def clear_relevant_models(self):
-        Item.objects.all().delete()
-        Blueprint.objects.all().delete()
-
     def test_get_recipe(self):
         response = self.client.get(
             reverse("get_new_kit_recipe", args=[self.blueprint_id]), None, format="json"
@@ -98,5 +93,7 @@ class TestApiGetNewKitRecipeViews(TestCase):
         )
 
     def tearDown(self):
-        self.clear_relevant_models()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
+        Blueprint.objects.all().delete()
         return super().tearDown()

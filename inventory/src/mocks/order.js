@@ -141,4 +141,5 @@ export const mockLoanOrder = {
   action: 'Withdraw',
   reason: 'loan',
   date: '2023-08-28T15:16:23.146238Z',
+  is_reverted: false,
 };

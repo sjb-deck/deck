@@ -44,6 +44,15 @@ class Item(models.Model):
     min_quantity = models.IntegerField(null=True, blank=True, default=0)
     is_opened = models.BooleanField(default=False)
 
+    def is_below_min_quantity(self):
+        return self.total_quantity < self.min_quantity
+
+    def is_total_qty_valid(self):
+        total_expiry_quantity = (
+            self.expiry_dates.aggregate(sum=models.Sum("quantity"))["sum"] or 0
+        )
+        return self.total_quantity == total_expiry_quantity
+
     def __str__(self) -> str:
         return f"{self.name}"
 

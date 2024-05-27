@@ -1,9 +1,5 @@
-from set_up import setup_django_env
-
-setup_django_env()
-
 from inventory.kits.routines.utils import *
-from constants import *
+from inventory.kits.routines.constants import *
 
 
 # Blueprint Check

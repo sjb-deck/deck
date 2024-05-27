@@ -23,7 +23,7 @@ export const ItemContainer = ({ item }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedExpiry, setSelectedExpiry] = useState('All');
   const { cartState } = useContext(CartContext);
-  const hasExpiry = !!item.expiry_dates[0].expiry_date;
+  const hasExpiry = !!item.expiry_dates[0]?.expiry_date;
   const [openModal, setOpenModal] = useState(false);
   const [orderType, setOrderType] = useState('');
 

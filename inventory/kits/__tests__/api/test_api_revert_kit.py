@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History, LoanHistory
 
 
@@ -15,7 +15,7 @@ class TestApiRevertReturnOrderViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
+
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -143,12 +143,6 @@ class TestApiRevertReturnOrderViews(TestCase):
             quantity=50, archived=False
         )
 
-    def clear_relevant_models(self):
-        History.objects.all().delete()
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_revert_restock(self):
         history = History.objects.filter(kit__id=self.kit_id[0]).latest("id")
         self.assertEqual(history.type, "RESTOCK")
@@ -162,9 +156,8 @@ class TestApiRevertReturnOrderViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Kit restock reverted successfully!")
 
-        # Check that order is deleted and history is deleted
-        with self.assertRaises(Order.DoesNotExist):
-            Order.objects.get(id=order_id)
+        # Check that order is reverted and history is deleted
+        self.assertTrue(Order.objects.get(id=order_id).is_reverted)
         new_history = History.objects.filter(kit__id=self.kit_id[0]).latest("id")
         self.assertEqual(new_history.type, "LOAN")
 
@@ -307,5 +300,11 @@ class TestApiRevertReturnOrderViews(TestCase):
         kit2.save()
 
     def tearDown(self):
-        self.clear_relevant_models()
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()
