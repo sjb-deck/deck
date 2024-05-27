@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from inventory.items.routines.routine import run_routine as items_routine
+from inventory.kits.routines.routine import run_routine as kits_routine
 import json
 
 
@@ -18,8 +19,8 @@ class Command(BaseCommand):
         if routine in ("items", "all"):
             log["items"] = items_routine()
 
-        # if routine in ("kits", "all"):
-        #     log["kits"] = kits_routine()
+        if routine in ("kits", "all"):
+            log["kits"] = kits_routine()
 
         self.stdout.write(self.style.SUCCESS("Routine completed."))
 

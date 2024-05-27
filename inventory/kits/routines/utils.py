@@ -1,13 +1,9 @@
-from set_up import setup_django_env
-
-setup_django_env()
-
 import datetime
 from django.contrib.auth.models import User
 from inventory.items.models import Item, ItemExpiry, Order
 from inventory.kits.models import Blueprint, Kit, History, LoanHistory
 from inventory.kits.views_utils import compress_content
-from constants import *
+from inventory.kits.routines.constants import *
 
 
 def add_log(log, model, level, model_id, message, log_type=None):
