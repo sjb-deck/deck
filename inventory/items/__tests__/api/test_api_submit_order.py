@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Order, Item, ItemExpiry, LoanOrder
+from inventory.items.models import Order, Item, ItemExpiry, LoanOrder, OrderItem
 from django.utils import timezone
 import datetime
 
@@ -15,7 +15,6 @@ class TestApiSubmitOrderViews(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("submit_order")
-        self.clear_relevant_models()
         self.create_items()
 
         self.loan_request = {
@@ -81,10 +80,6 @@ class TestApiSubmitOrderViews(TestCase):
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             expiry_date=None, quantity=100, archived=False
         )
-
-    def clear_relevant_models(self):
-        Order.objects.all().delete()
-        Item.objects.all().delete()
 
     def test_submit_loan_order(self):
         response = self.client.post(self.url, self.loan_request, format="json")
@@ -247,5 +242,8 @@ class TestApiSubmitOrderViews(TestCase):
         self.assertFalse(item_no_expiry1.archived)
 
     def tearDown(self):
-        self.clear_relevant_models()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         self.user.delete()

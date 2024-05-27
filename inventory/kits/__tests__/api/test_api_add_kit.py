@@ -14,7 +14,6 @@ class TestApiAddAddKitViews(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("add_kit")
-        self.clear_relevant_models()
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -68,12 +67,6 @@ class TestApiAddAddKitViews(TestCase):
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             quantity=50, archived=False
         )
-
-    def clear_relevant_models(self):
-        History.objects.all().delete()
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
 
     def test_create_new_kit(self):
         order_count = Order.objects.count()
@@ -206,5 +199,11 @@ class TestApiAddAddKitViews(TestCase):
         self.assertEqual(response.data["message"], "Kit with this name already exists!")
 
     def tearDown(self):
-        self.clear_relevant_models()
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

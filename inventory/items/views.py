@@ -1,18 +1,23 @@
 import csv
+import json
+import os
 from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError, transaction
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator
-
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import F, Q
 
 from inventory.items.serializers import *
 from inventory.items.views_utils import *
+from deck.utils import upload_file
 
 
 # Create your views here.
@@ -70,7 +75,8 @@ def api_orders(request):
         reason = request.query_params.get("reason")
 
         item_orders = (
-            Order.objects.exclude(reason="kit_create")
+            Order.objects.filter(is_reverted=False)
+            .exclude(reason="kit_create")
             .exclude(reason="kit_restock")
             .exclude(reason="kit_retire")
             .prefetch_related("order_items__item_expiry__item")
@@ -78,6 +84,7 @@ def api_orders(request):
         )
         item_loan_orders = (
             LoanOrder.objects.all()
+            .filter(is_reverted=False)
             .prefetch_related("order_items__item_expiry__item")
             .select_related("user")
         )
@@ -140,8 +147,22 @@ def api_submit_order(request):
 @permission_classes([IsAuthenticated])
 def api_add_item(request):
     try:
-        expiry_serializer = ItemSerializer(data=request.data)
+        data = {
+            **request.POST.dict(),
+            "imgpic": None,
+            "expiry_dates": json.loads(request.POST.get("expiry_dates")),
+        }
+        image = request.FILES.get("imgpic", None)
+        expiry_serializer = ItemSerializer(data=data, context={"user": request.user})
         if expiry_serializer.is_valid(raise_exception=True):
+            if image:
+                _, file_extension = os.path.splitext(image.name)
+                file_path = (
+                    f'items/{expiry_serializer.validated_data["name"]}{file_extension}'
+                )
+                expiry_serializer.validated_data["imgpic"] = upload_file(
+                    file_path, image
+                )
             item = expiry_serializer.save()
             return Response(ItemSerializer(item).data, status=201)
     except Exception as e:
@@ -181,7 +202,7 @@ def loan_return_post(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def revert_order(request):
-    order_id = request.data
+    order_id = request.data["id"]
     try:
         if order_id is None:
             return Response({"message": "Invalid request body"}, status=500)
@@ -274,7 +295,7 @@ def import_items_csv(request):
                             }
                         ],
                     }
-                    item = ItemSerializer(data=upl)
+                    item = ItemSerializer(data=upl, context={"user": request.user})
                     current_item = Item.objects.filter(name=upl["name"])
                     if current_item.exists():
                         new_expiry = {
@@ -294,3 +315,45 @@ def import_items_csv(request):
         return Response({"message": errors}, status=400)
 
     return Response({"message": "Success"}, status=201)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_for_alerts(request):
+    # Get items at or below minimum quantity
+    low_quantity_items = Item.objects.filter(total_quantity__lte=F("min_quantity"))
+
+    # Get item expiries that are expiring within 1 month or expired, and not archived
+    current_date = timezone.now()
+    one_month_later = current_date + timedelta(days=30)
+    expired_items = ItemExpiry.objects.filter(Q(expiry_date__lte=current_date))
+    expiring_items = ItemExpiry.objects.filter(
+        Q(expiry_date__lte=one_month_later) & Q(expiry_date__gte=current_date)
+    )
+
+    response_data = {
+        "low_quantity_items": [
+            {"name": item.name, "total_quantity": item.total_quantity}
+            for item in low_quantity_items
+        ],
+        "expired_items": [
+            {
+                "name": expiry.item.name,
+                "expiry_date": expiry.expiry_date,
+                "quantity": expiry.quantity,
+                "status": "expired",
+            }
+            for expiry in expired_items
+        ],
+        "expiring_items": [
+            {
+                "name": expiry.item.name,
+                "expiry_date": expiry.expiry_date,
+                "quantity": expiry.quantity,
+                "status": "expiring",
+            }
+            for expiry in expiring_items
+        ],
+    }
+
+    return Response(response_data)

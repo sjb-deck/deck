@@ -12,7 +12,11 @@ export const useRevertOrder = (options) => {
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
-    onSuccess: async () => await queryClient.invalidateQueries('orders'),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('orders');
+      await queryClient.invalidateQueries('order');
+      await queryClient.invalidateQueries('items');
+    },
     onError: (error) => {
       console.error(error);
       setAlert({
@@ -26,7 +30,7 @@ export const useRevertOrder = (options) => {
 
   return useMutation(
     async (id) => {
-      const response = await request.post(url, id);
+      const response = await request.post(url, { id: id });
       if (response.status != 200) throw new Error(response.statusText);
       return response.data;
     },

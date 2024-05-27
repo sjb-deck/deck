@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, Order
+from inventory.items.models import Item, Order, ItemExpiry, OrderItem
 
 
 class TestApiImportExportViews(TestCase):
@@ -20,7 +20,6 @@ class TestApiImportExportViews(TestCase):
         self.export_url = reverse("export_items")
         self.file_name = "test.csv"
         self.get_csv_data()
-        self.clear_relevant_models()
         self.create_items()
 
     def create_items(self):
@@ -223,8 +222,19 @@ class TestApiImportExportViews(TestCase):
         self.assertEqual(item1.total_quantity, 157)
         self.assertEqual(item2.total_quantity, 145)
 
-        # check that order is created
-        self.assertEqual(Order.objects.count(), 2)
+        # check that the item_creation order is created for newly created CSV Item Test 5
+        self.assertTrue(
+            OrderItem.objects.filter(
+                order__reason="item_creation", item_expiry__item=item2
+            ).exists()
+        )
+
+        # check that the item_restock order is created for existing item CSV Item Test 1
+        self.assertTrue(
+            OrderItem.objects.filter(
+                order__reason="item_restock", item_expiry__item=item1
+            ).exists()
+        )
 
     def test_import_invalid_csv_duplicate_expiry(self):
         with open(self.file_name, "w", newline="") as file:
@@ -270,11 +280,11 @@ class TestApiImportExportViews(TestCase):
         self.assertIsNone(wrong_entry)
         self.assertIsNone(wrong_entry2)
 
-    def clear_relevant_models(self):
-        Item.objects.all().delete()
-
     def tearDown(self):
-        self.clear_relevant_models()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         if os.path.exists(self.file_name):
             os.remove(self.file_name)
         return super().tearDown()

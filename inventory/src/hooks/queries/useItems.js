@@ -26,7 +26,16 @@ export const useItems = (options) => {
     [key],
     async () => {
       const response = await axios.get(url);
-      return response.data;
+      const data = response.data.reduce((acc, item) => {
+        // Filter out items that are supposed to have expiry but do not have any unarchived expiry dates
+        if (!item.expiry_dates || item.expiry_dates.some((x) => !x.archived)) {
+          // Filter out archived expiry dates
+          item.expiry_dates = item.expiry_dates.filter((x) => !x.archived);
+          acc.push(item);
+        }
+        return acc;
+      }, []);
+      return data;
     },
     {
       ...defaultOptions,

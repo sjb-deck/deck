@@ -9,6 +9,7 @@ export const useKits = (options) => {
   const key = 'kits';
   const url = Api[key];
   const { setAlert } = useContext(AlertContext);
+
   const defaultOptions = {
     refetchOnWindowFocus: false,
     onError: (error) => {

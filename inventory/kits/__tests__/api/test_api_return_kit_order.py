@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History, LoanHistory
 
 
@@ -13,7 +13,7 @@ class TestApiReturnKitOrderViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
+
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -94,12 +94,6 @@ class TestApiReturnKitOrderViews(TestCase):
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             quantity=50, archived=False
         )
-
-    def clear_relevant_models(self):
-        History.objects.all().delete()
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
 
     def test_return_order(self):
         # Before returning
@@ -187,5 +181,11 @@ class TestApiReturnKitOrderViews(TestCase):
         self.request["content"] = content
 
     def tearDown(self):
-        self.clear_relevant_models()
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

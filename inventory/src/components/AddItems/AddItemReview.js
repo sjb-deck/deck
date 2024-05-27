@@ -1,6 +1,7 @@
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import React from 'react';
+
+import { ImageAvatar } from '../ImageAvatar';
 
 /**
  * Component for reviewing and confirming the new item details.
@@ -34,7 +35,10 @@ export const AddItemReview = ({ itemFormData }) => {
             marginTop: '10px',
           }}
         >
-          <Avatar alt='new-item' src={itemFormData.image} />
+          <ImageAvatar
+            alt='new-item'
+            src={`/get_image/${itemFormData.image}`}
+          />
         </div>
         <div
           style={{

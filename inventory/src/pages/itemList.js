@@ -87,6 +87,7 @@ export const ItemList = () => {
             <EmptyMessage message='No items found' fullscreen={false} />
           ))}
       </Box>
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );

@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from datetime import timedelta
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, Order, LoanOrder, ItemExpiry
+from inventory.items.models import Item, Order, LoanOrder, ItemExpiry, OrderItem
 import datetime
 
 
@@ -16,7 +16,6 @@ class TestApiLoanReturnViews(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("loan_return_post")
-        self.clear_relevant_models()
         self.create_items()
 
         self.loan_return_request = {
@@ -25,10 +24,6 @@ class TestApiLoanReturnViews(TestCase):
                 {"order_item_id": self.itemExpiry1.id, "returned_quantity": 1},
             ],
         }
-
-    def clear_relevant_models(self):
-        Item.objects.all().delete()
-        Order.objects.all().delete()
 
     def create_items(self):
         self.item = Item.objects.create(
@@ -190,5 +185,8 @@ class TestApiLoanReturnViews(TestCase):
         self.assertEqual(updated_item_no_expiry.total_quantity, 50)
 
     def tearDown(self):
-        self.clear_relevant_models()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

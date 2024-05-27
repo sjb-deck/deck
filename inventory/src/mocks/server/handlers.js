@@ -1,39 +1,29 @@
 // src/mocks/handlers.js
 import { rest } from 'msw';
 
-import {
-  Api,
-  INV_API_EXPORT_ITEMS_URL,
-  INV_API_IMPORT_ITEMS_URL,
-  INV_API_ITEMS_URL,
-  INV_API_KITS_URL,
-  INV_API_ORDERS_URL,
-  INV_API_USER_URL,
-  INV_API_KIT_RECIPE,
-  INV_API_CREATE_KIT,
-} from '../../globals';
+import { Api } from '../../globals';
 import { getUrlWithoutParams } from '../../utils';
 import {
   exampleKit,
   exampleKitRestockOptions,
+  mockBlueprints,
   mockItemList,
+  mockKitRecipeData,
   mockKitsList,
   mockOrders,
   mockUser,
-  mockKitRecipeData,
-  mockBlueprints,
 } from '../index';
 
 export const handlers = [
-  rest.get(INV_API_USER_URL, (req, res, ctx) => {
+  rest.get(Api['user'], (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(mockUser));
   }),
 
-  rest.get(INV_API_ITEMS_URL, (req, res, ctx) => {
+  rest.get(Api['items'], (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(mockItemList));
   }),
 
-  rest.get(INV_API_ORDERS_URL, (req, res, ctx) => {
+  rest.get(getUrlWithoutParams(Api['orders']), (req, res, ctx) => {
     const orders = new Array(5)
       .fill(mockOrders)
       .flat()
@@ -41,11 +31,11 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(orders));
   }),
 
-  rest.post(INV_API_IMPORT_ITEMS_URL, (req, res, ctx) => {
+  rest.post(Api['importItems'], (req, res, ctx) => {
     return res(ctx.status(201), ctx.json(mockItemList));
   }),
 
-  rest.get(INV_API_EXPORT_ITEMS_URL, (req, res, ctx) => {
+  rest.get(Api['exportItems'], (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.set('Content-Disposition', 'attachment; filename=items.csv'),
@@ -54,17 +44,17 @@ export const handlers = [
     );
   }),
 
-  rest.get(INV_API_KITS_URL, (req, res, ctx) => {
+  rest.get(Api['kits'], (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({ kits: mockKitsList, blueprints: mockBlueprints }),
     );
   }),
 
-  rest.get(`${INV_API_KIT_RECIPE}/10`, (req, res, ctx) => {
+  rest.get(getUrlWithoutParams(Api['kitRecipe']), (req, res, ctx) => {
     return res(ctx.json(mockKitRecipeData));
   }),
-  rest.post(INV_API_CREATE_KIT, (req, res, ctx) => {
+  rest.post(Api['createKit'], (req, res, ctx) => {
     return res(ctx.status(201), ctx.json({}));
   }),
 

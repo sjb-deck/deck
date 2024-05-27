@@ -100,7 +100,7 @@ export const ItemIndex = () => {
       </Stack>
 
       <FloatingCart />
-
+      <div style={{ padding: '5vh' }} />
       <Footer />
     </>
   );

@@ -1,5 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, Drawer, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Drawer, IconButton } from '@mui/material';
 import React, { useState } from 'react';
 
 import { DrawerContent } from './DrawerContent';
@@ -17,23 +17,21 @@ export const AccordionItem = ({ orderItem }) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={4.5} sx={{ marginLeft: '42px', padding: '10px' }}>
-          <Typography variant='body2'>
-            {orderItem.item_expiry.item.name}
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <Typography variant='body2'>
-            Quantity: {orderItem.ordered_quantity}
-          </Typography>
-        </Grid>
-        <Grid item sx={{ marginTop: '-5px', marginRight: '-8px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <span>{orderItem.item_expiry.item.name}</span>
+        <Box sx={{ display: 'flex', gap: '4', alignItems: 'center' }}>
+          <span>{orderItem.ordered_quantity}</span>
           <IconButton color='primary' onClick={handleDrawerOpen} size='small'>
             <InfoIcon fontSize='small' />
           </IconButton>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       <Drawer
         anchor='bottom'
         open={open}

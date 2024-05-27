@@ -2,7 +2,6 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {
-  Avatar,
   Backdrop,
   Box,
   Button,
@@ -22,6 +21,7 @@ import {
 } from '../../../globals';
 import { useNewExpiryDate } from '../../../hooks/mutations';
 import { AlertContext, CartContext } from '../../../providers';
+import { ImageAvatar } from '../../ImageAvatar';
 
 import { ConfirmationDialog, DatePickerDialog } from './Dialogs';
 import { getValidationSchema } from './schema';
@@ -33,7 +33,7 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
   const canAddExpiry = type == CART_ITEM_TYPE_DEPOSIT && hasExpiry;
   const disableExpirySelection = !canAddExpiry && !showDropdown;
   const preselectedExpiryId =
-    selector == 'All' ? item.expiry_dates[0].id : selector;
+    selector == 'All' ? item.expiry_dates[0]?.id : selector;
   const { cartItems, cartState, addToCart } = useContext(CartContext);
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -184,10 +184,10 @@ export const CartPopupModal = ({ type, item, selector, open, setOpen }) => {
         <Fade in={open}>
           <PopupStack spacing={2}>
             {item.imgpic ? (
-              <Avatar
-                alt={`${item.name}`}
-                src={`${item.imgpic}`}
-                sx={{ width: 90, height: 90 }}
+              <ImageAvatar
+                alt={item.name}
+                src={`/get_image/${item.imgpic}`}
+                size={90}
               />
             ) : (
               <img

@@ -96,6 +96,17 @@ export const KitData = ({ kit, isMobile }) => {
             gap: 2,
           }}
         >
+          <Button
+            color='info'
+            variant='contained'
+            onClick={() =>
+              window.location.replace(
+                `/inventory/kits/kit_info?kitId=${kit.id}`,
+              )
+            }
+          >
+            View Kit
+          </Button>
           {kit.status === 'READY' && (
             <Button
               color='error'
@@ -107,12 +118,26 @@ export const KitData = ({ kit, isMobile }) => {
             </Button>
           )}
           {kit.status === 'LOANED' && (
-            <Button color='success' variant='contained'>
+            <Button
+              color='success'
+              variant='contained'
+              onClick={() =>
+                window.location.replace(
+                  `/inventory/kits/return?kitId=${kit.id}`,
+                )
+              }
+            >
               Return
             </Button>
           )}
-          {kit.complete != 'complete' && (
-            <Button color='success' variant='contained'>
+          {kit.complete != 'complete' && kit.status !== 'LOANED' && (
+            <Button
+              color='success'
+              variant='contained'
+              onClick={() =>
+                (window.location.href = `kit_restock?kitId=${kit.id}`)
+              }
+            >
               Restock
             </Button>
           )}

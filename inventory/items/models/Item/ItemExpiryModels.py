@@ -29,7 +29,7 @@ class ItemExpiry(models.Model):
     expiry_date = models.DateField(null=True, blank=True)
     quantity = models.IntegerField(null=False, blank=False, default=0)
     item = models.ForeignKey(
-        Item, related_name="expiry_dates", on_delete=models.CASCADE, null=True
+        Item, related_name="expiry_dates", on_delete=models.RESTRICT
     )
     archived = models.BooleanField(default=False)
 
