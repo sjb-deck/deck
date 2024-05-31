@@ -9,6 +9,7 @@ import { Theme } from '../components';
 import { AlertProvider } from './AlertProvider';
 import { CartProvider } from './CartProvider';
 import { KitCartProvider } from './KitCartProvider';
+import { NotificationProvider } from './NotificationProvider';
 
 const queryClient = new QueryClient();
 
@@ -18,9 +19,11 @@ export const InventoryProvider = ({ children }) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <QueryClientProvider client={queryClient}>
           <AlertProvider>
-            <CartProvider>
-              <KitCartProvider>{children}</KitCartProvider>
-            </CartProvider>
+            <NotificationProvider>
+              <CartProvider>
+                <KitCartProvider>{children}</KitCartProvider>
+              </CartProvider>
+            </NotificationProvider>
           </AlertProvider>
         </QueryClientProvider>
       </LocalizationProvider>

@@ -11,6 +11,7 @@ urlpatterns = (
         path("kits/", include("inventory.kits.urls")),
         path("admin", views.admin, name="admin"),
         path("loan_return", views.loan_return, name="loan_return"),
+        path("notifications", views.notifications, name="notifications"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

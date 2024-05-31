@@ -5,7 +5,7 @@ import { render as rtlRender } from '@testing-library/react';
 import React from 'react';
 
 import { Theme } from '../components';
-import { AlertProvider, CartProvider, KitCartProvider } from '../providers';
+import { AlertProvider, CartProvider, KitCartProvider, NotificationProvider } from '../providers';
 
 export const customRender = (ui, options = {}) => {
   const { cartContext } = options;
@@ -24,9 +24,11 @@ export const customRender = (ui, options = {}) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <QueryClientProvider client={queryClient}>
             <AlertProvider>
-              <CartProvider value={cartContext}>
-                <KitCartProvider>{children}</KitCartProvider>
-              </CartProvider>
+              <NotificationProvider>
+                <CartProvider value={cartContext}>
+                  <KitCartProvider>{children}</KitCartProvider>
+                </CartProvider>
+              </NotificationProvider>
             </AlertProvider>
           </QueryClientProvider>
         </LocalizationProvider>
