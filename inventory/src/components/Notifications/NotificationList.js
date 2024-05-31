@@ -1,4 +1,11 @@
-import { Typography, Stack, useMediaQuery, createTheme, ThemeProvider, Divider } from '@mui/material';
+import {
+  Typography,
+  Stack,
+  useMediaQuery,
+  createTheme,
+  ThemeProvider,
+  Divider,
+} from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useCheckAlerts, useKitsExpiry } from '../../hooks/queries';
@@ -50,7 +57,7 @@ export const NotificationList = () => {
     }
     if (notifications.kits_expiries?.length > 0) {
       sections.push({
-        title: 'The following kits has expiry issues:',
+        title: 'The following kits have expiry issues:',
         data: notifications.kits_expiries,
         key: 'kits_expiries',
       });
@@ -59,14 +66,11 @@ export const NotificationList = () => {
   };
 
   useEffect(() => {
-    if (notifications && Object.keys(notifications).length === 5) {
-      console.log('notifications', notifications);
-      updateSections();
-      return;
-    }
-
-    // TBC: This is in case user goes to notifications page directly without going through inventoryIndex
-    if (kitsExpiryAlerts !== undefined && itemsAlerts !== undefined) {
+    if (
+      sections.length === 0 &&
+      kitsExpiryAlerts !== undefined &&
+      itemsAlerts !== undefined
+    ) {
       const noticount =
         (itemsAlerts.expired_items?.length > 0 ? 1 : 0) +
         +(itemsAlerts.expiring_items?.length > 0 ? 1 : 0) +
@@ -94,7 +98,7 @@ export const NotificationList = () => {
       >
         <ThemeProvider theme={theme}>
           <Typography variant='title1'>Notifications</Typography>
-          <div>
+          <div style={{ margin: '24px' }}>
             {sections.map((section, index) => (
               <div
                 key={index}
@@ -112,7 +116,7 @@ export const NotificationList = () => {
                     </div>
                   ))}
                 </div>
-                <Divider sx={{ borderColor: 'white' }}/>
+                <Divider sx={{ borderColor: 'white' }} />
               </div>
             ))}
           </div>

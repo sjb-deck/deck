@@ -44,12 +44,17 @@ export const InventoryIndex = () => {
   const { data: user } = useUser();
   const isMobile = useMediaQuery('(max-width:600px)');
   const [numberOfNotifications, setNumberOfNotifications] = useState(0);
+  const [notificationsLoaded, setNotificationsLoaded] = useState(false);
   const { setNotifications } = useContext(NotificationContext);
   const { data: kitsExpiryAlerts } = useKitsExpiry();
   const { data: itemsAlerts } = useCheckAlerts();
 
   useEffect(() => {
-    if (kitsExpiryAlerts !== undefined && itemsAlerts !== undefined) {
+    if (
+      !notificationsLoaded &&
+      kitsExpiryAlerts !== undefined &&
+      itemsAlerts !== undefined
+    ) {
       const noticount =
         (itemsAlerts.expired_items?.length > 0 ? 1 : 0) +
         +(itemsAlerts.expiring_items?.length > 0 ? 1 : 0) +
@@ -62,6 +67,7 @@ export const InventoryIndex = () => {
         kits_expiries: kitsExpiryAlerts,
         numberOfNotifications: noticount,
       });
+      setNotificationsLoaded(true);
     }
   }, [kitsExpiryAlerts, itemsAlerts, setNotifications]);
 

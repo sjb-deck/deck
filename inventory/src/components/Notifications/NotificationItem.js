@@ -1,5 +1,7 @@
+import CallMadeIcon from '@mui/icons-material/CallMade';
 import {
   Box,
+  ButtonBase,
   createTheme,
   Grid,
   ThemeProvider,
@@ -16,6 +18,18 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
     },
   });
 
+  const handleClick = () => {
+    if (
+      sectionKey === 'expired_items' ||
+      sectionKey === 'expiring_items' ||
+      sectionKey === 'low_quantity_items'
+    ) {
+      window.location.href = `items?search=${issue.name}`;
+    } else if (sectionKey === 'kits_expiries') {
+      window.location.href = `kits/kit_info?kitId=${issue.kit_id}`;
+    }
+  };
+
   const KitItem = (item) => (
     <Grid container spacing={2} direction='row'>
       <Grid item>
@@ -23,12 +37,12 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
       </Grid>
       <Grid item>
         <Typography variant='subtitle1'>
-          Quantity: {item.item.quantity}
+          Qty: {item.item.quantity}
         </Typography>
       </Grid>
       <Grid item>
         <Typography variant='subtitle1'>
-          Expiry: {item.item.expiry_date}
+          Exp: {item.item.expiry_date}
         </Typography>
       </Grid>
     </Grid>
@@ -40,49 +54,88 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
         {(sectionKey === 'expired_items' ||
           sectionKey === 'expiring_items') && (
           <Box sx={{ py: '8px' }}>
-            <Grid container spacing={2} direction={'row'}>
-              <Grid item>
+            <Grid container spacing={2} direction={'row'} width={'100%'}>
+              <Grid item xs={4}>
                 <Typography variant='subtitle1'>Item: {issue.name}</Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={2}>
                 <Typography variant='subtitle1'>
-                  Quantity: {issue.quantity}
+                  Qty: {issue.quantity}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant='subtitle1'>
+                  Exp: {issue.expiry_date}
                 </Typography>
               </Grid>
               <Grid item>
-                <Typography variant='subtitle1'>
-                  Expiry: {issue.expiry_date}
-                </Typography>
+                <ButtonBase onClick={handleClick}>
+                  <Box
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                    width='100%'
+                    height='100%'
+                  >
+                    <CallMadeIcon fontSize='small' sx={{ color: '#00e676' }} />
+                  </Box>
+                </ButtonBase>
               </Grid>
             </Grid>
           </Box>
         )}
         {sectionKey === 'low_quantity_items' && (
           <Box sx={{ py: '8px' }}>
-            <Grid container spacing={2} direction={'row'}>
-              <Grid item>
+            <Grid container spacing={2} direction={'row'} width={'100%'}>
+              <Grid item xs={5}>
                 <Typography variant='subtitle1'>Item: {issue.name}</Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={5}>
                 <Typography variant='subtitle1'>
-                  Quantity: {issue.total_quantity}
+                  Qty: {issue.total_quantity}
                 </Typography>
+              </Grid>
+              <Grid item>
+                <ButtonBase onClick={handleClick}>
+                  <Box
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                    width='100%'
+                    height='100%'
+                  >
+                    <CallMadeIcon fontSize='small' sx={{ color: '#00e676' }} />
+                  </Box>
+                </ButtonBase>
               </Grid>
             </Grid>
           </Box>
         )}
         {sectionKey === 'kits_expiries' && (
           <Box sx={{ py: '8px' }}>
-            <Grid container spacing={2} direction={'row'}>
-              <Grid item>
+            <Grid container spacing={2} direction={'row'} width={'100%'}>
+              <Grid item xs={5}>
                 <Typography variant='subtitle1'>
                   Kit Name: {issue.kit_name}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={5}>
                 <Typography variant='subtitle1'>
                   Kit ID: {issue.kit_id}
                 </Typography>
+              </Grid>
+              <Grid item>
+                <ButtonBase onClick={handleClick}>
+                  <Box
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                    width='100%'
+                    height='100%'
+                  >
+                    <CallMadeIcon fontSize='small' sx={{ color: '#00e676' }} />
+                  </Box>
+                </ButtonBase>
               </Grid>
             </Grid>
             {issue.expiring_items && (

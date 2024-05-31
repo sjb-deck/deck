@@ -11,7 +11,7 @@ export const Notifications = () => {
   return (
     <>
       <NavBar user={userData} />
-      <div style={{ padding: '2vh' }} />
+      <div style={{ padding: '1vh' }} />
       <NotificationList />
       <Footer />
     </>

@@ -39,6 +39,14 @@ export const ItemIndex = () => {
   };
 
   useEffect(() => {
+    const rootElement = document.getElementById('root');
+    const initialSearchTerm = rootElement
+      ? rootElement.getAttribute('data-search')
+      : '';
+    setSearchTerm(initialSearchTerm);
+  }, []);
+
+  useEffect(() => {
     if (!items) return;
     const newItems = items.filter(
       (item) =>
