@@ -30,9 +30,11 @@ def register(request):
         form = CustomUserCreationForm()
         return render(request, "register.html", {"form": form})
 
+
 @login_required(login_url="/r'^login/$'")
 def edit_page(request):
     return render(request, "user_edit.html")
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -44,11 +46,14 @@ def edit(request):
         file = request.data.get("image")
 
         if password != confirm_password:
-            return Response({"message": "Passwords do not match"}, stauts=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"message": "Passwords do not match"},
+                stauts=status.HTTP_400_BAD_REQUEST,
+            )
+
         if username != None:
             request.user.username = username
-        
+
         if password != None:
             request.user.set_password(password)
 
