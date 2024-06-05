@@ -13,7 +13,7 @@ const getNotificationsFromLocalStorage = () => {
 export const NotificationProvider = ({ children, value: testValues }) => {
   const defaultNotifications = getNotificationsFromLocalStorage();
   const [notifications, setNotifications] = useState(
-    testValues || defaultNotifications
+    testValues || defaultNotifications,
   );
 
   useEffect(() => {

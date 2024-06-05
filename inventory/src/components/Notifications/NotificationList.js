@@ -66,6 +66,7 @@ export const NotificationList = () => {
   };
 
   useEffect(() => {
+    console.log('update');
     if (
       sections.length === 0 &&
       kitsExpiryAlerts !== undefined &&
@@ -85,7 +86,14 @@ export const NotificationList = () => {
       updateSections();
     }
     console.log('notifications', notifications);
-  }, [kitsExpiryAlerts, itemsAlerts, notifications, setNotifications]);
+  }, [
+    kitsExpiryAlerts,
+    itemsAlerts,
+    notifications,
+    setNotifications,
+    sections.length,
+    updateSections,
+  ]);
 
   return (
     <>

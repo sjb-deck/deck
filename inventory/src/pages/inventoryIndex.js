@@ -69,7 +69,7 @@ export const InventoryIndex = () => {
       });
       setNotificationsLoaded(true);
     }
-  }, [kitsExpiryAlerts, itemsAlerts, setNotifications]);
+  }, [kitsExpiryAlerts, itemsAlerts, setNotifications, notificationsLoaded]);
 
   return (
     <ThemeProvider theme={lightTheme}>

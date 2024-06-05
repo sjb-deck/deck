@@ -5,7 +5,12 @@ import { render as rtlRender } from '@testing-library/react';
 import React from 'react';
 
 import { Theme } from '../components';
-import { AlertProvider, CartProvider, KitCartProvider, NotificationProvider } from '../providers';
+import {
+  AlertProvider,
+  CartProvider,
+  KitCartProvider,
+  NotificationProvider,
+} from '../providers';
 
 export const customRender = (ui, options = {}) => {
   const { cartContext } = options;

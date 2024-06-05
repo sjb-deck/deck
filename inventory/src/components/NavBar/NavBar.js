@@ -37,7 +37,11 @@ import {
   URL_INV_KITS_ADD_KIT,
   URL_INV_NOTIFICATIONS,
 } from '../../globals';
-import { CartContext, KitCartContext, NotificationContext } from '../../providers';
+import {
+  CartContext,
+  KitCartContext,
+  NotificationContext,
+} from '../../providers';
 import { ColorModeContext } from '../Themes';
 
 import { NavDrawer } from './NavDrawer';
@@ -191,7 +195,10 @@ export const NavBar = ({ user }) => {
               variant='text'
               onClick={() => (window.location.href = URL_INV_NOTIFICATIONS)}
             >
-              <StyledBadge badgeContent={notifications.numberOfNotifications} color='error'>
+              <StyledBadge
+                badgeContent={notifications.numberOfNotifications}
+                color='error'
+              >
                 <NotificationsIcon style={{ marginRight: 5 }} />
               </StyledBadge>
               Notifications
