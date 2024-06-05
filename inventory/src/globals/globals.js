@@ -17,6 +17,7 @@ export const URL_INV_VIEW_KITS = '/inventory/kits';
 export const URL_INV_KITS_CART = '/inventory/kits/cart';
 export const URL_INV_KITS_ADD_BLUEPRINT = '/inventory/kits/create_blueprint';
 export const URL_INV_KITS_ADD_KIT = '/inventory/kits/create_kit';
+export const URL_INV_NOTIFICATIONS = '/inventory/notifications';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
 
@@ -26,6 +27,7 @@ export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
 export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
 export const LOCAL_STORAGE_KIT_CART_KEY = 'kit_cart';
 export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
+export const LOCAL_STORAGE_NOTIFICATIONS_KEY = 'notifications';
 
 export const ORDER_REASONS = {
   item_restock: 'Restock',

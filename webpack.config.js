@@ -23,6 +23,7 @@ module.exports = {
     kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
     kitCart: ['./inventory/src/pages/render/kitCart.js'],
     kitAdd: ['./inventory/src/pages/render/kitAdd.js'],
+    notifications: ['./inventory/src/pages/render/notifications.js'],
   },
   output: {
     path: path.resolve(__dirname, './static/webpack'),
