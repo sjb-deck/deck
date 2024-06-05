@@ -23,7 +23,8 @@ export const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
-  const [searchTerm, setSearchTerm] = useState('');
+  const params = new URLSearchParams(window.location.search);
+  const [searchTerm, setSearchTerm] = useState(params.get('search') || '');
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -37,14 +38,6 @@ export const ItemIndex = () => {
     setSelectedFilter(filter);
     setCurrentPage(1);
   };
-
-  useEffect(() => {
-    const rootElement = document.getElementById('root');
-    const initialSearchTerm = rootElement
-      ? rootElement.getAttribute('data-search')
-      : '';
-    setSearchTerm(initialSearchTerm);
-  }, []);
 
   useEffect(() => {
     if (!items) return;

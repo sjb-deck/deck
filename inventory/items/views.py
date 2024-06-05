@@ -25,11 +25,7 @@ from deck.utils import upload_file
 
 @login_required(login_url="/r'^login/$'")
 def items(request):
-    search_query = request.GET.get('search', '')
-    context = {
-        'search': search_query,
-    }
-    return render(request, "items.html", context)
+    return render(request, "items.html")
 
 
 @login_required(login_url="/r'^login/$'")

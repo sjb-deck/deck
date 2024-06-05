@@ -71,16 +71,16 @@ export const NotificationList = () => {
       kitsExpiryAlerts !== undefined &&
       itemsAlerts !== undefined
     ) {
-      const noticount =
-        (itemsAlerts.expired_items?.length > 0 ? 1 : 0) +
-        +(itemsAlerts.expiring_items?.length > 0 ? 1 : 0) +
-        (itemsAlerts.low_quantity_items?.length > 0 ? 1 : 0) +
-        (kitsExpiryAlerts.length > 0 ? 1 : 0);
+      const notifCount =
+        itemsAlerts.expired_items?.length +
+        itemsAlerts.expiring_items?.length +
+        itemsAlerts.low_quantity_items?.length +
+        kitsExpiryAlerts.length;
 
       setNotifications({
         ...itemsAlerts,
         kits_expiries: kitsExpiryAlerts,
-        numberOfNotifications: noticount,
+        numberOfNotifications: notifCount,
       });
       updateSections();
     }
@@ -98,7 +98,7 @@ export const NotificationList = () => {
       >
         <ThemeProvider theme={theme}>
           <Typography variant='title1'>Notifications</Typography>
-          <div style={{ margin: '24px' }}>
+          <div style={{ marginLeft: '36px' }}>
             {sections.map((section, index) => (
               <div
                 key={index}

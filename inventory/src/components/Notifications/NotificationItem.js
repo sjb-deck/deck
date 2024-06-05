@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import React from 'react';
 
+import { getReadableDate } from '../../utils';
+
 export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
   const theme = createTheme({
     typography: {
@@ -33,16 +35,14 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
   const KitItem = (item) => (
     <Grid container spacing={2} direction='row'>
       <Grid item>
-        <Typography variant='subtitle1'>Item: {item.item.item_name}</Typography>
+        <Typography variant='subtitle1'>{item.item.item_name}</Typography>
+      </Grid>
+      <Grid item>
+        <Typography variant='subtitle1'>Qty: {item.item.quantity}</Typography>
       </Grid>
       <Grid item>
         <Typography variant='subtitle1'>
-          Qty: {item.item.quantity}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant='subtitle1'>
-          Exp: {item.item.expiry_date}
+          Exp: {getReadableDate(item.item.expiry_date).formattedDate}
         </Typography>
       </Grid>
     </Grid>
@@ -56,7 +56,7 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
           <Box sx={{ py: '8px' }}>
             <Grid container spacing={2} direction={'row'} width={'100%'}>
               <Grid item xs={4}>
-                <Typography variant='subtitle1'>Item: {issue.name}</Typography>
+                <Typography variant='subtitle1'>{issue.name}</Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography variant='subtitle1'>
@@ -65,7 +65,7 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
               </Grid>
               <Grid item xs={4}>
                 <Typography variant='subtitle1'>
-                  Exp: {issue.expiry_date}
+                  Exp: {getReadableDate(issue.expiry_date).formattedDate}
                 </Typography>
               </Grid>
               <Grid item>
@@ -88,7 +88,7 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
           <Box sx={{ py: '8px' }}>
             <Grid container spacing={2} direction={'row'} width={'100%'}>
               <Grid item xs={5}>
-                <Typography variant='subtitle1'>Item: {issue.name}</Typography>
+                <Typography variant='subtitle1'>{issue.name}</Typography>
               </Grid>
               <Grid item xs={5}>
                 <Typography variant='subtitle1'>
@@ -116,7 +116,7 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
             <Grid container spacing={2} direction={'row'} width={'100%'}>
               <Grid item xs={5}>
                 <Typography variant='subtitle1'>
-                  Kit Name: {issue.kit_name}
+                  Kit: {issue.kit_name}
                 </Typography>
               </Grid>
               <Grid item xs={5}>
