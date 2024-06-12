@@ -9,7 +9,7 @@ export const mockItemList = [
         archived: false,
       },
     ],
-    name: 'test item',
+    name: 'milo',
     type: 'General',
     unit: 'units',
     imgpic: null,

@@ -31,6 +31,7 @@ import {
   URL_PROFILE,
   URL_INV_LOAN_RETURN,
   URL_INV_VIEW_KITS,
+  URL_ALERTS,
   URL_INV_KITS_CART,
   URL_INV_KITS_ADD_BLUEPRINT,
   URL_INV_ITEMS,
@@ -81,7 +82,7 @@ export const alertNavItems = (notiCount) => [
         <NotificationsIcon style={{ marginRight: 5 }} />
       </StyledBadge>
     ),
-    link: '#',
+    link: URL_ALERTS,
   },
 ];
 export const itemsActionItems = [

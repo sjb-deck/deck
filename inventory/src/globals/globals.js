@@ -19,6 +19,7 @@ export const URL_INV_KITS_ADD_BLUEPRINT = '/inventory/kits/create_blueprint';
 export const URL_INV_KITS_ADD_KIT = '/inventory/kits/create_kit';
 export const ITEMS_PER_PAGE = 5;
 export const ORDERS_PER_PAGE = 10;
+export const URL_ALERTS = '/alerts';
 
 // Cart
 export const CART_ITEM_TYPE_DEPOSIT = 'Deposit';

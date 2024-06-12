@@ -21,6 +21,7 @@ module.exports = {
     kitLoanReturn: ['./inventory/src/pages/render/kitLoanReturn.js'],
     createBlueprint: ['./inventory/src/pages/render/createBlueprint.js'],
     kitRestock: ['./inventory/src/pages/render/kitRestock.js'],
+    alerts: ['./inventory/src/pages/render/alerts.js'],
     kitCart: ['./inventory/src/pages/render/kitCart.js'],
     kitAdd: ['./inventory/src/pages/render/kitAdd.js'],
   },
