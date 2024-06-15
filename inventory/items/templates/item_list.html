@@ -1,9 +1,0 @@
-{% extends "inventory_base.html" %} {% load static %} {% block title %}Item List
-{%endblock %} {% block content %}
-
-<div id="root" style="width: 100vw; height: 100vh"></div>
-<script>
-  const CSRF_TOKEN = '{{csrf_token}}';
-</script>
-<script src="{% static 'webpack/itemList.js' %}"></script>
-{%endblock%}

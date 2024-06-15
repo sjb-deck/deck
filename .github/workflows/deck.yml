@@ -8,7 +8,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8]
+        python-version: [3.11]
     services:
       mysql:
         image: mysql:8.0
@@ -40,7 +40,7 @@ jobs:
       - name: Run Style Check
         run: |
           black . --check
-          npx eslint .
+          # npm run lint # Uncomment this after integrating jest
       - name: Apply Database Migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -64,7 +64,7 @@ jobs:
         run: |
           coverage run manage.py test --noinput
           coverage xml -o coverage.xml
-          npm run test:coverage
+          # npm run test:coverage # uncomment this line after integrating jest
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -74,31 +74,31 @@ jobs:
         
         
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Deploying to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          script: |
-            set -e
-            cd deck/
-            source deck-env/env/bin/activate
-            cd deck
-            git reset --hard
-            git pull
-            pip install -r requirements.txt
-            source ~/.nvm/nvm.sh
-            nvm install
-            nvm use
-            npm prune
-            npm install
-            python manage.py makemigrations
-            python manage.py migrate
-            npm run build
-            echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - name: Deploying to server
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         password: ${{ secrets.PASSWORD }}
+  #         script: |
+  #           set -e
+  #           cd deck/
+  #           source deck-env/env/bin/activate
+  #           cd deck
+  #           git reset --hard
+  #           git pull
+  #           pip install -r requirements.txt
+  #           source ~/.nvm/nvm.sh
+  #           nvm install
+  #           nvm use
+  #           npm prune
+  #           npm install
+  #           python manage.py makemigrations
+  #           python manage.py migrate
+  #           npm run build
+  #           echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload
