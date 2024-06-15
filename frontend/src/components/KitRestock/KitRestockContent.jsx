@@ -2,14 +2,14 @@ import SendIcon from '@mui/icons-material/Send';
 import { Button, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { useRestockKit } from '../../hooks/mutations';
-import { useKitRestockOptions } from '../../hooks/queries';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 import { KitRestockOptionAccordion } from './KitRestockOptionAccordion';
 import { KitSimpleInfo } from './KitSimpleInfo';
 
 import '../../globals/styles/inventoryBase.scss';
+import { useRestockKit } from '../../hooks/mutations';
+import { useKitRestockOptions } from '../../hooks/queries';
 
 export const KitRestockContent = ({ kit }) => {
   const { data: kitRestockOptions } = useKitRestockOptions(kit.id);

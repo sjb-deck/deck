@@ -6,6 +6,8 @@ import { Box, Divider, Link, Paper, Typography } from '@mui/material';
 
 import { URL_INV_ITEMS } from '../../globals/urls';
 
+import { URL_INV_ITEMS } from '../../globals/urls';
+
 const footerPadding = 4;
 const sectionPadding = 3;
 
