@@ -1,3 +1,34 @@
+# Ignore Python cache and compiled files
 __pycache__
 *.pyc
-db.sqlite3
+
+# Ignore local environment variables
+.env
+
+# Ignore database files
+*.sqlite3
+
+# Ignore log files
+*.log
+
+# Ignore virtual environment directories
+venv
+env
+
+# Ignore local settings
+*.local
+
+# Ignore version control directories and files
+.git
+.gitignore
+.vscode
+.DS_Store
+
+# Ignore other files not needed in the Docker image
+*.md
+
+# Include only necessary files
+!Dockerfile
+!gunicorn_config.py
+!manage.py
+!requirements.txt

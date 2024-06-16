@@ -18,5 +18,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-
 CMD ["gunicorn", "--config", "gunicorn_config.py", "deck.wsgi:application"]

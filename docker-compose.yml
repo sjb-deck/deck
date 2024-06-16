@@ -2,14 +2,24 @@
 
 services:
 
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/nginx.dev.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+      - frontend
+
   frontend:
     build:
       context: ./frontend
       target: development
-    ports:
-      - "5173:5173"
+    expose:
+      - "5173"
     volumes:
-      - ./frontend:/app
+      - ./frontend/src:/app/src
     depends_on:
       - backend
 
@@ -17,8 +27,8 @@ services:
     build:
       context: ./backend
       target: development
-    ports:
-      - "80:8000"
+    expose:
+      - "8000"
     volumes:
       - ./backend:/app
     env_file:

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost/api/v1';
+const API_BASE_URL = 'api/v1';
 const ACC_API_BASE_URL = `${API_BASE_URL}/accounts`;
 const INV_API_BASE_URL = `${API_BASE_URL}/inventory`;
 const INV_ITEMS_API_BASE_URL = `${INV_API_BASE_URL}/items`;

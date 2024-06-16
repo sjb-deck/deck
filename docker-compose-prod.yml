@@ -3,22 +3,31 @@
 services:
 
   frontend:
-    build:
-      context: ./frontend
-      target: production
+    platform: linux/amd64
+    image: jonasgwt/deck-frontend:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend/nginx.prod.conf:/etc/nginx/nginx.conf
       - ./backend/static:/app/static
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     depends_on:
       - backend
+      - certbot
 
   backend:
-    build:
-      context: ./backend
-      target: production
+    platform: linux/amd64
+    image: jonasgwt/deck-backend:latest
     env_file:
       - .env 
     expose:
       - "8000"
+  
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 168h & wait $${!}; done;'"

@@ -1,0 +1,30 @@
+# Ignore node_modules directory
+node_modules
+
+# Ignore local environment variables
+.env
+
+# Ignore npm and yarn lock files
+npm-debug.log
+yarn-error.log
+
+# Ignore specific config files
+.eslintignore
+.eslintrc.cjs
+.nvmrc
+.prettierignore
+.prettierrc
+jest.config.cjs
+setup-jest.js
+
+# Ignore other files not needed in the Docker image
+.git
+.gitignore
+.vscode
+.DS_Store
+*.md
+*.log
+
+# Include only necessary files
+!Dockerfile
+!nginx.conf
