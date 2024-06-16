@@ -7,13 +7,26 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+trap 'cleanup' ERR
+
 print_msg() {
     echo -e "${BLUE}==>${NC} $1"
 }
 
 handle_error() {
     echo -e "${RED}Error: $1${NC}"
+    cleanup
     exit 1
+}
+
+cleanup() {
+    print_msg "${RED}Cleaning up...${NC}"
+    if [ "$MODE" == "prod" ]; then
+        docker-compose -f docker-compose-prod.yml down
+    else
+        docker-compose down
+    fi
+    print_msg "${RED}Containers have been stopped.${NC}"
 }
 
 build_and_push() {
@@ -31,7 +44,6 @@ build_and_push() {
     print_msg "${GREEN}Ensuring the Docker buildx builder instance is started...${NC}"
     docker buildx inspect mybuilder --bootstrap || handle_error "Failed to start Docker buildx builder instance"
 
-
     print_msg "${GREEN}Building and pushing the image for ${IMAGE_NAME}...${NC}"
     docker buildx build --platform linux/amd64,linux/arm64 \
         -t jonasgwt/${IMAGE_NAME}:latest \
@@ -44,8 +56,8 @@ build_and_push() {
     docker buildx rm mybuilder || handle_error "Failed to remove Docker buildx builder instance"
 }
 
-
 if [ "$1" == "--prod" ]; then
+    MODE="prod"
     print_msg "${YELLOW}Entering production mode...${NC}"
 
     print_msg "${GREEN}Changing to frontend directory...${NC}"
@@ -66,6 +78,7 @@ if [ "$1" == "--prod" ]; then
 
     print_msg "${GREEN}Production images have been built and pushed successfully.${NC}"
 else
+    MODE="dev"
     print_msg "${YELLOW}Entering development mode...${NC}"
 
     print_msg "${GREEN}Bringing up the development environment with Docker Compose...${NC}"

@@ -1,7 +1,6 @@
 # docker-compose-prod.yml
 
 services:
-
   frontend:
     platform: linux/amd64
     image: jonasgwt/deck-frontend:latest
@@ -9,8 +8,6 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./frontend/nginx.prod.conf:/etc/nginx/nginx.conf
-      - ./backend/static:/app/static
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/www/certbot:/var/www/certbot
     depends_on:

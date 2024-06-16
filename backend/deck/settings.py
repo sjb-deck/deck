@@ -163,6 +163,7 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -171,7 +172,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Whitelist domains and sites that uses the API
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://deck.nhhs-sjb.org",
+]
 
 CORS_ALLOW_HEADERS = [
     "content-type",

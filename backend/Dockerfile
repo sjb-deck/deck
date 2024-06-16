@@ -1,20 +1,21 @@
 # backend/Dockerfile
 
-FROM python:3.11 as development
+FROM python:3.11 as base
 
 WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
+# Development stage
+FROM base as development
+
+COPY . .
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-FROM python:3.11 as production
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Production stage
+FROM base as production
 
 COPY . .
 
