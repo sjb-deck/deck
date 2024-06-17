@@ -77,4 +77,3 @@ If you prefer to manually run the development server without Docker, follow thes
 - [Black Python Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
