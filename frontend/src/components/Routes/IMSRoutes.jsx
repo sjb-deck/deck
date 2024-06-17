@@ -1,5 +1,5 @@
 import AuthOutlet from '@auth-kit/react-router/AuthOutlet';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import {
   URL_BASE_INV,
@@ -41,6 +41,7 @@ import {
 export const IMSRoutes = () => {
   return (
     <Routes>
+      <Route path='/' element={<Navigate to={URL_BASE_INV} />} />
       <Route path={URL_LOGIN} element={<Login />} />
       <Route element={<AuthOutlet fallbackPath='/login' />}>
         <Route path={URL_BASE_INV} element={<InventoryIndex />} />
