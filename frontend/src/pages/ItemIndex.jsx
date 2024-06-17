@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {

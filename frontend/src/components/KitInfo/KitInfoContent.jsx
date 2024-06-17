@@ -1,5 +1,5 @@
 import { Avatar, Button, Stack, Typography } from '@mui/material';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import '../../globals/styles/inventoryBase.scss';
 import { useKitRecipe } from '../../hooks/queries';

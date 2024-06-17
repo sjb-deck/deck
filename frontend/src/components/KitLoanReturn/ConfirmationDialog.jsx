@@ -6,7 +6,6 @@ import {
   DialogActions,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import React from 'react';
 
 import { useReturnKit } from '../../hooks/mutations';
 

@@ -10,7 +10,7 @@ import {
 } from '@mui/lab';
 import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useRevertHistory } from '../../hooks/mutations';
 import { EmptyMessage } from '../EmptyMessage';

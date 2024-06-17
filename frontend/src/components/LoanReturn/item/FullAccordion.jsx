@@ -8,7 +8,7 @@ import {
   Divider,
   Stack,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { AccordionItem } from './AccordionItem';
 import { AccordionSummaryContent } from './AccordionSummaryContent';

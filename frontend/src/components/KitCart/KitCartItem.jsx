@@ -1,6 +1,6 @@
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Chip, Divider, IconButton, Stack, Typography } from '@mui/material';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { IMG_LOGO } from '../../globals/urls';
 import { KitCartContext } from '../../providers';

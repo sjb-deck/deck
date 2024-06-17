@@ -1,6 +1,5 @@
 import { Breadcrumbs, Chip, Typography } from '@mui/material';
 import { emphasize, styled } from '@mui/material/styles';
-import React from 'react';
 
 import {
   IMG_LOGO,

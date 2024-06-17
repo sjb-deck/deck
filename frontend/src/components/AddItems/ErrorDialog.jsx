@@ -4,7 +4,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import React from 'react';
 
 const ERROR_MESSAGE =
   'An error occurred. Please inform Fabian Sir immediately and do not attempt to add anything else.';

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import { createContext, useState } from 'react';
 
 import { LOCAL_STORAGE_KIT_CART_KEY } from '../globals/constants';
 
-export const KitCartContext = React.createContext();
+export const KitCartContext = createContext();
 
 const getKitCartItemsFromLocalStorage = () => {
   const cartItems = localStorage.getItem(LOCAL_STORAGE_KIT_CART_KEY);

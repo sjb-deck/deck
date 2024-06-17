@@ -1,6 +1,6 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Box, Button, Fade, Modal, Stack, TextField } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useAddBlueprint } from '../../hooks/mutations';
 
@@ -65,7 +65,6 @@ export const CreateBlueprintModal = ({
             transform: 'translate(-50%, -50%)',
             width: 400,
             height: '50%',
-            boxShadow: 24,
             backgroundColor: theme.palette.background.paper,
             padding: theme.spacing(4),
             display: 'flex',

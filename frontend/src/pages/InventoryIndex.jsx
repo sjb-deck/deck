@@ -16,10 +16,8 @@ import {
   createTheme,
   useMediaQuery,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
-import { useNavigate } from 'react-router-dom';
 
 import {
   IMG_USER,

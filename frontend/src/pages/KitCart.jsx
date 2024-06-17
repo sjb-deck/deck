@@ -1,4 +1,3 @@
-import React from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import { Footer, NavBar, KitCartContent } from '../components';

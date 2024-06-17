@@ -19,7 +19,7 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ORDERS_PER_PAGE } from '../../globals/constants';
 import { EmptyMessage } from '../EmptyMessage';

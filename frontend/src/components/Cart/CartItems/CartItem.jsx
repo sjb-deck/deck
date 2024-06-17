@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { IMG_LOGO } from '../../../globals/urls';
 import { CartContext } from '../../../providers';
@@ -22,7 +22,7 @@ export const CartItem = ({ cartItem }) => {
       .expiry_date || 'No Expiry';
 
   const { removeItemFromCart } = useContext(CartContext);
-  const [popupOpen, setPopupOpen] = React.useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleDeleteCartItem = () => {
     removeItemFromCart(cartItem.expiryId);

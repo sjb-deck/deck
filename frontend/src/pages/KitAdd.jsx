@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Footer, NavBar, KitCreate } from '../components';
 
 import '../globals/styles/inventoryBase.scss';

@@ -14,7 +14,7 @@ import {
   InputLabel,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ORDERS_PER_PAGE } from '../../globals/constants';
 import { useKits } from '../../hooks/queries';

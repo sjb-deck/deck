@@ -1,5 +1,4 @@
 import { Stack, Typography } from '@mui/material';
-import React from 'react';
 
 export const EmptyMessage = ({ message, fullscreen = true }) => {
   return (

@@ -1,6 +1,5 @@
 import { Grid, Paper, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React from 'react';
 
 import { ImageAvatar } from '../../ImageAvatar';
 

@@ -4,7 +4,7 @@ import { Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { useSubmitKitOrder } from '../../hooks/mutations';
 import { KitCartContext } from '../../providers';

@@ -1,5 +1,5 @@
 import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useParams } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import { Box, Modal as MaterialModal } from '@mui/material';
 import { PropTypes } from 'prop-types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export const Modal = ({ children, control, isOpen, onClose, maxWidth }) => {
   const controlled =

@@ -1,5 +1,5 @@
 import { Divider, Stack } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { ORDER_REASONS } from '../../globals/constants';
 import { Paper } from '../styled';

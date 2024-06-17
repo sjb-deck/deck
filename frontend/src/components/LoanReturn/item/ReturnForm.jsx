@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { URL_INV_LOAN_RETURN } from '../../../globals/urls';
 import { useReturnLoan } from '../../../hooks/mutations';

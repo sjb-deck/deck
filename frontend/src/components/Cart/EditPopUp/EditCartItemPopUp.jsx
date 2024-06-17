@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { IMG_LOGO } from '../../../globals/urls';
 import { CartContext } from '../../../providers';

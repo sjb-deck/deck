@@ -13,7 +13,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';

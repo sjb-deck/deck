@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export function ConfirmationDialog({
   openConfirmation,

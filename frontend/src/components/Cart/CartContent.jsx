@@ -4,7 +4,7 @@ import { MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import React, { useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 
 import { CART_ITEM_TYPE_WITHDRAW } from '../../globals/constants';
 import { URL_ORDER_RECEIPT } from '../../globals/urls';

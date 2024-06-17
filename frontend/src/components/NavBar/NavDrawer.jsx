@@ -10,7 +10,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { URL_PROFILE } from '../../globals/urls';
 import { useSignOutDeck } from '../../hooks/auth';

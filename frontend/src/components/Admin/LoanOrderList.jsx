@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { debounce } from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { useRevertOrder } from '../../hooks/mutations';
 import { useLoans } from '../../hooks/queries';

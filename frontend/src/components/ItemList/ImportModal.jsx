@@ -1,5 +1,5 @@
 import { Box, Button, Fade, Modal, Stack } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { useImportItems } from '../../hooks/mutations';
 import { AlertContext } from '../../providers';

@@ -1,5 +1,4 @@
 import { Backdrop, Box, CircularProgress } from '@mui/material';
-import React from 'react';
 
 export const LoadingSpinner = () => {
   return (

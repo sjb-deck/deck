@@ -1,6 +1,5 @@
 import { Grid, Slider, TextField } from '@mui/material';
 import { useTheme, useMediaQuery } from '@mui/material';
-import React from 'react';
 
 export const ItemReturnSlider = ({ originalQuantity, update }) => {
   const [value, setValue] = React.useState(originalQuantity);

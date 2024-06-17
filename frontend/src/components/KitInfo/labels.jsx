@@ -2,7 +2,6 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import InputIcon from '@mui/icons-material/Input';
 import OutboundIcon from '@mui/icons-material/Outbound';
-import React from 'react';
 
 export const options = {
   year: 'numeric',

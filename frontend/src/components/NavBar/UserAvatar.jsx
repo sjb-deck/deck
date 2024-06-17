@@ -1,5 +1,4 @@
 import Tooltip from '@mui/material/Tooltip';
-import React from 'react';
 
 import { IMG_USER } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';

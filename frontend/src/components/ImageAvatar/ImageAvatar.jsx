@@ -1,5 +1,5 @@
 import { Avatar, Skeleton, Stack, useMediaQuery } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export const ImageAvatar = ({ src, size, alt }) => {
   const [imgLoaded, setImgLoaded] = useState(false);

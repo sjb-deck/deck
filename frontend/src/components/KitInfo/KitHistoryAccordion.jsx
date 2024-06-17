@@ -8,7 +8,7 @@ import {
   Skeleton,
   Stack,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import '../../globals/styles/inventoryBase.scss';
 import { useKitHistory } from '../../hooks/queries';

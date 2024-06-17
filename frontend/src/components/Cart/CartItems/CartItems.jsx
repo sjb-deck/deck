@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { CartContext } from '../../../providers';
 import { Box } from '../../styled';

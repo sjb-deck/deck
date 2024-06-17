@@ -6,7 +6,7 @@ import {
 } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import { createContext, useEffect, useMemo, useState } from 'react';
 
 import { LOCAL_STORAGE_COLORMODE_KEY } from '../../globals/constants';
 
@@ -16,19 +16,19 @@ import { LOCAL_STORAGE_COLORMODE_KEY } from '../../globals/constants';
  * @returns Theme
  */
 
-export const ColorModeContext = React.createContext({
+export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
 export const Theme = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const storedMode = localStorage.getItem(LOCAL_STORAGE_COLORMODE_KEY);
-  const [mode, setMode] = React.useState(
+  const [mode, setMode] = useState(
     storedMode ? storedMode : prefersDarkMode ? 'dark' : 'light',
   );
   localStorage.setItem(LOCAL_STORAGE_COLORMODE_KEY, mode);
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -41,7 +41,7 @@ export const Theme = ({ children }) => {
     localStorage.setItem(LOCAL_STORAGE_COLORMODE_KEY, mode);
   }, [mode]);
 
-  const theme = React.useMemo(() => {
+  const theme = useMemo(() => {
     return responsiveFontSizes(
       createTheme({
         palette: {

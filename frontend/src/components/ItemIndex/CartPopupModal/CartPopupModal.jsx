@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import {
   CART_ITEM_TYPE_DEPOSIT,

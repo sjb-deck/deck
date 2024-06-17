@@ -11,7 +11,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React from 'react';
 
 import { ORDER_REASONS } from '../../globals/constants';
 import { getReadableDate } from '../../utils';

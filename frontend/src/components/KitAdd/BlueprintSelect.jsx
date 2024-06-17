@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React from 'react';
 
 import { LoadingSpinner } from '../LoadingSpinner';
 

@@ -1,5 +1,4 @@
 import { Chip, Stack, Typography } from '@mui/material';
-import React from 'react';
 
 import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';

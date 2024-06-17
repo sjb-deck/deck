@@ -12,7 +12,7 @@ import {
   TextField,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useActiveLoans } from '../../../hooks/queries';
 import { EmptyMessage } from '../../EmptyMessage';

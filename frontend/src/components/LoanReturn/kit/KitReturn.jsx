@@ -12,12 +12,11 @@ import {
   TextField,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useEffect, useState } from 'react';
-
-import { LoadingSpinner } from '../..';
+import { useEffect, useState } from 'react';
 
 import '../../../globals/styles/inventoryBase.scss';
 import { useKitHistory } from '../../../hooks/queries';
+import { LoadingSpinner } from '../../LoadingSpinner';
 
 import { KitData } from './KitData';
 

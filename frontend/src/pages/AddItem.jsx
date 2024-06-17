@@ -8,7 +8,7 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {

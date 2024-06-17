@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import { createContext, useState } from 'react';
 
 import { LOCAL_STORAGE_CART_KEY } from '../globals/constants';
 
-export const CartContext = React.createContext();
+export const CartContext = createContext();
 
 const getCartStateFromLocalStorage = () => {
   const cartItems = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));

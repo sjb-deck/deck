@@ -7,7 +7,7 @@
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Badge, Fab } from '@mui/material';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { URL_INV_CART } from '../../../globals/urls';
 import { CartContext } from '../../../providers';

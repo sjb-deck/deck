@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-import React from 'react';
 
 import { ItemReturnSlider } from './ItemReturnSlider';
 
