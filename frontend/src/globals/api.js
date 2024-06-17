@@ -19,6 +19,7 @@ export const Api = {
   loans: `${INV_ITEMS_API_BASE_URL}/orders?option=loan&page=:page&loaneeName=:loaneeName&item=:item&username=:username`, // TODO: Combine with the loan_active endpoint
   loan_active: `${INV_ITEMS_API_BASE_URL}/orders?option=loan_active&page=:page`,
   revertOrder: `${INV_ITEMS_API_BASE_URL}/revert_order`,
+  checkAlerts: `${INV_ITEMS_API_BASE_URL}/check_for_alerts`,
 
   kits: INV_KITS_API_BASE_URL,
   kitHistory: `${INV_KITS_API_BASE_URL}/kit_history?kitId=:kitId&page=:page&kitName=:kitName&type=:type&loaneeName=:loaneeName&user=:user`,
@@ -31,4 +32,5 @@ export const Api = {
   kitRestockOptions: `${INV_KITS_API_BASE_URL}/restock_options/:id`,
   kitRestock: `${INV_KITS_API_BASE_URL}/restock_kit`,
   submitKitOrder: `${INV_KITS_API_BASE_URL}/submit_kit_order`,
+  checkKitsExpiry: `${INV_KITS_API_BASE_URL}/check_kits_expiry`,
 };

@@ -13,10 +13,10 @@ import {
   SearchBar,
   SearchFilter,
 } from '../components';
+import { ITEMS_PER_PAGE } from '../globals/constants';
 import { useItems } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 import { exampleItem } from '../mocks/items';
-import { ITEMS_PER_PAGE } from '../globals/constants';
 
 export const ItemIndex = () => {
   const { data: items } = useItems();
@@ -24,7 +24,8 @@ export const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
-  const [searchTerm, setSearchTerm] = useState('');
+  const params = new URLSearchParams(window.location.search);
+  const [searchTerm, setSearchTerm] = useState(params.get('search') || '');
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

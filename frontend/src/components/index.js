@@ -16,6 +16,7 @@ export * from './KitRestock';
 export * from './LoadingSpinner';
 export * from './LoanReturn';
 export * from './NavBar';
+export * from './Notifications';
 export * from './NumberInput';
 export * from './Receipt';
 export * from './Routes';
