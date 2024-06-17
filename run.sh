@@ -88,6 +88,9 @@ fi
 if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
     configure_nginx $DOMAIN
 
+    print_msg "${GREEN}Logging in to Docker Hub...${NC}"
+    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin || handle_error "Docker login failed"
+
     print_msg "${GREEN}Changing to frontend directory...${NC}"
     cd frontend || handle_error "Failed to change directory to frontend"
 
