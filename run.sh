@@ -46,7 +46,7 @@ build_and_push() {
 
     print_msg "${GREEN}Building and pushing the image for ${IMAGE_NAME}...${NC}"
     docker buildx build --platform linux/amd64,linux/arm64 \
-        -t jonasgwt/${IMAGE_NAME}:latest \
+        -t sjbdeck/${IMAGE_NAME}:latest \
         --push \
         ${CONTEXT_DIR} || handle_error "Failed to build and push ${IMAGE_NAME}"
 
