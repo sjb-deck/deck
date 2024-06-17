@@ -1,6 +1,7 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import axios from 'axios';
 import AuthProvider from 'react-auth-kit/AuthProvider';
 import createRefresh from 'react-auth-kit/createRefresh';
 import createStore from 'react-auth-kit/createStore';
@@ -11,9 +12,11 @@ import { Api } from '../globals/api';
 import { AlertProvider } from './AlertProvider';
 import { CartProvider } from './CartProvider';
 import { KitCartProvider } from './KitCartProvider';
+import { NotificationProvider } from './NotificationProvider';
 
 const queryClient = new QueryClient();
 
+// TODO: Placeholder for refresh token
 const refresh = createRefresh({
   interval: 10,
   refreshApiCallback: async (param) => {
@@ -53,7 +56,9 @@ export const DeckProvider = ({ children }) => {
           <AuthProvider store={store}>
             <AlertProvider>
               <CartProvider>
-                <KitCartProvider>{children}</KitCartProvider>
+                <NotificationProvider>
+                  <KitCartProvider>{children}</KitCartProvider>
+                </NotificationProvider>
               </CartProvider>
             </AlertProvider>
           </AuthProvider>

@@ -33,7 +33,7 @@ import { UserAvatar } from './UserAvatar';
  * @returns NavDrawer
  */
 
-export const NavDrawer = ({ user }) => {
+export const NavDrawer = ({ user, numberOfNotifications }) => {
   const theme = useTheme();
   const { cartItems } = useContext(CartContext);
   const { kitCartItems } = useContext(KitCartContext);
@@ -115,7 +115,7 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {alertNavItems(0).map((item, index) => (
+        {alertNavItems(numberOfNotifications).map((item, index) => (
           <ListItem key={index} disablePadding>
             <Button
               fullWidth

@@ -35,9 +35,14 @@ import {
   URL_INV_KITS_ADD_BLUEPRINT,
   URL_INV_ITEMS,
   URL_INV_KITS_ADD_KIT,
+  URL_INV_NOTIFICATIONS,
 } from '../../globals/urls';
 import { useSignOutDeck } from '../../hooks/auth';
-import { CartContext, KitCartContext } from '../../providers';
+import {
+  CartContext,
+  KitCartContext,
+  NotificationContext,
+} from '../../providers';
 import { ColorModeContext } from '../Theme';
 
 import { NavDrawer } from './NavDrawer';
@@ -76,13 +81,13 @@ export const mobileCartNavItems = (itemCartCount, kitCartCount) => [
 ];
 export const alertNavItems = (notiCount) => [
   {
-    title: 'Alerts',
+    title: 'Notifications',
     icon: (
       <StyledBadge badgeContent={notiCount} color='error'>
         <NotificationsIcon style={{ marginRight: 5 }} />
       </StyledBadge>
     ),
-    link: '#',
+    link: URL_INV_NOTIFICATIONS,
   },
 ];
 export const itemsActionItems = [
@@ -139,6 +144,7 @@ export const NavBar = ({ user }) => {
   const isKitsPage = currentUrl[1] == 'kits';
   const { cartItems } = useContext(CartContext);
   const { kitCartItems } = useContext(KitCartContext);
+  const { notifications } = useContext(NotificationContext);
   const colorMode = useContext(ColorModeContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -188,14 +194,14 @@ export const NavBar = ({ user }) => {
           >
             <Button
               color='inherit'
-              aria-label='Alerts'
+              aria-label='Notifications'
               variant='text'
-              onClick={() => console.log('alert')}
+              onClick={() => navigate(URL_INV_NOTIFICATIONS)}
             >
               <StyledBadge badgeContent={0} color='error'>
                 <NotificationsIcon style={{ marginRight: 5 }} />
               </StyledBadge>
-              Alerts
+              Notifications
             </Button>
             <Button
               color='inherit'
@@ -361,7 +367,11 @@ export const NavBar = ({ user }) => {
             },
           }}
         >
-          <NavDrawer user={user} onClick={handleClose} />
+          <NavDrawer
+            user={user}
+            numberOfNotifications={notifications.numberOfNotifications}
+            onClick={handleClose}
+          />
         </Drawer>
       </Box>
     </Box>
