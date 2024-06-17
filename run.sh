@@ -60,6 +60,9 @@ if [ "$1" == "--prod" ]; then
     MODE="prod"
     print_msg "${YELLOW}Entering production mode...${NC}"
 
+    print_msg "${GREEN}Logging in to Docker Hub...${NC}"
+    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin || handle_error "Docker login failed"
+
     print_msg "${GREEN}Changing to frontend directory...${NC}"
     cd frontend || handle_error "Failed to change directory to frontend"
 
