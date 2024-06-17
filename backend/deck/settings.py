@@ -99,29 +99,21 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "deck",
-#         "HOST": config("DB_HOST"),
-#         "PORT": "3306",
-#         "USER": config("DB_USER"),
-#         "PASSWORD": config("DB_PW"),
-#         "TEST": {
-#             "NAME": "test_deck",
-#         },
-#         "OPTIONS": {
-#             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-#         },
-#     },
-# }
-
-# uncomment this to use local db
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "deck",
+        "HOST": config("DB_HOST"),
+        "PORT": "3306",
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PW"),
+        "TEST": {
+            "NAME": "test_deck",
+        },
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    },
 }
 
 
