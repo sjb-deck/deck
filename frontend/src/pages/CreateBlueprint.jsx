@@ -15,7 +15,6 @@ import {
 import { useItems, useBlueprint } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const CreateBlueprint = () => {
   const userData = useAuthUser();

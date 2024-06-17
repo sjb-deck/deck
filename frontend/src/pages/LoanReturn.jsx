@@ -14,7 +14,6 @@ import {
 } from '../components';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const LoanReturn = () => {
   const user = useAuthUser();
