@@ -3,52 +3,74 @@
 
 # Getting Started
 
-1. Clone the repo
-    
+## Prerequisites
+
+1. Install Docker:
+
+    - **MacOS**:
+      Download and install Docker Desktop from [Docker's official site](https://www.docker.com/products/docker-desktop).
+
+    - **Windows**:
+      Download and install Docker Desktop from [Docker's official site](https://www.docker.com/products/docker-desktop).
+
+    - **Linux**:
+      Follow the installation instructions for your distribution from [Docker's official site](https://docs.docker.com/engine/install/).
+
+2. Clone the repo:
+
     ```bash
     git clone https://github.com/sjb-deck/deck.git
     ```
-    
-2. Move into the directory
-    
+
+3. Move into the directory:
+
     ```bash
     cd deck
     ```
-    
-3. Install the required modules and libraries
-    
+
+4. Copy the `.env` file into the current directory.
+
+## Running the Development Server with Docker
+
+You can run the development server using Docker and the provided `run.sh` script.
+
+1. Make the `run.sh` script executable:
+
+    ```bash
+    chmod +x run.sh
+    ```
+
+2. Run the script in development mode:
+
+    ```bash
+    ./run.sh
+    ```
+
+This script will build and start the Docker containers for the frontend, backend, and MySQL services.
+
+## Manually Running the Development Server
+
+If you prefer to manually run the development server without Docker, follow these steps:
+
+1. Install the required Python modules and Node.js libraries:
+
     ```bash
     pip install -r requirements.txt
+    npm install
     ```
-    
-    ```bash
-    npm i
-    ```
-    
-4. Copy over the `.env` file into the current directory
-5. Start the JSX compiler
-    
+
+2. Start the JSX compiler:
+
     ```bash
     npm run dev
     ```
-    
-6. Open a new window, do the migrations and start the server
-    
+
+3. Open a new terminal window, apply database migrations, and start the Django development server:
+
     ```bash
     python manage.py migrate
-    ```
-    
-    ```bash
     python manage.py runserver
     ```
-    
-## Alternative
-
-Run `./run.sh`, which will run the above commands for you.
-
-🚨 Note: Some errors will not be shown when running the shell file, look into the logs folder for any errors
-
-
 
 # Must Have VSCode Extensions
 
@@ -56,8 +78,3 @@ Run `./run.sh`, which will run the above commands for you.
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-# Useful Links
-
-[IMS Overview](https://www.notion.so/IMS-Overview-d7f998a410c74220863d4e35464c7517)
-
-[Server Health](https://jonasgwt.github.io/servers/)
