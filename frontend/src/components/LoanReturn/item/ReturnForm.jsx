@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { URL_INV_LOAN_RETURN } from '../../../globals/urls';
 import { useReturnLoan } from '../../../hooks/mutations';
@@ -29,6 +30,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
   const [loading, setLoading] = useState(false);
   const { mutate } = useReturnLoan();
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
 
   const processReturnSubmission = () => {
     const payload = {
@@ -48,7 +50,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
           message: 'Successfully returned loan!',
           autoHide: true,
         });
-        window.location.href = URL_INV_LOAN_RETURN;
+        navigate(URL_INV_LOAN_RETURN);
       },
       onError: (error) => {
         setAlert({

@@ -8,16 +8,18 @@
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Badge, Fab } from '@mui/material';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { URL_INV_CART } from '../../../globals/urls';
 import { CartContext } from '../../../providers';
 
 export const FloatingCart = () => {
   const { cartItems } = useContext(CartContext);
+  const navigate = useNavigate();
 
   return (
     <Fab
-      onClick={() => (window.location.href = URL_INV_CART)}
+      onClick={() => navigate(URL_INV_CART)}
       variant='contained'
       style={{
         position: 'fixed',

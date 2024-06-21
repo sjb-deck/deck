@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { useNavigate } from 'react-router-dom';
 
 import {
   IMG_USER,
@@ -25,6 +26,7 @@ import {
   URL_INV_LOAN_RETURN,
   URL_INV_VIEW_KITS,
   URL_INV_VIEW_ORDERS_LOANS,
+  URL_PROFILE,
 } from '../globals/urls';
 import { useSignOutDeck } from '../hooks/auth';
 import { stringAvatar } from '../utils';
@@ -93,6 +95,7 @@ export const InventoryIndexOptions = () => {
   const [loadingLoans, setLoadingLoans] = useState(false);
   const [loadingDashboard, setLoadingDashboard] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const navigate = useNavigate();
   return (
     <Stack spacing={2} sx={{ pt: 2 }}>
       <LoadingButton
@@ -100,7 +103,7 @@ export const InventoryIndexOptions = () => {
         startIcon={<CategoryIcon />}
         onClick={() => {
           setLoadingItems(true);
-          window.location.href = URL_INV_ITEMS;
+          navigate(URL_INV_ITEMS);
         }}
         size='large'
         loading={loadingItems}
@@ -114,7 +117,7 @@ export const InventoryIndexOptions = () => {
         startIcon={<MedicalServicesIcon />}
         onClick={() => {
           setLoadingKits(true);
-          window.location.href = URL_INV_VIEW_KITS;
+          navigate(URL_INV_VIEW_KITS);
         }}
         size='large'
         loading={loadingKits}
@@ -128,7 +131,7 @@ export const InventoryIndexOptions = () => {
         startIcon={<KeyboardReturnIcon />}
         onClick={() => {
           setLoadingLoans(true);
-          window.location.href = URL_INV_LOAN_RETURN;
+          navigate(URL_INV_LOAN_RETURN);
         }}
         size='large'
         loading={loadingLoans}
@@ -143,7 +146,7 @@ export const InventoryIndexOptions = () => {
           size='large'
           onClick={() => {
             setLoadingDashboard(true);
-            window.location.href = URL_INV_VIEW_ORDERS_LOANS;
+            navigate(URL_INV_VIEW_ORDERS_LOANS);
           }}
           loading={loadingDashboard}
           loadingPosition='end'
@@ -196,6 +199,7 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
     padding: '15px 20px',
   };
   const signOut = useSignOutDeck();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -225,7 +229,7 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
               },
             }}
             onClick={() => {
-              window.location.href = '/accounts/edit';
+              navigate(URL_PROFILE);
             }}
           />
         </Tooltip>

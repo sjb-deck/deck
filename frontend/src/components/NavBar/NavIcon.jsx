@@ -1,5 +1,6 @@
 import { Breadcrumbs, Chip, Typography } from '@mui/material';
 import { emphasize, styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 import {
   IMG_LOGO,
@@ -15,6 +16,7 @@ export const NavIcon = () => {
   const isKitsPage = currentUrl[1] == 'kits';
   const isAlertPage = currentUrl[1] == 'alerts';
   const isLoanPage = currentUrl[1] == 'loan_return';
+  const navigate = useNavigate();
   const getIconClickUrl = () => {
     if (isIndexPage || isLoanPage) return URL_BASE_INV;
     if (isItemsPage) return URL_INV_ITEMS;
@@ -29,14 +31,14 @@ export const NavIcon = () => {
             style={{ marginRight: 10, cursor: 'pointer' }}
             src='/img/logo.png'
             alt='logo'
-            onClick={() => (window.location.href = getIconClickUrl())}
+            onClick={() => navigate(getIconClickUrl())}
           />
           <Typography
             style={{ cursor: 'pointer' }}
             variant='h6'
             component='div'
             sx={{ flexGrow: 1, display: { xs: 'block', sm: 'block' } }}
-            onClick={() => (window.location.href = getIconClickUrl())}
+            onClick={() => navigate(getIconClickUrl())}
           >
             IMS
           </Typography>

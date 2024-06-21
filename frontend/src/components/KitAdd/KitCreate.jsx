@@ -11,7 +11,9 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { URL_INV_VIEW_KITS } from '../../globals/urls';
 import { useCreateKit } from '../../hooks/mutations';
 import { useKits, useKitRecipe } from '../../hooks/queries';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -26,6 +28,7 @@ export const KitCreate = () => {
   const { data: kitRecipeData, isLoading: blueprintLoading } =
     useKitRecipe(selectedBlueprint);
   const { mutate, isLoading: createKitLoading } = useCreateKit({});
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -47,7 +50,7 @@ export const KitCreate = () => {
       };
       mutate(payload, {
         onSuccess: () => {
-          window.location.href = '/inventory/kits';
+          navigate(URL_INV_VIEW_KITS);
         },
       });
     },
@@ -73,7 +76,7 @@ export const KitCreate = () => {
   }, [kitRecipeData]);
 
   const getTotalQuantity = (itemId, kitContent) => {
-    if (!kitContent.hasOwnProperty(itemId)) return 0;
+    if (!(itemId in kitContent)) return 0;
     let sum = 0;
     for (const v of Object.values(kitContent[itemId])) {
       sum += v.quantity;

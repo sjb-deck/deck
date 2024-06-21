@@ -10,8 +10,15 @@ import {
   Stack,
 } from '@mui/material';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import {
+  URL_INV_KITS_INFO,
+  URL_INV_KITS_LOAN_RETURN,
+  URL_INV_KITS_RESTOCK,
+} from '../../globals/urls';
 import { AlertContext, KitCartContext } from '../../providers';
+import { buildUrl } from '../../utils';
 
 const kitStatus = {
   LOANED: 'On Loan',
@@ -24,6 +31,7 @@ export const KitData = ({ kit, isMobile }) => {
   const { kitCartItems, addToCart } = useContext(KitCartContext);
   const isInCart = kitCartItems.some((item) => item.id === kit.id);
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
   const withdrawHandler = () => {
     if (isInCart) return;
     addToCart({
@@ -100,9 +108,7 @@ export const KitData = ({ kit, isMobile }) => {
             color='info'
             variant='contained'
             onClick={() =>
-              window.location.replace(
-                `/inventory/kits/kit_info?kitId=${kit.id}`,
-              )
+              navigate(buildUrl(URL_INV_KITS_INFO, { kitId: kit.id }))
             }
           >
             View Kit
@@ -122,9 +128,7 @@ export const KitData = ({ kit, isMobile }) => {
               color='success'
               variant='contained'
               onClick={() =>
-                window.location.replace(
-                  `/inventory/kits/return?kitId=${kit.id}`,
-                )
+                navigate(buildUrl(URL_INV_KITS_LOAN_RETURN, { kitId: kit.id }))
               }
             >
               Return
@@ -135,7 +139,7 @@ export const KitData = ({ kit, isMobile }) => {
               color='success'
               variant='contained'
               onClick={() =>
-                (window.location.href = `kit_restock?kitId=${kit.id}`)
+                navigate(buildUrl(URL_INV_KITS_RESTOCK, { kitId: kit.id }))
               }
             >
               Restock

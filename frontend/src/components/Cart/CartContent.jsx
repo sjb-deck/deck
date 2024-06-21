@@ -5,12 +5,13 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { useContext, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { CART_ITEM_TYPE_WITHDRAW } from '../../globals/constants';
 import { URL_ORDER_RECEIPT } from '../../globals/urls';
 import { useOrders } from '../../hooks/mutations';
 import { CartContext } from '../../providers';
-import { getDjangoFriendlyDate } from '../../utils';
+import { buildUrl, getDjangoFriendlyDate } from '../../utils';
 import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Paper } from '../styled';
@@ -27,6 +28,7 @@ export const CartContent = () => {
   const setSelectedOption = (value) => {
     formik.setFieldValue('selectedOption', value);
   };
+  const navigate = useNavigate();
 
   const { mutate, isLoading } = useOrders();
 
@@ -42,8 +44,7 @@ export const CartContent = () => {
       const data = buildPayload(values);
       mutate(data, {
         onSuccess: (res) => {
-          const orderId = encodeURIComponent(JSON.stringify(res.id));
-          window.location.href = `${URL_ORDER_RECEIPT}?orderId=${orderId}`;
+          navigate(buildUrl(URL_ORDER_RECEIPT, { orderId: res.id }));
           clearCart();
         },
       });

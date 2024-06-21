@@ -1,10 +1,15 @@
 import { Avatar, Button, Stack, Typography } from '@mui/material';
-import { useContext } from 'react';
-
 import '../../globals/styles/inventoryBase.scss';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  URL_INV_KITS_LOAN_RETURN,
+  URL_INV_KITS_RESTOCK,
+} from '../../globals/urls';
 import { useKitRecipe } from '../../hooks/queries';
 import { AlertContext, KitCartContext } from '../../providers';
-import { stringAvatar } from '../../utils';
+import { buildUrl, stringAvatar } from '../../utils';
 
 import { KitContentsAccordion } from './KitContentsAccordion';
 import { KitHistoryAccordion } from './KitHistoryAccordion';
@@ -14,6 +19,7 @@ export const KitInfoContent = ({ kitData }) => {
   const isInCart = kitCartItems.some((item) => item.id === kitData.id);
   const { data: kitRecipeData } = useKitRecipe(kitData?.blueprint_id);
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
   const withdrawHandler = () => {
     if (isInCart) return;
     addToCart({
@@ -60,7 +66,9 @@ export const KitInfoContent = ({ kitData }) => {
                   variant='contained'
                   color='success'
                   onClick={() =>
-                    (window.location.href = `/inventory/kits/kit_restock?kitId=${kitData.id}`)
+                    navigate(
+                      buildUrl(URL_INV_KITS_RESTOCK, { kitId: kitData.id }),
+                    )
                   }
                 >
                   Restock
@@ -72,7 +80,9 @@ export const KitInfoContent = ({ kitData }) => {
               variant='contained'
               color='success'
               onClick={() =>
-                (window.location.href = `/inventory/kits/return?kitId=${kitData.id}`)
+                navigate(
+                  buildUrl(URL_INV_KITS_LOAN_RETURN, { kitId: kitData.id }),
+                )
               }
             >
               Return

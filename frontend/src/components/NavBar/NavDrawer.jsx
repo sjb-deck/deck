@@ -11,6 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { URL_PROFILE } from '../../globals/urls';
 import { useSignOutDeck } from '../../hooks/auth';
@@ -39,6 +40,7 @@ export const NavDrawer = ({ user }) => {
   const { kitCartItems } = useContext(KitCartContext);
   const colorMode = useContext(ColorModeContext);
   const signOut = useSignOutDeck();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ textAlign: 'center' }}>
@@ -74,7 +76,7 @@ export const NavDrawer = ({ user }) => {
             fullWidth
             sx={{ justifyContent: 'center', textTransform: 'none' }}
             startIcon={<AccountCircleIcon />}
-            onClick={() => (window.location.href = URL_PROFILE)}
+            onClick={() => navigate(URL_PROFILE)}
           >
             Profile
           </Button>
@@ -105,7 +107,7 @@ export const NavDrawer = ({ user }) => {
                 fullWidth
                 sx={{ justifyContent: 'center', textTransform: 'none' }}
                 startIcon={item.icon}
-                onClick={() => (window.location.href = item.link)}
+                onClick={() => navigate(item.link)}
               >
                 {item.title}
               </Button>
@@ -121,7 +123,7 @@ export const NavDrawer = ({ user }) => {
               fullWidth
               sx={{ justifyContent: 'center', textTransform: 'none' }}
               startIcon={item.icon}
-              onClick={() => (window.location.href = item.link)}
+              onClick={() => navigate(item.link)}
             >
               {item.title}
             </Button>
@@ -133,7 +135,7 @@ export const NavDrawer = ({ user }) => {
               fullWidth
               sx={{ justifyContent: 'center', textTransform: 'none' }}
               startIcon={item.icon}
-              onClick={() => (window.location.href = item.link)}
+              onClick={() => navigate(item.link)}
             >
               {item.title}
             </Button>

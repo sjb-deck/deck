@@ -9,12 +9,20 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import { getReadableDate } from '../../../utils';
+import {
+  URL_INV_KITS_INFO,
+  URL_INV_KITS_LOAN_RETURN,
+  URL_INV_KITS_RESTOCK,
+} from '../../../globals/urls';
+import { buildUrl, getReadableDate } from '../../../utils';
 
 // TODO: This is the exact same as KitData from the KitIndex folder but since the kit object here is the KitHistory object instead of the Kit object, some fields are different. Change in the future to reuse the same component.
 
 export const KitData = ({ kit, isMobile }) => {
+  const navigate = useNavigate();
+
   return (
     <Accordion
       data-testid={`kit-${kit.id}`}
@@ -77,9 +85,7 @@ export const KitData = ({ kit, isMobile }) => {
             color='info'
             variant='contained'
             onClick={() =>
-              window.location.replace(
-                `/inventory/kits/kit_info?kitId=${kit.kit}`,
-              )
+              navigate(buildUrl(URL_INV_KITS_INFO, { kitId: kit.id }))
             }
           >
             View Kit
@@ -89,9 +95,7 @@ export const KitData = ({ kit, isMobile }) => {
               color='success'
               variant='contained'
               onClick={() =>
-                window.location.replace(
-                  `/inventory/kits/return?kitId=${kit.kit}`,
-                )
+                navigate(buildUrl(URL_INV_KITS_LOAN_RETURN, { kitId: kit.id }))
               }
             >
               Return
@@ -101,7 +105,7 @@ export const KitData = ({ kit, isMobile }) => {
             color='success'
             variant='contained'
             onClick={() =>
-              (window.location.href = `kit_restock?kitId=${kit.id}`)
+              navigate(buildUrl(URL_INV_KITS_RESTOCK, { kitId: kit.id }))
             }
           >
             Restock

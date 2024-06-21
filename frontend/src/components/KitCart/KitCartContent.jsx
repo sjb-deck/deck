@@ -5,7 +5,9 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { URL_INV_VIEW_KITS } from '../../globals/urls';
 import { useSubmitKitOrder } from '../../hooks/mutations';
 import { KitCartContext } from '../../providers';
 import { getDjangoFriendlyDate } from '../../utils';
@@ -21,6 +23,7 @@ export const KitCartContent = () => {
   const { kitCartItems, clearCart } = useContext(KitCartContext);
   const isEmpty = kitCartItems.length == 0;
   const { mutate } = useSubmitKitOrder();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       loaneeName: '',
@@ -36,7 +39,7 @@ export const KitCartContent = () => {
       };
       mutate(data, {
         onSuccess: () => {
-          window.location.href = '/inventory/kits';
+          navigate(URL_INV_VIEW_KITS);
           clearCart();
         },
       });
