@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useReturnLoan } from '../../../hooks/mutations';
 import { AlertContext } from '../../../providers';
@@ -28,6 +29,7 @@ export const ReturnForm = ({ items, id, onClose, open }) => {
   const [loading, setLoading] = useState(false);
   const { mutate } = useReturnLoan();
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
 
   const processReturnSubmission = () => {
     const payload = {
