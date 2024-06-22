@@ -41,7 +41,9 @@ def create_payload_for_new_expiry_order(data, item_expiry_id):
 
 
 def create_new_item_expiry(data, request):
-    expiry_serializer = AddItemExpirySerializer(data=data)
+    expiry_serializer = AddItemExpirySerializer(
+        data=data, context={"user": request.user}
+    )
     if expiry_serializer.is_valid(raise_exception=True):
         with transaction.atomic():
             expiry = expiry_serializer.save()

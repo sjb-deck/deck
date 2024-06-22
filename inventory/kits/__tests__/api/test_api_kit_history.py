@@ -2,8 +2,8 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item, ItemExpiry, Order
-from inventory.kits.models import Blueprint, Kit, History, LoanHistory
+from inventory.items.models import Item, ItemExpiry, Order, OrderItem
+from inventory.kits.models import Blueprint, Kit, History
 
 
 class TestApiKitHistoryViews(TestCase):
@@ -13,7 +13,6 @@ class TestApiKitHistoryViews(TestCase):
             username="testuser", password="testpass", email="testuser@example.com"
         )
         self.client.login(username="testuser", password="testpass")
-        self.clear_relevant_models()
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -124,12 +123,6 @@ class TestApiKitHistoryViews(TestCase):
             quantity=50, archived=False
         )
 
-    def clear_relevant_models(self):
-        History.objects.all().delete()
-        Kit.objects.all().delete()
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
-
     def test_kit_history(self):
         url = f"{reverse('kit_history')}?kitId={self.kit_id}"
         response = self.client.get(url, None, format="json")
@@ -193,5 +186,11 @@ class TestApiKitHistoryViews(TestCase):
         self.assertEqual(response.data["count"], 4)
 
     def tearDown(self):
-        self.clear_relevant_models()
+        History.objects.all().delete()
+        Kit.objects.all().delete()
+        Blueprint.objects.all().delete()
+        OrderItem.objects.all().delete()
+        Order.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

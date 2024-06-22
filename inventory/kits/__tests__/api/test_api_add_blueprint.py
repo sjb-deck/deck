@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
-from inventory.items.models import Item
+from inventory.items.models import Item, ItemExpiry
 from inventory.kits.models import Blueprint
 
 
@@ -14,7 +14,6 @@ class TestApiAddBlueprintViews(TestCase):
         )
         self.client.login(username="testuser", password="testpass")
         self.url = reverse("add_blueprint")
-        self.clear_relevant_models()
         self.create_items()
         self.content = [
             {"item_id": self.item.id, "quantity": 10},
@@ -52,10 +51,6 @@ class TestApiAddBlueprintViews(TestCase):
         self.itemExpiry_no_expiry = self.item_no_expiry.expiry_dates.create(
             quantity=50, archived=False
         )
-
-    def clear_relevant_models(self):
-        Blueprint.objects.all().delete()
-        Item.objects.all().delete()
 
     def test_create_new_blueprint(self):
         # create blueprint
@@ -118,5 +113,7 @@ class TestApiAddBlueprintViews(TestCase):
         self.request["content"][0]["quantity"] = quantity
 
     def tearDown(self):
-        self.clear_relevant_models()
+        Blueprint.objects.all().delete()
+        ItemExpiry.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()

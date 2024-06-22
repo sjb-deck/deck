@@ -96,8 +96,19 @@ class ItemSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         expiry_data = validated_data.pop("expiry_dates")
         item = Item.objects.create(**validated_data)
+        created_item_expiry = []
         for data in expiry_data:
-            ItemExpiry.objects.create(item=item, **data)
+            created_item_expiry.append(ItemExpiry.objects.create(item=item, **data))
+        # create order and order items
+        order = Order.objects.create(
+            user=self.context["user"], action="Deposit", reason="item_creation"
+        )
+        for item_expiry in created_item_expiry:
+            OrderItem.objects.create(
+                order=order,
+                item_expiry=item_expiry,
+                ordered_quantity=item_expiry.quantity,
+            )
         return item
 
 

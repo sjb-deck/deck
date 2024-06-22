@@ -22,6 +22,11 @@ def login_view(request):
         toRedirect = request.POST.get("next", "/")
         user = authenticate(request, username=username, password=password)
 
+        # We currently only have one app, so if the user is redirected to the root,
+        # we will redirect them to the inventory page
+        if toRedirect == "/":
+            toRedirect = "/inventory"
+
         if user != None:
             login(request, user)
             return JsonResponse(data={"toRedirect": toRedirect}, status=200)

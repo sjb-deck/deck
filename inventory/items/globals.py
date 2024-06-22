@@ -16,4 +16,5 @@ action_reasons = (
     ("unserviceable", "Unserviceable"),
     ("others", "Others"),
     ("item_restock", "Item Restock"),
+    ("item_create", "Item Create"),
 )
