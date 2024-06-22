@@ -12,7 +12,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import { getReadableDate } from '../../utils';
+import { URL_ORDER_RECEIPT } from '../../globals/urls';
+import { buildUrl, getReadableDate } from '../../utils';
 
 import { Modal } from './Modal';
 
@@ -135,7 +136,9 @@ export const KitHistoryContent = ({
                   <span>Order ID:</span>
                   <span>
                     <a
-                      href={`/inventory/items/receipt?orderId=${history.order_id}`}
+                      href={buildUrl(URL_ORDER_RECEIPT, {
+                        orderId: history.order_id,
+                      })}
                     >
                       {history.order_id}
                     </a>
