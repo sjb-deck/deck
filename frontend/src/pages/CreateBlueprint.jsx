@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {
   Footer,
@@ -14,7 +15,6 @@ import {
 import { useItems, useBlueprint } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const CreateBlueprint = () => {
   const userData = useAuthUser();
@@ -27,17 +27,16 @@ export const CreateBlueprint = () => {
 
   useEffect(() => {
     if (!items) return;
-    items.forEach((item) => {
-      const i = {
+    setItemsToDisplay(
+      items.map((item) => ({
         id: item.id,
         type: item.type,
         name: item.name,
         unit: item.unit,
         total_quantity: item.total_quantity,
         selectedQty: 0,
-      };
-      setItemsToDisplay((prevItems) => [...prevItems, i]);
-    });
+      })),
+    );
   }, [items, itemsLoading]);
 
   const handleModeChange = (mode) => {
