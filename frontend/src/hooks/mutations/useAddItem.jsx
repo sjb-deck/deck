@@ -14,7 +14,7 @@ export const useAddItem = (options) => {
     mutationFn: async (order) => {
       const formData = new FormData();
       for (const key in order) {
-        if (order.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(order, key)) {
           if (key === 'expiry_dates') {
             formData.append(key, JSON.stringify(order[key]));
             continue;
