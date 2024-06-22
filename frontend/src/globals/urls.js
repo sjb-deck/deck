@@ -20,7 +20,7 @@ export const URL_INV_KITS_CART = `${URL_BASE_INV}/kits/cart`;
 export const URL_INV_KITS_ADD_BLUEPRINT = `${URL_BASE_INV}/kits/create_blueprint`;
 export const URL_INV_KITS_ADD_KIT = `${URL_BASE_INV}/kits/create_kit`;
 export const URL_INV_KITS_INFO = `${URL_BASE_INV}/kits/kit_info/:kitId`;
-export const URL_INV_KITS_RESTOCK = `${URL_BASE_INV}/kit_restock/:kitId`;
+export const URL_INV_KITS_RESTOCK = `${URL_BASE_INV}/kits/kit_restock/:kitId`;
 export const URL_INV_KITS_LOAN_RETURN = `${URL_BASE_INV}/kits/loan_return/:kitId`;
 
 // Images

@@ -3,6 +3,9 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import InputIcon from '@mui/icons-material/Input';
 import OutboundIcon from '@mui/icons-material/Outbound';
 
+import { URL_ORDER_RECEIPT } from '../../globals/urls';
+import { buildUrl } from '../../utils';
+
 export const options = {
   year: 'numeric',
   month: 'long',
@@ -74,7 +77,7 @@ export const typeToModalInfo = (history) => {
             history.person.username
           }, and created withdraw order ${history.order_id}. Click `}
           <a
-            href={`/inventory/items/receipt?orderId=${history.order_id}`}
+            href={buildUrl(URL_ORDER_RECEIPT, { orderId: history.order_id })}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -93,7 +96,7 @@ export const typeToModalInfo = (history) => {
             history.person.username
           }, and created deposit order ${history.order_id}. Click `}
           <a
-            href={`/inventory/items/receipt?orderId=${history.order_id}`}
+            href={buildUrl(URL_ORDER_RECEIPT, { orderId: history.order_id })}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -112,7 +115,7 @@ export const typeToModalInfo = (history) => {
             history.person.username
           }, and created deposit order ${history.order_id}. Click `}
           <a
-            href={`/inventory/items/receipt?orderId=${history.order_id}`}
+            href={buildUrl(URL_ORDER_RECEIPT, { orderId: history.order_id })}
             target='_blank'
             rel='noopener noreferrer'
           >
