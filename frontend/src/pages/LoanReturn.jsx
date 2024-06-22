@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {
   Footer,
@@ -13,7 +14,6 @@ import {
 } from '../components';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const LoanReturn = () => {
   const user = useAuthUser();
@@ -27,7 +27,7 @@ export const LoanReturn = () => {
         alignItems='center'
         spacing={3}
         width='100%'
-        minHeight={'100vh'}
+        minHeight='100vh'
       >
         <Typography variant='h4'>Loan Return</Typography>
         <Box

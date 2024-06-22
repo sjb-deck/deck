@@ -142,12 +142,7 @@ export const ItemLoanReturn = () => {
           }}
         >
           {loansToDisplay.map((loan, index) => (
-            <FullAccordion
-              key={index}
-              index={(index + 1).toString() + '.'}
-              loan={loan}
-              isMobile={isMobile}
-            />
+            <FullAccordion key={index} loan={loan} isMobile={isMobile} />
           ))}
         </Box>
         {loans ? (

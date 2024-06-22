@@ -16,7 +16,7 @@ import { ReturnForm } from './ReturnForm';
 
 import '../../../globals/styles/inventoryBase.scss';
 
-export const FullAccordion = ({ index, loan, isMobile }) => {
+export const FullAccordion = ({ loan, isMobile }) => {
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
 
   const handleDialogOpen = () => {
@@ -49,10 +49,7 @@ export const FullAccordion = ({ index, loan, isMobile }) => {
             isMobile={isMobile}
           />
         </AccordionSummary>
-        <AccordionDetails
-          sx={{ marginTop: '-10px', marginBottom: '-10px' }}
-          data-testid={`details-${loan.id}`}
-        >
+        <AccordionDetails data-testid={`details-${loan.id}`}>
           <Divider variant='middle' sx={{ borderBottomWidth: 2 }} />
           <Stack spacing={1} sx={{ marginTop: 2, marginBottom: 1 }}>
             {loan.order_items.map((orderItem, index) => (
