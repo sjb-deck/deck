@@ -31,7 +31,10 @@ const getOrderInfo = (orderData) => {
   };
   const orderInfoWithFriendlyStatus = {
     ...orderInfoWithUser,
-    ...(orderInfoWithUser.hasOwnProperty('loan_active') && {
+    ...(Object.prototype.hasOwnProperty.call(
+      orderInfoWithUser,
+      'loan_active',
+    ) && {
       loan_active: orderInfoWithUser.loan_active ? (
         <Chip label='Active' color='success' />
       ) : (

@@ -1,7 +1,8 @@
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+
 import { Footer, NavBar, KitCreate } from '../components';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const KitAdd = () => {
   const userData = useAuthUser();
