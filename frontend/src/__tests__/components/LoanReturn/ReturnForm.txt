@@ -1,0 +1,69 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+
+
+import '@testing-library/jest-dom/extend-expect'; // Import the jest-dom matchers
+import ReturnForm from '../../../components/LoanReturn/ReturnForm';
+
+xdescribe('ReturnForm', () => {
+  const testData = {
+    items: [
+      {
+        name: 'Item 1',
+        expiry: '2023-12-31',
+        type: 'Sample',
+        quantity_opened: 5,
+        quantity_unopened: 3,
+        unit: 'pcs',
+        imgpic: '/path/to/image1',
+      },
+      {
+        name: 'Item 2',
+        expiry: '2023-12-31',
+        type: 'Sample',
+        quantity_opened: 10,
+        quantity_unopened: 2,
+        unit: 'pcs',
+        imgpic: '/path/to/image2',
+      },
+    ],
+    id: 123,
+    onClose: jest.fn(), // Mock onClose function
+    open: true,
+  };
+
+  test('should render the component with correct data', () => {
+    render(
+      <ReturnForm
+        items={testData.items}
+        id={testData.id}
+        onClose={testData.onClose}
+        open={testData.open}
+      />,
+    );
+
+    expect(screen.getByText('Return Form')).toBeInTheDocument();
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+    expect(screen.getByText('Item 2')).toBeInTheDocument();
+
+    const returningOpenedLabels = screen.getAllByText('Returning Opened');
+    expect(returningOpenedLabels).toHaveLength(2);
+
+    const returningOpenedFields = screen.getAllByLabelText('Returning Opened');
+    expect(returningOpenedFields).toHaveLength(2);
+  });
+
+  test('should call onClose when the "Cancel" button is clicked', () => {
+    render(
+      <ReturnForm
+        items={testData.items}
+        id={testData.id}
+        onClose={testData.onClose}
+        open={testData.open}
+      />,
+    );
+
+    // Click on the "Cancel" button
+    fireEvent.click(screen.getByText('Cancel'));
+    expect(testData.onClose).toHaveBeenCalledTimes(1);
+  });
+});

@@ -1,0 +1,63 @@
+# docker-compose.yml
+
+services:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/nginx.dev.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+      - frontend
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    expose:
+      - "8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env 
+    environment:
+      DB_USER: devuser
+      DB_PW: devpassword
+      DB_HOST: mysql
+    depends_on:
+      - mysql
+    command: >
+      sh -c "
+        ./wait-for-it.sh mysql:3306 -- 
+        python manage.py makemigrations &&
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: deck
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

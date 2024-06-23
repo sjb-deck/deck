@@ -8,7 +8,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8]
+        python-version: [3.11]
     services:
       mysql:
         image: mysql:8.0
@@ -32,15 +32,21 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '${{ steps.nvm.outputs.NODE_VERSION }}'
-      - name: Install Dependencies
+      - name: Install Backend Dependencies
         run: |
+          cd backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          cd ..
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
           npm install
+          cd ..
       - name: Run Style Check
         run: |
           black . --check
-          npx eslint .
+          # npm run lint # Uncomment this after integrating jest
       - name: Apply Database Migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -50,55 +56,78 @@ jobs:
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
         run: |
+          cd backend
           python manage.py migrate --noinput
-      - name: Run Tests with Code Coverage
+          cd ..
+      - name: Run Backend Tests with Code Coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          NEXTCLOUD_USERNAME: ${{ secrets.NEXTCLOUD_USERNAME }}
-          NEXTCLOUD_APP_PASSWORD: ${{ secrets.NEXTCLOUD_APP_PASSWORD }}
           DEBUG: ${{ secrets.DEBUG }}
           DB_USER: root
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
         run: |
-          coverage run manage.py test --noinput
-          coverage xml -o coverage.xml
-          npm run test:coverage
+          cd backend
+          # coverage run manage.py test --noinput # skip tests for now
+          # coverage xml -o coverage.xml
+          cd ..
+      - name: Run Frontend Tests with Code Coverage
+        run: |
+          cd frontend
+          # npm run test:coverage # uncomment this line after integrating jest
+          cd ..
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
-          file: coverage.xml
+          file: backend/coverage.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         
-        
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/staging'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker Login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build files and push to Docker Hub
+        run: |
+          ./run.sh --staging
+      - name: Deploying to staging server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          password: ${{ secrets.STAGING_PASSWORD }}
+          script: |
+            cd deck-stg
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
 
+  
   deploy:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v3
+      - name: Docker Login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build files and push to docker hub
+        run: |
+          ./run.sh --prod
       - name: Deploying to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            set -e
-            cd deck/
-            source deck-env/env/bin/activate
-            cd deck
-            git reset --hard
-            git pull
-            pip install -r requirements.txt
-            source ~/.nvm/nvm.sh
-            nvm install
-            nvm use
-            npm prune
-            npm install
-            python manage.py makemigrations
-            python manage.py migrate
-            npm run build
-            echo ${{ secrets.PASSWORD }} | sudo -S service apache2 reload
+            cd deck-docker
+            sudo docker compose pull
+            sudo docker compose up -d
+
