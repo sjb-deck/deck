@@ -104,8 +104,8 @@ jobs:
           password: ${{ secrets.STAGING_PASSWORD }}
           script: |
             cd deck-stg
-            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker-compose pull
-            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker-compose up -d
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
 
   
   deploy:
