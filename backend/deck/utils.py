@@ -9,8 +9,8 @@ Note: If there is a file with the same name, it will be overwritten
 
 
 def upload_file(file_path, file_content):
-    username = config("NEXTCLOUD_USERNAME")
-    password = config("NEXTCLOUD_APP_PASSWORD")
+    username = ""  # TODO: Update after S3 integration
+    password = ""  # TODO: Update after S3 integration
     nextcloud_url = (
         f"https://nextcloud.nhhs-sjb.org/remote.php/dav/files/{username}/Shared/deck/"
     )
@@ -30,8 +30,8 @@ def upload_file(file_path, file_content):
 
 
 def delete_file(file_path):
-    username = config("NEXTCLOUD_USERNAME")
-    password = config("NEXTCLOUD_APP_PASSWORD")
+    username = ""  # TODO: Update after S3 integration
+    password = ""  # TODO: Update after S3 integration
     nextcloud_url = (
         f"https://nextcloud.nhhs-sjb.org/remote.php/dav/files/{username}/Shared/deck/"
     )

@@ -3,10 +3,10 @@
 services:
   frontend:
     platform: linux/amd64
-    image: sjbdeck/deck-frontend:latest
+    image: sjbdeck/deck-frontend:staging
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80" # staging apache server will proxy to port 8080
+      - "4443:443" # staging apache server will proxy to port 4443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/www/certbot:/var/www/certbot
@@ -16,7 +16,7 @@ services:
 
   backend:
     platform: linux/amd64
-    image: sjbdeck/deck-backend:latest
+    image: sjbdeck/deck-backend:staging
     env_file:
       - .env 
     expose:
@@ -50,7 +50,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306" # staging mysql server will run on port 3307
     volumes:
       - deck_data:/var/lib/mysql
 
