@@ -106,6 +106,10 @@ if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
     print_msg "${GREEN}${MODE} images have been built and pushed successfully.${NC}"
 else
     print_msg "${GREEN}Bringing up the development environment with Docker Compose...${NC}"
-    docker-compose up --build || handle_error "Failed to bring up the development environment with Docker Compose"
-    print_msg "${GREEN}Development environment is up and running${NC}" # TODO
+    docker-compose up --build &
+    DOCKER_COMPOSE_PID=$!
+
+    wait $DOCKER_COMPOSE_PID
+
+    cleanup
 fi

@@ -1,6 +1,7 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import axios from 'axios';
 import AuthProvider from 'react-auth-kit/AuthProvider';
 import createRefresh from 'react-auth-kit/createRefresh';
 import createStore from 'react-auth-kit/createStore';

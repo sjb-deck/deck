@@ -1,8 +1,9 @@
 import { Grid, Slider, TextField } from '@mui/material';
 import { useTheme, useMediaQuery } from '@mui/material';
+import { useState } from 'react';
 
 export const ItemReturnSlider = ({ originalQuantity, update }) => {
-  const [value, setValue] = React.useState(originalQuantity);
+  const [value, setValue] = useState(originalQuantity);
 
   const theme = useTheme();
   const shouldShowSlider = useMediaQuery(theme.breakpoints.up('md'));

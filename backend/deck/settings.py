@@ -170,6 +170,11 @@ CORS_ORIGIN_WHITELIST = [
     "https://deck.nhhs-sjb.org",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://deck.nhhs-sjb.org",
+    "https://deck-stg.nhhs-sjb.org",
+]
+
 CORS_ALLOW_HEADERS = [
     "content-type",
     "authorization",
