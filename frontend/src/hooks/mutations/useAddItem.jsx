@@ -1,11 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { getRequest } from '../../utils/getRequest';
 
 export const useAddItem = (options) => {
   const key = 'addItem';
   const url = Api[key];
+  const queryClient = useQueryClient();
   const request = getRequest({
     headers: { 'Content-Type': 'multipart/form-data' },
   });
@@ -24,6 +25,12 @@ export const useAddItem = (options) => {
       }
       const response = await request.post(url, formData);
       return response.data;
+    },
+    ...options,
+    onSuccess: () => {
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
   });
 };

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { URL_INV_VIEW_KITS } from '../../globals/urls';
 import { AlertContext } from '../../providers/AlertProvider';
 import { getRequest } from '../../utils/getRequest';
@@ -17,8 +17,9 @@ export const useRestockKit = (options) => {
   const navigate = useNavigate();
   const defaultOptions = {
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['kitRestockOptions', kitId]);
-      queryClient.invalidateQueries(['kit', { kitId: kitId }]);
+      invalidateQueryKeys({ id: kitId })[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
       navigate(URL_INV_VIEW_KITS);
     },
     onError: (error) => {
