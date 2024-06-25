@@ -16,7 +16,6 @@ CMD ["npm", "run", "dev"]
 FROM nginx:alpine as production
 
 COPY dist /usr/share/nginx/html
-COPY public /usr/share/nginx/html/static
 COPY nginx.prod.conf /etc/nginx/nginx.conf
 
 EXPOSE 80

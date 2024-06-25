@@ -29,7 +29,7 @@ export const NavIcon = () => {
           <img
             height={35}
             style={{ marginRight: 10, cursor: 'pointer' }}
-            src='/img/logo.png'
+            src={IMG_LOGO}
             alt='logo'
             onClick={() => navigate(getIconClickUrl())}
           />
