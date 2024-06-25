@@ -8,6 +8,8 @@ services:
       - "80:80"
     volumes:
       - ./frontend/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./frontend/public:/usr/share/nginx/html/static/frontend
+      - ./backend/staticfiles:/usr/share/nginx/html/static/backend
     depends_on:
       - backend
       - frontend

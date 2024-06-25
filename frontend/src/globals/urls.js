@@ -24,6 +24,6 @@ export const URL_INV_KITS_RESTOCK = `${URL_BASE_INV}/kits/kit_restock/:kitId`;
 export const URL_INV_KITS_LOAN_RETURN = `${URL_BASE_INV}/kits/loan_return/:kitId`;
 
 // Images
-export const IMG_LOGO = '/img/logo.png';
-export const IMG_SPLASH = '/img/A6.jpg';
-export const IMG_USER = '/img/blank_profile.webp';
+export const IMG_LOGO = '/static/img/logo.png';
+export const IMG_SPLASH = '/static/img/A6.jpg';
+export const IMG_USER = '/static/img/blank_profile.webp';
