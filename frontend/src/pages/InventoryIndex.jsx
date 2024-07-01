@@ -220,7 +220,7 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
         <Tooltip title='Manage Account Details'>
           <Avatar
             alt='User'
-            src={IMG_USER}
+            src={user?.extras?.profile_pic || IMG_USER}
             {...stringAvatar(user?.username || 'User')}
             sx={{
               width: 80,

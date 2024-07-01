@@ -5,6 +5,9 @@ const INV_ITEMS_API_BASE_URL = `${INV_API_BASE_URL}/items`;
 const INV_KITS_API_BASE_URL = `${INV_API_BASE_URL}/kits`;
 
 export const Api = {
+  presignedUrl: `${API_BASE_URL}/generate_presigned_url`,
+  media: `/media/:src`,
+
   login: `${ACC_API_BASE_URL}/token/`,
   refresh: `${ACC_API_BASE_URL}/token/refresh/`,
   items: INV_ITEMS_API_BASE_URL,

@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
+import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';
 
 /**
@@ -37,7 +38,10 @@ export const AddExpiryReview = ({ expiryFormData }) => {
         >
           <ImageAvatar
             alt='new-item'
-            src={`/get_image/${expiryFormData.image}`}
+            src={
+              expiryFormData.imgpic.name ? expiryFormData.imgPreview : IMG_LOGO
+            }
+            size={90}
           />
         </div>
         <div
