@@ -131,7 +131,6 @@ export const AddItem = () => {
           autoHide: true,
         });
         setLoading(false);
-        queryClient.invalidateQueries('items');
       },
       onError: (error) => {
         setActiveStep(0);

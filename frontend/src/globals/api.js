@@ -34,3 +34,20 @@ export const Api = {
   kitRestock: `${INV_KITS_API_BASE_URL}/restock_kit`,
   submitKitOrder: `${INV_KITS_API_BASE_URL}/submit_kit_order`,
 };
+
+export const invalidateQueryKeys = ({ id } = {}) => ({
+  addItem: ['items'],
+  submitOrder: ['items', 'orders', 'kitRestockOptions'],
+  submitNewExpiryDate: ['items', 'kitRestockOptions'],
+  returnLoan: ['items', 'loans', 'loan_active', 'kitRestockOptions'],
+  importItems: ['items', 'kitRestockOptions'],
+  exportItems: [],
+  revertOrder: ['items', 'orders', ['order', id], 'kitRestockOptions'],
+  addBlueprint: [],
+  createKit: ['kits', 'items', 'orders', 'kitRestockOptions'],
+  returnKit: ['kits', ['kit', { kitId: id }], 'kitHistory'],
+  revertHistory: ['kits', 'kit', 'kitHistory'],
+  kitRestock: ['kits', ['kit', { kitId: id }], 'kitHistory'],
+  submitKitOrder: ['kits', 'kit', 'kitHistory'],
+  login: [],
+});

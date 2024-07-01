@@ -106,6 +106,7 @@ jobs:
             cd deck-stg
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker image prune -af
 
   
   deploy:
@@ -130,4 +131,5 @@ jobs:
             cd deck-docker
             sudo docker compose pull
             sudo docker compose up -d
+            sudo docker image prune -af
 

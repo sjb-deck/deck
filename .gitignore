@@ -110,3 +110,5 @@ static/webpack/*
 # coverage reports
 coverage/*
 .coverage
+
+frontend/nginx.prod.conf

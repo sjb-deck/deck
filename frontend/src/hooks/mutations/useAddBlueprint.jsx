@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
 import { getRequest } from '../../utils/getRequest';
 
@@ -18,7 +18,9 @@ export const useAddBlueprint = (options) => {
         message: 'Successfully added blueprint!',
         autoHide: true,
       });
-      queryClient.invalidateQueries('items');
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
     onError: (error) => {
       console.error(error);

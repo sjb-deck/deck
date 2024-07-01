@@ -21,6 +21,8 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  IMG_LOGO,
+  IMG_SPLASH,
   IMG_USER,
   URL_INV_ITEMS,
   URL_INV_LOAN_RETURN,
@@ -53,7 +55,7 @@ export const InventoryIndex = () => {
           width: '100vw',
           height: '100vh',
           backgroundRepeat: 'repeat',
-          backgroundImage: "url('/img/A6.jpg')",
+          backgroundImage: `url(${IMG_SPLASH})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           display: 'flex',
@@ -65,7 +67,7 @@ export const InventoryIndex = () => {
         <InventoryIndexUserCard user={user} isMobile={isMobile} />
 
         <img
-          src='/img/logo.png'
+          src={IMG_LOGO}
           alt='logo'
           style={{
             width: '150px',

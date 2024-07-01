@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
 import { getRequest } from '../../utils/getRequest';
 
@@ -28,7 +28,9 @@ export const useImportItems = (options) => {
         message: 'Successfully imported items!',
         autoHide: true,
       });
-      queryClient.invalidateQueries('items');
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
   };
 

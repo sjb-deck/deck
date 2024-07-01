@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils/getRequest';
 
@@ -11,7 +11,11 @@ export const useRevertHistory = (options) => {
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
-    onSuccess: async () => await queryClient.invalidateQueries('kitHistory'),
+    onSuccess: async () => {
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
+    },
     onError: (error) => {
       if (
         error.response?.data?.message ===

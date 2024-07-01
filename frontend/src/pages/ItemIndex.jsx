@@ -13,10 +13,10 @@ import {
   SearchBar,
   SearchFilter,
 } from '../components';
+import { ITEMS_PER_PAGE } from '../globals/constants';
 import { useItems } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 import { exampleItem } from '../mocks/items';
-import { ITEMS_PER_PAGE } from '../globals/constants';
 
 export const ItemIndex = () => {
   const { data: items } = useItems();

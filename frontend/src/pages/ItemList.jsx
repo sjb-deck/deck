@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {
   Footer,
@@ -13,7 +14,6 @@ import { useExportItems } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const ItemList = () => {
   const userData = useAuthUser();

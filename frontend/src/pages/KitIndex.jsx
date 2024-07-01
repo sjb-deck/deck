@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import { Footer, NavBar, KitList } from '../components';
 
 import '../globals/styles/inventoryBase.scss';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export const KitIndex = () => {
   const userData = useAuthUser();
