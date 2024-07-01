@@ -14,3 +14,4 @@ export * from './KitCart';
 export * from './KitInfo';
 export * from './KitRestock';
 export * from './KitLoanReturn';
+export * from './UserEdit';

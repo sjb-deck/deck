@@ -11,6 +11,8 @@ export const Api = {
   login: `${ACC_API_BASE_URL}/token/`,
   refresh: `${ACC_API_BASE_URL}/token/refresh/`,
   items: INV_ITEMS_API_BASE_URL,
+  edit: `${ACC_API_BASE_URL}/edit`,
+
   submitOrder: `${INV_ITEMS_API_BASE_URL}/submit_order`,
   addItem: `${INV_ITEMS_API_BASE_URL}/add_item`,
   submitNewExpiryDate: `${INV_ITEMS_API_BASE_URL}/add_expiry`,

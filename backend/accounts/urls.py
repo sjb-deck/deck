@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenBlacklistView,
 )
 from .views import TokenObtainPairViewWithUserData
+from accounts import views
 
 urlpatterns = (
     [
@@ -16,6 +17,7 @@ urlpatterns = (
         ),
         path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
         path("token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
+        path("edit", views.edit, name="edit"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
