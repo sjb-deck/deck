@@ -10,6 +10,7 @@ export const UserAvatar = ({ user, size }) => {
         alt={user.extras.name}
         src={user.extras.profile_pic}
         size={size}
+        isS3Image
       />
     </Tooltip>
   ) : (

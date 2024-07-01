@@ -6,7 +6,6 @@ import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { LoadingButton } from '@mui/lab';
 import {
-  Avatar,
   Badge,
   Box,
   Stack,
@@ -20,6 +19,7 @@ import { useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useNavigate } from 'react-router-dom';
 
+import { ImageAvatar } from '../components';
 import {
   IMG_LOGO,
   IMG_SPLASH,
@@ -218,13 +218,13 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
         }}
       >
         <Tooltip title='Manage Account Details'>
-          <Avatar
+          <ImageAvatar
             alt='User'
             src={user?.extras?.profile_pic || IMG_USER}
+            isS3Image={!!user?.extras?.profile_pic}
             {...stringAvatar(user?.username || 'User')}
+            size={80}
             sx={{
-              width: 80,
-              height: 80,
               '&:hover': {
                 filter: 'brightness(0.8)',
                 cursor: 'pointer',

@@ -1,6 +1,5 @@
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import {
-  Avatar,
   Button,
   Box,
   Container,
@@ -13,7 +12,8 @@ import { useRef, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import * as Yup from 'yup';
 
-import { LoadingSpinner } from '../components';
+import { ImageAvatar, LoadingSpinner } from '../components';
+import { IMG_USER } from '../globals/urls';
 import { useEditAccount } from '../hooks/mutations';
 
 const validationSchema = Yup.object({
@@ -43,16 +43,11 @@ const User = ({ user }) => {
       password: '',
       confirmPassword: '',
       image: null,
-      imageURL: `/get_image/${user.extras.profile_pic}`, // TODO: Update this later after S3 integration
+      imageURL: user.extras.profile_pic,
     },
     validationSchema,
     onSubmit: (values) => {
-      const formData = new FormData();
-      formData.append('username', values.username);
-      formData.append('password', values.password);
-      formData.append('confirm_password', values.confirmPassword);
-      formData.append('image', values.image);
-      mutate(formData);
+      mutate(values);
     },
   });
 
@@ -80,7 +75,14 @@ const User = ({ user }) => {
           onMouseLeave={() => setHover(false)}
           onClick={() => fileInputRef.current.click()}
         >
-          <Avatar src={formik.values.imageURL} sx={{ width: 80, height: 80 }} />
+          <ImageAvatar
+            src={formik.values.imageURL || IMG_USER}
+            size={80}
+            isS3Image={
+              !!formik.values.imageURL &&
+              formik.values.imageURL === user.extras.profile_pic
+            }
+          />
           {hover && (
             <Box
               sx={{

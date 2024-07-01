@@ -17,7 +17,6 @@ from django.db.models import F, Q
 
 from inventory.items.serializers import *
 from inventory.items.views_utils import *
-from deck.utils import upload_file
 
 
 @api_view(["GET"])
