@@ -18,9 +18,23 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from deck.views import generate_presigned_url_for_upload, get_presigned_url
 
 urlpatterns = (
-    [path("api/admin/", admin.site.urls), path("api/v1/", include("deck.app_urls"))]
+    [
+        path("api/admin/", admin.site.urls),
+        path("api/v1/", include("deck.app_urls")),
+        path(
+            "api/v1/generate_presigned_url",
+            generate_presigned_url_for_upload,
+            name="generate_presigned_url_for_upload",
+        ),
+        path(
+            "api/v1/get_presigned_url/<str:filename>",
+            get_presigned_url,
+            name="get_presigned_url",
+        ),
+    ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )

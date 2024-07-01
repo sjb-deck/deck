@@ -119,22 +119,9 @@ def api_submit_order(request):
 @permission_classes([IsAuthenticated])
 def api_add_item(request):
     try:
-        data = {
-            **request.POST.dict(),
-            "imgpic": None,
-            "expiry_dates": json.loads(request.POST.get("expiry_dates")),
-        }
-        image = request.FILES.get("imgpic", None)
+        data = request.data
         expiry_serializer = ItemSerializer(data=data, context={"user": request.user})
         if expiry_serializer.is_valid(raise_exception=True):
-            if image:
-                _, file_extension = os.path.splitext(image.name)
-                file_path = (
-                    f'items/{expiry_serializer.validated_data["name"]}{file_extension}'
-                )
-                expiry_serializer.validated_data["imgpic"] = upload_file(
-                    file_path, image
-                )
             item = expiry_serializer.save()
             return Response(ItemSerializer(item).data, status=201)
     except Exception as e:

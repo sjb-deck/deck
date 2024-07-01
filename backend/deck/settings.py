@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "accounts",
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -195,5 +196,7 @@ CORS_ALLOW_METHODS = [
 
 APPEND_SLASH = False
 
-MEDIA_URL = "uploaded/"
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
