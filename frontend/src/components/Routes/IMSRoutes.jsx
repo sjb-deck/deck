@@ -18,6 +18,7 @@ import {
   URL_INV_VIEW_ORDERS_LOANS,
   URL_LOGIN,
   URL_ORDER_RECEIPT,
+  URL_PROFILE,
 } from '../../globals/urls';
 import {
   AddItem,
@@ -36,6 +37,7 @@ import {
   KitInfo,
   KitRestock,
   KitLoanReturn,
+  UserEdit,
 } from '../../pages';
 
 export const IMSRoutes = () => {
@@ -65,6 +67,7 @@ export const IMSRoutes = () => {
         {/* Shared Route */}
         <Route path={URL_INV_LOAN_RETURN} element={<LoanReturn />} />
         <Route path={URL_INV_VIEW_ORDERS_LOANS} element={<AdminIndex />} />
+        <Route path={URL_PROFILE} element={<UserEdit />} />
       </Route>
     </Routes>
   );
