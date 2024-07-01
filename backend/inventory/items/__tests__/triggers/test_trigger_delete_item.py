@@ -1,7 +1,6 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from inventory.items.models import Item
-from deck.utils import upload_file
 import requests
 from requests.auth import HTTPBasicAuth
 from unittest.mock import patch

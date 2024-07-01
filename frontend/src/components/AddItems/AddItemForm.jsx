@@ -32,13 +32,21 @@ export const AddItemForm = ({
   itemFormError,
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
-  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(
+    itemFormData.imgPreview,
+  );
 
   const renderImagePreview = () => {
     const reader = new FileReader();
     const file = document.getElementById('imgpic').files[0];
     reader.onloadend = () => {
       setImagePreviewUrl(reader.result);
+      handleFormChange({
+        target: {
+          name: 'imgPreview',
+          value: reader.result,
+        },
+      });
     };
     reader.readAsDataURL(file);
   };

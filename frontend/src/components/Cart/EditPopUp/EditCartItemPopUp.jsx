@@ -60,8 +60,9 @@ export const EditCartItemPopUp = ({ cartItem, open, handleClose }) => {
           {cartItem.imgpic ? (
             <ImageAvatar
               alt={cartItem.name}
-              src={`/get_image/${cartItem.imgpic}`}
+              src={cartItem.imgpic}
               size={90}
+              isS3Image
             />
           ) : (
             <img src={IMG_LOGO} width={90} height={90} />

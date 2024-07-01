@@ -49,6 +49,7 @@ export const AddItem = () => {
     type: 'General',
     unit: '',
     imgpic: {},
+    imagePreview: '',
     total_quantity: 0,
     min_quantity: 0,
     is_opened: false,
@@ -59,6 +60,7 @@ export const AddItem = () => {
     type: 'General',
     unit: '',
     imgpic: {},
+    imagePreview: '',
     expiry: [
       {
         expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -121,6 +123,7 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
+          imagePreview: '',
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -140,6 +143,7 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
+          imagePreview: '',
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -187,6 +191,7 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
+          imagePreview: '',
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -227,6 +232,7 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
+          imagePreview: '',
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -328,6 +334,10 @@ export const AddItem = () => {
       value = event.target.files[0];
     }
 
+    if (name === 'imgPreview') {
+      value = event.target.value;
+    }
+
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -348,6 +358,10 @@ export const AddItem = () => {
 
     if (name === 'imgpic') {
       value = event.target.files[0];
+    }
+
+    if (name === 'imgPreview') {
+      value = event.target.value;
     }
 
     setExpiryFormData((prevFormData) => ({

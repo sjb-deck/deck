@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 
+import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';
 
 /**
@@ -36,7 +37,8 @@ export const AddItemReview = ({ itemFormData }) => {
         >
           <ImageAvatar
             alt='new-item'
-            src={`/get_image/${itemFormData.image}`}
+            src={itemFormData.imgpic.name ? itemFormData.imgPreview : IMG_LOGO}
+            size={90}
           />
         </div>
         <div

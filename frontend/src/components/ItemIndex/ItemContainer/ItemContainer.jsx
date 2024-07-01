@@ -98,9 +98,10 @@ export const ItemContainer = ({ item }) => {
         >
           {item.imgpic ? (
             <ImageAvatar
-              src={`/get_image/${item.imgpic}`}
+              src={item.imgpic}
               size={90}
               alt={item.name}
+              isS3Image
             />
           ) : (
             <img src={IMG_LOGO} width={90} height={90} />

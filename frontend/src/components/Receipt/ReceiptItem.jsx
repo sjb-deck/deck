@@ -22,9 +22,10 @@ export const ReceiptItem = ({ item }) => {
       >
         {itemExpiry.item.imgpic ? (
           <ImageAvatar
-            alt={`${itemExpiry.item.name}`}
-            src={`/get_image/${itemExpiry.item.imgpic}`}
+            alt={itemExpiry.item.name}
+            src={itemExpiry.item.imgpic}
             size={90}
+            isS3Image
           />
         ) : (
           <img src={IMG_LOGO} width={90} height={90} />

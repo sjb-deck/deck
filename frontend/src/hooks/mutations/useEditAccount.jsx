@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Api } from '../../globals/api';
 import { URL_BASE_INV } from '../../globals/urls';
 import { AlertContext } from '../../providers';
-import { getRequest } from '../../utils';
+import { getEnvironment, getRequest } from '../../utils';
+
+import { usePresignedUrl } from './usePresignedUrl';
+import { useUploadImage } from './useUploadImage';
 
 export const useEditAccount = (options) => {
   const key = 'edit';
@@ -14,6 +17,9 @@ export const useEditAccount = (options) => {
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const navigate = useNavigate();
+  const { mutateAsync: getPresignedUrl } = usePresignedUrl();
+  const { mutateAsync: uploadImage } = useUploadImage();
+
   const defaultOptions = {
     onSuccess: () => {
       setAlert({
@@ -36,10 +42,19 @@ export const useEditAccount = (options) => {
   };
 
   return useMutation({
-    mutationFn: async (formData) => {
-      const response = await request.post(url, formData);
+    mutationFn: async (data) => {
+      const presignedResponse = await getPresignedUrl({
+        fileName: data.image.name,
+        fileType: data.image.type,
+        folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
+      });
+      const presignedUrl = presignedResponse.url;
+      uploadImage({ presignedUrl, file: data.image });
 
-      if (response.status != 201) throw new Error(response.statusText);
+      const response = await request.post(url, {
+        ...data,
+        image: data.image.name,
+      });
 
       return response.data;
     },

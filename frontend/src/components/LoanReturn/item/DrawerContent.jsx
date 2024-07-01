@@ -1,6 +1,7 @@
 import { Grid, Paper, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+import { IMG_LOGO } from '../../../globals/urls';
 import { ImageAvatar } from '../../ImageAvatar';
 
 export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
@@ -26,11 +27,11 @@ export const DrawerContent = ({ item, itemExpiry, orderedQuantity }) => {
             marginTop: '15px',
           }}
         >
-          <ImageAvatar
-            alt='new-item'
-            src={`get_image/${item.imgpic}`}
-            size={'70px'}
-          />
+          {item.imgpic ? (
+            <ImageAvatar alt='new-item' src={item.imgpic} size={70} isS3Image />
+          ) : (
+            <img src={IMG_LOGO} width={70} height={70} />
+          )}
         </div>
       </Paper>
       <Paper

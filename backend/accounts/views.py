@@ -1,6 +1,5 @@
 import os
 from rest_framework import status
-from deck.utils import upload_file
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import TokenObtainPairSerializerWithUserData
@@ -16,8 +15,8 @@ def edit(request):
     try:
         username = request.data.get("username")
         password = request.data.get("password")
-        confirm_password = request.data.get("confirm_password")
-        file = request.data.get("image")
+        confirm_password = request.data.get("confirmPassword")
+        filename = request.data.get("image")
 
         if password != confirm_password:
             return Response(
@@ -31,12 +30,8 @@ def edit(request):
         if password != None:
             request.user.set_password(password)
 
-        if file != None:
-            _, file_extension = os.path.splitext(file.name)
-            img_url = upload_file(
-                f"user_dp/{request.user.id}{file_extension}", file.read()
-            )
-            request.user.extras.profile_pic = img_url
+        if filename != None:
+            request.user.extras.profile_pic = filename
 
         request.user.save()
         return Response({"message": "success"}, status=status.HTTP_200_OK)

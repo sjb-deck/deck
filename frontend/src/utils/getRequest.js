@@ -21,6 +21,7 @@ export const getRequest = (options) => {
       ...options?.headers,
     },
     withCredentials: true,
+    ...options,
   });
 
   return request;
