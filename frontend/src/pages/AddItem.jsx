@@ -26,7 +26,11 @@ import {
 import { useAddItem } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 import { AlertContext } from '../providers';
-import { checkExpiryFormData, checkItemFormData } from '../utils';
+import {
+  checkExpiryFormData,
+  checkItemFormData,
+  processImageFile,
+} from '../utils';
 
 export const AddItem = () => {
   const { data: items, isLoading: dataLoading, error: dataError } = useItems();
@@ -49,7 +53,6 @@ export const AddItem = () => {
     type: 'General',
     unit: '',
     imgpic: {},
-    imagePreview: '',
     total_quantity: 0,
     min_quantity: 0,
     is_opened: false,
@@ -60,7 +63,6 @@ export const AddItem = () => {
     type: 'General',
     unit: '',
     imgpic: {},
-    imagePreview: '',
     expiry: [
       {
         expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -96,13 +98,13 @@ export const AddItem = () => {
     is_opened: false,
   });
 
-  const processItemSubmission = () => {
+  const processItemSubmission = async () => {
     setLoading(true);
     const payload = {
       name: itemFormData.name,
       type: itemFormData.type,
       unit: itemFormData.unit,
-      imgpic: itemFormData.imgpic,
+      imgpic: await processImageFile(itemFormData.imgpic, itemFormData.name),
       total_quantity: itemFormData.total_quantity,
       min_quantity: itemFormData.min_quantity,
       is_opened: itemFormData.is_opened,
@@ -123,7 +125,6 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
-          imagePreview: '',
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -143,7 +144,6 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
-          imagePreview: '',
           total_quantity: 0,
           min_quantity: 0,
           is_opened: false,
@@ -159,7 +159,7 @@ export const AddItem = () => {
     });
   };
 
-  const processExpirySubmission = () => {
+  const processExpirySubmission = async () => {
     setLoading(true);
     const modifiedExpiry = expiryFormData.expiry.map((item) => ({
       expiry_date: item.expiry_date,
@@ -176,7 +176,10 @@ export const AddItem = () => {
       name: expiryFormData.name,
       type: expiryFormData.type,
       unit: expiryFormData.unit,
-      imgpic: expiryFormData.imgpic,
+      imgpic: await processImageFile(
+        expiryFormData.imgpic,
+        expiryFormData.name,
+      ),
       total_quantity: totalQuantity,
       min_quantity: expiryFormData.min_quantity,
       is_opened: expiryFormData.is_opened,
@@ -191,7 +194,6 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
-          imagePreview: '',
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
@@ -232,7 +234,6 @@ export const AddItem = () => {
           type: 'General',
           unit: '',
           imgpic: {},
-          imagePreview: '',
           expiry: [
             {
               expiry_date: dayjs(new Date()).format('YYYY-MM-DD'),
