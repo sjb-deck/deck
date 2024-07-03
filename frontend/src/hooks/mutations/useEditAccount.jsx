@@ -24,7 +24,7 @@ export const useEditAccount = (options) => {
     onSuccess: () => {
       setAlert({
         severity: 'success',
-        message: 'Successfully edited account details!',
+        message: 'Successful! Re-login to see changes',
         autoHide: true,
       });
       queryClient.invalidateQueries('user');
@@ -43,13 +43,15 @@ export const useEditAccount = (options) => {
 
   return useMutation({
     mutationFn: async (data) => {
-      const presignedResponse = await getPresignedUrl({
-        fileName: data.image.name,
-        fileType: data.image.type,
-        folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
-      });
-      const presignedUrl = presignedResponse.url;
-      uploadImage({ presignedUrl, file: data.image });
+      if (data.image.name) {
+        const presignedResponse = await getPresignedUrl({
+          fileName: data.image.name,
+          fileType: data.image.type,
+          folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
+        });
+        const presignedUrl = presignedResponse.url;
+        uploadImage({ presignedUrl, file: data.image });
+      }
 
       const response = await request.post(url, {
         ...data,

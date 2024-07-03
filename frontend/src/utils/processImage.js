@@ -65,3 +65,20 @@ export const processImageFile = (imageFile, imageName, size = 256) => {
     img.src = objectURL;
   });
 };
+
+/**
+ * Checks if the uploaded file is an image based on its MIME type.
+ * This function performs a basic client-side check to quickly inform the user if a non-image file is selected.
+ * It is important to note that stricter checking should be performed on the server side to ensure security and correctness.
+ *
+ * @param {File} file The file object to check.
+ * @return {boolean} Returns true if the file is an image; otherwise, it alerts the user and returns false.
+ */
+export const isImage = (file) => {
+  const fileType = file.type.split('/')[0];
+  if (fileType !== 'image') {
+    alert('Please upload an image file');
+    return false;
+  }
+  return true;
+};

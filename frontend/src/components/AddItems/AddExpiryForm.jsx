@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import { IMG_LOGO } from '../../globals/urls';
+import { isImage } from '../../utils';
 import { ImageAvatar } from '../ImageAvatar';
 
 import { DateAndQuantity } from './DateAndQuantity';
@@ -55,22 +56,13 @@ export const AddExpiryForm = ({
     }
   }, [expiryFormData.imgpic]);
 
-  // Checks if the uploaded file is an image based on mimetype
-  // Stricter checking will be done on the server side
-  const isImage = (e) => {
-    const file = e.target.files[0];
-    const fileType = file.type.split('/')[0];
-    if (fileType !== 'image') {
-      alert('Please upload an image file');
-      e.target.value = '';
-      return false;
-    }
-    return true;
-  };
-
   // Handles the file input change
   const onSelectFile = (e) => {
-    if (!e.target.files || e.target.files.length === 0 || !isImage(e)) {
+    if (
+      !e.target.files ||
+      e.target.files.length === 0 ||
+      !isImage(e.target.files[0])
+    ) {
       return;
     }
     const imageFile = e.target.files[0];

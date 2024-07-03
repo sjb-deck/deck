@@ -15,6 +15,7 @@ import * as Yup from 'yup';
 import { ImageAvatar, LoadingSpinner } from '../components';
 import { IMG_USER } from '../globals/urls';
 import { useEditAccount } from '../hooks/mutations';
+import { isImage, processImageFile } from '../utils';
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Username is required'),
@@ -36,20 +37,41 @@ const User = ({ user }) => {
   const [hover, setHover] = useState(false);
   const fileInputRef = useRef(null);
   const { mutate, isLoading } = useEditAccount();
+  const [isS3Image, setIsS3Image] = useState(!!user.extras.profile_pic);
+  const [previewImage, setPreviewImage] = useState(
+    user.extras.profile_pic || IMG_USER,
+  );
 
   const formik = useFormik({
     initialValues: {
       username: user.username,
       password: '',
       confirmPassword: '',
-      image: null,
-      imageURL: user.extras.profile_pic,
+      image: previewImage,
     },
     validationSchema,
     onSubmit: (values) => {
       mutate(values);
     },
   });
+
+  const onFileSelect = async (e) => {
+    if (
+      !e.target.files ||
+      e.target.files.length === 0 ||
+      !isImage(e.target.files[0])
+    ) {
+      e.target.value = '';
+      return;
+    }
+
+    const file = e.target.files[0];
+    const processedFile = await processImageFile(file, user.id);
+
+    setPreviewImage(URL.createObjectURL(processedFile));
+    formik.setFieldValue('image', processedFile);
+    setIsS3Image(false);
+  };
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -75,14 +97,7 @@ const User = ({ user }) => {
           onMouseLeave={() => setHover(false)}
           onClick={() => fileInputRef.current.click()}
         >
-          <ImageAvatar
-            src={formik.values.imageURL || IMG_USER}
-            size={80}
-            isS3Image={
-              !!formik.values.imageURL &&
-              formik.values.imageURL === user.extras.profile_pic
-            }
-          />
+          <ImageAvatar src={previewImage} size={80} isS3Image={isS3Image} />
           {hover && (
             <Box
               sx={{
@@ -106,15 +121,7 @@ const User = ({ user }) => {
           hidden
           accept='image/*'
           ref={fileInputRef}
-          onChange={(event) => {
-            if (event.currentTarget.files[0]) {
-              formik.setFieldValue(
-                'imageURL',
-                URL.createObjectURL(event.currentTarget.files[0]),
-              );
-              formik.setFieldValue('image', event.currentTarget.files[0]);
-            }
-          }}
+          onChange={onFileSelect}
         />
         <TextField
           label='Username'
