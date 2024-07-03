@@ -17,15 +17,18 @@ export const useAddItem = (options) => {
 
   return useMutation({
     mutationFn: async (order) => {
-      // get presigned URL
-      const presignedResponse = await getPresignedUrl({
-        fileName: order.imgpic.name,
-        fileType: order.imgpic.type,
-        folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
-      });
-      const presignedUrl = presignedResponse.url;
-      // upload image to S3 using presigned URL
-      uploadImage({ presignedUrl, file: order.imgpic });
+      // if image is provided, upload it to S3
+      if (order.imgpic.name) {
+        // get presigned URL
+        const presignedResponse = await getPresignedUrl({
+          fileName: order.imgpic.name,
+          fileType: order.imgpic.type,
+          folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
+        });
+        const presignedUrl = presignedResponse.url;
+        // upload image to S3 using presigned URL
+        uploadImage({ presignedUrl, file: order.imgpic });
+      }
       const response = await request.post(url, {
         ...order,
         imgpic: order.imgpic.name,
