@@ -55,7 +55,7 @@ export const useEditAccount = (options) => {
 
       const response = await request.post(url, {
         ...data,
-        image: 'user_dp/' + data.image.name,
+        image: data.image.name ? 'user_dp/' + data.image.name : null,
       });
 
       return response.data;

@@ -30,7 +30,7 @@ export const useAddItem = (options) => {
       }
       const response = await request.post(url, {
         ...order,
-        imgpic: 'items/' + order.imgpic.name,
+        imgpic: order.imgpic.name ? 'items/' + order.imgpic.name : null,
       });
       return response.data;
     },
