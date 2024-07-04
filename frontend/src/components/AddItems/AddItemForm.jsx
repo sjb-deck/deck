@@ -61,6 +61,12 @@ export const AddItemForm = ({
     const processedImageUrl = URL.createObjectURL(imageFile);
     setImagePreviewUrl(processedImageUrl);
     handleFormChange(e);
+
+    // Revoke the object URL after the image is loaded
+    const imgElement = document.getElementById('imgpic');
+    imgElement.onload = () => {
+      URL.revokeObjectURL(processedImageUrl);
+    };
   };
 
   return (
