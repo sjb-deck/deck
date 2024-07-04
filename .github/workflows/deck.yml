@@ -56,6 +56,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: key
           AWS_STORAGE_BUCKET_NAME: bucket
           AWS_S3_REGION_NAME: region
+          ENV: test
           DB_USER: root
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
