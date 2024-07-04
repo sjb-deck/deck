@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from deck.views import generate_presigned_url_for_upload, get_presigned_url
@@ -29,8 +29,8 @@ urlpatterns = (
             generate_presigned_url_for_upload,
             name="generate_presigned_url_for_upload",
         ),
-        path(
-            "api/v1/get_presigned_url/<str:filename>",
+        re_path(
+            r"api/v1/get_presigned_url/(?P<filepath>.+)",
             get_presigned_url,
             name="get_presigned_url",
         ),

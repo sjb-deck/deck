@@ -5,6 +5,11 @@ from botocore.exceptions import NoCredentialsError, ClientError
 
 def delete_file(file_path):
     try:
+        if settings.ENV == "prod":
+            file_path = f"prod/{file_path}"
+        else:
+            file_path = f"staging/{file_path}"
+
         s3_client = boto3.client(
             "s3",
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,

@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
-import { getEnvironment } from '../../utils';
-import { getRequest } from '../../utils/getRequest';
+import { getRequest } from '../../utils';
 
 import { usePresignedUrl } from './usePresignedUrl';
 import { useUploadImage } from './useUploadImage';
@@ -23,7 +22,7 @@ export const useAddItem = (options) => {
         const presignedResponse = await getPresignedUrl({
           fileName: order.imgpic.name,
           fileType: order.imgpic.type,
-          folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
+          folderName: 'items',
         });
         const presignedUrl = presignedResponse.url;
         // upload image to S3 using presigned URL
@@ -31,7 +30,7 @@ export const useAddItem = (options) => {
       }
       const response = await request.post(url, {
         ...order,
-        imgpic: order.imgpic.name,
+        imgpic: 'items/' + order.imgpic.name,
       });
       return response.data;
     },

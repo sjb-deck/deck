@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from botocore.exceptions import NoCredentialsError
 from django.shortcuts import redirect
+from .utils import delete_file
 
 
 @api_view(["POST"])
@@ -24,7 +25,7 @@ def generate_presigned_url_for_upload(request):
             region_name=settings.AWS_S3_REGION_NAME,
         )
 
-        key = f"{folder_name}/{file_name}"
+        key = f"{settings.ENV}/{folder_name}/{file_name}"
 
         presigned_url = s3_client.generate_presigned_url(
             "put_object",
@@ -48,7 +49,7 @@ def generate_presigned_url_for_upload(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_presigned_url(request, filename):
+def get_presigned_url(request, filepath):
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
@@ -60,7 +61,7 @@ def get_presigned_url(request, filename):
             "get_object",
             Params={
                 "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
-                "Key": f"staging/{filename}",
+                "Key": f"{settings.ENV}/{filepath}",
             },
             ExpiresIn=3600,
         )

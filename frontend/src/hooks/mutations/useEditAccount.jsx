@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Api } from '../../globals/api';
 import { URL_BASE_INV } from '../../globals/urls';
 import { AlertContext } from '../../providers';
-import { getEnvironment, getRequest } from '../../utils';
+import { getRequest } from '../../utils';
 
 import { usePresignedUrl } from './usePresignedUrl';
 import { useUploadImage } from './useUploadImage';
@@ -47,7 +47,7 @@ export const useEditAccount = (options) => {
         const presignedResponse = await getPresignedUrl({
           fileName: data.image.name,
           fileType: data.image.type,
-          folderName: getEnvironment() === 'prod' ? 'prod' : 'staging',
+          folderName: 'user_dp',
         });
         const presignedUrl = presignedResponse.url;
         uploadImage({ presignedUrl, file: data.image });
@@ -55,7 +55,7 @@ export const useEditAccount = (options) => {
 
       const response = await request.post(url, {
         ...data,
-        image: data.image.name,
+        image: 'user_dp/' + data.image.name,
       });
 
       return response.data;
