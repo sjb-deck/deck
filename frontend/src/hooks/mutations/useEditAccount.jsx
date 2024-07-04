@@ -7,6 +7,9 @@ import { URL_BASE_INV } from '../../globals/urls';
 import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils';
 
+import { usePresignedUrl } from './usePresignedUrl';
+import { useUploadImage } from './useUploadImage';
+
 export const useEditAccount = (options) => {
   const key = 'edit';
   const url = Api[key];
@@ -14,11 +17,14 @@ export const useEditAccount = (options) => {
   const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const navigate = useNavigate();
+  const { mutateAsync: getPresignedUrl } = usePresignedUrl();
+  const { mutateAsync: uploadImage } = useUploadImage();
+
   const defaultOptions = {
     onSuccess: () => {
       setAlert({
         severity: 'success',
-        message: 'Successfully edited account details!',
+        message: 'Successful! Re-login to see changes',
         autoHide: true,
       });
       queryClient.invalidateQueries('user');
@@ -36,10 +42,21 @@ export const useEditAccount = (options) => {
   };
 
   return useMutation({
-    mutationFn: async (formData) => {
-      const response = await request.post(url, formData);
+    mutationFn: async (data) => {
+      if (data.image.name) {
+        const presignedResponse = await getPresignedUrl({
+          fileName: data.image.name,
+          fileType: data.image.type,
+          folderName: 'user_dp',
+        });
+        const presignedUrl = presignedResponse.url;
+        uploadImage({ presignedUrl, file: data.image });
+      }
 
-      if (response.status != 201) throw new Error(response.statusText);
+      const response = await request.post(url, {
+        ...data,
+        image: data.image.name ? 'user_dp/' + data.image.name : null,
+      });
 
       return response.data;
     },

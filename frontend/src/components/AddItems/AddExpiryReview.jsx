@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
 
+import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';
 
 /**
@@ -12,6 +14,18 @@ import { ImageAvatar } from '../ImageAvatar';
  */
 
 export const AddExpiryReview = ({ expiryFormData }) => {
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
+  useEffect(() => {
+    if (!expiryFormData.imgpic.name) {
+      setImagePreviewUrl(IMG_LOGO);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(expiryFormData.imgpic);
+    setImagePreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [expiryFormData.imgpic]);
+
   return (
     <div>
       <Typography
@@ -35,10 +49,7 @@ export const AddExpiryReview = ({ expiryFormData }) => {
             marginTop: '10px',
           }}
         >
-          <ImageAvatar
-            alt='new-item'
-            src={`/get_image/${expiryFormData.image}`}
-          />
+          <ImageAvatar alt='new-item' src={imagePreviewUrl} size={90} />
         </div>
         <div
           style={{

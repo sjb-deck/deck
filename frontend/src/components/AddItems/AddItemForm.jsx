@@ -13,9 +13,10 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { IMG_LOGO } from '../../globals/urls';
+import { isImage } from '../../utils';
 import { ImageAvatar } from '../ImageAvatar';
 
 const types = [
@@ -34,22 +35,38 @@ export const AddItemForm = ({
   const isSmallScreen = useMediaQuery('(max-width: 300px)');
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
 
-  const renderImagePreview = () => {
-    const reader = new FileReader();
-    const file = document.getElementById('imgpic').files[0];
-    reader.onloadend = () => {
-      setImagePreviewUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const checkFileType = (e) => {
-    const file = e.target.files[0];
-    const fileType = file.type.split('/')[0];
-    if (fileType !== 'image') {
-      alert('Please upload an image file');
-      e.target.value = '';
+  useEffect(() => {
+    if (itemFormData.imgpic.name) {
+      // if there is already an image display the image
+      const objectUrl = URL.createObjectURL(itemFormData.imgpic);
+      setImagePreviewUrl(URL.createObjectURL(itemFormData.imgpic));
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      // if there is no image, display the default logo
+      setImagePreviewUrl(IMG_LOGO);
     }
+  }, [itemFormData.imgpic]);
+
+  // Handles the file input change
+  const onSelectFile = (e) => {
+    if (
+      !e.target.files ||
+      e.target.files.length === 0 ||
+      !isImage(e.target.files[0])
+    ) {
+      e.target.value = '';
+      return;
+    }
+    const imageFile = e.target.files[0];
+    const processedImageUrl = URL.createObjectURL(imageFile);
+    setImagePreviewUrl(processedImageUrl);
+    handleFormChange(e);
+
+    // Revoke the object URL after the image is loaded
+    const imgElement = document.getElementById('imgpic');
+    imgElement.onload = () => {
+      URL.revokeObjectURL(processedImageUrl);
+    };
   };
 
   return (
@@ -68,12 +85,7 @@ export const AddItemForm = ({
           marginRight: '15px',
         }}
       >
-        {imagePreviewUrl ? (
-          <ImageAvatar src={imagePreviewUrl} alt='Image preview' size={90} />
-        ) : (
-          <ImageAvatar src={IMG_LOGO} alt='Image preview' size={90} />
-        )}
-
+        <ImageAvatar src={imagePreviewUrl} alt='Image preview' size={90} />
         <TextField
           label='Name'
           name='name'
@@ -154,12 +166,7 @@ export const AddItemForm = ({
             id='imgpic'
             name='imgpic'
             type='file'
-            accept='image/*'
-            onChange={(e) => {
-              checkFileType(e);
-              renderImagePreview();
-              handleFormChange(e);
-            }}
+            onChange={onSelectFile}
           />
           <FormHelperText>Upload Image</FormHelperText>
         </FormControl>

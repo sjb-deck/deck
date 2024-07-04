@@ -1,6 +1,5 @@
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import {
-  Avatar,
   Button,
   Box,
   Container,
@@ -13,8 +12,10 @@ import { useRef, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import * as Yup from 'yup';
 
-import { LoadingSpinner } from '../components';
+import { ImageAvatar, LoadingSpinner } from '../components';
+import { IMG_USER } from '../globals/urls';
 import { useEditAccount } from '../hooks/mutations';
+import { isImage, processImageFile } from '../utils';
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Username is required'),
@@ -36,25 +37,41 @@ const User = ({ user }) => {
   const [hover, setHover] = useState(false);
   const fileInputRef = useRef(null);
   const { mutate, isLoading } = useEditAccount();
+  const [isS3Image, setIsS3Image] = useState(!!user.extras.profile_pic);
+  const [previewImage, setPreviewImage] = useState(
+    user.extras.profile_pic || IMG_USER,
+  );
 
   const formik = useFormik({
     initialValues: {
       username: user.username,
       password: '',
       confirmPassword: '',
-      image: null,
-      imageURL: `/get_image/${user.extras.profile_pic}`, // TODO: Update this later after S3 integration
+      image: previewImage,
     },
     validationSchema,
     onSubmit: (values) => {
-      const formData = new FormData();
-      formData.append('username', values.username);
-      formData.append('password', values.password);
-      formData.append('confirm_password', values.confirmPassword);
-      formData.append('image', values.image);
-      mutate(formData);
+      mutate(values);
     },
   });
+
+  const onFileSelect = async (e) => {
+    if (
+      !e.target.files ||
+      e.target.files.length === 0 ||
+      !isImage(e.target.files[0])
+    ) {
+      e.target.value = '';
+      return;
+    }
+
+    const file = e.target.files[0];
+    const processedFile = await processImageFile(file, user.id);
+
+    setPreviewImage(URL.createObjectURL(processedFile));
+    formik.setFieldValue('image', processedFile);
+    setIsS3Image(false);
+  };
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -80,7 +97,7 @@ const User = ({ user }) => {
           onMouseLeave={() => setHover(false)}
           onClick={() => fileInputRef.current.click()}
         >
-          <Avatar src={formik.values.imageURL} sx={{ width: 80, height: 80 }} />
+          <ImageAvatar src={previewImage} size={80} isS3Image={isS3Image} />
           {hover && (
             <Box
               sx={{
@@ -104,15 +121,7 @@ const User = ({ user }) => {
           hidden
           accept='image/*'
           ref={fileInputRef}
-          onChange={(event) => {
-            if (event.currentTarget.files[0]) {
-              formik.setFieldValue(
-                'imageURL',
-                URL.createObjectURL(event.currentTarget.files[0]),
-              );
-              formik.setFieldValue('image', event.currentTarget.files[0]);
-            }
-          }}
+          onChange={onFileSelect}
         />
         <TextField
           label='Username'
