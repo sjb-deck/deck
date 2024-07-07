@@ -116,7 +116,7 @@ const formatKitData = (data) => {
  */
 const mapSubmissionKitData = (kitId, kitData) => {
   const kitContent = kitData.map((kitItem) => ({
-    quantity: kitItem.new_quantity,
+    quantity: kitItem.newQuantity,
     item_expiry_id: kitItem.id,
   }));
 
