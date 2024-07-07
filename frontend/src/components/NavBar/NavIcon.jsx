@@ -61,6 +61,8 @@ const NavBreadcrumbs = ({
   isLoanPage,
   isAlertPage,
 }) => {
+  const navigate = useNavigate();
+
   const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     const backgroundColor =
       theme.palette.mode === 'light'
@@ -89,14 +91,20 @@ const NavBreadcrumbs = ({
       >
         <StyledBreadcrumb
           component='a'
-          href={URL_BASE_INV}
+          onClick={() => navigate(URL_BASE_INV)}
           label='Home'
           icon={<img height={20} src={IMG_LOGO} alt='logo' />}
         />
         <StyledBreadcrumb
           component='a'
-          href={
-            isItemsPage ? URL_INV_ITEMS : isKitsPage ? URL_INV_VIEW_KITS : '#'
+          onClick={() =>
+            navigate(
+              isItemsPage
+                ? URL_INV_ITEMS
+                : isKitsPage
+                  ? URL_INV_VIEW_KITS
+                  : '#',
+            )
           }
           label={isItemsPage ? 'Items' : isKitsPage ? 'Kits' : '_'}
         />
