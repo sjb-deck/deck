@@ -118,7 +118,7 @@ const KitLoanReturnContent = ({ kitId, kitData }) => {
  * - **name**
  * - **quantity**: Original quantity present in the kit (Used to track how many items used)
  * - **newQuantity**: Same as quantity, modified by slider/textfield
- * - **shown_quantity**: Displayed quantity string out of blueprint quantity (if applicable)
+ * - **shownQuantity**: Displayed quantity string out of blueprint quantity (if applicable)
  * - **blueprintQuantity**: Maximum blueprint quantity of that item allocated to the kit.
  * If undefined, no blueprint quantity set for the item
  * - **expiry_date**: "No expiry" if not applicable
@@ -145,9 +145,9 @@ const populateShownData = (kitData, kitRecipeData) => {
       name: kitItemContent.item_expiry.item.name,
       quantity: kitItemContent.quantity,
       newQuantity: kitItemContent.quantity,
-      shown_quantity: shownQuantity,
+      shownQuantity: shownQuantity,
       blueprintQuantity: blueprintQuantity,
-      expiry_date: kitItemContent.item_expiry.expiry_date ?? 'No Expiry',
+      expiryDate: kitItemContent.item_expiry.expiry_date ?? 'No Expiry',
     };
   });
 };

@@ -60,7 +60,7 @@ export const ConfirmationModal = ({
 const columns = [
   { field: 'id', headerName: 'ID', width: 10, sortable: false },
   { field: 'name', headerName: 'Item', flex: 2, minWidth: 100 },
-  { field: 'expiry_date', headerName: 'Expiry Date', flex: 1.5, minWidth: 100 },
+  { field: 'expiryDate', headerName: 'Expiry Date', flex: 1.5, minWidth: 100 },
   { field: 'quantity', headerName: 'Quantity', flex: 1, minWidth: 75 },
   {
     field: 'remaining',
@@ -91,8 +91,8 @@ const formatKitData = (data) => {
     return {
       id: index,
       name: kitContent.name,
-      expiry_date: kitContent.expiry_date,
-      quantity: kitContent.shown_quantity,
+      expiryDate: kitContent.expiry_date,
+      quantity: kitContent.shownQuantity,
       remaining: kitContent.newQuantity,
       used: Number(kitContent.quantity) - Number(kitContent.newQuantity),
     };
