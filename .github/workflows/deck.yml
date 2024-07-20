@@ -45,8 +45,12 @@ jobs:
           cd ..
       - name: Run Style Check
         run: |
+          cd backend
           black . --check
+          cd ..
+          cd frontend
           npm run lint
+          cd ..
       - name: Apply Database Migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
