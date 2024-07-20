@@ -1,7 +1,3 @@
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 import { Box, Divider, Link, Paper, Typography } from '@mui/material';
 
 import { URL_INV_ITEMS } from '../../globals/urls';
