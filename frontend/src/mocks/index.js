@@ -12,3 +12,4 @@ export * from './kitHistory';
 export * from './kitRecipe';
 export * from './blueprint';
 export * from './kitRestockOptions';
+export * from './localStorage';

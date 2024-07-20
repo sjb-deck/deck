@@ -24,8 +24,8 @@ export const BlueprintSelect = ({
 }) => {
   const getExpiryQuantity = (itemId, expiryId) => {
     if (
-      !kitContent.hasOwnProperty(itemId) ||
-      !kitContent[itemId].hasOwnProperty(expiryId)
+      !Object.prototype.hasOwnProperty.call(kitContent, itemId) ||
+      !Object.prototype.hasOwnProperty.call(kitContent[itemId], expiryId)
     )
       return '';
     return kitContent[itemId][expiryId].quantity;
@@ -34,8 +34,8 @@ export const BlueprintSelect = ({
   const getExpiryError = (itemId, expiryId) => {
     if (
       !kitContentErrors ||
-      !kitContentErrors.hasOwnProperty(itemId) ||
-      !kitContentErrors[itemId].hasOwnProperty(expiryId)
+      !Object.prototype.hasOwnProperty.call(kitContentErrors, itemId) ||
+      !Object.prototype.hasOwnProperty.call(kitContentErrors[itemId], expiryId)
     )
       return '';
     return kitContentErrors[itemId][expiryId];
