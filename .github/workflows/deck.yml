@@ -46,7 +46,7 @@ jobs:
       - name: Run Style Check
         run: |
           black . --check
-          # npm run lint # Uncomment this after integrating jest
+          npm run lint
       - name: Apply Database Migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -80,7 +80,7 @@ jobs:
       - name: Run Frontend Tests with Code Coverage
         run: |
           cd frontend
-          # npm run test:coverage # uncomment this line after integrating jest
+          npm run test:coverage
           cd ..
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
