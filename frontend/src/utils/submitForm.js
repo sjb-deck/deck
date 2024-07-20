@@ -20,7 +20,7 @@ const isValidInt = (value) => {
  */
 function isNoErrorInArray(expiryErrorArray) {
   for (let i = 0; i < expiryErrorArray.length; i++) {
-    if (expiryErrorArray[i].total_quantity || expiryErrorArray[i].expiry_date) {
+    if (expiryErrorArray[i].quantity || expiryErrorArray[i].expiry_date) {
       return false;
     }
   }

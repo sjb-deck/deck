@@ -22,9 +22,9 @@ handle_error() {
 cleanup() {
     print_msg "${RED}Cleaning up...${NC}"
     if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
-        docker-compose -f docker-compose.yml down
+        docker compose -f docker-compose.yml down
     else
-        docker-compose down
+        docker compose down
     fi
     print_msg "${RED}Containers have been stopped.${NC}"
 
@@ -106,7 +106,7 @@ if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
     print_msg "${GREEN}${MODE} images have been built and pushed successfully.${NC}"
 else
     print_msg "${GREEN}Bringing up the development environment with Docker Compose...${NC}"
-    docker-compose up --build &
+    docker compose up --build &
     DOCKER_COMPOSE_PID=$!
 
     wait $DOCKER_COMPOSE_PID
