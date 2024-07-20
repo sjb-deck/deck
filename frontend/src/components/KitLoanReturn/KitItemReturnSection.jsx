@@ -43,7 +43,7 @@ export const KitItemReturnSection = ({ kitData, updateKitData }) => {
                   {item.name}
                 </TableCell>
                 <TableCell>{item.expiry_date}</TableCell>
-                <TableCell>{item.shown_quantity}</TableCell>
+                <TableCell>{item.shownQuantity}</TableCell>
                 <TableCell>
                   <ItemReturnSlider
                     originalQuantity={item.quantity}
