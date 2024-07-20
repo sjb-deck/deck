@@ -27,7 +27,6 @@ services:
   backend:
     build:
       context: ./backend
-      target: development
     expose:
       - "8000"
     volumes:

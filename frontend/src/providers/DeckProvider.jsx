@@ -16,16 +16,19 @@ import { KitCartProvider } from './KitCartProvider';
 const queryClient = new QueryClient();
 
 const refresh = createRefresh({
-  interval: 10,
+  interval: 5,
   refreshApiCallback: async (param) => {
     try {
-      const response = await axios.post(Api.refresh, param, {
-        headers: { Authorization: `Bearer ${param.authToken}` },
-      });
-      console.log('refreshing');
+      const response = await axios.post(
+        Api.refresh,
+        { refresh: param.refreshToken },
+        {
+          headers: { Authorization: `Bearer ${param.authToken}` },
+        },
+      );
       return {
         isSuccess: true,
-        newAuthToken: response.data.token,
+        newAuthToken: response.data.access,
         newAuthTokenExpireIn: 10,
         newRefreshTokenExpiresIn: 60,
       };

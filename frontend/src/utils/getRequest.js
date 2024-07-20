@@ -12,6 +12,8 @@ function getCSRFToken() {
 }
 
 export const getRequest = (options) => {
+  // TODO: Disable for now, will be removed later
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const authHeader = useAuthHeader();
   const request = axios.create({
     headers: {

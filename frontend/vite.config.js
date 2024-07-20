@@ -7,8 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './setup-jest.js',
-    css: true,
+    setupFiles: './setup-test.js',
   },
   server: {
     host: '0.0.0.0',
