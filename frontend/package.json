@@ -26,7 +26,6 @@
     "@mui/x-data-grid": "^7.8.0",
     "@mui/x-date-pickers": "^7.8.0",
     "@tanstack/react-query": "^5.40.1",
-    "@testing-library/user-event": "^14.5.2",
     "axios": "^1.7.2",
     "babel-plugin-import": "^1.13.8",
     "dayjs": "^1.11.11",
@@ -40,6 +39,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react-swc": "^3.5.0",
