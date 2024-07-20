@@ -81,10 +81,10 @@ jobs:
           # coverage run manage.py test --noinput # skip tests for now
           # coverage xml -o coverage.xml
           cd ..
-      - name: Run Frontend Tests with Code Coverage
+      - name: Run Frontend Tests
         run: |
           cd frontend
-          npm run test:coverage
+          npm run test
           cd ..
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
