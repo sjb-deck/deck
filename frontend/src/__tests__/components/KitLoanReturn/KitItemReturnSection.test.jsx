@@ -11,7 +11,7 @@ describe('<KitItemReturnSection />', () => {
       name: 'test expiry',
       quantity: 2,
       newQuantity: 2,
-      shown_quantity: 2,
+      shownQuantity: 2,
       blueprintQuantity: 2,
       expiry_date: '2023-07-23',
     },
