@@ -24,7 +24,7 @@ import {
   itemsActionItems,
   kitActionItems,
   mobileCartNavItems,
-} from './NavBar';
+} from './NavItems';
 import { UserAvatar } from './UserAvatar';
 
 /**

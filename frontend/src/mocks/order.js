@@ -135,7 +135,7 @@ export const mockLoanOrder = {
     },
   ],
   loanee_name: 'test',
-  due_date: '2023-08-28T00:00:00Z',
+  due_date: '2023-08-28',
   return_date: '2023-09-06T19:06:08.167142Z',
   loan_active: false,
   action: 'Withdraw',

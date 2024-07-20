@@ -1,5 +1,5 @@
 // src/mocks/handlers.js
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 
 import {
   exampleKit,
@@ -9,64 +9,57 @@ import {
   mockKitRecipeData,
   mockKitsList,
   mockOrders,
-  mockUser,
 } from '../';
 import { Api } from '../../globals/api';
 import { getUrlWithoutParams } from '../../utils';
 
 export const handlers = [
-  rest.get(Api['user'], (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(mockUser));
+  http.get(Api['items'], () => {
+    return HttpResponse.json(mockItemList, { status: 200 });
   }),
 
-  rest.get(Api['items'], (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(mockItemList));
-  }),
-
-  rest.get(getUrlWithoutParams(Api['orders']), (req, res, ctx) => {
+  http.get(getUrlWithoutParams(Api['orders']), () => {
     const orders = new Array(5)
       .fill(mockOrders)
       .flat()
       .map((o, idx) => ({ ...o, id: idx + 100 }));
-    return res(ctx.status(200), ctx.json(orders));
+    return HttpResponse.json(orders, { status: 200 });
   }),
 
-  rest.post(Api['importItems'], (req, res, ctx) => {
-    return res(ctx.status(201), ctx.json(mockItemList));
+  http.post(Api['importItems'], () => {
+    return HttpResponse.json(mockItemList, { status: 201 });
   }),
 
-  rest.get(Api['exportItems'], (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.set('Content-Disposition', 'attachment; filename=items.csv'),
-      ctx.set('Content-Type', 'text/csv'),
-      ctx.json([]),
+  http.get(Api['exportItems'], () => {
+    return new HttpResponse('[]', {
+      status: 200,
+      headers: {
+        'Content-Disposition': 'attachment; filename=items.csv',
+        'Content-Type': 'text/csv',
+      },
+    });
+  }),
+
+  http.get(Api['kits'], () => {
+    return HttpResponse.json(
+      { kits: mockKitsList, blueprints: mockBlueprints },
+      { status: 200 },
     );
   }),
 
-  rest.get(Api['kits'], (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({ kits: mockKitsList, blueprints: mockBlueprints }),
-    );
+  http.get(getUrlWithoutParams(Api['kitRecipe']), () => {
+    return HttpResponse.json(mockKitRecipeData);
   }),
-
-  rest.get(getUrlWithoutParams(Api['kitRecipe']), (req, res, ctx) => {
-    return res(ctx.json(mockKitRecipeData));
+  http.post(Api['createKit'], () => {
+    return HttpResponse.json({}, { status: 201 });
   }),
-  rest.post(Api['createKit'], (req, res, ctx) => {
-    return res(ctx.status(201), ctx.json({}));
+  http.get(getUrlWithoutParams(Api['kit']), () => {
+    return HttpResponse.json(exampleKit);
   }),
-
-  rest.get(getUrlWithoutParams(Api['kit']), (req, res, ctx) => {
-    return res(ctx.json(exampleKit));
+  http.get(Api['kitRestockOptions'], () => {
+    return HttpResponse.json(exampleKitRestockOptions);
   }),
-
-  rest.get(Api['kitRestockOptions'], (req, res, ctx) => {
-    return res(ctx.json(exampleKitRestockOptions));
-  }),
-
-  rest.post(Api['submitKitOrder'], (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({}));
+  http.post(Api['submitKitOrder'], () => {
+    return HttpResponse.json({}, { status: 200 });
   }),
 ];
