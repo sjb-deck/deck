@@ -6,6 +6,7 @@ from inventory.items.models import Item, ItemExpiry
 from inventory.kits.models import Blueprint, Kit
 from datetime import timedelta, datetime
 from django.utils import timezone
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiCheckKitExpiryViews(TestCase):
@@ -14,7 +15,8 @@ class TestApiCheckKitExpiryViews(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.url = reverse("check_kits_expiry")
         self.create_items()
         self.compressed_blueprint_content = [

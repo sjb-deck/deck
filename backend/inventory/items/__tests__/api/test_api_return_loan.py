@@ -6,6 +6,7 @@ from datetime import timedelta
 from accounts.models import User, UserExtras
 from inventory.items.models import Item, Order, LoanOrder, ItemExpiry, OrderItem
 import datetime
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiLoanReturnViews(TestCase):
@@ -14,7 +15,8 @@ class TestApiLoanReturnViews(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.url = reverse("loan_return_post")
         self.create_items()
 

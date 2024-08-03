@@ -59,5 +59,35 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  mysql_test:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: test_deck
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpassword
+    ports:
+      - "3306"
+
+  backend_test:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      DB_USER: devuser
+      DB_PW: devpassword
+      DB_HOST: mysql_test
+      ENV: test
+    depends_on:
+      - mysql_test
+    command: >
+      sh -c "
+        ./wait-for-it.sh mysql_test:3306 --
+        python manage.py test $$ARGS --noinput
+      "
+    profiles:
+      - test
+
 volumes:
   mysql_data:
