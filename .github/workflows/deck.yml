@@ -76,6 +76,10 @@ jobs:
           DB_USER: root
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
+          AWS_ACCESS_KEY_ID: id
+          AWS_SECRET_ACCESS_KEY: key
+          AWS_STORAGE_BUCKET_NAME: bucket
+          AWS_S3_REGION_NAME: region
         run: |
           cd backend
           coverage run manage.py test --noinput
