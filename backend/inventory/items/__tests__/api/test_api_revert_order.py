@@ -5,6 +5,7 @@ from accounts.models import User, UserExtras
 from inventory.items.models import Item, Order, LoanOrder, ItemExpiry, OrderItem
 import datetime
 from django.utils import timezone
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiRevertOrderView(TestCase):
@@ -13,7 +14,8 @@ class TestApiRevertOrderView(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.url = reverse("revert_order")
         self.create_items()
 
