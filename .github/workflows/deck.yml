@@ -78,8 +78,8 @@ jobs:
           DB_HOST: 127.0.0.1
         run: |
           cd backend
-          # coverage run manage.py test --noinput # skip tests for now
-          # coverage xml -o coverage.xml
+          coverage run manage.py test --noinput
+          coverage xml -o coverage.xml
           cd ..
       - name: Run Frontend Tests
         run: |
