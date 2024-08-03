@@ -7,13 +7,8 @@
 
 1. Install Docker:
 
-    - **MacOS**:
       Download and install Docker Desktop from [Docker's official site](https://www.docker.com/products/docker-desktop).
 
-    - **Windows**:
-      Download and install Docker Desktop from [Docker's official site](https://www.docker.com/products/docker-desktop).
-
-    - **Linux**:
       Follow the installation instructions for your distribution from [Docker's official site](https://docs.docker.com/engine/install/).
 
 2. Clone the repo:
@@ -40,37 +35,105 @@ You can run the development server using Docker and the provided `run.sh` script
     chmod +x run.sh
     ```
 
-2. Run the script in development mode:
+2. Add the following line to your `/etc/hosts` file:
+
+    ```bash
+    127.0.0.1 deck-dev.nhhs-sjb.org
+    ::1 deck-dev.nhhs-sjb.org
+    ```
+
+3. Run the script in development mode:
 
     ```bash
     ./run.sh
     ```
 
+4. Visit the site at [http://deck-dev.nhhs-sjb.org](http://deck-dev.nhhs-sjb.org).
+
 This script will build and start the Docker containers for the frontend, backend, and MySQL services.
 
-## Manually Running the Development Server
+### Additional Notes
 
-If you prefer to manually run the development server without Docker, follow these steps:
+If this is your first time running the dev server, you will need to create a new superuser account
 
-1. Install the required Python modules and Node.js libraries:
-
-    ```bash
-    pip install -r requirements.txt
-    npm install
-    ```
-
-2. Start the JSX compiler:
+1. Start a shell in the backend container:
 
     ```bash
-    npm run dev
+    docker exec -it [backend_container_id] sh
     ```
 
-3. Open a new terminal window, apply database migrations, and start the Django development server:
+2. Run the following command to create a superuser:
 
     ```bash
-    python manage.py migrate
-    python manage.py runserver
+    python manage.py createsuperuser
     ```
+
+3. Follow the prompts to create a new superuser account, then exit the shell:
+
+    ```bash
+    exit
+    ```
+
+You can find the `[backend_container_id]` by running `docker ps -a` and look for the container with the name `deck_backend`.
+
+## Running tests
+
+### Backend
+
+#### Running tests with test.sh
+
+1. Make the `test.sh` script executable:
+
+    ```bash
+    chmod +x test.sh
+    ```
+
+2. Run the script:
+
+    ```bash
+    ./test.sh [optional_test_args]
+    ```
+
+    Example:
+
+    ```bash
+    ./test.sh accounts.__tests__.triggers.test_trigger_user_extras.TestTriggerUserExtras
+    ```
+
+3. The script will run the backend tests and output the results.
+
+
+#### Running tests with Docker
+
+1. Start a shell in the backend container:
+
+    ```bash
+    docker exec -it [backend_container_id] sh
+    ```
+
+2. Run the following command to run the tests:
+
+    ```bash
+    python manage.py test [optional_test_args]
+    ```
+
+3. The tests will run and output the results.
+
+### Frontend
+
+1. Go to the frontend directory:
+
+    ```bash
+    cd frontend
+    ```
+
+2. Run the following command to run the tests:
+
+    ```bash
+    npm run test
+    ```
+
+3. The tests will run and output the results.
 
 # Must Have VSCode Extensions
 
