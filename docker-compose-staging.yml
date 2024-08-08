@@ -31,8 +31,7 @@ services:
     command: >
       sh -c "
         ./wait-for-it.sh mysql:3306 -- 
-        python manage.py makemigrations &&
-        python manage.py migrate &&
+        ./startup.sh &&
         gunicorn --config gunicorn_config.py deck.wsgi:application
       "
   
