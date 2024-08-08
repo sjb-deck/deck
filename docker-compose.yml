@@ -42,8 +42,7 @@ services:
     command: >
       sh -c "
         ./wait-for-it.sh mysql:3306 -- 
-        python manage.py makemigrations &&
-        python manage.py migrate &&
+        ./startup.sh &&
         python manage.py runserver 0.0.0.0:8000
       "
 
