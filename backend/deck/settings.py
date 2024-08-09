@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "accounts",
     "rest_framework",
-    'rest_framework_simplejwt',
+    "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
 ]
 
@@ -86,8 +86,8 @@ TEMPLATES = [
 WSGI_APPLICATION = "deck.wsgi.application"
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=1200),
-    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=3600),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=1200),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=3600),
     "ROTATE_REFRESH_TOKENS": True,
 }
 
