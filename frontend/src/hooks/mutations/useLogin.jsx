@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useContext } from 'react';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import { signIn } from '../auth/authHook';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
@@ -26,14 +26,11 @@ export const useLogin = (options) => {
       });
     },
     onSuccess: (data) => {
-      signIn({
-        auth: {
-          token: data.access,
-          type: 'Bearer',
-        },
-        refresh: data.refresh,
-        userState: data.user,
-      });
+      signIn(
+        data.access,
+        data.refresh,
+        data.user,
+      );
       setAlert({
         severity: 'success',
         message: 'Login successful',

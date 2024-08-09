@@ -1,11 +1,11 @@
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import { NavBar, Footer, LoadingSpinner, KitInfoContent } from '../components';
 import { useKit } from '../hooks/queries';
 
 export const KitInfo = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const { kitId } = useParams();
   const { data: kitData } = useKit({
     kitId: kitId,

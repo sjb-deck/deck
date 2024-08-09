@@ -1,5 +1,5 @@
 import axios from 'axios';
-import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { getAccessToken } from '../hooks/auth/authHook';
 
 /**
  * Retrieves the CSRF token from the cookies.
@@ -12,13 +12,10 @@ function getCSRFToken() {
 }
 
 export const getRequest = (options) => {
-  // TODO: Disable for now, will be removed later
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const authHeader = useAuthHeader();
   const request = axios.create({
     headers: {
       'Content-Type': 'application/json',
-      Authorization: authHeader,
+      Authorization: `Bearer ${getAccessToken()}`,
       'X-CSRFToken': getCSRFToken(),
       ...options?.headers,
     },

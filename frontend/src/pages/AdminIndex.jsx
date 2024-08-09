@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { getUser } from '../hooks/auth/authHook';
 
 import {
   Footer,
@@ -12,7 +12,7 @@ import {
 import '../globals/styles/inventoryBase.scss';
 
 export const AdminIndex = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const [view, setView] = useState('orders');
 
   return (
