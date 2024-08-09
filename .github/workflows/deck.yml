@@ -45,13 +45,22 @@ jobs:
           cd ..
       - name: Run Style Check
         run: |
+          cd backend
           black . --check
-          # npm run lint # Uncomment this after integrating jest
+          cd ..
+          cd frontend
+          npm run lint
+          cd ..
       - name: Apply Database Migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           DEBUG: ${{ secrets.DEBUG }}
+          AWS_ACCESS_KEY_ID: id
+          AWS_SECRET_ACCESS_KEY: key
+          AWS_STORAGE_BUCKET_NAME: bucket
+          AWS_S3_REGION_NAME: region
+          ENV: test
           DB_USER: root
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
@@ -67,15 +76,20 @@ jobs:
           DB_USER: root
           DB_PW: testrootpassword
           DB_HOST: 127.0.0.1
+          AWS_ACCESS_KEY_ID: id
+          AWS_SECRET_ACCESS_KEY: key
+          AWS_STORAGE_BUCKET_NAME: bucket
+          AWS_S3_REGION_NAME: region
+          ENV: test
         run: |
           cd backend
-          # coverage run manage.py test --noinput # skip tests for now
-          # coverage xml -o coverage.xml
+          coverage run manage.py test --noinput
+          coverage xml -o coverage.xml
           cd ..
-      - name: Run Frontend Tests with Code Coverage
+      - name: Run Frontend Tests
         run: |
           cd frontend
-          # npm run test:coverage # uncomment this line after integrating jest
+          npm run test
           cd ..
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
@@ -106,6 +120,7 @@ jobs:
             cd deck-stg
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
+            echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker image prune -af
 
   
   deploy:
@@ -130,4 +145,5 @@ jobs:
             cd deck-docker
             sudo docker compose pull
             sudo docker compose up -d
+            sudo docker image prune -af
 

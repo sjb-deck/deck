@@ -1,46 +1,35 @@
-import requests
-from requests.auth import HTTPBasicAuth
-from decouple import config
-
-"""
-Uploads a file to the nextcloud server
-Note: If there is a file with the same name, it will be overwritten
-"""
-
-
-def upload_file(file_path, file_content):
-    username = ""  # TODO: Update after S3 integration
-    password = ""  # TODO: Update after S3 integration
-    nextcloud_url = (
-        f"https://nextcloud.nhhs-sjb.org/remote.php/dav/files/{username}/Shared/deck/"
-    )
-
-    full_url = nextcloud_url + file_path
-
-    response = requests.put(
-        full_url, data=file_content, auth=HTTPBasicAuth(username, password)
-    )
-
-    if (
-        response.status_code == 201 or response.status_code == 204
-    ):  # 201 Created or 204 Replace existing file
-        return file_path
-    else:
-        raise Exception(f"Failed to upload file. Status code: {response.status_code}")
+import boto3
+from django.conf import settings
+from botocore.exceptions import NoCredentialsError, ClientError
 
 
 def delete_file(file_path):
-    username = ""  # TODO: Update after S3 integration
-    password = ""  # TODO: Update after S3 integration
-    nextcloud_url = (
-        f"https://nextcloud.nhhs-sjb.org/remote.php/dav/files/{username}/Shared/deck/"
-    )
+    try:
+        if settings.ENV == "prod":
+            file_path = f"prod/{file_path}"
+        else:
+            file_path = f"staging/{file_path}"
 
-    full_url = nextcloud_url + file_path
+        s3_client = get_s3_client()
+        s3_client.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=file_path)
+    except NoCredentialsError:
+        print("Credentials not available", flush=True)
+    except ClientError as e:
+        print(e, flush=True)
 
-    response = requests.delete(full_url, auth=HTTPBasicAuth(username, password))
 
-    if response.status_code == 204:  # 204 No Content
-        return file_path
+def get_s3_client():
+    if settings.ENV == "prod":
+        # In production, use IAM roles
+        return boto3.client(
+            "s3",
+            region_name=settings.AWS_S3_REGION_NAME,
+        )
     else:
-        raise Exception(f"Failed to delete file. Status code: {response.status_code}")
+        # In staging, use access keys
+        return boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+        )

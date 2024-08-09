@@ -5,3 +5,5 @@ export * from './getRequest';
 export * from './buildUrl';
 export * from './stringAvatar';
 export * from './getUrlWithoutParams';
+export * from './getEnvironment';
+export * from './processImage';

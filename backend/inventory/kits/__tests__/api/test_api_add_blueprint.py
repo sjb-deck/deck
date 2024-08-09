@@ -4,6 +4,7 @@ from django.test import TestCase
 from accounts.models import User, UserExtras
 from inventory.items.models import Item, ItemExpiry
 from inventory.kits.models import Blueprint
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiAddBlueprintViews(TestCase):
@@ -12,7 +13,8 @@ class TestApiAddBlueprintViews(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.url = reverse("add_blueprint")
         self.create_items()
         self.content = [

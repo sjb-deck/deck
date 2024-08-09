@@ -1,15 +1,17 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useContext } from 'react';
 import { signIn } from '../auth/authHook';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
 
 export const useLogin = (options) => {
   const key = 'login';
   const url = Api[key];
   const { setAlert } = useContext(AlertContext);
+  const signIn = useSignIn();
+  const queryClient = useQueryClient();
 
   const defaultOptions = {
     refetchOnWindowFocus: false,
@@ -34,6 +36,9 @@ export const useLogin = (options) => {
         message: 'Login successful',
         autoHide: true,
       });
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
   };
 

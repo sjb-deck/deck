@@ -26,7 +26,11 @@ import {
 import { useAddItem } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 import { AlertContext } from '../providers';
-import { checkExpiryFormData, checkItemFormData } from '../utils';
+import {
+  checkExpiryFormData,
+  checkItemFormData,
+  processImageFile,
+} from '../utils';
 
 export const AddItem = () => {
   const { data: items, isLoading: dataLoading, error: dataError } = useItems();
@@ -94,13 +98,13 @@ export const AddItem = () => {
     is_opened: false,
   });
 
-  const processItemSubmission = () => {
+  const processItemSubmission = async () => {
     setLoading(true);
     const payload = {
       name: itemFormData.name,
       type: itemFormData.type,
       unit: itemFormData.unit,
-      imgpic: itemFormData.imgpic,
+      imgpic: await processImageFile(itemFormData.imgpic, itemFormData.name),
       total_quantity: itemFormData.total_quantity,
       min_quantity: itemFormData.min_quantity,
       is_opened: itemFormData.is_opened,
@@ -131,7 +135,6 @@ export const AddItem = () => {
           autoHide: true,
         });
         setLoading(false);
-        queryClient.invalidateQueries('items');
       },
       onError: (error) => {
         setActiveStep(0);
@@ -156,7 +159,7 @@ export const AddItem = () => {
     });
   };
 
-  const processExpirySubmission = () => {
+  const processExpirySubmission = async () => {
     setLoading(true);
     const modifiedExpiry = expiryFormData.expiry.map((item) => ({
       expiry_date: item.expiry_date,
@@ -173,7 +176,10 @@ export const AddItem = () => {
       name: expiryFormData.name,
       type: expiryFormData.type,
       unit: expiryFormData.unit,
-      imgpic: expiryFormData.imgpic,
+      imgpic: await processImageFile(
+        expiryFormData.imgpic,
+        expiryFormData.name,
+      ),
       total_quantity: totalQuantity,
       min_quantity: expiryFormData.min_quantity,
       is_opened: expiryFormData.is_opened,
@@ -329,6 +335,10 @@ export const AddItem = () => {
       value = event.target.files[0];
     }
 
+    if (name === 'imgPreview') {
+      value = event.target.value;
+    }
+
     setItemFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -349,6 +359,10 @@ export const AddItem = () => {
 
     if (name === 'imgpic') {
       value = event.target.files[0];
+    }
+
+    if (name === 'imgPreview') {
+      value = event.target.value;
     }
 
     setExpiryFormData((prevFormData) => ({

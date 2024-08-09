@@ -22,17 +22,11 @@ handle_error() {
 cleanup() {
     print_msg "${RED}Cleaning up...${NC}"
     if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
-        docker-compose -f docker-compose.yml down
+        docker compose -f docker-compose.yml down
     else
-        docker-compose down
+        docker compose down
     fi
     print_msg "${RED}Containers have been stopped.${NC}"
-
-    # Remove the generated nginx.prod.conf file
-    if [ -f frontend/nginx.prod.conf ]; then
-        rm frontend/nginx.prod.conf
-        print_msg "${GREEN}Removed generated nginx.prod.conf file.${NC}"
-    fi
 }
 
 build_and_push() {
@@ -63,13 +57,6 @@ build_and_push() {
     docker buildx rm mybuilder || handle_error "Failed to remove Docker buildx builder instance"
 }
 
-configure_nginx() {
-    DOMAIN=$1
-
-    print_msg "${GREEN}Configuring Nginx for domain: ${DOMAIN}${NC}"
-    sed -e "s/\${DOMAIN_NAME}/${DOMAIN}/g" frontend/nginx.prod.template.conf > frontend/nginx.prod.conf || handle_error "Failed to configure Nginx"
-}
-
 if [ "$1" == "--prod" ]; then
     MODE="prod"
     TAG="latest"
@@ -86,8 +73,6 @@ else
 fi
 
 if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
-    configure_nginx $DOMAIN
-
     print_msg "${GREEN}Changing to frontend directory...${NC}"
     cd frontend || handle_error "Failed to change directory to frontend"
 
@@ -106,7 +91,7 @@ if [ "$MODE" == "prod" ] || [ "$MODE" == "staging" ]; then
     print_msg "${GREEN}${MODE} images have been built and pushed successfully.${NC}"
 else
     print_msg "${GREEN}Bringing up the development environment with Docker Compose...${NC}"
-    docker-compose up --build &
+    docker compose up --build &
     DOCKER_COMPOSE_PID=$!
 
     wait $DOCKER_COMPOSE_PID

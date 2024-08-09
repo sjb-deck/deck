@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -178,6 +179,11 @@ CORS_ORIGIN_WHITELIST = [
     "https://deck.nhhs-sjb.org",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://deck.nhhs-sjb.org",
+    "https://deck-stg.nhhs-sjb.org",
+]
+
 CORS_ALLOW_HEADERS = [
     "content-type",
     "authorization",
@@ -198,5 +204,9 @@ CORS_ALLOW_METHODS = [
 
 APPEND_SLASH = False
 
-MEDIA_URL = "uploaded/"
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
+
+ENV = config("ENV")

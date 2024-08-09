@@ -8,6 +8,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/www/certbot:/var/www/certbot
     depends_on:
@@ -30,9 +31,8 @@ services:
     command: >
       sh -c "
         ./wait-for-it.sh mysql:3306 -- 
-        python manage.py makemigrations &&
-        python manage.py migrate &&
-        python manage.py runserver 0.0.0.0:8000
+        ./startup.sh &&
+        gunicorn --config gunicorn_config.py deck.wsgi:application
       "
   
   certbot:

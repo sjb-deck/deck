@@ -1,4 +1,5 @@
 import { screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import { KitHistoryContent } from '../../../components/Admin/KitHistoryContent';
 import {
@@ -15,7 +16,7 @@ describe('<KitHistoryContent />', () => {
           history={exampleKitHistory.results[0]}
           isMobile={true}
           isLoading={false}
-          handleDeleteHistory={jest.fn()}
+          handleDeleteHistory={vi.fn()}
         />,
       );
 
@@ -80,7 +81,7 @@ describe('<KitHistoryContent />', () => {
           history={exampleKitHistory.results[1]}
           isMobile={true}
           isLoading={false}
-          handleDeleteHistory={jest.fn()}
+          handleDeleteHistory={vi.fn()}
         />,
       );
 
@@ -128,7 +129,7 @@ describe('<KitHistoryContent />', () => {
           history={exampleKitHistory.results[3]}
           isMobile={true}
           isLoading={false}
-          handleDeleteHistory={jest.fn()}
+          handleDeleteHistory={vi.fn()}
         />,
       );
 
@@ -176,7 +177,7 @@ describe('<KitHistoryContent />', () => {
           history={exampleRetireKitHistoryEntry}
           isMobile={true}
           isLoading={false}
-          handleDeleteHistory={jest.fn()}
+          handleDeleteHistory={vi.fn()}
         />,
       );
 
@@ -206,7 +207,7 @@ describe('<KitHistoryContent />', () => {
       expect(screen.queryByText('Snapshot')).not.toBeInTheDocument();
     });
     it('calls handleDeleteHistory correctly when revert history button is clicked', async () => {
-      const mockDeleteHistory = jest.fn();
+      const mockDeleteHistory = vi.fn();
       render(
         <KitHistoryContent
           history={exampleKitHistory.results[0]}

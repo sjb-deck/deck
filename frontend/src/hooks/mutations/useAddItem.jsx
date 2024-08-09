@@ -1,29 +1,44 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { Api } from '../../globals/api';
-import { getRequest } from '../../utils/getRequest';
+import { Api, invalidateQueryKeys } from '../../globals/api';
+import { getRequest } from '../../utils';
+
+import { usePresignedUrl } from './usePresignedUrl';
+import { useUploadImage } from './useUploadImage';
 
 export const useAddItem = (options) => {
   const key = 'addItem';
   const url = Api[key];
-  const request = getRequest({
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const queryClient = useQueryClient();
+  const request = getRequest();
+  const { mutateAsync: getPresignedUrl } = usePresignedUrl();
+  const { mutateAsync: uploadImage } = useUploadImage();
 
   return useMutation({
     mutationFn: async (order) => {
-      const formData = new FormData();
-      for (const key in order) {
-        if (Object.prototype.hasOwnProperty.call(order, key)) {
-          if (key === 'expiry_dates') {
-            formData.append(key, JSON.stringify(order[key]));
-            continue;
-          }
-          formData.append(key, order[key]);
-        }
+      // if image is provided, upload it to S3
+      if (order.imgpic.name) {
+        // get presigned URL
+        const presignedResponse = await getPresignedUrl({
+          fileName: order.imgpic.name,
+          fileType: order.imgpic.type,
+          folderName: 'items',
+        });
+        const presignedUrl = presignedResponse.url;
+        // upload image to S3 using presigned URL
+        uploadImage({ presignedUrl, file: order.imgpic });
       }
-      const response = await request.post(url, formData);
+      const response = await request.post(url, {
+        ...order,
+        imgpic: order.imgpic.name ? 'items/' + order.imgpic.name : null,
+      });
       return response.data;
+    },
+    ...options,
+    onSuccess: () => {
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
   });
 };

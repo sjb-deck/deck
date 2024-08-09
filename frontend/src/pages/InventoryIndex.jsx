@@ -7,7 +7,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useSignOutDeck } from '../hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import {
-  Avatar,
   Badge,
   Box,
   Stack,
@@ -20,7 +19,10 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ImageAvatar } from '../components';
 import {
+  IMG_LOGO,
+  IMG_SPLASH,
   IMG_USER,
   URL_INV_ITEMS,
   URL_INV_LOAN_RETURN,
@@ -53,7 +55,7 @@ export const InventoryIndex = () => {
           width: '100vw',
           height: '100vh',
           backgroundRepeat: 'repeat',
-          backgroundImage: "url('/img/A6.jpg')",
+          backgroundImage: `url(${IMG_SPLASH})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           display: 'flex',
@@ -65,7 +67,7 @@ export const InventoryIndex = () => {
         <InventoryIndexUserCard user={user} isMobile={isMobile} />
 
         <img
-          src='/img/logo.png'
+          src={IMG_LOGO}
           alt='logo'
           style={{
             width: '150px',
@@ -217,13 +219,13 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
         }}
       >
         <Tooltip title='Manage Account Details'>
-          <Avatar
+          <ImageAvatar
             alt='User'
-            src={IMG_USER}
+            src={user?.extras?.profile_pic || IMG_USER}
+            isS3Image={!!user?.extras?.profile_pic}
             {...stringAvatar(user?.username || 'User')}
+            size={80}
             sx={{
-              width: 80,
-              height: 80,
               '&:hover': {
                 filter: 'brightness(0.8)',
                 cursor: 'pointer',

@@ -20,7 +20,7 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { URL_BASE_INV } from '../globals/urls';
+import { IMG_SPLASH, LOGIN_LOGO, URL_BASE_INV } from '../globals/urls';
 import { useLogin } from '../hooks/mutations';
 import { isAuthenticated } from '../hooks/auth/authHook';
 
@@ -95,7 +95,7 @@ export const Login = () => {
           width: '100vw',
           height: '100vh',
           backgroundRepeat: 'repeat',
-          backgroundImage: "url('/img/A6.jpg')",
+          backgroundImage: `url(${IMG_SPLASH})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           display: 'flex',
@@ -104,10 +104,7 @@ export const Login = () => {
           alignItems: 'center',
         }}
       >
-        <img
-          src='/img/StJohn SG logo.png'
-          style={{ maxHeight: '250px', mb: '5%' }}
-        />
+        <img src={LOGIN_LOGO} style={{ maxHeight: '250px', mb: '5%' }} />
         <FormControl
           error={error}
           sx={{ m: 1, width: '25ch' }}

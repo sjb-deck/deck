@@ -1,6 +1,7 @@
 export * from './useOrders';
 export * from './useAddItem';
 export * from './useCreateKit';
+export * from './useEditAccount';
 export * from './useLogin';
 export * from './useNewExpiryDate';
 export * from './useRevertOrder';

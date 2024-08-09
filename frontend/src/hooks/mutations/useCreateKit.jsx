@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils';
 
@@ -18,7 +18,9 @@ export const useCreateKit = (options) => {
         message: 'Successfully created kit!',
         autoHide: true,
       });
-      queryClient.invalidateQueries('kits');
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
     onError: (error) => {
       console.error(error);

@@ -1,5 +1,7 @@
 import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
 
+import { IMG_LOGO } from '../../globals/urls';
 import { ImageAvatar } from '../ImageAvatar';
 
 /**
@@ -11,6 +13,18 @@ import { ImageAvatar } from '../ImageAvatar';
  */
 
 export const AddItemReview = ({ itemFormData }) => {
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
+  useEffect(() => {
+    if (!itemFormData.imgpic.name) {
+      setImagePreviewUrl(IMG_LOGO);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(itemFormData.imgpic);
+    setImagePreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [itemFormData.imgpic]);
+
   return (
     <div>
       <Typography
@@ -34,10 +48,7 @@ export const AddItemReview = ({ itemFormData }) => {
             marginTop: '10px',
           }}
         >
-          <ImageAvatar
-            alt='new-item'
-            src={`/get_image/${itemFormData.image}`}
-          />
+          <ImageAvatar alt='new-item' src={imagePreviewUrl} size={90} />
         </div>
         <div
           style={{

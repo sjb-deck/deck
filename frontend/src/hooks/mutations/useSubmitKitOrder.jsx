@@ -1,7 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
-import { Api } from '../../globals/api';
+import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils';
 
@@ -9,6 +9,7 @@ export const useSubmitKitOrder = (options) => {
   const key = 'submitKitOrder';
   const url = Api[key];
   const request = getRequest();
+  const queryClient = useQueryClient();
   const { setAlert } = useContext(AlertContext);
   const defaultOptions = {
     onSuccess: () => {
@@ -17,6 +18,9 @@ export const useSubmitKitOrder = (options) => {
         message: 'Successfully withdrew kit(s)!',
         autoHide: true,
       });
+      invalidateQueryKeys()[key].forEach((key) =>
+        queryClient.invalidateQueries(key),
+      );
     },
     onError: (error) => {
       console.error(error);
