@@ -15,6 +15,7 @@ from pathlib import Path
 import os
 from decouple import config
 import json
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,8 +45,9 @@ INSTALLED_APPS = [
     "inventory",
     "corsheaders",
     "accounts",
-    "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
+    'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -82,6 +84,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "deck.wsgi.application"
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=1200),
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=3600),
+    "ROTATE_REFRESH_TOKENS": True,
+}
 
 
 REST_FRAMEWORK = {

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useContext } from 'react';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import { signIn } from '../auth/authHook';
 
 import { Api } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
@@ -10,7 +10,6 @@ export const useLogin = (options) => {
   const key = 'login';
   const url = Api[key];
   const { setAlert } = useContext(AlertContext);
-  const signIn = useSignIn();
 
   const defaultOptions = {
     refetchOnWindowFocus: false,
@@ -25,14 +24,11 @@ export const useLogin = (options) => {
       });
     },
     onSuccess: (data) => {
-      signIn({
-        auth: {
-          token: data.access,
-          type: 'Bearer',
-        },
-        refresh: data.refresh,
-        userState: data.user,
-      });
+      signIn(
+        data.access,
+        data.refresh,
+        data.user,
+      );
       setAlert({
         severity: 'success',
         message: 'Login successful',

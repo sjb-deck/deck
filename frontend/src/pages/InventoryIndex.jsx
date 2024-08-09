@@ -4,6 +4,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useSignOutDeck } from '../hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import {
   Avatar,
@@ -17,7 +18,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -28,7 +28,7 @@ import {
   URL_INV_VIEW_ORDERS_LOANS,
   URL_PROFILE,
 } from '../globals/urls';
-import { useSignOutDeck } from '../hooks/auth';
+import { getUser } from '../hooks/auth/authHook';
 import { stringAvatar } from '../utils';
 
 export const InventoryIndex = () => {
@@ -43,7 +43,7 @@ export const InventoryIndex = () => {
       },
     },
   });
-  const user = useAuthUser();
+  const user = getUser();
   const isMobile = useMediaQuery('(max-width:600px)');
 
   return (
@@ -198,8 +198,9 @@ export const InventoryIndexUserCard = ({ user, isMobile }) => {
     backgroundColor: 'rgb(255 255 255 / 85%)',
     padding: '15px 20px',
   };
-  const signOut = useSignOutDeck();
+
   const navigate = useNavigate();
+  const signOut = useSignOutDeck();
 
   return (
     <Box

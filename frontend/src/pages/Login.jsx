@@ -22,15 +22,21 @@ import { useNavigate } from 'react-router-dom';
 
 import { URL_BASE_INV } from '../globals/urls';
 import { useLogin } from '../hooks/mutations';
+import { isAuthenticated } from '../hooks/auth/authHook';
 
 export const Login = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated() === 'true') {
+      navigate(URL_BASE_INV);
+    }
+  }, []);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
   const { mutate } = useLogin();
 
   const lightTheme = createTheme({

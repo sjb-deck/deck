@@ -1,6 +1,6 @@
 import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -15,7 +15,7 @@ import {
 import { useKit, useKitRecipe } from '../hooks/queries';
 
 export const KitLoanReturn = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const { kitId } = useParams();
   const { data: kitData, isError, isLoading } = useKit({ kitId: kitId });
 

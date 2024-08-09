@@ -2,7 +2,7 @@ import { Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useEffect, useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { getUser } from '../hooks/auth/authHook';
 
 import {
   EmptyMessage,
@@ -20,7 +20,7 @@ import { exampleItem } from '../mocks/items';
 
 export const ItemIndex = () => {
   const { data: items } = useItems();
-  const userData = useAuthUser();
+  const userData = getUser();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
