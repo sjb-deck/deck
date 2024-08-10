@@ -15,7 +15,7 @@ import {
   createTheme,
   useMediaQuery,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,8 +29,11 @@ import {
   URL_INV_VIEW_KITS,
   URL_INV_VIEW_ORDERS_LOANS,
   URL_PROFILE,
+  URL_INV_NOTIFICATIONS,
 } from '../globals/urls';
 import { useSignOutDeck } from '../hooks/auth';
+import { useCheckAlerts, useKitsExpiry } from '../hooks/queries';
+import { NotificationContext } from '../providers';
 import { stringAvatar } from '../utils';
 
 export const InventoryIndex = () => {
@@ -47,6 +50,33 @@ export const InventoryIndex = () => {
   });
   const user = useAuthUser();
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [numberOfNotifications, setNumberOfNotifications] = useState(0);
+  const [notificationsLoaded, setNotificationsLoaded] = useState(false);
+  const { setNotifications } = useContext(NotificationContext);
+  const { data: kitsExpiryAlerts } = useKitsExpiry();
+  const { data: itemsAlerts } = useCheckAlerts();
+
+  useEffect(() => {
+    if (
+      !notificationsLoaded &&
+      kitsExpiryAlerts !== undefined &&
+      itemsAlerts !== undefined
+    ) {
+      const notifCount =
+        itemsAlerts.expired_items?.length +
+        itemsAlerts.expiring_items?.length +
+        itemsAlerts.low_quantity_items?.length +
+        kitsExpiryAlerts.length;
+
+      setNumberOfNotifications(notifCount);
+      setNotifications({
+        ...itemsAlerts,
+        kits_expiries: kitsExpiryAlerts,
+        numberOfNotifications: notifCount,
+      });
+      setNotificationsLoaded(true);
+    }
+  }, [kitsExpiryAlerts, itemsAlerts, setNotifications, notificationsLoaded]);
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -85,13 +115,13 @@ export const InventoryIndex = () => {
         >
           Welcome to IMS
         </h1>
-        <InventoryIndexOptions />
+        <InventoryIndexOptions numberOfNotifications={numberOfNotifications} />
       </Box>
     </ThemeProvider>
   );
 };
 
-export const InventoryIndexOptions = () => {
+export const InventoryIndexOptions = ({ numberOfNotifications }) => {
   const [loadingItems, setLoadingItems] = useState(false);
   const [loadingKits, setLoadingKits] = useState(false);
   const [loadingLoans, setLoadingLoans] = useState(false);
@@ -162,13 +192,13 @@ export const InventoryIndexOptions = () => {
           aria-label='alerts'
           onClick={() => {
             setLoadingNotifications(true);
-            // Add the action for the notifications button here
+            window.location.href = URL_INV_NOTIFICATIONS;
           }}
           loading={loadingNotifications}
           loadingPosition='end'
           sx={{ width: '50%' }}
         >
-          <Badge badgeContent={1} color='error'>
+          <Badge badgeContent={numberOfNotifications} color='error'>
             <NotificationsIcon />
           </Badge>
         </LoadingButton>

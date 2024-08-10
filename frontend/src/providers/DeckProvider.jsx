@@ -12,6 +12,7 @@ import { Api } from '../globals/api';
 import { AlertProvider } from './AlertProvider';
 import { CartProvider } from './CartProvider';
 import { KitCartProvider } from './KitCartProvider';
+import { NotificationProvider } from './NotificationProvider.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,9 +63,11 @@ export const DeckProvider = ({ children }) => {
         <QueryClientProvider client={queryClient}>
           <AuthProvider store={store}>
             <AlertProvider>
-              <CartProvider>
-                <KitCartProvider>{children}</KitCartProvider>
-              </CartProvider>
+              <NotificationProvider>
+                <CartProvider>
+                  <KitCartProvider>{children}</KitCartProvider>
+                </CartProvider>
+              </NotificationProvider>
             </AlertProvider>
           </AuthProvider>
         </QueryClientProvider>

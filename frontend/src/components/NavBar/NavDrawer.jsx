@@ -11,10 +11,8 @@ import ListItem from '@mui/material/ListItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { URL_PROFILE } from '../../globals/urls';
-import { useSignOutDeck } from '../../hooks/auth';
+import { URL_LOGOUT, URL_PROFILE } from '../../globals/urls';
 import { CartContext, KitCartContext } from '../../providers';
 import { ColorModeContext } from '../Theme';
 
@@ -24,7 +22,7 @@ import {
   itemsActionItems,
   kitActionItems,
   mobileCartNavItems,
-} from './NavItems';
+} from './NavBar';
 import { UserAvatar } from './UserAvatar';
 
 /**
@@ -34,13 +32,11 @@ import { UserAvatar } from './UserAvatar';
  * @returns NavDrawer
  */
 
-export const NavDrawer = ({ user }) => {
+export const NavDrawer = ({ user, numberOfNotifications }) => {
   const theme = useTheme();
   const { cartItems } = useContext(CartContext);
   const { kitCartItems } = useContext(KitCartContext);
   const colorMode = useContext(ColorModeContext);
-  const signOut = useSignOutDeck();
-  const navigate = useNavigate();
 
   return (
     <Box sx={{ textAlign: 'center' }}>
@@ -76,7 +72,7 @@ export const NavDrawer = ({ user }) => {
             fullWidth
             sx={{ justifyContent: 'center', textTransform: 'none' }}
             startIcon={<AccountCircleIcon />}
-            onClick={() => navigate(URL_PROFILE)}
+            onClick={() => (window.location.href = URL_PROFILE)}
           >
             Profile
           </Button>
@@ -107,7 +103,7 @@ export const NavDrawer = ({ user }) => {
                 fullWidth
                 sx={{ justifyContent: 'center', textTransform: 'none' }}
                 startIcon={item.icon}
-                onClick={() => navigate(item.link)}
+                onClick={() => (window.location.href = item.link)}
               >
                 {item.title}
               </Button>
@@ -117,13 +113,13 @@ export const NavDrawer = ({ user }) => {
       </List>
       <Divider />
       <List>
-        {alertNavItems(0).map((item, index) => (
+        {alertNavItems(numberOfNotifications).map((item, index) => (
           <ListItem key={index} disablePadding>
             <Button
               fullWidth
               sx={{ justifyContent: 'center', textTransform: 'none' }}
               startIcon={item.icon}
-              onClick={() => navigate(item.link)}
+              onClick={() => (window.location.href = item.link)}
             >
               {item.title}
             </Button>
@@ -135,7 +131,7 @@ export const NavDrawer = ({ user }) => {
               fullWidth
               sx={{ justifyContent: 'center', textTransform: 'none' }}
               startIcon={item.icon}
-              onClick={() => navigate(item.link)}
+              onClick={() => (window.location.href = item.link)}
             >
               {item.title}
             </Button>
@@ -183,7 +179,7 @@ export const NavDrawer = ({ user }) => {
             fullWidth
             sx={{ justifyContent: 'center', textTransform: 'none' }}
             startIcon={<LogoutIcon />}
-            onClick={() => signOut()}
+            onClick={() => (window.location.href = URL_LOGOUT)}
             color='error'
           >
             Logout
