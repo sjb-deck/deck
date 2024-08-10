@@ -10,6 +10,7 @@ export const CART_ITEM_TYPE_WITHDRAW = 'Withdraw';
 export const LOCAL_STORAGE_CART_KEY = 'FA_cart';
 export const LOCAL_STORAGE_KIT_CART_KEY = 'kit_cart';
 export const LOCAL_STORAGE_COLORMODE_KEY = 'Color_Mode';
+export const LOCAL_STORAGE_NOTIFICATIONS_KEY = 'notifications';
 export const LOCAL_STORAGE_USER_KEY = 'user';
 
 export const ORDER_REASONS = {

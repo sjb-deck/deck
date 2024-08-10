@@ -36,6 +36,8 @@ export const Api = {
   kitRestockOptions: `${INV_KITS_API_BASE_URL}/restock_options/:id`,
   kitRestock: `${INV_KITS_API_BASE_URL}/restock_kit`,
   submitKitOrder: `${INV_KITS_API_BASE_URL}/submit_kit_order`,
+  checkKitsExpiry: `${INV_API_BASE_URL}/kits/check_kits_expiry`,
+  checkAlerts: `${INV_API_BASE_URL}/items/check_for_alerts`,
 };
 
 export const invalidateQueryKeys = ({ id } = {}) => ({

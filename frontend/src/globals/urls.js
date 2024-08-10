@@ -1,5 +1,6 @@
 export const URL_BASE_INV = '/inventory';
 export const URL_LOGIN = '/login';
+export const URL_LOGOUT = '/logout';
 export const URL_PROFILE = '/accounts/edit';
 
 // Items
@@ -22,6 +23,7 @@ export const URL_INV_KITS_ADD_KIT = `${URL_BASE_INV}/kits/create_kit`;
 export const URL_INV_KITS_INFO = `${URL_BASE_INV}/kits/kit_info/:kitId`;
 export const URL_INV_KITS_RESTOCK = `${URL_BASE_INV}/kits/kit_restock/:kitId`;
 export const URL_INV_KITS_LOAN_RETURN = `${URL_BASE_INV}/kits/loan_return/:kitId`;
+export const URL_INV_NOTIFICATIONS = '/inventory/notifications';
 
 // Images
 export const LOGIN_LOGO = '/static/img/StJohn SG logo.png';

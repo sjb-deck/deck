@@ -13,6 +13,7 @@ import {
   URL_INV_KITS_LOAN_RETURN,
   URL_INV_KITS_RESTOCK,
   URL_INV_LOAN_RETURN,
+  URL_INV_NOTIFICATIONS,
   URL_INV_VIEW_ITEM_LIST,
   URL_INV_VIEW_KITS,
   URL_INV_VIEW_ORDERS_LOANS,
@@ -38,6 +39,7 @@ import {
   KitRestock,
   KitLoanReturn,
   UserEdit,
+  Notifications,
 } from '../../pages';
 
 export const IMSRoutes = () => {
@@ -64,6 +66,7 @@ export const IMSRoutes = () => {
         <Route path={URL_INV_KITS_INFO} element={<KitInfo />} />
         <Route path={URL_INV_KITS_RESTOCK} element={<KitRestock />} />
         <Route path={URL_INV_KITS_LOAN_RETURN} element={<KitLoanReturn />} />
+        <Route path={URL_INV_NOTIFICATIONS} element={<Notifications />} />
         {/* Shared Route */}
         <Route path={URL_INV_LOAN_RETURN} element={<LoanReturn />} />
         <Route path={URL_INV_VIEW_ORDERS_LOANS} element={<AdminIndex />} />

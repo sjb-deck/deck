@@ -8,7 +8,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { Theme } from '../components';
-import { AlertProvider, CartProvider, KitCartProvider } from '../providers';
+import {
+  AlertProvider,
+  CartProvider,
+  KitCartProvider,
+  NotificationProvider,
+} from '../providers';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,11 +41,13 @@ export const customRender = (ui, options = {}) => {
           <QueryClientProvider client={queryClient}>
             <AuthProvider store={store}>
               <AlertProvider>
-                <CartProvider value={cartContext}>
-                  <KitCartProvider>
-                    <BrowserRouter>{children}</BrowserRouter>
-                  </KitCartProvider>
-                </CartProvider>
+                <NotificationProvider>
+                  <CartProvider value={cartContext}>
+                    <KitCartProvider>
+                      <BrowserRouter>{children}</BrowserRouter>
+                    </KitCartProvider>
+                  </CartProvider>
+                </NotificationProvider>
               </AlertProvider>
             </AuthProvider>
           </QueryClientProvider>
