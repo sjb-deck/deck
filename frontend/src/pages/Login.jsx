@@ -30,7 +30,7 @@ export const Login = () => {
     if (isAuthenticated() === 'true') {
       navigate(URL_BASE_INV);
     }
-  }, []);
+  }, [navigate]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);

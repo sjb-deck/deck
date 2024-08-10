@@ -10,7 +10,6 @@ export const useLogin = (options) => {
   const key = 'login';
   const url = Api[key];
   const { setAlert } = useContext(AlertContext);
-  const signIn = useSignIn();
   const queryClient = useQueryClient();
 
   const defaultOptions = {

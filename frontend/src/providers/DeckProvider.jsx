@@ -22,13 +22,13 @@ export const DeckProvider = ({ children }) => {
     <Theme>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
             <AlertProvider>
-              <CartProvider>
-                <KitCartProvider>{children}</KitCartProvider>
-              </CartProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <KitCartProvider>{children}</KitCartProvider>
+                </CartProvider>
+              </AuthProvider>
             </AlertProvider>
-          </AuthProvider>
         </QueryClientProvider>
       </LocalizationProvider>
     </Theme>
