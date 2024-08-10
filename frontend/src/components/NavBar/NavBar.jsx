@@ -211,8 +211,8 @@ export const NavBar = ({ user }) => {
                 isItemsPage
                   ? (window.location.href = URL_INV_CART)
                   : isKitsPage
-                  ? (window.location.href = URL_INV_KITS_CART)
-                  : handleCartSelection(e)
+                    ? (window.location.href = URL_INV_KITS_CART)
+                    : handleCartSelection(e)
               }
             >
               <>

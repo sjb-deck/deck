@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { useContext } from 'react';
 
 import { Api } from '../../globals/api';
@@ -30,4 +29,3 @@ export const useCheckAlerts = (options) => {
     ...options,
   });
 };
-

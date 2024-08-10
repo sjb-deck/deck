@@ -32,41 +32,40 @@ export const NotificationList = () => {
     },
   });
 
-  const updateSections = () => {
-    const sections = [];
-    if (notifications.expired_items?.length > 0) {
-      sections.push({
-        title: 'The following items have expired:',
-        data: notifications.expired_items,
-        key: 'expired_items',
-      });
-    }
-    if (notifications.expiring_items?.length > 0) {
-      sections.push({
-        title: 'The following items are expiring soon:',
-        data: notifications.expiring_items,
-        key: 'expiring_items',
-      });
-    }
-    if (notifications.low_quantity_items?.length > 0) {
-      sections.push({
-        title: 'The following items are running low:',
-        data: notifications.low_quantity_items,
-        key: 'low_quantity_items',
-      });
-    }
-    if (notifications.kits_expiries?.length > 0) {
-      sections.push({
-        title: 'The following kits have expiry issues:',
-        data: notifications.kits_expiries,
-        key: 'kits_expiries',
-      });
-    }
-    setSections(sections);
-  };
-
   useEffect(() => {
-    console.log('update');
+    const updateSections = () => {
+      const sections = [];
+      if (notifications.expired_items?.length > 0) {
+        sections.push({
+          title: 'The following items have expired:',
+          data: notifications.expired_items,
+          key: 'expired_items',
+        });
+      }
+      if (notifications.expiring_items?.length > 0) {
+        sections.push({
+          title: 'The following items are expiring soon:',
+          data: notifications.expiring_items,
+          key: 'expiring_items',
+        });
+      }
+      if (notifications.low_quantity_items?.length > 0) {
+        sections.push({
+          title: 'The following items are running low:',
+          data: notifications.low_quantity_items,
+          key: 'low_quantity_items',
+        });
+      }
+      if (notifications.kits_expiries?.length > 0) {
+        sections.push({
+          title: 'The following kits have expiry issues:',
+          data: notifications.kits_expiries,
+          key: 'kits_expiries',
+        });
+      }
+      setSections(sections);
+    };
+
     if (
       sections.length === 0 &&
       kitsExpiryAlerts !== undefined &&
@@ -85,14 +84,12 @@ export const NotificationList = () => {
       });
       updateSections();
     }
-    console.log('notifications', notifications);
   }, [
     kitsExpiryAlerts,
     itemsAlerts,
     notifications,
     setNotifications,
     sections.length,
-    updateSections,
   ]);
 
   return (
@@ -110,10 +107,10 @@ export const NotificationList = () => {
             {sections.map((section, index) => (
               <div
                 key={index}
-                style={{ marginBottom: { isMobile } ? '18px' : '28px' }}
+                style={{ marginBottom: isMobile ? '18px' : '28px' }}
               >
                 <Typography variant='subtitle1'>{section.title}</Typography>
-                <div style={{ marginBottom: { isMobile } ? '18px' : '28px' }}>
+                <div style={{ marginBottom: isMobile ? '18px' : '28px' }}>
                   {section.data.map((issue, index) => (
                     <div key={index}>
                       <NotificationItem
