@@ -15,6 +15,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import F, Q
 
+from inventory.webhook import telebot_send_text
 from inventory.items.serializers import *
 from inventory.items.views_utils import *
 from deck.utils import upload_file
@@ -108,7 +109,28 @@ def api_orders(request):
 def api_submit_order(request):
     try:
         order = create_order(request.data, request)
-        return Response(OrderSerializer(order).data, status=201)
+        order_data = OrderSerializer(order).data
+
+        username = request.user.username
+        loanee_name = request.data.get("loanee_name")
+        action = request.data.get("action")
+        reason = request.data.get("reason")
+        order_id = order_data.get("id")
+        receipt_url = request.build_absolute_uri(f"/inventory/items/receipt/{order_id}")
+        telegram_message = f"""
+New Item Order Submitted
+
+Submitted by: {username}
+Loanee Name: {loanee_name}
+Action: {action}
+Reason: {reason}
+Receipt: {receipt_url}
+
+"""
+
+        telebot_send_text(telegram_message, None, "Orders")
+
+        return Response(order_data, status=201)
     except Exception as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -136,6 +158,18 @@ def api_add_item(request):
                     file_path, image
                 )
             item = expiry_serializer.save()
+
+            username = request.user.username
+            item_name = request.POST.get("name")
+            telegram_message = f"""
+New Item Added
+
+Added By: {username}
+Item Name: {item_name}
+"""
+
+            telebot_send_text(telegram_message, None, "Orders")
+
             return Response(ItemSerializer(item).data, status=201)
     except Exception as e:
         return Response(
@@ -148,6 +182,23 @@ def api_add_item(request):
 def create_new_expiry(request):
     try:
         item_expiry, _ = create_new_item_expiry(request.data, request)
+
+        username = request.user.username
+        item_id = request.data.get("item")
+        expiry_date = request.data.get("expiry_date")
+        quantity = request.data.get("quantity")
+
+        telegram_message = f"""
+New Expiry Date Added
+
+Created by: {username}
+Item ID: {item_id}
+Expiry Date: {expiry_date}
+Quantity: {quantity}
+        
+        """
+
+        telebot_send_text(telegram_message, None, "Orders")
         return Response(ItemExpirySerializer(item_expiry).data, status=201)
     except Exception as e:
         return Response(
@@ -162,6 +213,22 @@ def loan_return_post(request):
         loan_return_serializer = LoanReturnSerializer(data=request.data)
         if loan_return_serializer.is_valid(raise_exception=True):
             loan_order = loan_return_serializer.save()
+            username = request.user.username
+            order_id = request.data.get("order_id")
+            receipt_url = request.build_absolute_uri(
+                f"/inventory/items/receipt/{order_id}"
+            )
+
+            telegram_message = f"""
+Item Loan Returned
+
+Returned by: {username}
+Order ID: {order_id}
+Receipt: {receipt_url}
+        
+            """
+
+            telebot_send_text(telegram_message, None, "Orders")
             return Response(OrderSerializer(loan_order).data, status=201)
         else:
             return Response({"message": "Error during serialization"}, status=400)
@@ -191,6 +258,22 @@ def revert_order(request):
                 loan_order.revert_order()
             else:
                 order.revert_order()
+
+            username = request.user.username
+            receipt_url = request.build_absolute_uri(
+                f"/inventory/items/receipt/{order_id}"
+            )
+
+            telegram_message = f"""
+Item Loan Reverted
+
+Reverted by: {username}
+Order ID: {order_id}
+Receipt: {receipt_url}
+        
+             """
+
+            telebot_send_text(telegram_message, None, "Orders")
             return Response({"message": "Successfully reverted order"}, status=200)
         except Exception as e:
             return Response({"message": str(e)}, status=500)

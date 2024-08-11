@@ -95,7 +95,7 @@ export const KitData = ({ kit, isMobile }) => {
               color='success'
               variant='contained'
               onClick={() =>
-                navigate(buildUrl(URL_INV_KITS_LOAN_RETURN, { kitId: kit.id }))
+                navigate(buildUrl(URL_INV_KITS_LOAN_RETURN, { kitId: kit.kit }))
               }
             >
               Return
@@ -105,7 +105,7 @@ export const KitData = ({ kit, isMobile }) => {
             color='success'
             variant='contained'
             onClick={() =>
-              navigate(buildUrl(URL_INV_KITS_RESTOCK, { kitId: kit.id }))
+              navigate(buildUrl(URL_INV_KITS_RESTOCK, { kitId: kit.kit }))
             }
           >
             Restock
