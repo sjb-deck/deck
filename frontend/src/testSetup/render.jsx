@@ -5,9 +5,12 @@ import { render as rtlRender } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 
 import { Theme } from '../components';
-import { AlertProvider, CartProvider, KitCartProvider } from '../providers';
-
-import { AuthProvider } from './AuthProvider';
+import {
+  AlertProvider,
+  CartProvider,
+  KitCartProvider,
+  AuthProvider,
+} from '../providers';
 
 const queryClient = new QueryClient({
   defaultOptions: {
