@@ -1,4 +1,3 @@
-import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -8,6 +7,7 @@ import {
   KitRestockContent,
   EmptyMessage,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useKit } from '../hooks/queries';
 
 export const KitRestock = () => {

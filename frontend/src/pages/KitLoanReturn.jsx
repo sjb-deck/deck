@@ -1,6 +1,5 @@
 import { Box, Fab, Divider, useTheme, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -12,6 +11,7 @@ import {
   LoadingSpinner,
   EmptyMessage,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useKit, useKitRecipe } from '../hooks/queries';
 
 export const KitLoanReturn = () => {

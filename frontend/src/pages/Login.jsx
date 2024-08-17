@@ -21,16 +21,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { IMG_SPLASH, LOGIN_LOGO, URL_BASE_INV } from '../globals/urls';
-import { useLogin } from '../hooks/mutations';
 import { isAuthenticated } from '../hooks/auth/authHook';
+import { useLogin } from '../hooks/mutations';
 
 export const Login = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated() === 'true') {
-      navigate(URL_BASE_INV);
-    }
-  }, [navigate]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
@@ -85,6 +80,12 @@ export const Login = () => {
     setUsername('');
     setPassword('');
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated() === 'true') {
+      navigate(URL_BASE_INV);
+    }
+  }, [navigate]);
 
   return (
     <ThemeProvider theme={lightTheme}>

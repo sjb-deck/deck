@@ -1,11 +1,11 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from './AuthProvider';
 
 import { Theme } from '../components';
 
 import { AlertProvider } from './AlertProvider';
+import { AuthProvider } from './AuthProvider';
 import { CartProvider } from './CartProvider';
 import { KitCartProvider } from './KitCartProvider';
 
@@ -22,13 +22,13 @@ export const DeckProvider = ({ children }) => {
     <Theme>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <QueryClientProvider client={queryClient}>
-            <AlertProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <KitCartProvider>{children}</KitCartProvider>
-                </CartProvider>
-              </AuthProvider>
-            </AlertProvider>
+          <AlertProvider>
+            <AuthProvider>
+              <CartProvider>
+                <KitCartProvider>{children}</KitCartProvider>
+              </CartProvider>
+            </AuthProvider>
+          </AlertProvider>
         </QueryClientProvider>
       </LocalizationProvider>
     </Theme>
