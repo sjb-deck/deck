@@ -1,10 +1,10 @@
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import { Receipt, NavBar, Footer } from '../components';
 
 export const OrderReceipt = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const { orderId } = useParams();
 
   return (

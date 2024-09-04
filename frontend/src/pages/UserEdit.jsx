@@ -9,11 +9,11 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRef, useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import * as Yup from 'yup';
 
 import { ImageAvatar, LoadingSpinner } from '../components';
 import { IMG_USER } from '../globals/urls';
+import { getUser } from '../hooks/auth/authHook';
 import { useEditAccount } from '../hooks/mutations';
 import { isImage, processImageFile } from '../utils';
 
@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
 });
 
 export const UserEdit = () => {
-  const user = useAuthUser();
+  const user = getUser();
 
   if (!user) return <LoadingSpinner />;
 
