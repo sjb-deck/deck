@@ -48,7 +48,7 @@ You can run the development server using Docker and the provided `run.sh` script
     ./run.sh
     ```
 
-4. Visit the site at [http://deck-dev.nhhs-sjb.org](http://deck-dev.nhhs-sjb.org).
+4. Visit the site at [https://deck-dev.nhhs-sjb.org](https://deck-dev.nhhs-sjb.org).
 
 This script will build and start the Docker containers for the frontend, backend, and MySQL services.
 
