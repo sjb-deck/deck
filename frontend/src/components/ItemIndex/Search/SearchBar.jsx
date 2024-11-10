@@ -5,8 +5,8 @@
 import { TextField } from '@mui/material';
 import { useState } from 'react';
 
-export const SearchBar = ({ callback }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+export const SearchBar = ({ callback, initialValue }) => {
+  const [searchTerm, setSearchTerm] = useState(initialValue || '');
 
   return (
     <TextField

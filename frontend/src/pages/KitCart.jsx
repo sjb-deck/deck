@@ -1,6 +1,5 @@
-import { getUser } from '../hooks/auth/authHook';
-
 import { Footer, NavBar, KitCartContent } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 
 export const KitCart = () => {
   const user = getUser();

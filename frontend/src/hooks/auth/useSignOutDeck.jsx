@@ -1,8 +1,10 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut } from './authHook';
+
 import { URL_LOGIN } from '../../globals/urls';
 import { AlertContext } from '../../providers';
+
+import { signOut } from './authHook';
 
 export const useSignOutDeck = () => {
   const navigate = useNavigate();
@@ -16,6 +18,6 @@ export const useSignOutDeck = () => {
       autoHide: true,
     });
   };
-  
+
   return signOutAndNavigate;
 };

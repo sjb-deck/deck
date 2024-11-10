@@ -1,7 +1,7 @@
-import { getUser } from '../hooks/auth/authHook';
 import { useParams } from 'react-router-dom';
 
 import { NavBar, Footer, LoadingSpinner, KitInfoContent } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useKit } from '../hooks/queries';
 
 export const KitInfo = () => {
