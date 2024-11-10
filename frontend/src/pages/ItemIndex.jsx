@@ -2,7 +2,6 @@ import { Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useEffect, useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 
 import {
   EmptyMessage,
@@ -14,6 +13,7 @@ import {
   SearchFilter,
 } from '../components';
 import { ITEMS_PER_PAGE } from '../globals/constants';
+import { getUser } from '../hooks/auth/authHook';
 import { useItems } from '../hooks/queries';
 import '../globals/styles/inventoryBase.scss';
 import { exampleItem } from '../mocks/items';
@@ -24,7 +24,8 @@ export const ItemIndex = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState(['All']);
-  const [searchTerm, setSearchTerm] = useState('');
+  const params = new URLSearchParams(window.location.search);
+  const [searchTerm, setSearchTerm] = useState(params.get('search') || '');
   const [itemsToDisplay, setItemsToDisplay] = useState(items);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -58,7 +59,7 @@ export const ItemIndex = () => {
         spacing={2}
         sx={{ alignItems: 'center' }}
       >
-        <SearchBar callback={setSearchTerm} />
+        <SearchBar callback={setSearchTerm} initialValue={searchTerm} />
         <SearchFilter onFilterChange={handleFilterChange} />
       </Stack>
 
