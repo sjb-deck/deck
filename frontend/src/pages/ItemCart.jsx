@@ -1,6 +1,5 @@
-import { getUser } from '../hooks/auth/authHook';
-
 import { CartContent, Footer, NavBar } from '../components/';
+import { getUser } from '../hooks/auth/authHook';
 
 export const ItemCart = () => {
   const user = getUser();

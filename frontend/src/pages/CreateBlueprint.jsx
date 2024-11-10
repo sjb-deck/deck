@@ -1,6 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 
 import {
   Footer,
@@ -12,6 +11,7 @@ import {
   ViewExistingBlueprintTable,
   CreateBlueprintModal,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useItems, useBlueprint } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';

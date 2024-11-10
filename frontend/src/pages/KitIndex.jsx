@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import { getUser } from '../hooks/auth/authHook';
 
 import { Footer, NavBar, KitList } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 
 import '../globals/styles/inventoryBase.scss';
 
