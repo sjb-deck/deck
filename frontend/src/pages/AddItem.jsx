@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useContext, useEffect, useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {
   AddExpiryForm,
@@ -23,6 +22,7 @@ import {
   Theme,
   TypeSelection,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useAddItem } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 import { AlertContext } from '../providers';
@@ -34,7 +34,7 @@ import {
 
 export const AddItem = () => {
   const { data: items, isLoading: dataLoading, error: dataError } = useItems();
-  const userData = useAuthUser();
+  const userData = getUser();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [itemsData, setItems] = useState(items);
   const [activeStep, setActiveStep] = useState(0);

@@ -1,6 +1,6 @@
-import AuthOutlet from '@auth-kit/react-router/AuthOutlet';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
+import { AuthOutlet } from '../../components/Routes/Auth/AuthOutlet';
 import {
   URL_BASE_INV,
   URL_INV_ADD_ITEM,
@@ -19,6 +19,7 @@ import {
   URL_LOGIN,
   URL_ORDER_RECEIPT,
   URL_PROFILE,
+  URL_INV_NOTIFICATIONS,
 } from '../../globals/urls';
 import {
   AddItem,
@@ -38,6 +39,7 @@ import {
   KitRestock,
   KitLoanReturn,
   UserEdit,
+  Notifications,
 } from '../../pages';
 
 export const IMSRoutes = () => {
@@ -45,7 +47,7 @@ export const IMSRoutes = () => {
     <Routes>
       <Route path='/' element={<Navigate to={URL_BASE_INV} />} />
       <Route path={URL_LOGIN} element={<Login />} />
-      <Route element={<AuthOutlet fallbackPath='/login' />}>
+      <Route element={<AuthOutlet fallBackPath={URL_LOGIN} />}>
         <Route path={URL_BASE_INV} element={<InventoryIndex />} />
         {/* Item Routes */}
         <Route path={URL_INV_ITEMS} element={<ItemIndex />} />
@@ -68,6 +70,7 @@ export const IMSRoutes = () => {
         <Route path={URL_INV_LOAN_RETURN} element={<LoanReturn />} />
         <Route path={URL_INV_VIEW_ORDERS_LOANS} element={<AdminIndex />} />
         <Route path={URL_PROFILE} element={<UserEdit />} />
+        <Route path={URL_INV_NOTIFICATIONS} element={<Notifications />} />
       </Route>
     </Routes>
   );

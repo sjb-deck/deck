@@ -10,11 +10,8 @@ export default defineConfig({
     setupFiles: './setup-test.js',
   },
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 5173,
-    hmr: {
-      port: 5173,
-      host: 'localhost',
-    },
+    strictPort: true,
   },
 });

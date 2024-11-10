@@ -1,15 +1,14 @@
 import { useContext } from 'react';
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { useNavigate } from 'react-router-dom';
 
 import { URL_LOGIN } from '../../globals/urls';
 import { AlertContext } from '../../providers';
 
+import { signOut } from './authHook';
+
 export const useSignOutDeck = () => {
-  const signOut = useSignOut();
   const navigate = useNavigate();
   const { setAlert } = useContext(AlertContext);
-
   const signOutAndNavigate = () => {
     signOut();
     navigate(URL_LOGIN);

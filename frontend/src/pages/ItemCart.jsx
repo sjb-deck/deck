@@ -1,9 +1,8 @@
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-
 import { CartContent, Footer, NavBar } from '../components/';
+import { getUser } from '../hooks/auth/authHook';
 
 export const ItemCart = () => {
-  const user = useAuthUser();
+  const user = getUser();
 
   return (
     <>

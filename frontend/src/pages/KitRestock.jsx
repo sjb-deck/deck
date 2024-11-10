@@ -1,4 +1,3 @@
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -8,10 +7,11 @@ import {
   KitRestockContent,
   EmptyMessage,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useKit } from '../hooks/queries';
 
 export const KitRestock = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const { kitId } = useParams();
   const { data: kitData } = useKit({ kitId: kitId });
 

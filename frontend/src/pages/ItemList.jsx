@@ -1,6 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 import {
   Footer,
@@ -10,13 +9,14 @@ import {
   ItemTable,
   EmptyMessage,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useExportItems } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 
 import '../globals/styles/inventoryBase.scss';
 
 export const ItemList = () => {
-  const userData = useAuthUser();
+  const userData = getUser();
   const { data: items, isLoading: itemsLoading } = useItems();
   const { mutate: onExportClick, isLoading: exportLoading } = useExportItems();
   const [modalOpen, setModalOpen] = useState(false);

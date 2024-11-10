@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 from django.test import TestCase
 from accounts.models import User, UserExtras
 from inventory.items.models import Item, Order, OrderItem, ItemExpiry
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiAddItemExpiryViews(TestCase):
@@ -11,7 +12,8 @@ class TestApiAddItemExpiryViews(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.url = reverse("create_new_expiry")
         self.create_items()
         self.request = {

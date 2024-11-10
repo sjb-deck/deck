@@ -4,6 +4,7 @@ from django.test import TestCase
 from accounts.models import User, UserExtras
 from inventory.items.models import Item, ItemExpiry, Order, OrderItem
 from inventory.kits.models import Blueprint, Kit, History
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestApiRestockKitViews(TestCase):
@@ -12,7 +13,8 @@ class TestApiRestockKitViews(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpass", email="testuser@example.com"
         )
-        self.client.login(username="testuser", password="testpass")
+        self.token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
         self.create_items()
         self.compressed_blueprint_content = [
             {"item_id": self.item.id, "quantity": 10},
