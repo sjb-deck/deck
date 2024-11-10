@@ -140,3 +140,10 @@ You can find the `[backend_container_id]` by running `docker ps -a` and look for
 - [Black Python Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+# Acknowledgements
+
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk1ItaFwJIrz4-MMaDVEHGnAsbGrPq-QtUNA&s" alt="ccsgp" width="100"/>
+
+This project is supported by the Centre for Computing for Social
+Good & Philanthropy Fellowship Programme.
