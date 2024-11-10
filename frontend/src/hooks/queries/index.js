@@ -9,3 +9,5 @@ export * from './useKitRecipe';
 export * from './useKits';
 export * from './useBlueprint';
 export * from './useKitRestockOptions';
+export * from './useCheckAlerts';
+export * from './useKitsExpiry';

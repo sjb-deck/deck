@@ -1,6 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 
 import {
   Footer,
@@ -10,6 +9,7 @@ import {
   ItemTable,
   EmptyMessage,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useExportItems } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 

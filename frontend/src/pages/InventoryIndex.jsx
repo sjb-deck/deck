@@ -4,7 +4,6 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useSignOutDeck } from '../hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import {
   Badge,
@@ -16,7 +15,7 @@ import {
   createTheme,
   useMediaQuery,
 } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ImageAvatar } from '../components';
@@ -29,8 +28,12 @@ import {
   URL_INV_VIEW_KITS,
   URL_INV_VIEW_ORDERS_LOANS,
   URL_PROFILE,
+  URL_INV_NOTIFICATIONS,
 } from '../globals/urls';
+import { useSignOutDeck } from '../hooks/auth';
 import { getUser } from '../hooks/auth/authHook';
+import { useCheckAlerts, useKitsExpiry } from '../hooks/queries';
+import { NotificationContext } from '../providers';
 import { stringAvatar } from '../utils';
 
 export const InventoryIndex = () => {
@@ -47,6 +50,33 @@ export const InventoryIndex = () => {
   });
   const user = getUser();
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [numberOfNotifications, setNumberOfNotifications] = useState(0);
+  const [notificationsLoaded, setNotificationsLoaded] = useState(false);
+  const { setNotifications } = useContext(NotificationContext);
+  const { data: kitsExpiryAlerts } = useKitsExpiry();
+  const { data: itemsAlerts } = useCheckAlerts();
+
+  useEffect(() => {
+    if (
+      !notificationsLoaded &&
+      kitsExpiryAlerts !== undefined &&
+      itemsAlerts !== undefined
+    ) {
+      const notifCount =
+        itemsAlerts.expired_items?.length +
+        itemsAlerts.expiring_items?.length +
+        itemsAlerts.low_quantity_items?.length +
+        kitsExpiryAlerts.length;
+
+      setNumberOfNotifications(notifCount);
+      setNotifications({
+        ...itemsAlerts,
+        kits_expiries: kitsExpiryAlerts,
+        numberOfNotifications: notifCount,
+      });
+      setNotificationsLoaded(true);
+    }
+  }, [kitsExpiryAlerts, itemsAlerts, setNotifications, notificationsLoaded]);
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -85,13 +115,13 @@ export const InventoryIndex = () => {
         >
           Welcome to IMS
         </h1>
-        <InventoryIndexOptions />
+        <InventoryIndexOptions numberOfNotifications={numberOfNotifications} />
       </Box>
     </ThemeProvider>
   );
 };
 
-export const InventoryIndexOptions = () => {
+export const InventoryIndexOptions = ({ numberOfNotifications }) => {
   const [loadingItems, setLoadingItems] = useState(false);
   const [loadingKits, setLoadingKits] = useState(false);
   const [loadingLoans, setLoadingLoans] = useState(false);
@@ -162,13 +192,13 @@ export const InventoryIndexOptions = () => {
           aria-label='alerts'
           onClick={() => {
             setLoadingNotifications(true);
-            // Add the action for the notifications button here
+            navigate(URL_INV_NOTIFICATIONS);
           }}
           loading={loadingNotifications}
           loadingPosition='end'
           sx={{ width: '50%' }}
         >
-          <Badge badgeContent={1} color='error'>
+          <Badge badgeContent={numberOfNotifications} color='error'>
             <NotificationsIcon />
           </Badge>
         </LoadingButton>

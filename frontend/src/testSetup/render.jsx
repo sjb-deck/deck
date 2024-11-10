@@ -10,6 +10,7 @@ import {
   CartProvider,
   KitCartProvider,
   AuthProvider,
+  NotificationProvider,
 } from '../providers';
 
 const queryClient = new QueryClient({
@@ -30,11 +31,13 @@ export const customRender = (ui, options = {}) => {
           <QueryClientProvider client={queryClient}>
             <AlertProvider>
               <AuthProvider>
-                <CartProvider value={cartContext}>
-                  <KitCartProvider>
-                    <BrowserRouter>{children}</BrowserRouter>
-                  </KitCartProvider>
-                </CartProvider>
+                <NotificationProvider>
+                  <CartProvider value={cartContext}>
+                    <KitCartProvider>
+                      <BrowserRouter>{children}</BrowserRouter>
+                    </KitCartProvider>
+                  </CartProvider>
+                </NotificationProvider>
               </AuthProvider>
             </AlertProvider>
           </QueryClientProvider>

@@ -12,6 +12,7 @@ from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 from ..items.models import *
 from .views_utils import *
+from inventory.webhook import telebot_send_text
 
 
 @api_view(["GET"])
@@ -124,6 +125,22 @@ def add_kit(request):
                 order_id=order_id,
             )
 
+        username = request.user.username
+        kit_url = request.build_absolute_uri(f"/inventory/kits/kit_info/{new_kit.id}")
+        receipt_url = request.build_absolute_uri(f"/inventory/items/receipt/{order_id}")
+
+        telegram_message = f"""
+New Kit Added
+Added by: {username}
+Kit ID: {new_kit.id}
+Blueprint ID: {blueprint_id}
+Order ID: {order_id}
+Kit Info: {kit_url}
+Receipt: {receipt_url}
+            """
+
+        telebot_send_text(telegram_message, None, "Orders")
+
         return Response(
             {
                 "message": "Kit added successfully!",
@@ -213,6 +230,15 @@ def add_blueprint(request):
             name=name,
             complete_content=content,
         )
+
+        username = request.user.username
+        telegram_message = f"""
+New Blueprint Added
+Added by: {username}
+Blueprint name: {name}
+        """
+
+        telebot_send_text(telegram_message, None, "Orders")
 
         return Response(
             {"message": "Blueprint added successfully!", "blueprint_id": blueprint.id},
@@ -318,6 +344,19 @@ def submit_kit_order(request):
 
                     kit.status = "LOANED"
                     kit.save()
+
+                    username = request.user.username
+                    kit_ids_message = ", ".join(map(str, kit_ids))
+
+                    telegram_message = f"""
+Kit Order Submitted.
+Submitted by: {username}
+Loanee Name: {loanee_name}
+Kit Ids: {kit_ids_message}
+Due Date: {due_date}
+                        """
+
+                    telebot_send_text(telegram_message, None, "Orders")
             except (ValueError, Kit.DoesNotExist) as e:
                 raise ValueError(str(e))
 
@@ -389,6 +428,16 @@ def return_kit_order(request):
         kit.content = content
         kit.status = "READY"
         kit.save()
+
+        kit_url = request.build_absolute_uri(f"/inventory/kits/kit_info/{kit_id}")
+
+        telegram_message = f"""
+Kit Returned
+Kit ID: {kit_id}
+Kit URL: {kit_url}
+        """
+
+        telebot_send_text(telegram_message, None, "Orders")
 
         return Response(
             {"message": "Kit returned successfully!"}, status=status.HTTP_200_OK
@@ -480,6 +529,16 @@ def restock_kit(request):
             snapshot=projected_content,
             order_id=order_id,
         )
+
+        kit_url = request.build_absolute_uri(f"/inventory/kits/kit_info/{kit_id}")
+
+        telegram_message = f"""
+Kit Restocked
+Kit Id: {kit_id}
+Kit URL: {kit_url}
+        """
+
+        telebot_send_text(telegram_message, None, "Orders")
 
         return Response(
             {"message": "Kit restocked successfully!", "order_id": order_id},
