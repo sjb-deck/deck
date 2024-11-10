@@ -1,6 +1,5 @@
-import { getUser } from '../hooks/auth/authHook';
-
 import { Footer, NavBar, KitCreate } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 
 import '../globals/styles/inventoryBase.scss';
 

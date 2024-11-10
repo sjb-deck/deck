@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useContext } from 'react';
-import { signIn } from '../auth/authHook';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
 import { AlertContext } from '../../providers/AlertProvider';
+import { signIn } from '../auth/authHook';
 
 export const useLogin = (options) => {
   const key = 'login';
@@ -25,11 +25,7 @@ export const useLogin = (options) => {
       });
     },
     onSuccess: (data) => {
-      signIn(
-        data.access,
-        data.refresh,
-        data.user,
-      );
+      signIn(data.access, data.refresh, data.user);
       setAlert({
         severity: 'success',
         message: 'Login successful',

@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useContext, useEffect, useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 
 import {
   AddExpiryForm,
@@ -23,6 +22,7 @@ import {
   Theme,
   TypeSelection,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
 import { useAddItem } from '../hooks/mutations';
 import { useItems } from '../hooks/queries';
 import { AlertContext } from '../providers';

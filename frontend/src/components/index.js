@@ -20,3 +20,4 @@ export * from './NumberInput';
 export * from './Receipt';
 export * from './Routes';
 export * from './Theme';
+export * from './Notifications';

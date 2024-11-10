@@ -8,6 +8,7 @@ import { AlertProvider } from './AlertProvider';
 import { AuthProvider } from './AuthProvider';
 import { CartProvider } from './CartProvider';
 import { KitCartProvider } from './KitCartProvider';
+import { NotificationProvider } from './NotificationProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,9 +25,11 @@ export const DeckProvider = ({ children }) => {
         <QueryClientProvider client={queryClient}>
           <AlertProvider>
             <AuthProvider>
-              <CartProvider>
-                <KitCartProvider>{children}</KitCartProvider>
-              </CartProvider>
+              <NotificationProvider>
+                <CartProvider>
+                  <KitCartProvider>{children}</KitCartProvider>
+                </CartProvider>
+              </NotificationProvider>
             </AuthProvider>
           </AlertProvider>
         </QueryClientProvider>

@@ -1,6 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useState } from 'react';
-import { getUser } from '../hooks/auth/authHook';
 
 import {
   Footer,
@@ -9,6 +8,8 @@ import {
   NavBar,
   OrderList,
 } from '../components';
+import { getUser } from '../hooks/auth/authHook';
+
 import '../globals/styles/inventoryBase.scss';
 
 export const AdminIndex = () => {
