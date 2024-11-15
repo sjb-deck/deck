@@ -4,6 +4,8 @@ services:
   frontend:
     platform: linux/amd64
     image: sjbdeck/deck-frontend:staging
+    env_file:
+      - .env
     ports:
       - "8080:80" # staging apache server will proxy to port 8080
       - "4443:443" # staging apache server will proxy to port 4443
