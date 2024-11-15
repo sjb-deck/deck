@@ -51,6 +51,21 @@ build_and_push() {
         --push \
         ${CONTEXT_DIR} || handle_error "Failed to build and push ${IMAGE_NAME}:${TAG}"
 
+    docker buildx build --platform linux/amd64,linux/arm64 \
+        -t sjbdeck/${IMAGE_NAME}:${IMAGE_NAME}-latest \
+        --push \
+        ${CONTEXT_DIR} || handle_error "Failed to update ${IMAGE_NAME}-latest tag for ${IMAGE_NAME}"
+
+    # Get all tags for the image, sort them, and get the oldest one
+    # OLDEST_TAG=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep $IMAGE_NAME | sort | head -n 1)
+
+    # if [ -n "$OLDEST_TAG" ]; then
+    #     echo "Deleting the oldest tag: $OLDEST_TAG"
+    #     docker rmi $OLDEST_TAG
+    # else
+    #     echo "No tags found for image: $IMAGE_NAME"
+    # fi
+
     print_msg "${GREEN}Successfully built and pushed ${IMAGE_NAME}:${TAG}${NC}"
 
     print_msg "${GREEN}Removing the Docker buildx builder instance...${NC}"
@@ -59,12 +74,20 @@ build_and_push() {
 
 if [ "$1" == "--prod" ]; then
     MODE="prod"
-    TAG="latest"
+    if [ -z "$2" ]; then
+        handle_error "Version number is required for production mode"
+    fi
+    VERSION=$2
+    TAG="prod-${VERSION}"
     DOMAIN="deck.nhhs-sjb.org"
     print_msg "${YELLOW}Entering production mode...${NC}"
 elif [ "$1" == "--staging" ]; then
     MODE="staging"
-    TAG="staging"
+    if [ -z "$2" ]; then
+        handle_error "Version number is required for staging mode"
+    fi
+    VERSION=$2
+    TAG="staging-${VERSION}"
     DOMAIN="deck-stg.nhhs-sjb.org"
     print_msg "${YELLOW}Entering staging mode...${NC}"
 else

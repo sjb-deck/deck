@@ -99,12 +99,9 @@ export const Footer = () => {
         />
         <Box mt={sectionPadding}>
           <Typography variant='body2' color='text.secondary' align='center'>
-            {/* {'Copyright © '}
-            <Link color='inherit' href='https://your-website.com/'>
-              IMS
-            </Link>{' '}
-            {new Date().getFullYear()} */}
-            Source code is on Github!
+            {import.meta.env.VITE_FE_VERSION
+              ? `Version ${import.meta.env.VITE_FE_VERSION}`
+              : 'Source code is on Github!'}
           </Typography>
         </Box>
       </Paper>

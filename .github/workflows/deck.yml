@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      date-tag: ${{ steps.set-version-tag.outputs.date-tag }}
     strategy:
       max-parallel: 4
       matrix:
@@ -21,6 +23,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Set DATE_TAG
+        id: set-version-tag
+        run: echo "::set-output name=date-tag::$(date +'%Y.%m.%d.%H%M%S')"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -112,6 +117,15 @@ jobs:
       - name: Build files and push to Docker Hub
         run: |
           ./run.sh --staging
+      - name: Tag the commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE_TAG="${{ needs.build.outputs.date-tag }}"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "staging-$DATE_TAG" -m "Staging deployment $DATE_TAG"
+          git push origin "staging-$DATE_TAG"
       - name: Deploying to staging server
         uses: appleboy/ssh-action@master
         with:
@@ -120,6 +134,8 @@ jobs:
           password: ${{ secrets.STAGING_PASSWORD }}
           script: |
             cd deck-stg
+            DATE_TAG="${{ needs.build.outputs.date-tag }}"
+            sed -i "s/^VERSION=.*/VERSION=$DATE_TAG/" .env
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker image prune -af
@@ -137,6 +153,15 @@ jobs:
       - name: Build files and push to docker hub
         run: |
           ./run.sh --prod
+      - name: Tag the commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE_TAG="${{ needs.build.outputs.date-tag }}"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "staging-$DATE_TAG" -m "Staging deployment $DATE_TAG"
+          git push origin "staging-$DATE_TAG"
       - name: Deploying to server
         uses: appleboy/ssh-action@master
         with:
@@ -145,6 +170,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd deck-docker
+            DATE_TAG="${{ needs.build.outputs.date-tag }}"
+            sed -i "s/^VERSION=.*/VERSION=$DATE_TAG/" .env
             sudo docker compose pull
             sudo docker compose up -d
             sudo docker image prune -af
