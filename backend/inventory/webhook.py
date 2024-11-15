@@ -7,6 +7,9 @@ CHAT_ID = "-1002084597891"
 
 
 def telebot_send_text(text, photo, topic):
+    if config("ENV") == "dev":
+        return
+
     TOPICS = {
         "Deletion": "2",
         "Expiry/Low qty": "13",
