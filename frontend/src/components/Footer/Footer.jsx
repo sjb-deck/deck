@@ -99,9 +99,10 @@ export const Footer = () => {
         />
         <Box mt={sectionPadding}>
           <Typography variant='body2' color='text.secondary' align='center'>
-            {import.meta.env.VITE_FE_VERSION
+            {/* {import.meta.env.VITE_FE_VERSION
               ? `Version ${import.meta.env.VITE_FE_VERSION}`
-              : 'Source code is on Github!'}
+              : 'Source code is on Github!!'} */}
+            Version ${import.meta.env.VITE_FE_VERSION}
           </Typography>
         </Box>
       </Paper>
