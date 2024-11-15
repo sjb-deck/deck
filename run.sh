@@ -52,9 +52,9 @@ build_and_push() {
         ${CONTEXT_DIR} || handle_error "Failed to build and push ${IMAGE_NAME}:${TAG}"
 
     docker buildx build --platform linux/amd64,linux/arm64 \
-        -t sjbdeck/${IMAGE_NAME}:${IMAGE_NAME}-latest \
+        -t sjbdeck/${IMAGE_NAME}:${MODE}-latest \
         --push \
-        ${CONTEXT_DIR} || handle_error "Failed to update ${IMAGE_NAME}-latest tag for ${IMAGE_NAME}"
+        ${CONTEXT_DIR} || handle_error "Failed to update ${MODE}--latest tag for ${IMAGE_NAME}"
 
     # Get all tags for the image, sort them, and get the oldest one
     # OLDEST_TAG=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep $IMAGE_NAME | sort | head -n 1)

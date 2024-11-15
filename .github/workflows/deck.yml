@@ -135,7 +135,7 @@ jobs:
           script: |
             cd deck-stg
             DATE_TAG="${{ needs.build.outputs.date-tag }}"
-            sed -i "s/^VERSION=.*/VERSION=$DATE_TAG/" .env
+            sed -i "s/^VITE_FE_VERSION=.*/VITE_FE_VERSION=$DATE_TAG/" .env
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose pull
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker compose up -d
             echo ${{ secrets.STAGING_PASSWORD }} | sudo -S docker image prune -af
@@ -171,7 +171,7 @@ jobs:
           script: |
             cd deck-docker
             DATE_TAG="${{ needs.build.outputs.date-tag }}"
-            sed -i "s/^VERSION=.*/VERSION=$DATE_TAG/" .env
+            sed -i "s/^VITE_FE_VERSION=.*/VITE_FE_VERSION=$DATE_TAG/" .env
             sudo docker compose pull
             sudo docker compose up -d
             sudo docker image prune -af
