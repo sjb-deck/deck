@@ -3,7 +3,7 @@
 services:
   frontend:
     platform: linux/amd64
-    image: sjbdeck/deck-frontend:latest
+    image: sjbdeck/deck-frontend:prod-latest
     env_file:
       - .env
     ports:
@@ -19,7 +19,7 @@ services:
 
   backend:
     platform: linux/amd64
-    image: sjbdeck/deck-backend:latest
+    image: sjbdeck/deck-backend:prod-latest
     env_file:
       - .env 
     expose:
@@ -32,7 +32,7 @@ services:
       - mysql
     command: >
       sh -c "
-        ./wait-for-it.sh mysql:3306 -- 
+        ./wait-for-it.sh mysql:3306 -t 300 -- 
         ./startup.sh &&
         gunicorn --config gunicorn_config.py deck.wsgi:application
       "
