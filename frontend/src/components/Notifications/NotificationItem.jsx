@@ -7,10 +7,13 @@ import {
   ThemeProvider,
   Typography,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import { getReadableDate } from '../../utils';
+import { URL_INV_ITEMS, URL_INV_KITS_INFO } from '../../globals/urls';
+import { buildUrl, getReadableDate } from '../../utils';
 
 export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
+  const navigate = useNavigate();
   const theme = createTheme({
     typography: {
       subtitle1: {
@@ -25,9 +28,11 @@ export const NotificationItem = ({ sectionKey, issue, isMobile }) => {
       sectionKey === 'expiring_items' ||
       sectionKey === 'low_quantity_items'
     ) {
-      window.location.href = `items?search=${issue.name}`;
+      navigate(`${URL_INV_ITEMS}?search=${issue.name}`, {
+        state: { search: issue.name },
+      });
     } else if (sectionKey === 'kits_expiries') {
-      window.location.href = `kits/kit_info?kitId=${issue.kit_id}`;
+      navigate(buildUrl(URL_INV_KITS_INFO, { kitId: issue.kit_id }));
     }
   };
 
