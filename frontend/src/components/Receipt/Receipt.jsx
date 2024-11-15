@@ -1,8 +1,10 @@
 import { Chip, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useEffect } from 'react';
 
 import { useOrder } from '../../hooks/queries';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 import { ReceiptDetails } from './ReceiptDetails';
@@ -41,6 +43,16 @@ const getOrderInfo = (orderData) => {
         <Chip label='Inactive' color='error' />
       ),
     }),
+    ...(Object.prototype.hasOwnProperty.call(
+      orderInfoWithUser,
+      'is_reverted',
+    ) && {
+      is_reverted: orderInfoWithUser.is_reverted ? (
+        <Chip label='Reverted' color='error' />
+      ) : (
+        <Chip label='Valid' color='success' />
+      ),
+    }),
   };
 
   return orderInfoWithFriendlyStatus;
@@ -48,6 +60,12 @@ const getOrderInfo = (orderData) => {
 
 export function Receipt({ orderId }) {
   const { data, isLoading, isError } = useOrder(orderId);
+
+  useEffect(() => {
+    if (data?.is_reverted) {
+      alert('This order has been reverted');
+    }
+  }, [data]);
 
   return (
     <Stack
@@ -62,6 +80,8 @@ export function Receipt({ orderId }) {
     >
       {isLoading || isError ? (
         <LoadingSpinner />
+      ) : data?.is_reverted ? (
+        <EmptyMessage message='This order has been reverted' />
       ) : (
         <>
           <Box sx={{ mt: 20 }}>
@@ -73,9 +93,9 @@ export function Receipt({ orderId }) {
             </Typography>
           </Box>
           <ReceiptDetails details={getOrderInfo(data)} />
-          {data.order_items.map((orderItem) => {
-            return <ReceiptItem key={orderItem.id} item={orderItem} />;
-          })}
+          {data.order_items.map((orderItem) => (
+            <ReceiptItem key={orderItem.id} item={orderItem} />
+          ))}
         </>
       )}
     </Stack>

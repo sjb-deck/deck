@@ -1,5 +1,4 @@
 import { Divider, Stack } from '@mui/material';
-import { useEffect } from 'react';
 
 import { ORDER_REASONS } from '../../globals/constants';
 import { Paper } from '../styled';
@@ -32,12 +31,6 @@ const attributeToReaderFriendlyText = (attribute) => {
 };
 
 export const ReceiptDetails = ({ details }) => {
-  useEffect(() => {
-    if (details?.is_reverted) {
-      alert('This order has been reverted');
-    }
-  }, [details]);
-
   return (
     <Paper>
       <Stack
@@ -54,9 +47,7 @@ export const ReceiptDetails = ({ details }) => {
                 {attributeToReaderFriendlyText(detail[0])}
               </p>
               <p style={{ margin: '0px' }}>
-                {detail[0] == 'reason'
-                  ? ORDER_REASONS[detail[1]]
-                  : String(detail[1])}
+                {detail[0] == 'reason' ? ORDER_REASONS[detail[1]] : detail[1]}
               </p>
             </div>
           );

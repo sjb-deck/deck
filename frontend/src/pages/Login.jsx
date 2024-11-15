@@ -52,6 +52,12 @@ export const Login = () => {
     event.preventDefault();
   };
 
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      submitForm();
+    }
+  };
+
   const submitForm = () => {
     if (!username || !password) {
       setError(true);
@@ -118,6 +124,7 @@ export const Login = () => {
               setError(false);
               setUsername(e.target.value);
             }}
+            onKeyDown={handleEnterKeyPress}
           />
           {error && <FormHelperText>{message}</FormHelperText>}
         </FormControl>
@@ -133,6 +140,7 @@ export const Login = () => {
               setError(false);
               setPassword(e.target.value);
             }}
+            onKeyDown={handleEnterKeyPress}
             type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position='end'>
