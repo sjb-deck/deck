@@ -77,8 +77,8 @@ if [ "$1" == "--prod" ]; then
     if [ -z "$2" ]; then
         handle_error "Version number is required for production mode"
     fi
-    VERSION=$2
-    TAG="prod-${VERSION}"
+    VITE_FE_VERSION=$2
+    TAG="prod-${VITE_FE_VERSION}"
     DOMAIN="deck.nhhs-sjb.org"
     print_msg "${YELLOW}Entering production mode...${NC}"
 elif [ "$1" == "--staging" ]; then
@@ -86,8 +86,8 @@ elif [ "$1" == "--staging" ]; then
     if [ -z "$2" ]; then
         handle_error "Version number is required for staging mode"
     fi
-    VERSION=$2
-    TAG="staging-${VERSION}"
+    VITE_FE_VERSION=$2
+    TAG="staging-${VITE_FE_VERSION}"
     DOMAIN="deck-stg.nhhs-sjb.org"
     print_msg "${YELLOW}Entering staging mode...${NC}"
 else

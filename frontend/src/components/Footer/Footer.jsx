@@ -102,7 +102,7 @@ export const Footer = () => {
             {/* {import.meta.env.VITE_FE_VERSION
               ? `Version ${import.meta.env.VITE_FE_VERSION}`
               : 'Source code is on Github!!'} */}
-            Version ${import.meta.env.VITE_FE_VERSION}
+            Version {import.meta.env.VITE_FE_VERSION}
           </Typography>
         </Box>
       </Paper>
