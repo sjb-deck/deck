@@ -179,8 +179,8 @@ jobs:
             sudo docker image prune -af
 
   deploy-docs:
+    needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git Credentials
