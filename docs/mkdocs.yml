@@ -1,5 +1,4 @@
 site_name: Deck Developer Documentation
-site_url: https://sjb-deck.github.io/deck/docs
 theme:
   name: material
   favicon: assets/logo.png
