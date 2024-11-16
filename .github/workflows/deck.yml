@@ -115,6 +115,8 @@ jobs:
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Build files and push to Docker Hub
+        env:
+          VITE_FE_VERSION: ${{ needs.build.outputs.date-tag }}
         run: |
           ./run.sh --staging ${{ needs.build.outputs.date-tag }}
       - name: Tag the commit
