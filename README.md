@@ -135,6 +135,14 @@ You can find the `[backend_container_id]` by running `docker ps -a` and look for
 
 3. The tests will run and output the results.
 
+# Useful Links
+
+- [Documentation](https://sjb-deck.github.io/deck/docs)
+- [API Documentation](https://sjb-deck.github.io/api-docs/#/)
+- [Development Site](https://deck-dev.nhhs-sjb.org)
+- [Staging Site](https://deck-stg.nhhs-sjb.org)
+- [Production Site](https://deck.nhhs-sjb.org)
+
 # Must Have VSCode Extensions
 
 - [Black Python Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
