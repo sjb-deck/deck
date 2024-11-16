@@ -1,7 +1,4 @@
-[![codecov](https://codecov.io/gh/sjb-deck/deck/branch/main/graph/badge.svg?token=A6P3NNHZ7R)](https://codecov.io/gh/sjb-deck/deck)
-![Build Status](https://github.com/sjb-deck/deck/actions/workflows/deck.yml/badge.svg)
-
-# Getting Started
+# Setup
 
 ## Prerequisites
 
@@ -54,27 +51,7 @@ This script will build and start the Docker containers for the frontend, backend
 
 ### Additional Notes
 
-If this is your first time running the dev server, you will need to create a new superuser account
-
-1. Start a shell in the backend container:
-
-    ```bash
-    docker exec -it [backend_container_id] sh
-    ```
-
-2. Run the following command to create a superuser:
-
-    ```bash
-    python manage.py createsuperuser
-    ```
-
-3. Follow the prompts to create a new superuser account, then exit the shell:
-
-    ```bash
-    exit
-    ```
-
-You can find the `[backend_container_id]` by running `docker ps -a` and look for the container with the name `deck_backend`.
+* The `run.sh` script will create a superuser account with the username and password defined by `DEFAULT_ADMIN_USERNAME` and `DEFAULT_ADMIN_PASSWORD` in `.env`.
 
 ## Running tests
 
@@ -134,24 +111,3 @@ You can find the `[backend_container_id]` by running `docker ps -a` and look for
     ```
 
 3. The tests will run and output the results.
-
-# Useful Links
-
-- [Documentation](https://sjb-deck.github.io/deck/docs)
-- [API Documentation](https://sjb-deck.github.io/api-docs/#/)
-- [Development Site](https://deck-dev.nhhs-sjb.org)
-- [Staging Site](https://deck-stg.nhhs-sjb.org)
-- [Production Site](https://deck.nhhs-sjb.org)
-
-# Must Have VSCode Extensions
-
-- [Black Python Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-# Acknowledgements
-
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk1ItaFwJIrz4-MMaDVEHGnAsbGrPq-QtUNA&s" alt="ccsgp" width="100"/>
-
-This project is supported by the Centre for Computing for Social
-Good & Philanthropy Fellowship Programme.

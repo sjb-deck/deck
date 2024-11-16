@@ -1,0 +1,21 @@
+site_name: Deck Developer Documentation
+theme:
+  name: material
+  favicon: assets/logo.png
+  palette:
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: material/weather-night
+        name: Switch to Dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to Light mode
+repo_url: https://github.com/sjb-deck/deck
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - Architecture: architecture.md
+  - Database Design: database.md
