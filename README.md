@@ -137,7 +137,7 @@ You can find the `[backend_container_id]` by running `docker ps -a` and look for
 
 # Useful Links
 
-- [Documentation](https://sjb-deck.github.io/deck/docs)
+- [Documentation](https://sjb-deck.github.io/deck)
 - [API Documentation](https://sjb-deck.github.io/api-docs/#/)
 - [Development Site](https://deck-dev.nhhs-sjb.org)
 - [Staging Site](https://deck-stg.nhhs-sjb.org)
