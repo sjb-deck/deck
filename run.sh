@@ -57,14 +57,14 @@ build_and_push() {
         ${CONTEXT_DIR} || handle_error "Failed to update ${MODE}--latest tag for ${IMAGE_NAME}"
 
     # Get all tags for the image, sort them, and get the oldest one
-    # OLDEST_TAG=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep $IMAGE_NAME | sort | head -n 1)
+    OLDEST_TAG=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep $IMAGE_NAME | sort | head -n 1)
 
-    # if [ -n "$OLDEST_TAG" ]; then
-    #     echo "Deleting the oldest tag: $OLDEST_TAG"
-    #     docker rmi $OLDEST_TAG
-    # else
-    #     echo "No tags found for image: $IMAGE_NAME"
-    # fi
+    if [ -n "$OLDEST_TAG" ]; then
+        echo "Deleting the oldest tag: $OLDEST_TAG"
+        docker rmi $OLDEST_TAG
+    else
+        echo "No tags found for image: $IMAGE_NAME"
+    fi
 
     print_msg "${GREEN}Successfully built and pushed ${IMAGE_NAME}:${TAG}${NC}"
 
