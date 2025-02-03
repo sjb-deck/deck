@@ -38,7 +38,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react-swc": "^3.7.2",
     "eslint": "^8.57.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.1.0",
@@ -50,7 +50,7 @@
     "jsdom": "^24.1.0",
     "msw": "^2.3.1",
     "sass": "^1.77.6",
-    "vite": "^5.4.14",
+    "vite": "^6.0.11",
     "vitest": "^1.6.0"
   },
   "optionalDependencies": {
