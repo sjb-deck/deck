@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
 import { URL_INV_VIEW_KITS } from '../../globals/urls';
-import { AlertContext } from '../../providers/AlertProvider';
+import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils/getRequest';
 
 export const useReturnKit = (options) => {

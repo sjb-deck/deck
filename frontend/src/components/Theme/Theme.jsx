@@ -6,19 +6,17 @@ import {
 } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from 'prop-types';
-import { createContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { LOCAL_STORAGE_COLORMODE_KEY } from '../../globals/constants';
+
+import { ColorModeContext } from './ColorModeContext';
 
 /**
  * A React component that sets the theme of the page
  * ie. light or dark mode
  * @returns Theme
  */
-
-export const ColorModeContext = createContext({
-  toggleColorMode: () => {},
-});
 
 export const Theme = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
