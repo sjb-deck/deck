@@ -1,13 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { createContext, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 
 import { Api } from '../globals/api';
 import { staySignedIn, signOut, getRefreshToken } from '../hooks/auth/authHook';
 
-import { AlertContext } from './AlertProvider';
-
-export const AuthContext = createContext();
+import { AlertContext } from './AlertContext';
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }) => {
   const { setAlert } = useContext(AlertContext);

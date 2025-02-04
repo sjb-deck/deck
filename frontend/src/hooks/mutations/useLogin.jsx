@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useContext } from 'react';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
-import { AlertContext } from '../../providers/AlertProvider';
+import { AlertContext } from '../../providers';
 import { signIn } from '../auth/authHook';
 
 export const useLogin = (options) => {

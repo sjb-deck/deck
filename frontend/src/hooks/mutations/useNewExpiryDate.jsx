@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 import { Api, invalidateQueryKeys } from '../../globals/api';
-import { AlertContext } from '../../providers/AlertProvider';
+import { AlertContext } from '../../providers';
 import { getRequest } from '../../utils/getRequest';
 
 export const useNewExpiryDate = (options) => {

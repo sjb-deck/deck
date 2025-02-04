@@ -1,8 +1,8 @@
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 
 import { ErrorPopup, SnackBarAlerts } from '../components/Alerts';
 
-export const AlertContext = createContext();
+import { AlertContext } from './AlertContext';
 
 export const AlertProvider = ({ children }) => {
   const [open, setOpen] = useState(false);

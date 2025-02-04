@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 import { Api } from '../../globals/api';
-import { AlertContext } from '../../providers/AlertProvider';
+import { AlertContext } from '../../providers';
 import { buildUrl, getRequest } from '../../utils';
 
 export const useLoans = (params, options) => {
