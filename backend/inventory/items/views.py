@@ -298,9 +298,9 @@ def import_items_csv(request):
         with transaction.atomic():
             for idx, row in enumerate(reader):
                 try:
-                    if len(row) != 8:
+                    if len(row) != 9:
                         errors.append(
-                            "Row {}: Expected 8 columns, found {}".format(
+                            "Row {}: Expected 9 columns, found {}".format(
                                 idx + 1, len(row)
                             )
                         )
@@ -313,13 +313,14 @@ def import_items_csv(request):
                         "name": row[0],
                         "type": row[1],
                         "unit": row[2],
-                        "total_quantity": row[3],
-                        "is_opened": row[4].lower() == "true",
+                        "imgpic": "items/" + row[3] if row[3] else None,
+                        "total_quantity": row[4],
+                        "is_opened": row[5].lower() == "true",
                         "expiry_dates": [
                             {
-                                "expiry_date": row[5],
-                                "quantity": row[6],
-                                "archived": row[7].lower() == "true",
+                                "expiry_date": row[6] if row[6] else None,
+                                "quantity": row[7],
+                                "archived": row[8].lower() == "true",
                             }
                         ],
                     }
@@ -328,8 +329,8 @@ def import_items_csv(request):
                     if current_item.exists():
                         new_expiry = {
                             "item": current_item.first().id,
-                            "expiry_date": row[5],
-                            "quantity": int(row[3]),
+                            "expiry_date": row[6] if row[6] else None,
+                            "quantity": int(row[4]),
                         }
                         create_new_item_expiry(new_expiry, request)
                     elif item.is_valid(raise_exception=True):

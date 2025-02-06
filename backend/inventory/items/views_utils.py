@@ -54,7 +54,7 @@ def create_new_item_expiry(data, request):
 
 
 def check_correct_csv_format(row, idx):
-    types = [str, str, str, int, bool, str, int, bool]
+    types = [str, str, str, str, int, bool, str, int, bool]
     for i, val in enumerate(row):
         # check if boolean
         if types[i] == bool:
