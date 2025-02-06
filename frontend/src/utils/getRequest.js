@@ -14,6 +14,7 @@ function getCSRFToken() {
 
 export const getRequest = (options) => {
   const request = axios.create({
+    ...options, // think of a better way to do this
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAccessToken()}`,
@@ -21,7 +22,6 @@ export const getRequest = (options) => {
       ...options?.headers,
     },
     withCredentials: true,
-    ...options,
   });
 
   return request;
