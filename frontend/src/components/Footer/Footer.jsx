@@ -44,10 +44,9 @@ const CustomLink = ({ text, link }) => {
  */
 export const Footer = () => {
   return (
-    <Box component='footer' position={'absolute'}>
+    <Box component='footer' position={'absolute'} style={{ width: '100%' }}>
       <Paper
         sx={{
-          width: '100vw',
           backgroundColor: (theme) =>
             theme.palette.mode === 'light'
               ? theme.palette.grey[200]
