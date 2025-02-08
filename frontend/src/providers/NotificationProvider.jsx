@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { LOCAL_STORAGE_NOTIFICATIONS_KEY } from '../globals/constants';
 
-export const NotificationContext = React.createContext();
+import { NotificationContext } from './NotificationContext';
 
 const getNotificationsFromLocalStorage = () => {
   const notifications = localStorage.getItem(LOCAL_STORAGE_NOTIFICATIONS_KEY);

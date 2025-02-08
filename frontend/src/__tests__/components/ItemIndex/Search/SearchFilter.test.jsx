@@ -59,19 +59,19 @@ describe('SearchFilter', () => {
     fireEvent.click(dressingButton);
     fireEvent.click(universalPrecautionButton);
 
-    expect(generalButton).toHaveStyle('color: rgb(255, 255, 255)');
-    expect(bandagesButton).toHaveStyle('color: rgb(255, 255, 255)');
-    expect(solutionButton).toHaveStyle('color: rgb(255, 255, 255)');
-    expect(dressingButton).toHaveStyle('color: rgb(255, 255, 255)');
-    expect(universalPrecautionButton).toHaveStyle('color: rgb(255, 255, 255)');
+    expect(generalButton).toHaveClass('MuiButton-contained');
+    expect(bandagesButton).toHaveClass('MuiButton-contained');
+    expect(solutionButton).toHaveClass('MuiButton-contained');
+    expect(dressingButton).toHaveClass('MuiButton-contained');
+    expect(universalPrecautionButton).toHaveClass('MuiButton-contained');
 
     fireEvent.click(screen.getByText('All'));
 
     expect(onFilterChange).toHaveBeenCalledWith(['All']);
-    expect(generalButton).toHaveStyle('color: rgb(25, 118, 210)');
-    expect(bandagesButton).toHaveStyle('color: rgb(25, 118, 210)');
-    expect(solutionButton).toHaveStyle('color: rgb(25, 118, 210)');
-    expect(dressingButton).toHaveStyle('color: rgb(25, 118, 210)');
-    expect(universalPrecautionButton).toHaveStyle('color: rgb(25, 118, 210)');
+    expect(generalButton).toHaveClass('MuiButton-outlined');
+    expect(bandagesButton).toHaveClass('MuiButton-outlined');
+    expect(solutionButton).toHaveClass('MuiButton-outlined');
+    expect(dressingButton).toHaveClass('MuiButton-outlined');
+    expect(universalPrecautionButton).toHaveClass('MuiButton-outlined');
   });
 });

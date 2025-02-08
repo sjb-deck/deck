@@ -17,10 +17,13 @@ def generate_presigned_url_for_upload(request):
         file_name = request.data.get("fileName")
         file_type = request.data.get("fileType")
         folder_name = request.data.get("folderName")
+        s3EnvName = (
+            settings.ENV if settings.ENV == "prod" else "staging"
+        )  # staging and dev uses the same bucket
 
         s3_client = get_s3_client()
 
-        key = f"{settings.ENV}/{folder_name}/{file_name}"
+        key = f"{s3EnvName}/{folder_name}/{file_name}"
 
         presigned_url = s3_client.generate_presigned_url(
             "put_object",
@@ -46,12 +49,15 @@ def generate_presigned_url_for_upload(request):
 @permission_classes([IsAuthenticated])
 def get_presigned_url(request, filepath):
     s3_client = get_s3_client()
+    s3EnvName = (
+        settings.ENV if settings.ENV == "prod" else "staging"
+    )  # staging and dev uses the same bucket
     try:
         presigned_url = s3_client.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
-                "Key": f"{settings.ENV}/{filepath}",
+                "Key": f"{s3EnvName}/{filepath}",
             },
             ExpiresIn=3600,
         )

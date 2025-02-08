@@ -40,6 +40,11 @@ export const ItemIndex = () => {
     setCurrentPage(1);
   };
 
+  const searchTermCallback = (search) => {
+    setSearchTerm(search);
+    setCurrentPage(1);
+  };
+
   useEffect(() => {
     if (!items) return;
     const newItems = items.filter(
@@ -59,7 +64,7 @@ export const ItemIndex = () => {
         spacing={2}
         sx={{ alignItems: 'center' }}
       >
-        <SearchBar callback={setSearchTerm} initialValue={searchTerm} />
+        <SearchBar callback={searchTermCallback} initialValue={searchTerm} />
         <SearchFilter onFilterChange={handleFilterChange} />
       </Stack>
 

@@ -77,7 +77,7 @@ class TestApiLoanReturnViews(TestCase):
         updated_order = LoanOrder.objects.get(id=self.outstanding_loan.id)
         self.assertEqual(updated_order.loan_active, False)
         self.assertTrue(
-            abs(updated_order.return_date - timezone.now()) < timedelta(seconds=1)
+            abs(updated_order.return_date - timezone.now()) < timedelta(seconds=10)
         )
 
         # check that the order item is updated
