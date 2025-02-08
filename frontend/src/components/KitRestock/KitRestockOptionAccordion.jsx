@@ -134,6 +134,7 @@ const RestockOption = ({ option, setRestockValue }) => {
             sx={{
               display: 'grid',
               gridColumn: '2/2',
+              gridRow: '1/3',
               alignSelf: 'center',
               fontSize: '0.875rem',
               fontFamily: 'inherit',

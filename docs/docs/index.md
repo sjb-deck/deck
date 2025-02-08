@@ -11,7 +11,7 @@ Deck is a comprehensive platform designed to streamline inventory management and
 - **Kit Management**: Create and manage kits from existing items.
 - **User Management**: Manage user accounts, roles, and permissions.
 
-For more detailed information on each feature, please refer to the specific sections in the documentation. [TODO]
+For more detailed information on each feature, please refer to the [user guide](https://sjb-deck.github.io/user-docs/).
 
 ## Acknowledgements
 
