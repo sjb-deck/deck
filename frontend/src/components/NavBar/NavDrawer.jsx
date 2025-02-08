@@ -151,7 +151,7 @@ export const NavDrawer = ({ user, numberOfNotifications }) => {
                 fullWidth
                 sx={{ justifyContent: 'center', textTransform: 'none' }}
                 startIcon={item.icon}
-                onClick={() => (location.href = item.link)}
+                onClick={() => navigate(item.link)}
               >
                 {item.title}
               </Button>
@@ -168,7 +168,7 @@ export const NavDrawer = ({ user, numberOfNotifications }) => {
                 fullWidth
                 sx={{ justifyContent: 'center', textTransform: 'none' }}
                 startIcon={item.icon}
-                onClick={() => (location.href = item.link)}
+                onClick={() => navigate(item.link)}
               >
                 {item.title}
               </Button>
